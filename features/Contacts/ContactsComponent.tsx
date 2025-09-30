@@ -1,11 +1,11 @@
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
-
+import ContactEntry from "./ContactEntryComponent";
 
 export default function ContactsComponent(){
     const [permissionStatus, setPermissionStatus] = useState(false);
-    const [selectedFriend, setSelectedFriend] = useState(null);
+    const [contacts, setContacts] = useState([]);
 
     useEffect(()=> {
         checkPermission()
@@ -38,23 +38,38 @@ export default function ContactsComponent(){
             console.log({status});
             if (status === "granted") {
                 const result = await Contacts.presentContactPickerAsync();
+                console.log({result})
                 const phoneNumber = pickPhoneNumber(result?.phoneNumbers);
+                console.log("Chosen Phone Number ---", phoneNumber);
+                setContacts([...contacts, result]);
             }
         }
         catch {
             console.log("error in requesting permission");
         }
     }
+    // const contactText = (contactList) => {
+    //     return contactList.map((contact, i) => <Text key={i} >Contact is {contact.firstName} {contact.lastName}</Text>)
+    // }
+    const contactEntries = (contactList) => {
+        return contactList.map((contact, i)=> (
+            <View>
+                <ContactEntry/>
+                <Text key={i}>Contact is {contact.firstName} {contact.lastName}</Text>
+            </View>
+            ));
+    }
 
     return (
         <View style={styles.container}>
             <View>
             <Text>I am the contacts component</Text>
-          
+        
             <Button
                 title="Add a friend you want to talk to more."
                 onPress={()=> {requestPermission()}}
             />
+            {(contacts.length > 0) ? contactEntries(contacts) : <Text>No contacts chosen</Text>}
             </View>
         </View>
     );
