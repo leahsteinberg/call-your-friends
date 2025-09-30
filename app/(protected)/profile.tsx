@@ -1,9 +1,11 @@
 import { Button, View } from 'react-native';
 
-const Page = () => {
+export default function Profile(){
+
+
     return (
         <View>
-            <Button title='Sign out- inactive button'/>
+            <Button title='Profile Page'/>
         </View>
     )
 }

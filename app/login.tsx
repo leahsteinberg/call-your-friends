@@ -1,14 +1,33 @@
 import { AuthComponent } from '@/features/Auth/AuthComponent';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 
 import { View } from 'react-native';
 
 
-/// THIS CODE IS NOT CURRENTLY BEING USED AT ALL!!!
 export default function LogIn() {
     return (
-        <View className="flex-1 justify-center">
-      <AuthComponent/>
+        <View style={styles.container}>
+            <View
+            style={styles.component}
+            >
+            <AuthComponent  
+            />
+            </View>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  component: {
+    padding: 20,
+    backgroundColor: 'lightblue',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  }
+});
