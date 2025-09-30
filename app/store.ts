@@ -1,16 +1,16 @@
-import counterReducer from '@/features/counter/counterSlice';
-import { simpleApi } from '@/services/simpleApi';
+import { authApi } from '@/services/authApi';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import authReducer from '../features/Auth/authSlice';
 
 
 export const store = configureStore({
   reducer: {
-    [simpleApi.reducerPath]: simpleApi.reducer,
-    counter: counterReducer
+    [authApi.reducerPath]: authApi.reducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) => 
-    getDefaultMiddleware().concat(simpleApi.middleware)
+    getDefaultMiddleware().concat(authApi.middleware)
 });
 
 export type RootState = ReturnType<typeof store.getState>;

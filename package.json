@@ -17,6 +17,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@reduxjs/toolkit": "^2.9.0",
+    "better-auth": "^1.3.18",
     "expo": "~54.0.10",
     "expo-constants": "~18.0.9",
     "expo-font": "~14.0.8",
@@ -41,11 +42,11 @@
     "react-redux": "^9.2.0"
   },
   "devDependencies": {
+    "@react-native-community/cli": "latest",
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
-    "typescript": "~5.9.2",
-    "@react-native-community/cli": "latest"
+    "typescript": "~5.9.2"
   },
   "private": true
 }

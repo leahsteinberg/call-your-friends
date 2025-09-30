@@ -1,18 +1,18 @@
-import { Counter } from '@/features/counter/Counter';
+import { AuthComponent } from '@/features/Auth/AuthComponent';
+import { Link } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Button, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
 import { store } from './store';
 
 
 export default function HomeScreen() {
-
-    console.log(store);
   return (
     <Provider store={store}>
-    <View style={styles.container}>
-      <Counter/>
-    </View>
+      <AuthComponent/>
+      <Link href={'/register'} asChild>
+        <Button title="register"/>
+      </Link>
     </Provider>
   );
 }
