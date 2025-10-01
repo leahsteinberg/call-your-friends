@@ -14,12 +14,8 @@ export const contactsSlice = createSlice({
     reducers: {
         addContact: (state, action) => {
             if (!state.friends.find((friend) => friend.digits === action.payload.digits)){
-                console.log("state.friends - before - ", state.friends);
                 state.friends.push(action.payload);
-                console.log("is unique")
-                console.log("state.friends - after - ", state.friends);
             }
-            console.log("IN REDUCER!!", action.payload);
         },
 
     },

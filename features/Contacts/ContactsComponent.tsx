@@ -1,3 +1,4 @@
+import { useAddContactMutation } from "@/services/contactsApi";
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from 'react-native';
@@ -10,6 +11,8 @@ export default function ContactsComponent(){
     const [permissionStatus, setPermissionStatus] = useState(false);
     const dispatch = useDispatch();
     const contacts = useSelector((state)=> state.contacts.friends);
+    const [usePostAddContact] = useAddContactMutation();
+    console.log({usePostAddContact})
     useEffect(()=> {
         checkPermission()
     }, [])
@@ -46,10 +49,10 @@ export default function ContactsComponent(){
             const {status} = await Contacts.requestPermissionsAsync();
             if (status === "granted") {
                 const chosenContact = await Contacts.presentContactPickerAsync();
-                console.log({chosenContact})
                 const chosenPhone = pickPhoneNumber(chosenContact?.phoneNumbers);
                 const friendUser = buildFriendUser(chosenContact, chosenPhone);
                 dispatch(addContact(friendUser));
+                const response = await usePostAddContact(friendUser)
             }
         }
         catch {
@@ -64,7 +67,6 @@ export default function ContactsComponent(){
             </View>
             ));
     }
-    console.log("re-rendering, contacts is - ", contacts);
 
     return (
         <View style={styles.container}>

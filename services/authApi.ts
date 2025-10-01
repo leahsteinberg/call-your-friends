@@ -13,6 +13,19 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
             }, 
           }),
         }),
+        postPhoneSignup: builder.mutation({
+          query: (credentials) => {
+            console.log("credentials is -", credentials);
+              return {
+              url: 'api/signup-phone',
+              method: 'POST',
+              body: {
+                rememberMe: true,
+                ...credentials,
+              }
+            };
+          }
+        }),
         postSignIn: builder.mutation({
           query: (credentials) => {
             return {
@@ -25,6 +38,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
       })
   });
 
-const {usePostSignInMutation, usePostSignupMutation} = authApi;
+const {usePostSignInMutation, usePostSignupMutation, usePostPhoneSignupMutation} = authApi;
 
-export { usePostSignInMutation, usePostSignupMutation };
+export { usePostPhoneSignupMutation, usePostSignInMutation, usePostSignupMutation };
+

@@ -9,10 +9,8 @@ export default function LogIn() {
     return (
         <View style={styles.container}>
             <View
-            style={styles.component}
-            >
-            <AuthComponent  
-            />
+            style={styles.component}>
+            <AuthComponent/>
             </View>
         </View>
     );
