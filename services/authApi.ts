@@ -15,7 +15,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
         }),
         postPhoneSignup: builder.mutation({
           query: (credentials) => {
-            console.log("credentials is -", credentials);
               return {
               url: 'api/signup-phone',
               method: 'POST',

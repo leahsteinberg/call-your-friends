@@ -1,8 +1,9 @@
-import { usePostPhoneSignupMutation, usePostSignInMutation, usePostSignupMutation } from '@/services/authApi';
+import { usePostPhoneSignupMutation, usePostSignInMutation } from '@/services/authApi';
 import { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
+import PhoneNumberInput from './PhoneNumberInput';
 
 
 export function AuthComponent()  {
@@ -12,55 +13,36 @@ export function AuthComponent()  {
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false)
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
-    const [signUpUser, {isLoading, isSuccess, isError, error}] = usePostSignupMutation();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
-
     const [signInUser] = usePostSignInMutation();
 
-    const handleSignIn = async (e, {email, password}) => {
-        const result = await signInUser({email, password}).unwrap();
-        dispatch(setLogInCredentials({ token: result.token, user: result.user }))
-    }
-
-    const handleSignUp = async (e, {email, password}) => {
-        const result = await signUpUser({email, password}).unwrap();
-        dispatch(setLogInCredentials({ token: result.token, user: result.user }))
-    }
-
-    const handlePhoneSignUp = async (e) => {
-        const result = await phoneSignUpUser({email, password, phoneNumber}).unwrap();
+    const handleAuthQuery = async (e, authQuery) => {
+        const result = await authQuery({email, password, phoneNumber}).unwrap();
         dispatch(setLogInCredentials({ token: result.token, user: result.user }))
     }
 
     const renderPhoneNumberValid = () => {
-        return (<Text>Phone Number IS valid</Text>);
+        setIsPhoneNumberValid(true);
+        return (<Text style={{backgroundColor: 'green'}}>Phone Number IS valid</Text>);
     }
-        const renderPhoneNumberInvalid = () =>  {
-        return (<Text>Phone Number is NOT valid</Text>);
+    const renderPhoneNumberInvalid = () =>  {
+        setIsPhoneNumberValid(false);
+        return (<Text style={{backgroundColor: 'red'}}>Phone Number is NOT valid</Text>);
     }
     const renderPhoneNumberValidity = () => {
         if (phoneNumber.length>0) {
         const number = Number(phoneNumber)
-        if (
-            number
-            && phoneNumber.length === 10
-            && Number.isInteger(number)
-            && number >= 0
+        if (number && phoneNumber.length === 10
+            && Number.isInteger(number) && number >= 0
         ) {
-            setIsPhoneNumberValid(true);
             return renderPhoneNumberValid();
         }
-        setIsPhoneNumberValid(false);
         return renderPhoneNumberInvalid();
         }
     }
 
-    if (isLoading) return <View>Is Loading</View>;
-    if (error) return <View>Error found</View>
-
     return (
-        <View>
-         <View/>
+        <View style={styles.container}>
             <Text>
                 This is the Sign In Page
             </Text>
@@ -69,49 +51,64 @@ export function AuthComponent()  {
                 placeholder="Email address"
                 style={styles.textInput}
                 onChangeText={(text)=> setEmail(text)}
-                />
-            <TextInput
-                placeholder="Phone Number"
-                style={styles.textInput}
-                onChangeText={(text)=> setPhoneNumber(text)}
             />
+            <PhoneNumberInput onDataChange={setPhoneNumber}/>
             <TextInput
                 placeholder="Password"
                 style={styles.textInput}
                 onChangeText={(text) => setPassword(text)}
                 secureTextEntry
-                
             />
-            <Button
-                title="Sign In"
-                onPress={(e)=> {handleSignIn(e, {email, password})}}
-                disabled={!isPhoneNumberValid}
-            />
-            {/* <Button
-                title="Sign Up (email)"
-                onPress={(e)=> {handleSignUp(e, {email, password})}}
-            /> */}
-            <Button
-                title="Sign Up (with Phone)"
-                onPress={(e)=> {handlePhoneSignUp(e, {email, password})}}
-                disabled={!isPhoneNumberValid}
-
-            />
-
-            {/* <Button
-                title="Sign In With Phone Number"
-                onPress={(e)=> {handlePNSignIn(e, {email, phoneNumber, password})}}
-            />
-            <Button
-                title="Sign Up With Phone Number"
-                onPress={(e)=> {handlePNSignIn(e, {email, phoneNumber, password})}}
-            /> */}
+            <View>
+            <View
+            style={styles.buttonContainer}
+            >
+            <TouchableOpacity
+                onPress={(e)=> handleAuthQuery(e, signInUser)}
+                style={styles.button}
+                // disabled={!isPhoneNumberValid}
+            >
+            <Text style={styles.text}>Sign in</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={(e) => handleAuthQuery(e, phoneSignUpUser)}
+                style={styles.button}
+                //disabled={!isPhoneNumberValid}
+            >
+                <Text style={styles.text}>Sign Up</Text>
+            </TouchableOpacity>
+            </View>
+            </View>
         </View>);
 
 }
 
-const styles = StyleSheet.create({
-    textInput:{
-        borderRadius: '18',
-    }
+
+ const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#74342B',
+  },
+component: {
+    padding: 40,
+    backgroundColor: 'lightblue',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  textInput: {
+    borderRadius: '18',
+},
+    button: {
+        backgroundColor: '#8fa4d1',
+
+    },
+    text: {
+        color: 'white',
+    },
+    buttonContainer: {
+
+    },
+
 });

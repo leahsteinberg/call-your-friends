@@ -1,8 +1,17 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-export default function ContactEntry(props) {
-    console.log("propsss", props);
-  return (<View>
-    <Text>Entry for {props.contact.firstName} {props.contact.lastName}</Text>
+export default function ContactEntry({contact}) {
+  return (<View style={styles.container}>
+    <Text >{contact.firstName} {contact.lastName} </Text>
   </View>);
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'green',
+    flex: 1, // Ensures the View takes up the entire screen
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+})
