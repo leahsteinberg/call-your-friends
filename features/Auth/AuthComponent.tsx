@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
-import PhoneNumberInput from './PhoneNumberInput';
 
 
 export function AuthComponent()  {
@@ -15,6 +14,7 @@ export function AuthComponent()  {
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
+    console.log("URL IS ---", process.env.EXPO_PUBLIC_EXPRESS_URL)
 
     const handleAuthQuery = async (e, authQuery) => {
         const result = await authQuery({email, password, phoneNumber}).unwrap();
@@ -52,7 +52,7 @@ export function AuthComponent()  {
                 style={styles.textInput}
                 onChangeText={(text)=> setEmail(text)}
             />
-            <PhoneNumberInput onDataChange={setPhoneNumber}/>
+            {/* <PhoneNumberInput onDataChange={setPhoneNumber}/> */}
             <TextInput
                 placeholder="Password"
                 style={styles.textInput}
@@ -85,24 +85,29 @@ export function AuthComponent()  {
 
 
  const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#74342B',
-  },
-component: {
-    padding: 40,
-    backgroundColor: 'lightblue',
-    alignSelf: 'stretch',
-    alignItems: 'center',
-  },
-  textInput: {
-    borderRadius: '18',
-},
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        // align
+        backgroundColor: '#D1D6BD',
+    },
+    component: {
+        padding: 40,
+        backgroundColor: '#5d6532',
+        alignSelf: 'stretch',
+        alignItems: 'center',
+    },
+    textInput: {
+        borderRadius: '18',
+    },
     button: {
         backgroundColor: '#8fa4d1',
-
+        paddingTop: '15px',
+        paddingBottom: '15px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        margin: '10px',
     },
     text: {
         color: 'white',

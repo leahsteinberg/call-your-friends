@@ -13,6 +13,8 @@ export default function LogIn() {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignContent: 'center',
   },
 });
 

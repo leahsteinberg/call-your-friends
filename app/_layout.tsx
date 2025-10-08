@@ -4,7 +4,8 @@ import { store } from './store';
 
 
 const InitialLayout = () => {
-  const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
+ const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
+// const isAuthenticated = true;
   return (
    <Stack>
         <Stack.Protected guard={isAuthenticated}>

@@ -1,21 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
   
 export const contactsApi = createApi({
-    reducerPath: 'contacts',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+    reducerPath: 'contactsApi',
+    baseQuery: fetchBaseQuery({ baseUrl: `http://${process.env.EXPO_PUBLIC_EXPRESS_URL}:3000` }),
     endpoints: (builder) => ({
-    addContact: builder.mutation({
-        query: (credentials) => ({
-        url: '/api/addContacts',
-        method: 'POST',
-        body: {
-            entry: 'hi there!!!',
-        }, 
-        }),
+        createInvite: builder.mutation({
+            query: ({userFromId, userToPhoneNumber}) => ({
+                url: '/api/create-invite',
+                method: 'POST',
+                body: { userFromId, userToPhoneNumber },
+            })
+        })
     })
-   })
-  });
+});
 
-const {useAddContactMutation} = contactsApi;
+const {useCreateInviteMutation} = contactsApi;
 
-export { useAddContactMutation };
+export { useCreateInviteMutation };

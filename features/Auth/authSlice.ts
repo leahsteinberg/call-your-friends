@@ -16,12 +16,13 @@ const initialState = {
     error: null,
 };
 
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
         setLogInCredentials: (state, action) => {
-            console.log("LOG IN CREDENTIALS", {action});
+            console.log("LOG IN CREDENTIALS", {action}, action.payload.user);
             state.status = 'successful';
             state.isAuthenticated = true;
             state.userToken = action.payload.userToken;
