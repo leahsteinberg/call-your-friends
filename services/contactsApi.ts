@@ -1,8 +1,9 @@
+import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-  
+
 export const contactsApi = createApi({
     reducerPath: 'contactsApi',
-    baseQuery: fetchBaseQuery({ baseUrl: `http://${process.env.EXPO_PUBLIC_EXPRESS_URL}:3000` }),
+    baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
     endpoints: (builder) => ({
         createInvite: builder.mutation({
             query: ({userFromId, userToPhoneNumber}) => ({
@@ -10,10 +11,18 @@ export const contactsApi = createApi({
                 method: 'POST',
                 body: { userFromId, userToPhoneNumber },
             })
-        })
+        }),
+        acceptInvite: builder.mutation({
+            query: ({token, userToPhoneNumber}) => ({
+                url: '/api/accept-invite',
+                method: 'POST',
+                body: { token, userToPhoneNumber },
+            })
+        }),
     })
 });
 
-const {useCreateInviteMutation} = contactsApi;
+const {useCreateInviteMutation, useAcceptInviteMutation} = contactsApi;
 
-export { useCreateInviteMutation };
+export { useAcceptInviteMutation, useCreateInviteMutation };
+

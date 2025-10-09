@@ -1,7 +1,9 @@
+import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
   export const authApi = createApi({
       reducerPath: 'authApi',
-      baseQuery: fetchBaseQuery({ baseUrl: `http://${process.env.EXPO_PUBLIC_EXPRESS_URL}:3000` }),
+      baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
       endpoints: (builder) => ({
         postSignup: builder.mutation({
           query: (credentials) => ({

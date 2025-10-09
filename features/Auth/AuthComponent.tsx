@@ -1,63 +1,38 @@
 import { usePostPhoneSignupMutation, usePostSignInMutation } from '@/services/authApi';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
+import { HOST_WITH_PORT } from '../../environment';
 import { setLogInCredentials } from './authSlice';
+import EmailAndPassword from './EmailAndPassword';
+import PhoneNumberInput from './PhoneNumberInput';
+import PhoneNumberValidity from './PhoneNumberValidity';
+
 
 
 export function AuthComponent()  {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false)
-    const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
-    console.log("URL IS ---", process.env.EXPO_PUBLIC_EXPRESS_URL)
-
+    
     const handleAuthQuery = async (e, authQuery) => {
         const result = await authQuery({email, password, phoneNumber}).unwrap();
         dispatch(setLogInCredentials({ token: result.token, user: result.user }))
     }
 
-    const renderPhoneNumberValid = () => {
-        setIsPhoneNumberValid(true);
-        return (<Text style={{backgroundColor: 'green'}}>Phone Number IS valid</Text>);
-    }
-    const renderPhoneNumberInvalid = () =>  {
-        setIsPhoneNumberValid(false);
-        return (<Text style={{backgroundColor: 'red'}}>Phone Number is NOT valid</Text>);
-    }
-    const renderPhoneNumberValidity = () => {
-        if (phoneNumber.length>0) {
-        const number = Number(phoneNumber)
-        if (number && phoneNumber.length === 10
-            && Number.isInteger(number) && number >= 0
-        ) {
-            return renderPhoneNumberValid();
-        }
-        return renderPhoneNumberInvalid();
-        }
-    }
-
     return (
         <View style={styles.container}>
             <Text>
-                This is the Sign In Page
+                {HOST_WITH_PORT}
             </Text>
-            {renderPhoneNumberValidity()}
-            <TextInput
-                placeholder="Email address"
-                style={styles.textInput}
-                onChangeText={(text)=> setEmail(text)}
-            />
-            {/* <PhoneNumberInput onDataChange={setPhoneNumber}/> */}
-            <TextInput
-                placeholder="Password"
-                style={styles.textInput}
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry
+            <PhoneNumberValidity phoneNumber={phoneNumber}/>
+            <PhoneNumberInput onDataChange={setPhoneNumber}/>
+            <EmailAndPassword
+                onDataChangeEmail={(text)=> setEmail(text)}
+                onDataChangePassword={(text) => setPassword(text)}
             />
             <View>
             <View
@@ -66,7 +41,7 @@ export function AuthComponent()  {
             <TouchableOpacity
                 onPress={(e)=> handleAuthQuery(e, signInUser)}
                 style={styles.button}
-                // disabled={!isPhoneNumberValid}
+                //disabled={!isPhoneNumberValid}
             >
             <Text style={styles.text}>Sign in</Text>
             </TouchableOpacity>
@@ -89,7 +64,6 @@ export function AuthComponent()  {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // align
         backgroundColor: '#D1D6BD',
     },
     component: {

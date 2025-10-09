@@ -1,11 +1,12 @@
-import { useCreateInviteMutation } from "@/services/contactsApi";
+import { DEV_FLAG } from "@/environment";
+import { useAcceptInviteMutation, useCreateInviteMutation } from "@/services/contactsApi";
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import ContactEntry from "./ContactEntryComponent";
 import { addContact } from "./contactsSlice";
-import { buildFriendUser, fakeContact, pickPhoneNumber } from "./contactsUtils";
+import { createSmsUrl, fakeContact, processContact } from "./contactsUtils";
 
 
 export default function ContactsComponent(){
@@ -14,6 +15,7 @@ export default function ContactsComponent(){
     const contacts = useSelector((state)=> state.contacts.friends);
     const userFromId = useSelector((state) => state.auth.user.id);
     const [usePostCreateInvite] = useCreateInviteMutation();
+    const [usePostAcceptInvite] = useAcceptInviteMutation();
     useEffect(()=> {
         checkPermission()
     }, [])
@@ -27,9 +29,8 @@ export default function ContactsComponent(){
         }
     }
 
-    const createSMSInvite = async (token, phoneNumber) => {
-        const message = `This is your invite to join me on Call Your Friends, an app to make planning to talk easier! Here is your link token: ${token}`
-        const url = `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
+    const openSMSInvite = async (token, phoneNumber) => {
+        const url = createSmsUrl(token, phoneNumber)
         try {
             const supported = await Linking.canOpenURL(url);
             if (supported) {
@@ -42,18 +43,15 @@ export default function ContactsComponent(){
         }
     }
     const selectContact = async (chosenContact) => {
-        const chosenPhone = pickPhoneNumber(chosenContact?.phoneNumbers);
-        const friendUser = buildFriendUser(chosenContact, chosenPhone);
+        const friendUser = processContact(chosenContact)
         const userToPhoneNumber = friendUser.digits
         dispatch(addContact(friendUser));
             // TODO - make so you cannot re-add the same person in invite
             // need state for who you've invited - show them as such, and if user selects them,
             // inform that they have already chosen them.
         const response = await usePostCreateInvite({userFromId, userToPhoneNumber}).unwrap()
-        await createSMSInvite(response.token, userToPhoneNumber)
+        await openSMSInvite(response.token, userToPhoneNumber)
     }
-
-
 
     const openContactsPicker = async () => {
         try {
@@ -62,7 +60,6 @@ export default function ContactsComponent(){
                 const chosenContact = await Contacts.presentContactPickerAsync();
                 console.log("chosen Contact ", chosenContact);
                 await selectContact(chosenContact);
-                
             }
         }
         catch {
@@ -87,6 +84,16 @@ export default function ContactsComponent(){
         );
     }
 
+    const devFakeAcceptInviteButton = () => {
+    return (
+    <View >
+        <TouchableOpacity onPress={() => usePostAcceptInvite({token: '54183880-71dc-4b5d-815c-08a7292c4e64', userToPhoneNumber: '+16193015075'})}>
+            <Text>Accept Fake invite. Based on existing invite.</Text>
+        </TouchableOpacity>
+    </View>
+    );
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.component}>
@@ -94,7 +101,8 @@ export default function ContactsComponent(){
                     <Text>Add a friend you want.</Text>
                 </TouchableOpacity>
             </View>
-            {(process.env.EXPO_PUBLIC_DEV_FLAG === "true") && devFakeFriendButton()}
+            {DEV_FLAG && devFakeFriendButton()}
+            {DEV_FLAG && devFakeAcceptInviteButton()}
             <View style={styles.listContainer}>
                 <FlatList
                     data={contacts}

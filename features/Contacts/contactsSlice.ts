@@ -14,12 +14,11 @@ export const contactsSlice = createSlice({
     initialState,
     reducers: {
         addContact: (state, action) => {
-            console.log("in add contact!!");
+            console.log("in add contact!!")
             if (!state.friends.find((friend) => friend.digits === action.payload.digits)){
                 state.friends.push(action.payload);
             }
         },
-
     },
 })
 

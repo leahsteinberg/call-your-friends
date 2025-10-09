@@ -13,6 +13,7 @@ const InitialLayout = () => {
         </Stack.Protected>
         <Stack.Protected guard={!isAuthenticated}>
             <Stack.Screen name="index" options={{headerShown: false}}/>
+            <Stack.Screen name="invite" options={{headerShown: false}}/>
         </Stack.Protected>
    </Stack>
     );
