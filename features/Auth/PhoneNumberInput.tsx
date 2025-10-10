@@ -4,16 +4,17 @@ import { StyleSheet } from 'react-native';
 import { TextInput, View } from 'react-native';
 
 
-export default function PhoneNumberInput({onDataChange}) {
+export default function PhoneNumberInput({onDataChange, phoneNumber}) {
     return (
         <View style={styles.container}>
             <View
             style={styles.component}>
                 <TextInput
-                    placeholder="Phone Number (component)"
+                    placeholder="Phone Number"
                     style={styles.textInput}
                     onChangeText={(text)=> onDataChange(text)}
                     keyboardType={'numeric'}
+                    value={phoneNumber}
                 />
             </View>
         </View>

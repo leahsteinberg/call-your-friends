@@ -18,6 +18,7 @@ export default function ContactsComponent(){
     const [usePostAcceptInvite] = useAcceptInviteMutation();
     useEffect(()=> {
         checkPermission()
+        
     }, [])
 
     const checkPermission = async () => {

@@ -4,23 +4,25 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { HOST_WITH_PORT } from '../../environment';
 import { setLogInCredentials } from './authSlice';
-import EmailAndPassword from './EmailAndPassword';
 import PhoneNumberInput from './PhoneNumberInput';
 import PhoneNumberValidity from './PhoneNumberValidity';
-
-
+import UserDataInput from './UserDataInput';
 
 export function AuthComponent()  {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
     
     const handleAuthQuery = async (e, authQuery) => {
-        const result = await authQuery({email, password, phoneNumber}).unwrap();
-        dispatch(setLogInCredentials({ token: result.token, user: result.user }))
+        const result = await authQuery({email, password, phoneNumber, name}).unwrap();
+        console.log("handle auth query ", result)
+        if (result) {
+            dispatch(setLogInCredentials({ token: result.token, user: result.user }))
+        }
     }
 
     return (
@@ -30,32 +32,31 @@ export function AuthComponent()  {
             </Text>
             <PhoneNumberValidity phoneNumber={phoneNumber}/>
             <PhoneNumberInput onDataChange={setPhoneNumber}/>
-            <EmailAndPassword
+            <UserDataInput
                 onDataChangeEmail={(text)=> setEmail(text)}
                 onDataChangePassword={(text) => setPassword(text)}
+                onDataChangeName={(text) => setName(text)}
+                //TO DO - deal with showing name - sign IN vs sign UP
             />
-            <View>
             <View
             style={styles.buttonContainer}
             >
-            <TouchableOpacity
-                onPress={(e)=> handleAuthQuery(e, signInUser)}
-                style={styles.button}
-                //disabled={!isPhoneNumberValid}
-            >
-            <Text style={styles.text}>Sign in</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={(e) => handleAuthQuery(e, phoneSignUpUser)}
-                style={styles.button}
-                //disabled={!isPhoneNumberValid}
-            >
-                <Text style={styles.text}>Sign Up</Text>
-            </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                    onPress={(e)=> handleAuthQuery(e, signInUser)}
+                    style={styles.button}
+                    //disabled={!isPhoneNumberValid}
+                >
+                <Text style={styles.text}>Sign in</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={(e) => handleAuthQuery(e, phoneSignUpUser)}
+                    style={styles.button}
+                    //disabled={!isPhoneNumberValid}
+                >
+                    <Text style={styles.text}>Sign Up</Text>
+                </TouchableOpacity>
             </View>
         </View>);
-
 }
 
 
@@ -87,7 +88,5 @@ export function AuthComponent()  {
         color: 'white',
     },
     buttonContainer: {
-
     },
-
 });

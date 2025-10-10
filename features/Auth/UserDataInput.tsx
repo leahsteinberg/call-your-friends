@@ -2,11 +2,18 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 
-export default function EmailAndPassword({onDataChangeEmail, onDataChangePassword}) {
+export default function UserDataInput({onDataChangeEmail, onDataChangePassword, onDataChangeName, showName}) {
     return (
         <View style={styles.container}>
             <View
             style={styles.component}>
+                {showName &&
+                    <TextInput
+                        placeholder="Your Name"
+                        style={styles.textInput}
+                        onChangeText={(text)=> onDataChangeName(text)}
+                    />
+                }
                 <TextInput
                     placeholder="Email address"
                     style={styles.textInput}

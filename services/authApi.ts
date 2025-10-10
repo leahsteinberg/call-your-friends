@@ -5,16 +5,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
       reducerPath: 'authApi',
       baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
       endpoints: (builder) => ({
-        postSignup: builder.mutation({
-          query: (credentials) => ({
-            url: '/api/signup',
-            method: 'POST',
-            body: {
-              rememberMe: true,
-              ...credentials
-            }, 
-          }),
-        }),
         postPhoneSignup: builder.mutation({
           query: (credentials) => {
               return {
@@ -39,7 +29,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
       })
   });
 
-const {usePostSignInMutation, usePostSignupMutation, usePostPhoneSignupMutation} = authApi;
+const {usePostSignInMutation, usePostPhoneSignupMutation} = authApi;
 
-export { usePostPhoneSignupMutation, usePostSignInMutation, usePostSignupMutation };
+export { usePostPhoneSignupMutation, usePostSignInMutation };
 

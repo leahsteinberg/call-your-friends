@@ -1,56 +1,94 @@
+import { useAcceptInviteMutation, useUserByPhoneMutation } from '@/services/contactsApi';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { HOST_WITH_PORT } from '../../environment';
-import EmailAndPassword from '../Auth/EmailAndPassword';
+import { useDispatch } from 'react-redux';
 import PhoneNumberInput from '../Auth/PhoneNumberInput';
 import PhoneNumberValidity from '../Auth/PhoneNumberValidity';
-
+import UserDataInput from '../Auth/UserDataInput';
+import { setLogInCredentials } from '../Auth/authSlice';
 
 export default function InviteAccept() {
+    const dispatch = useDispatch();
+    const params = useLocalSearchParams();
+    const {token, userToPhoneNumber} = params;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    let params = useLocalSearchParams();// TODO - change to const
-    console.log("actual search params:", params);
-    const {token, userToPhoneNumber} = params;
+    const [name, setName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState(userToPhoneNumber || '');
+    const [userToExists, setUserToExists] = useState(false);
+    const [findUserByPhone] = useUserByPhoneMutation();
+    const [acceptInvite] = useAcceptInviteMutation();
 
     useEffect(()=> {
-        // do a "get Invite" network Call in order to show who sent you the invite?
-        // also to figure out if this user already exists or not
-        // right now the code assumes the user does NOT.  
+        (async () => {
+            if (userToPhoneNumber) {
+                const user = await findUserByPhone({userPhoneNumber: userToPhoneNumber}).unwrap();
+                console.log("user is ---", user);
+                setUserToExists(!!user);
+            }
+        }
+        )();
     }, [])
+        // do a "get Invite" network call in order to show who sent you the invite?
 
+    const acceptInviteNewUser = async () => {
+        console.log("pressed accept invite new user")
+        const result = await acceptInvite({token, email, phoneNumber, name, password});
+        //TODO more robust error handling
+        console.log("result from accept new user", result);
+        if (result) {
+            dispatch(setLogInCredentials({ token: result.data.token, user: result.data.user }))
+            //TODO - figure out why I have to do result.data here but just result
+            // in the regular sign up page...?
 
+        }
+        
+    }
+    const renderUserAuthButton = (text, authQuery) => {
+        console.log("authquery", authQuery)
+        return (
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={(e) => {authQuery()}}
+                    style={styles.button}
+                    //disabled={!isPhoneNumberValid}
+                >
+                    <Text style={styles.text}>{text}</Text>
+                </TouchableOpacity>
+            </View>
+            );
+    }
+
+    const userAuthButton = () => {
+        return userToExists ?
+        renderUserAuthButton("Sign In & Accept Friend", () => {})
+        : renderUserAuthButton("Sign Up & Accept Friend", acceptInviteNewUser)
+    }
+    
     return (
         <View style={styles.container}>
             <Text>
-                This is the Invite Accept Component
-                You have been invited to Call Your Friends
+                This is the Invite Accept Component.
+                You have been invited to Call Your Friends.
                 Is this the number you would like to use? {userToPhoneNumber}
-                {HOST_WITH_PORT}
+                user Exists? {String(userToExists)}
             </Text>
             <PhoneNumberValidity phoneNumber={phoneNumber}/>
-            <PhoneNumberInput onDataChange={setPhoneNumber}/>
-            <EmailAndPassword
+            <PhoneNumberInput
+                onDataChange={setPhoneNumber}
+                phoneNumber={phoneNumber}
+            />
+            <UserDataInput
                 onDataChangeEmail={(text)=> setEmail(text)}
                 onDataChangePassword={(text) => setPassword(text)}
+                onDataChangeName={(text) => setName(text)}
+                showName={!userToExists}
             />
-            <View
-                style={styles.buttonContainer}
-            >
-            <TouchableOpacity
-                onPress={(e) => {}}
-                style={styles.button}
-                //disabled={!isPhoneNumberValid}
-            >
-                <Text style={styles.text}>Sign Up & Accept Friend</Text>
-            </TouchableOpacity>
-            </View>
+            {userAuthButton()}
         </View>        
     );
 }
-
 
  const styles = StyleSheet.create({
     container: {

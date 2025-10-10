@@ -13,16 +13,30 @@ export const contactsApi = createApi({
             })
         }),
         acceptInvite: builder.mutation({
-            query: ({token, userToPhoneNumber}) => ({
-                url: '/api/accept-invite',
+            query: ({token, email, phoneNumber, name, password}) => ({
+                url: '/api/sign-up-accept-invite',
                 method: 'POST',
-                body: { token, userToPhoneNumber },
+                body: { token, email, phoneNumber, name, password },
             })
         }),
+        userByPhone: builder.mutation({
+            query: ({userPhoneNumber}) => ({
+                url: '/api/user-by-phone',
+                method: 'POST',
+                body: { userPhoneNumber },
+            })
+        }),
+        getFriends: builder.mutation({
+            query: ({id}) => ({
+                url: '/api/get-friends',
+                method: 'POST',
+                body: { id },
+            })
+        })
     })
 });
 
-const {useCreateInviteMutation, useAcceptInviteMutation} = contactsApi;
+const {useCreateInviteMutation, useAcceptInviteMutation, useUserByPhoneMutation} = contactsApi;
 
-export { useAcceptInviteMutation, useCreateInviteMutation };
+export { useAcceptInviteMutation, useCreateInviteMutation, useUserByPhoneMutation };
 
