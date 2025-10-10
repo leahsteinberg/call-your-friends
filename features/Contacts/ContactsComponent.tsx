@@ -8,7 +8,7 @@ import ContactEntry from "./ContactEntryComponent";
 import { addContact } from "./contactsSlice";
 import { createSmsUrl, fakeContact, processContact } from "./contactsUtils";
 import Friends from "./Friends";
-
+import InvitePhoneNumber from "./InvitePhoneNumber";
 
 
 export default function ContactsComponent(){
@@ -66,6 +66,12 @@ export default function ContactsComponent(){
         await openSMSInvite(response.token, userToPhoneNumber)
     }
 
+    const sendInviteToPhoneNumber = async (userToPhoneNumber) => {
+        console.log("hi send invite", userToPhoneNumber)
+        const response = await usePostCreateInvite({userFromId, userToPhoneNumber})
+        console.log("in sendInviteToPhoneNumber", response);
+    }
+
     const openContactsPicker = async () => {
         try {
             const {status} = await Contacts.requestPermissionsAsync();
@@ -109,17 +115,19 @@ export default function ContactsComponent(){
 
     return (
         <View style={styles.container}>
-            <View style={styles.component}>
+            { DEV_FLAG &&
+                <InvitePhoneNumber
+                onPress={(e, phoneNumber)=> {sendInviteToPhoneNumber(phoneNumber)}}
+                />
+            }
+            <View style={{backgroundColor: 'lightblue'}}>
                 <TouchableOpacity onPress={openContactsPicker}>
-                    <Text>Add a friend you want.</Text>
+                    <Text>Add a friend you want from your contacts.</Text>
                 </TouchableOpacity>
             </View>
             <Friends
                 friends={friends}
             />
-            
-            {DEV_FLAG && devFakeFriendButton()}
-            {DEV_FLAG && devFakeAcceptInviteButton()}
             <View style={styles.listContainer}>
                 <FlatList
                     data={contacts}
