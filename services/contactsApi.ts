@@ -36,7 +36,7 @@ export const contactsApi = createApi({
     })
 });
 
-const {useCreateInviteMutation, useAcceptInviteMutation, useUserByPhoneMutation} = contactsApi;
+const { useCreateInviteMutation, useAcceptInviteMutation, useUserByPhoneMutation, useGetFriendsMutation} = contactsApi;
 
-export { useAcceptInviteMutation, useCreateInviteMutation, useUserByPhoneMutation };
+export { useAcceptInviteMutation, useCreateInviteMutation, useGetFriendsMutation, useUserByPhoneMutation };
 

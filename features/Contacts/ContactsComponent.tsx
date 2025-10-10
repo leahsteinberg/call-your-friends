@@ -1,5 +1,5 @@
 import { DEV_FLAG } from "@/environment";
-import { useAcceptInviteMutation, useCreateInviteMutation } from "@/services/contactsApi";
+import { useAcceptInviteMutation, useCreateInviteMutation, useGetFriendsMutation } from "@/services/contactsApi";
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -7,19 +7,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import ContactEntry from "./ContactEntryComponent";
 import { addContact } from "./contactsSlice";
 import { createSmsUrl, fakeContact, processContact } from "./contactsUtils";
+import Friends from "./Friends";
+
 
 
 export default function ContactsComponent(){
     const [permissionStatus, setPermissionStatus] = useState(false);
     const dispatch = useDispatch();
     const contacts = useSelector((state)=> state.contacts.friends);
+    const [friends, setFriends] = useState([]);
     const userFromId = useSelector((state) => state.auth.user.id);
     const [usePostCreateInvite] = useCreateInviteMutation();
     const [usePostAcceptInvite] = useAcceptInviteMutation();
+    const [getFriends] = useGetFriendsMutation();
+
     useEffect(()=> {
         checkPermission()
+        handleGetFriends();
         
     }, [])
+
+    const handleGetFriends = async () => {
+       const friendsResult = await getFriends({id: userFromId});
+       console.log("in handle get friends, ", friendsResult);
+       setFriends(friendsResult.data);
+    }
 
     const checkPermission = async () => {
         const hasPermission = await Contacts.getPermissionsAsync();
@@ -102,6 +114,10 @@ export default function ContactsComponent(){
                     <Text>Add a friend you want.</Text>
                 </TouchableOpacity>
             </View>
+            <Friends
+                friends={friends}
+            />
+            
             {DEV_FLAG && devFakeFriendButton()}
             {DEV_FLAG && devFakeAcceptInviteButton()}
             <View style={styles.listContainer}>
