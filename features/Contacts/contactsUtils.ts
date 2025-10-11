@@ -6,13 +6,13 @@ export const pickPhoneNumber = (phoneNumberInfos) =>  {
     return phoneNumber ? phoneNumber : phoneNumberInfos[0];
 }
 
-export const buildFriendUser = (user, phoneNumber) => {
+export const buildFriendUser = (user, phoneNumberObj) => {
     const { firstName, lastName } = user;
-    console.log("building friend User", phoneNumber)
+    console.log("building friend User", phoneNumberObj)
     return {
         firstName,
         lastName,
-        ...phoneNumber,
+        ...phoneNumberObj,
     }
 }
 

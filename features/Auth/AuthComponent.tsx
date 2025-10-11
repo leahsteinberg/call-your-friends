@@ -1,8 +1,8 @@
 import { usePostPhoneSignupMutation, usePostSignInMutation } from '@/services/authApi';
+import { LIGHT_GREEN } from '@/styles/styles';
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { HOST_WITH_PORT } from '../../environment';
 import { setLogInCredentials } from './authSlice';
 import PhoneNumberInput from './PhoneNumberInput';
 import PhoneNumberValidity from './PhoneNumberValidity';
@@ -27,8 +27,8 @@ export function AuthComponent()  {
 
     return (
         <View style={styles.container}>
-            <Text>
-                {HOST_WITH_PORT}
+            <Text style={{fontFamily: 'Catamaran', fontSize: 30}}>
+                Call Your Friends
             </Text>
             <PhoneNumberValidity phoneNumber={phoneNumber}/>
             <PhoneNumberInput onDataChange={setPhoneNumber}/>
@@ -65,7 +65,10 @@ export function AuthComponent()  {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#D1D6BD',
+        backgroundColor: LIGHT_GREEN,
+    },
+    title: {
+
     },
     component: {
         padding: 40,

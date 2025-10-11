@@ -16,6 +16,23 @@ const initialState = {
     error: null,
 };
 
+// const initialState = {
+//     isAuthenticated: true,
+//     userToken: "DiRdHlMHyL8Cp1kgm0onycsBacMeuG2g",
+//     user: {
+//         id: "DozxnwPNWuuhdHrINpeQvhtiJWmNJEGc",
+//         email: 'leahsteinberg1@gmail.com',
+//         name: '',
+//         image: null,
+//         emailVerified: false,
+//         createdAt: '',
+//         updatedAt: "2025-10-02T18:53:53.752Z",
+//     },
+//     status: 'idle',
+//     error: null,
+// };
+
+
 
 const authSlice = createSlice({
     name: 'auth',

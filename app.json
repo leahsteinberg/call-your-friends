@@ -11,7 +11,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.leahsteinberg.callyourfriends",
-      "associatedDomains": ["applink:call-your-friends.expo.app/"],
+      "associatedDomains": [
+        "applink:call-your-friends.expo.app/"
+      ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -50,11 +52,21 @@
         }
       ],
       [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Catamaran.otf",
+            "./assets/fonts/SantaAnaTRIAL-Medium.otf"
+          ]
+        }
+      ],
+      [
         "expo-contacts",
         {
           "contactsPermission": "Allow Call Your Friends to access your contacts."
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

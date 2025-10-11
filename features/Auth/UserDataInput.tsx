@@ -5,8 +5,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 export default function UserDataInput({onDataChangeEmail, onDataChangePassword, onDataChangeName, showName}) {
     return (
         <View style={styles.container}>
-            <View
-            style={styles.component}>
+            <View style={styles.component}>
                 {showName &&
                     <TextInput
                         placeholder="Your Name"
