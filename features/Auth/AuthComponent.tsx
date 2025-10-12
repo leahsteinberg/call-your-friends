@@ -19,7 +19,6 @@ export function AuthComponent()  {
     
     const handleAuthQuery = async (e, authQuery) => {
         const result = await authQuery({email, password, phoneNumber, name}).unwrap();
-        console.log("handle auth query ", result)
         if (result) {
             dispatch(setLogInCredentials({ token: result.token, user: result.user }))
         }
@@ -33,9 +32,9 @@ export function AuthComponent()  {
             <PhoneNumberValidity phoneNumber={phoneNumber}/>
             <PhoneNumberInput onDataChange={setPhoneNumber}/>
             <UserDataInput
-                onDataChangeEmail={(text)=> setEmail(text)}
-                onDataChangePassword={(text) => setPassword(text)}
-                onDataChangeName={(text) => setName(text)}
+                onChangeEmail={(text)=> setEmail(text)}
+                onChangePassword={(text) => setPassword(text)}
+                onChangeName={(text) => setName(text)}
                 //TO DO - deal with showing name - sign IN vs sign UP
             />
             <View
@@ -78,14 +77,17 @@ export function AuthComponent()  {
     },
     textInput: {
         borderRadius: '18',
+                borderRadius: 3,
+
     },
     button: {
         backgroundColor: '#8fa4d1',
-        paddingTop: '15px',
-        paddingBottom: '15px',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        margin: '10px',
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 10,
+        paddingRight: 10,
+        margin: 10,
+        borderRadius: 3,
     },
     text: {
         color: 'white',

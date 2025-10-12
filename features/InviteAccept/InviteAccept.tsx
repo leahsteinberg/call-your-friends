@@ -80,9 +80,9 @@ export default function InviteAccept() {
                 phoneNumber={phoneNumber}
             />
             <UserDataInput
-                onDataChangeEmail={(text)=> setEmail(text)}
-                onDataChangePassword={(text) => setPassword(text)}
-                onDataChangeName={(text) => setName(text)}
+                onChangeEmail={(text)=> setEmail(text)}
+                onChangePassword={(text) => setPassword(text)}
+                onChangeName={(text) => setName(text)}
                 showName={!userToExists}
             />
             {userAuthButton()}

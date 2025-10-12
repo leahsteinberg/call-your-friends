@@ -46,6 +46,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     alignSelf: 'stretch',
     alignItems: 'center',
+            borderRadius: 3,
+
   },
     textInput:{
         borderRadius: '18',

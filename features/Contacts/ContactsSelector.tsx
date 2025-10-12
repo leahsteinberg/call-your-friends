@@ -1,10 +1,19 @@
+import { useCreateInviteMutation } from "@/services/contactsApi";
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from "./contactsSlice";
+import { createSmsUrl, processContact } from "./contactsUtils";
 
 
-export default function ContactsSelector({selectContact}){
+
+export default function ContactsSelector(){
     const [permissionStatus, setPermissionStatus] = useState(false);
+    const dispatch = useDispatch();
+    const [createInvite] = useCreateInviteMutation();
+    const userFromId = useSelector((state) => state.auth.user.id);
+
 
     useEffect(()=> {
         checkContactsPermission()            
@@ -29,6 +38,34 @@ export default function ContactsSelector({selectContact}){
         }
         catch {
             console.log("error in requesting permission");
+        }
+    }
+
+    const openSMSInvite = async (token, phoneNumber) => {
+        const url = createSmsUrl(token, phoneNumber)
+        try {
+            const supported = await Linking.canOpenURL(url);
+            if (supported) {
+            const result = await Linking.openURL(url);
+            } else {
+            Alert.alert('Error', 'SMS is not available on this device.');
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Could not open SMS composer.');
+        }
+    }
+
+    const selectContact = async (chosenContact) => {
+        const friendUser = processContact(chosenContact)
+        const userToPhoneNumber = friendUser.digits
+        console.log("selecting contact", {userFromId, userToPhoneNumber})
+        const response = await createInvite({userFromId, userToPhoneNumber}).unwrap()
+        console.log("select - response", response);
+        if (response) {
+            dispatch(addContact(friendUser));
+            await openSMSInvite(response.token, userToPhoneNumber)
+        } else {
+            console.log("error with response from create invite")
         }
     }
 

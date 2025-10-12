@@ -1,31 +1,30 @@
+import { LIGHT_GREEN } from '@/styles/styles';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 
-export default function UserDataInput({onDataChangeEmail, onDataChangePassword, onDataChangeName, showName}) {
+export default function UserDataInput({onChangeEmail, onChangePassword, onChangeName, showName}) {
     return (
-        <View style={styles.container}>
             <View style={styles.component}>
                 {showName &&
                     <TextInput
                         placeholder="Your Name"
                         style={styles.textInput}
-                        onChangeText={(text)=> onDataChangeName(text)}
+                        onChangeText={(text)=> onChangeName(text)}
                     />
                 }
                 <TextInput
                     placeholder="Email address"
                     style={styles.textInput}
-                    onChangeText={(text)=> onDataChangeEmail(text)}
+                    onChangeText={(text)=> onChangeEmail(text)}
                 />
                 <TextInput
                     placeholder="Password"
                     style={styles.textInput}
-                    onChangeText={(text)=> onDataChangePassword(text)}
+                    onChangeText={(text)=> onChangePassword(text)}
                     secureTextEntry
                 />
             </View>
-        </View>
     );
 }
 
@@ -35,14 +34,19 @@ const styles = StyleSheet.create({
     // flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
+
   },
-    component: {
+  component: {
     padding: 10,
     backgroundColor: 'lightblue',
-    alignSelf: 'stretch',
-    alignItems: 'center',
+    //alignItems: 'center',
+    borderRadius: 3,
+    margin: 10,
   },
     textInput:{
-        borderRadius: '18',
+        borderRadius: 3,
+        margin: 10,
+        padding: 10,
+        backgroundColor: LIGHT_GREEN,
     },
 });

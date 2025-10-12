@@ -1,28 +1,21 @@
 import { SectionList, Text, View } from "react-native";
-import ContactEntry from "./ContactEntryComponent";
 import Friend from "./Friend";
+import InvitedContact from "./InvitedContact";
 
 export default function ContactsList ({friends, invitesOut}){
 
-    const invitesOutEntries = (contact) => {
-        return (
-        <View key={contact.index} >
-             <ContactEntry contact={contact.item}/>
-        </View>
-        );
-    }
     console.log("Invites out", invitesOut)
 
     const sectionListData = [
         {
             title: "Invites You've Sent",
             data: invitesOut,
-            renderItem: invitesOutEntries
+            renderItem: (contact) => (<InvitedContact contact={contact.item}/>)
         },
         {
             title: "Your Friends",
             data: friends,
-            renderItem: (friend) => (<Friend item={friend.item} />)
+            renderItem: (friend) => (<Friend item={friend.item}/>)
         }
     ];
 
@@ -32,7 +25,7 @@ export default function ContactsList ({friends, invitesOut}){
                 sections={sectionListData}
                 keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section: {title}}) =>
-                <Text style={{fontWeight: 'bold'}}>{title}</Text>
+                    <Text style={{fontWeight: 'bold'}}>{title}</Text>
                 }
             />
         </View>);

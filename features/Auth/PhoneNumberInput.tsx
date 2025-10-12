@@ -29,10 +29,12 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
   },
     component: {
-    padding: 10,
-    backgroundColor: 'lightblue',
-    alignSelf: 'stretch',
-    alignItems: 'center',
+        padding: 10,
+        backgroundColor: 'lightblue',
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        borderRadius: 3,
+        margin: 10,
   },
     textInput:{
         borderRadius: '18',

@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function ContactEntry({contact}) {
+export default function InvitedContact({contact}) {
   return (
-  <View style={styles.container}>
-    <Text >{contact.firstName} {contact.lastName} </Text>
-  </View>);
+    <View style={styles.container} key={contact.index}>
+      <Text >{contact.firstName} {contact.lastName} </Text>
+    </View>);
 }
 
 
