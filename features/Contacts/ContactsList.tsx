@@ -2,15 +2,12 @@ import { SectionList, Text, View } from "react-native";
 import Friend from "./Friend";
 import InvitedContact from "./InvitedContact";
 
-export default function ContactsList ({friends, invitesOut}){
-
-    console.log("Invites out", invitesOut)
-
+export default function ContactsList ({friends, sentInvites}){
     const sectionListData = [
         {
             title: "Invites You've Sent",
-            data: invitesOut,
-            renderItem: (contact) => (<InvitedContact contact={contact.item}/>)
+            data: sentInvites,
+            renderItem: (sentInvite) => (<InvitedContact contact={sentInvite.item}/>)
         },
         {
             title: "Your Friends",

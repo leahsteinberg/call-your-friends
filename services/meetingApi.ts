@@ -12,10 +12,17 @@ export const meetingApi = createApi({
                 body: { userFromId },
             })
         }),
+        getMeetings: builder.mutation({
+            query: ({userFromId }) => ({
+                url: '/api/get-meetings',
+                method: 'POST',
+                body: { userFromId },
+            })
+        }),
     })
 });
 
-const { useCreateMeetingMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsMutation } = meetingApi;
 
-export { useCreateMeetingMutation };
+export { useCreateMeetingMutation, useGetMeetingsMutation };
 

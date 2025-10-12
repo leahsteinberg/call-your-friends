@@ -3,10 +3,9 @@ import { StyleSheet, Text, View } from "react-native";
 export default function InvitedContact({contact}) {
   return (
     <View style={styles.container} key={contact.index}>
-      <Text >{contact.firstName} {contact.lastName} </Text>
+      <Text >{contact.userToPhoneNumber} </Text>
     </View>);
 }
-
 
 const styles = StyleSheet.create({
   container: {

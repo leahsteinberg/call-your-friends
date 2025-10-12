@@ -5,23 +5,22 @@ export interface ContactsState {
 }
 
 const initialState = {
-    friends: []
-    // friends: [{phoneNumber: '8185218419', lastName: 'Steinberg', firstName: 'Leah'}]
+    sentInvites: [],
 }
 
 export const contactsSlice = createSlice({
     name: 'contacts',
     initialState,
     reducers: {
-        addContact: (state, action) => {
-            console.log("in add contact!!")
-            if (!state.friends.find((friend) => friend.digits === action.payload.digits)){
-                state.friends.push(action.payload);
+        addSentInvite: (state, action) => {
+            if (!state.sentInvites.find((invited) => invited.userToPhoneNumber === action.payload.userToPhoneNumber)){
+                state.sentInvites.push(action.payload);
             }
         },
-    },
-})
-
-export const { addContact } = contactsSlice.actions;
+        setSentInvites: (state, action) => {
+            state.sentInvites = action.payload
+        },
+    }})  
+export const { addSentInvite, setSentInvites } = contactsSlice.actions;
 
 export default contactsSlice.reducer;

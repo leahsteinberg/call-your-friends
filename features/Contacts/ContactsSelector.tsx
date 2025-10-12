@@ -3,7 +3,7 @@ import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from "./contactsSlice";
+import { addSentInvite } from "./contactsSlice";
 import { createSmsUrl, processContact } from "./contactsUtils";
 
 
@@ -14,7 +14,7 @@ export default function ContactsSelector(){
     const [createInvite] = useCreateInviteMutation();
     const userFromId = useSelector((state) => state.auth.user.id);
 
-
+    console.log("Contacts Selector")
     useEffect(()=> {
         checkContactsPermission()            
     }, [])
@@ -58,11 +58,9 @@ export default function ContactsSelector(){
     const selectContact = async (chosenContact) => {
         const friendUser = processContact(chosenContact)
         const userToPhoneNumber = friendUser.digits
-        console.log("selecting contact", {userFromId, userToPhoneNumber})
         const response = await createInvite({userFromId, userToPhoneNumber}).unwrap()
-        console.log("select - response", response);
         if (response) {
-            dispatch(addContact(friendUser));
+            dispatch(addSentInvite(friendUser));
             await openSMSInvite(response.token, userToPhoneNumber)
         } else {
             console.log("error with response from create invite")

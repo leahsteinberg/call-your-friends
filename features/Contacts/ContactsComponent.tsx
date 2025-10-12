@@ -1,19 +1,35 @@
 import { DEV_FLAG } from "@/environment";
-import { useGetFriendsMutation } from "@/services/contactsApi";
+import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
+import { setSentInvites } from "./contactsSlice";
 
 export default function ContactsComponent(){
-    const contacts = useSelector((state)=> state.contacts.friends);
-    const [friends, setFriends] = useState([]);
+    const dispatch = useDispatch();
     const userFromId = useSelector((state) => state.auth.user.id);
+
+    const sentInvites = useSelector((state)=> state.contacts.sentInvites);
+    const [getSentInvites] = useGetSentInvitesMutation();
+
+    const [friends, setFriends] = useState([]);
     const [getFriends] = useGetFriendsMutation();
 
-    useEffect(()=> { handleGetFriends() }, [])
+    useEffect(()=> { 
+        handleGetFriends()
+        handleGetSentInvites()
+    
+    }, [])
+
+    const handleGetSentInvites = async () => {
+        const sentInvitesResult = await getSentInvites({id: userFromId});
+        if (sentInvitesResult) {
+            dispatch(setSentInvites(sentInvitesResult.data))
+        }
+    }
 
     const handleGetFriends = async () => {
        const friendsResult = await getFriends({id: userFromId});
@@ -28,7 +44,7 @@ export default function ContactsComponent(){
             <View style={styles.component}>
                 <ContactsList
                     friends={friends}
-                    invitesOut={contacts}
+                    sentInvites={sentInvites}
                 />
             </View>
             { DEV_FLAG &&
@@ -41,9 +57,9 @@ export default function ContactsComponent(){
 }
 
 const styles = StyleSheet.create({
-  container: {
-    height: 500,
-    backgroundColor: 'lightpink',
+    container: {
+        height: 500,
+        backgroundColor: 'lightpink',
     },
     component: {
         flex: 1,

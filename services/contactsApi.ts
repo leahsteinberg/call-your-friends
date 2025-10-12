@@ -12,11 +12,18 @@ export const contactsApi = createApi({
                 body: { userFromId, userToPhoneNumber },
             })
         }),
-        acceptInvite: builder.mutation({
+        acceptInviteSignUp: builder.mutation({
             query: ({token, email, phoneNumber, name, password}) => ({
                 url: '/api/sign-up-accept-invite',
                 method: 'POST',
                 body: { token, email, phoneNumber, name, password },
+            })
+        }),
+        acceptInviteSignIn: builder.mutation({
+            query: ({token, email, phoneNumber, password}) => ({
+                url: '/api/sign-in-accept-invite',
+                method: 'POST',
+                body: { token, email, phoneNumber, password },
             })
         }),
         userByPhone: builder.mutation({
@@ -32,11 +39,32 @@ export const contactsApi = createApi({
                 method: 'POST',
                 body: { id },
             })
+        }),
+        getSentInvites: builder.mutation({
+            query: ({id}) => ({
+                url: '/api/get-sent-invites',
+                method: 'POST',
+                body: { id },
+            })
         })
     })
 });
 
-const { useCreateInviteMutation, useAcceptInviteMutation, useUserByPhoneMutation, useGetFriendsMutation} = contactsApi;
+const {
+    useCreateInviteMutation,
+    useAcceptInviteSignInMutation,
+    useAcceptInviteSignUpMutation,
+    useUserByPhoneMutation,
+    useGetFriendsMutation,
+    useGetSentInvitesMutation,
+    } = contactsApi;
 
-export { useAcceptInviteMutation, useCreateInviteMutation, useGetFriendsMutation, useUserByPhoneMutation };
+export {
+    useAcceptInviteSignInMutation,
+    useAcceptInviteSignUpMutation,
+    useCreateInviteMutation,
+    useGetFriendsMutation,
+    useGetSentInvitesMutation,
+    useUserByPhoneMutation
+};
 

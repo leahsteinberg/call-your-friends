@@ -1,14 +1,13 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-
-import { TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
+import PhoneNumberValidity from './PhoneNumberValidity';
 
 
 export default function PhoneNumberInput({onDataChange, phoneNumber}) {
     return (
         <View style={styles.container}>
-            <View
-            style={styles.component}>
+            <PhoneNumberValidity phoneNumber={phoneNumber}/>
+            <View style={styles.component}>
                 <TextInput
                     placeholder="Phone Number"
                     style={styles.textInput}
@@ -21,13 +20,8 @@ export default function PhoneNumberInput({onDataChange, phoneNumber}) {
     );
 }
 
-
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
+    container: {},
     component: {
         padding: 10,
         backgroundColor: 'lightblue',
@@ -35,8 +29,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 3,
         margin: 10,
-  },
-    textInput:{
+    },
+    textInput: {
         borderRadius: '18',
     },
 });

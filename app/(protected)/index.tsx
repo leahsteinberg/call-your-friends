@@ -2,6 +2,7 @@ import ContactsComponent from '@/features/Contacts/ContactsComponent';
 import { StyleSheet, View } from 'react-native';
 
 export default function Index(){
+  console.log("in Protected index")
 
 
     return (

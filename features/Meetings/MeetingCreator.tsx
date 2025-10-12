@@ -21,7 +21,6 @@ export default function MeetingCreator() {
             <TouchableOpacity
                 onPress={() => createMeeting({userFromId: userId})}
             >
-                <Text>helloeeeq</Text>
                 <View>
                     <Text>selected: {date.toLocaleString()}</Text>
                         <DateTimePicker
