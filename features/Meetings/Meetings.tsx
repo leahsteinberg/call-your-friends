@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { useSelector } from "react-redux";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
+import { processMeetings } from "./meetingsUtils";
 
 export default function Meetings() {
     const userId = useSelector((state) => state.auth.user.id);
@@ -16,15 +17,9 @@ export default function Meetings() {
 
     const handleGetMeetings = async () => {
         const meetingsResult = await getMeetings({userFromId: userId})
-        console.log("Meetings result - ", meetingsResult)
-        setMeetings(meetingsResult.data);
-        // const friendsResult = await getFriends({id: userFromId});
-        // setFriends(friendsResult.data);
+        const processedMeetings = await processMeetings(meetingsResult.data);
+        setMeetings(processedMeetings);
     }
-
-    const sampleMeetings = [{
-            scheduledTime: 'this is the scheduled Time'
-    }];
 
     return (
         <View>

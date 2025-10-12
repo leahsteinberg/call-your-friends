@@ -1,15 +1,16 @@
 import { SectionList, Text, View } from "react-native";
+import MeetingDisplay from "./MeetingDisplay";
 
 export default function MeetingsList({meetings}) {
-    console.log("MeetingsList({meetings})", meetings)
+
     const sectionListData = [
             {
                 title: "Meetings - Open",
                 data: meetings,
-                renderItem: 
-                    (meeting) => {
-                        console.log("meeting is ---", meeting)
-                    return (<Text>{meeting.item.scheduledFor}</Text>)}
+                renderItem: (meeting) => 
+                        (<MeetingDisplay
+                            meeting={meeting}
+                        />)
                 },
         ];
     return (
