@@ -9,14 +9,11 @@ export function Counter()  {
 
     const dispatch = useDispatch()
     const [signupUser, {isLoading, isSuccess, isError, error}] = usePostSignupMutation();
-    //const response = signIn();
-    console.log("in counterr ---", signupUser);
-        //console.log("in counter ---", {data, error, isLoading});
+
 
     if (isLoading) return <View>Is Loading</View>;
     if (error) return <View>Error found</View>
 
-   // console.log(data);
     return (
         <View>
          <View/>

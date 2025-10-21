@@ -6,10 +6,15 @@ export const meetingApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
     endpoints: (builder) => ({
         createMeeting: builder.mutation({
-            query: ({userFromId }) => ({
+            query: ({
+                userFromId,
+                scheduledFor,
+                scheduledEnd,
+                title
+            }) => ({
                 url: '/api/create-meeting',
                 method: 'POST',
-                body: { userFromId },
+                body: { userFromId, scheduledFor, scheduledEnd, title},
             })
         }),
         getMeetings: builder.mutation({

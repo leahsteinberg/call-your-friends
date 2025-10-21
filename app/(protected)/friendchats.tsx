@@ -1,11 +1,19 @@
 import Meetings from '@/features/Meetings/Meetings';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function FriendChats(){
-    console.log("in friend chats")
     return (
-        <View>
+        <View style={styles.container}>
             <Meetings/>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'lightblue',
+  },
+});

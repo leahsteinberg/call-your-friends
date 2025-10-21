@@ -1,11 +1,15 @@
 import { AuthComponent } from '@/features/Auth/AuthComponent';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
 
 export default function LogIn() {
+
+    const {height, width, scale, fontScale} = useWindowDimensions();
+    console.log({height, width, scale, fontScale})
+
     return (
-        <View style={styles.container}>
+        <View style={{...styles.container}}>
             <AuthComponent/>
         </View>
     );
@@ -14,7 +18,16 @@ export default function LogIn() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: 'center',
+    // alignContent: 'center',
+    backgroundColor: 'green',
+    //justifyContent: 'center'
   },
+  component: {
+    // backgroundColor: 'green',
+    // marginVertical: 10,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  
+  }
 });
 

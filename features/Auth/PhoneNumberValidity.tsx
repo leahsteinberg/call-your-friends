@@ -1,12 +1,12 @@
+import { Check, X } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { phoneNumberIsValid } from '../Contacts/contactsUtils';
-
 
 
 export default function PhoneNumberValidity({phoneNumber}) {
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false)
-    
+    const iconSize = 24;
 
     const renderPhoneNumberValidity = () => {
         if (phoneNumber.length>0) {
@@ -15,41 +15,22 @@ export default function PhoneNumberValidity({phoneNumber}) {
             }
             return renderPhoneNumberInvalid();
         }
+        return <View style={{height: iconSize, width: iconSize}}></View>
     }
     
     const renderPhoneNumberValid = () => {
         setIsPhoneNumberValid(true);
-        return (<Text style={{backgroundColor: 'green'}}>Phone Number IS valid</Text>);
+        return (<Check color="green" size={iconSize} />);
     }
     const renderPhoneNumberInvalid = () =>  {
         setIsPhoneNumberValid(false);
-        return (<Text style={{backgroundColor: 'red'}}>Phone Number is NOT valid</Text>);
+        return (<X color="red" size={iconSize} />);
     }
     
 
     return (
-        <View style={styles.container}>
+        <View >
             {renderPhoneNumberValidity()}
         </View>
     );
 }
-
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-    component: {
-    padding: 10,
-    backgroundColor: 'lightblue',
-    alignSelf: 'stretch',
-    alignItems: 'center',
-            borderRadius: 3,
-
-  },
-    textInput:{
-        borderRadius: '18',
-    },
-});

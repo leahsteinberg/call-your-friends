@@ -1,0 +1,12 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appID": "34BG2J75ZG.com.leahsteinberg.callyourfriends",
+                "paths": [
+                    "/invite/*"
+                ]
+            }
+        ]
+    }
+}

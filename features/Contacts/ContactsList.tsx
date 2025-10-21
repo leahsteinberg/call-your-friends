@@ -1,4 +1,4 @@
-import { SectionList, Text, View } from "react-native";
+import { SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
 import InvitedContact from "./InvitedContact";
 
@@ -17,7 +17,7 @@ export default function ContactsList ({friends, sentInvites}){
     ];
 
     return (
-        <View>
+        <View style={styles.container}>
             <SectionList
                 sections={sectionListData}
                 keyExtractor={(item, index) => item + index}
@@ -27,3 +27,11 @@ export default function ContactsList ({friends, sentInvites}){
             />
         </View>);
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        margin: 20,
+
+    },
+})

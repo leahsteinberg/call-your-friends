@@ -1,9 +1,11 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
 import PhoneNumberInput from "../Auth/PhoneNumberInput";
+import { phoneNumberIsValid } from '../Contacts/contactsUtils';
 import { addSentInvite } from "./contactsSlice";
+
 
 export default function InvitePhoneNumber() {
     const [userToPhoneNumber, setPhoneNumber] = useState('');
@@ -20,17 +22,21 @@ export default function InvitePhoneNumber() {
     }
     
     const renderSendInviteButton = () => {
+        const isPhoneNumberValid = phoneNumberIsValid(userToPhoneNumber)
         return (
-            <View style={{backgroundColor: 'dodgerblue'}}>
-                <TouchableOpacity onPress={sendInviteToPhoneNumber}>
-                    <Text >Invite Friend By Phone Number</Text>
+            <View style={{ width: '70%', backgroundColor: (isPhoneNumberValid ? 'dodgerblue' : 'grey')}}>
+                <TouchableOpacity
+                    onPress={sendInviteToPhoneNumber}
+                    disabled={!isPhoneNumberValid}
+                >
+                    <Text style={{textAlign: 'center'}}>Invite Friend By Phone Number</Text>
                 </TouchableOpacity>
             </View>
         );
     }
 
     return (
-        <View>
+        <View style={styles.container}>
             <PhoneNumberInput
                 onDataChange={setPhoneNumber}
                 phoneNumber={userToPhoneNumber}
@@ -38,4 +44,13 @@ export default function InvitePhoneNumber() {
             {renderSendInviteButton()}
         </View>
     );
+
 }
+
+
+    const styles = StyleSheet.create({
+        container: {
+            //flex: 1,
+            alignItems: 'center',
+        }
+    });

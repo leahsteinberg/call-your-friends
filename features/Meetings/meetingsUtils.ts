@@ -7,10 +7,13 @@ export const processMeetings = async(meetings) => {
             })
         );
     const meetingsWithDisplayTime = await Promise.all(meetingsWithDisplayTimePromises)
+    const sortedMeetings = sortMeetingsByScheduledTime(meetingsWithDisplayTime)
+
     return meetingsWithDisplayTime;
 }
 
-const displayDateTime = async (dateTime) => {
+
+export const displayDateTime = async (dateTime : String) => {
     const dateObj = new Date(dateTime);
     const formatter = new Intl.DateTimeFormat('en-US', {
         weekday: 'short',
@@ -25,6 +28,16 @@ const displayDateTime = async (dateTime) => {
     return displayTimeString
 }
 
+export const dateObjToMinutesString = (dateObj) => {
+        const isoStringFull = dateObj.toISOString();
+        const isoStringUpToMinutes = isoStringFull.substring(0, 16);
+        return isoStringUpToMinutes
+}
 
-
-
+const sortMeetingsByScheduledTime = (meetingsList) => {
+    return meetingsList.sort((a, b) =>  {
+        const dateA = new Date(a.scheduledFor);
+        const dateB = new Date(b.scheduledFor);
+        return dateA.getTime() - dateB.getTime();
+    })
+}

@@ -1,7 +1,6 @@
 import { Tabs } from "expo-router";
 
 const Layout = () => {
-    console.log("in protected Layouttt");
     return (
         <Tabs>
             <Tabs.Screen name="index" options={{headerShown: false}}/>

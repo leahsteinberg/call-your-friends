@@ -30,20 +30,19 @@ export default function UserDataInput({onChangeEmail, onChangePassword, onChange
 
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-
-  },
-  component: {
-    padding: 10,
-    backgroundColor: 'lightblue',
-    //alignItems: 'center',
-    borderRadius: 3,
-    margin: 10,
-  },
-    textInput:{
+    container: {
+        // flex: 1,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+    },
+    component: {
+        padding: 10,
+        backgroundColor: 'lightblue',
+        //alignItems: 'center',
+        borderRadius: 3,
+        //margin: 10,
+    },
+    textInput: {
         borderRadius: 3,
         margin: 10,
         padding: 10,

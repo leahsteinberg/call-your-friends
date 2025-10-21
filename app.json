@@ -52,15 +52,6 @@
         }
       ],
       [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/Catamaran.otf",
-            "./assets/fonts/SantaAnaTRIAL-Medium.otf"
-          ]
-        }
-      ],
-      [
         "expo-contacts",
         {
           "contactsPermission": "Allow Call Your Friends to access your contacts."

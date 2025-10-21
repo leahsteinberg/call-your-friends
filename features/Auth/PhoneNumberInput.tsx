@@ -5,33 +5,38 @@ import PhoneNumberValidity from './PhoneNumberValidity';
 
 export default function PhoneNumberInput({onDataChange, phoneNumber}) {
     return (
-        <View style={styles.container}>
-            <PhoneNumberValidity phoneNumber={phoneNumber}/>
-            <View style={styles.component}>
+        <View
+            style={styles.container}
+        >
+            <View >
                 <TextInput
                     placeholder="Phone Number"
                     style={styles.textInput}
                     onChangeText={(text)=> onDataChange(text)}
                     keyboardType={'numeric'}
                     value={phoneNumber}
+                    maxLength={10}
                 />
+            </View>
+            <View >
+                <PhoneNumberValidity phoneNumber={phoneNumber}/>
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {},
-    component: {
-        padding: 10,
-        backgroundColor: 'lightblue',
-        alignSelf: 'stretch',
+    container: {
+        flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 3,
-        margin: 10,
+        justifyContent: 'center',
     },
     textInput: {
-        borderRadius: '18',
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor: 'green',
+        width: 150,
     },
+
 });
 

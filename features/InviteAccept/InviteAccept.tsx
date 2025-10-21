@@ -26,13 +26,11 @@ export default function InviteAccept() {
             if (userToPhoneNumber) {
                 const user = await findUserByPhone({userPhoneNumber: userToPhoneNumber}).unwrap();
                 setUserToExists(!!user);
-                console.log("user is ---", user);
             }
         })();
     }, [])
 
     const handleAcceptInvite = async () => {
-        console.log("pressed accept invite new user")
         let result;
         if (userToExists) {
             result = await acceptInviteExistingUser({token, email, phoneNumber, password})
@@ -47,21 +45,6 @@ export default function InviteAccept() {
             // in the regular sign up page...?
         }
     }
-
-    // const renderUserAuthButton = (text) => {
-    //     console.log("authquery")
-    //     return (
-    //         <View style={styles.buttonContainer}>
-    //             <TouchableOpacity
-    //                 onPress={(e) => {handleAcceptInvite()}}
-    //                 style={styles.button}
-    //                 //disabled={!isPhoneNumberValid}
-    //             >
-    //                 <Text style={styles.text}>{text}</Text>
-    //             </TouchableOpacity>
-    //         </View>
-    //         );
-    // }
 
     const userAuthButton = () => {
         return (userToExists ?

@@ -1,38 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    isAuthenticated: false,
-    userToken: null,
-    user: {
-        id: '',
-        email: '',
-        name: '',
-        image: null,
-        emailVerified: false,
-        createdAt: '',
-        updatedAt: '',
-    },
-    status: 'idle',
-    error: null,
-};
-
 // const initialState = {
-//     isAuthenticated: true,
-//     userToken: "DiRdHlMHyL8Cp1kgm0onycsBacMeuG2g",
+//     isAuthenticated: false,
+//     userToken: null,
 //     user: {
-//         id: "DozxnwPNWuuhdHrINpeQvhtiJWmNJEGc",
-//         email: 'leahsteinberg1@gmail.com',
+//         id: '',
+//         email: '',
 //         name: '',
 //         image: null,
 //         emailVerified: false,
 //         createdAt: '',
-//         updatedAt: "2025-10-02T18:53:53.752Z",
+//         updatedAt: '',
 //     },
 //     status: 'idle',
 //     error: null,
 // };
 
-
+const initialState = {
+    isAuthenticated: true,
+    userToken: "YmkRNkS8rCizI1YZyU2vepVLCuwOQpAf",
+    user: {
+        id: "DozxnwPNWuuhdHrINpeQvhtiJWmNJEGc",
+        email: 'leahsteinberg1@gmail.com',
+        name: '',
+        image: null,
+        emailVerified: false,
+        createdAt: '',
+        updatedAt: "2025-10-02T18:53:53.752Z",
+    },
+    status: 'idle',
+    error: null,
+};
 
 const authSlice = createSlice({
     name: 'auth',

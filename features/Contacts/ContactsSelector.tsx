@@ -1,7 +1,8 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
+import { BURGUNDY } from "@/styles/styles";
 import * as Contacts from "expo-contacts";
 import { useEffect, useState } from "react";
-import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { addSentInvite } from "./contactsSlice";
 import { createSmsUrl, processContact } from "./contactsUtils";
@@ -14,7 +15,6 @@ export default function ContactsSelector(){
     const [createInvite] = useCreateInviteMutation();
     const userFromId = useSelector((state) => state.auth.user.id);
 
-    console.log("Contacts Selector")
     useEffect(()=> {
         checkContactsPermission()            
     }, [])
@@ -68,10 +68,27 @@ export default function ContactsSelector(){
     }
 
     return (
-        <View>
+        <View style={styles.button}>
             <TouchableOpacity onPress={openContactsPicker}>
-                <Text>Add a friend from your phone contacts.</Text>
+                <Text style={styles.text}>Add a friend from your phone contacts.</Text>
             </TouchableOpacity>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    button: {
+        backgroundColor: BURGUNDY,
+        margin: 10,
+        padding: 10,
+        borderRadius: 3,
+        justifyContent: 'center',
+    },
+    text: {
+        textAlign: 'center',
+        color: 'white',
+
+    },
+    buttonContainer: {
+    },
+});

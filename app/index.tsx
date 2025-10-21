@@ -4,10 +4,11 @@ import LogIn from './login';
 import { store } from './store';
 
 
+
 export default function HomeScreen() {
   return (
       <Provider store={store}>
-        <LogIn/>
+          <LogIn/>
       </Provider>
   );
 }

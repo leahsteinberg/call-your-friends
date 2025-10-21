@@ -1,7 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
@@ -9,6 +9,7 @@ import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 
 export default function ContactsComponent(){
+    const {height, width} = useWindowDimensions();
     const dispatch = useDispatch();
     const userFromId = useSelector((state) => state.auth.user.id);
 
@@ -37,7 +38,7 @@ export default function ContactsComponent(){
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {height: height*.7, width: width*.9}]}>
             <View  style={styles.component}>
                 <ContactsSelector />
             </View>
@@ -58,14 +59,15 @@ export default function ContactsComponent(){
 
 const styles = StyleSheet.create({
     container: {
-        height: 500,
+        minHeight: 500,
+        //height: 600,
         backgroundColor: 'lightpink',
     },
     component: {
-        flex: 1,
-        borderColor: 'green',
-        borderWidth: 1,
-        margin: 10,
-        padding: 15,
+        // flex: 1,
+        // borderColor: 'green',
+        // borderWidth: 1,
+        // margin: 10,
+        // padding: 15,
     },
 });
