@@ -1,4 +1,5 @@
 import { SectionList, Text, View } from "react-native";
+import Offer from "./Offer";
 import { OfferType } from "./types";
 
 export default function OffersList({offers}) : React.JSX.Element {
@@ -12,6 +13,8 @@ export default function OffersList({offers}) : React.JSX.Element {
             data: offers,
         }
     ]
+
+
     
     return (
         <View>
@@ -19,7 +22,7 @@ export default function OffersList({offers}) : React.JSX.Element {
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
                 renderItem={({ item, index }: { item: OfferType; index: number }) =>
-                    <Text>{item.id} {item.offerState}</Text>
+                    <Offer offer={item}/>
                 }
                 renderSectionHeader={({ section: { title } }) => (
                     <Text style={{ fontWeight: 'bold' }}>{title}</Text>
