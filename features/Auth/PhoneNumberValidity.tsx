@@ -1,16 +1,16 @@
 import { Check, X } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { phoneNumberIsValid } from '../Contacts/contactsUtils';
+import { isPhoneNumberValid } from '../Contacts/contactsUtils';
 
 
 export default function PhoneNumberValidity({phoneNumber}) {
-    const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(false)
+    const [phoneNumberValid, setIsPhoneNumberValid] = useState(false)
     const iconSize = 24;
 
     const renderPhoneNumberValidity = () => {
         if (phoneNumber.length>0) {
-            if (phoneNumberIsValid(phoneNumber)) {
+            if (isPhoneNumberValid(phoneNumber)) {
                 return renderPhoneNumberValid();
             }
             return renderPhoneNumberInvalid();

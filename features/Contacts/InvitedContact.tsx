@@ -1,10 +1,13 @@
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { InvitedContactProps } from "./types";
 
-export default function InvitedContact({contact}) {
+export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
   return (
     <View style={styles.container} key={contact.index}>
-      <Text >{contact.userToPhoneNumber} </Text>
-    </View>);
+      <Text>{contact.item.userToPhoneNumber}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

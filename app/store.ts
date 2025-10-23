@@ -1,26 +1,31 @@
 import { authApi } from '@/services/authApi';
 import { contactsApi } from '@/services/contactsApi';
 import { meetingApi } from '@/services/meetingApi';
+import { offerApi } from '@/services/offersApi';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import authReducer from '../features/Auth/authSlice';
 import contactsReducer from '../features/Contacts/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
+import offerReducer from '../features/Offers/offerSlice';
 
 export const store = configureStore({
   reducer: {
     [authApi.reducerPath]: authApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
     [meetingApi.reducerPath]: meetingApi.reducer,
+    [offerApi.reducerPath]: offerApi.reducer,
     auth: authReducer,
     contacts: contactsReducer,
     meeting: meetingReducer,
+    offer: offerReducer,
     },
     middleware: (getDefaultMiddleware) => 
       getDefaultMiddleware()
     .concat(authApi.middleware)
     .concat(contactsApi.middleware)
-    .concat(meetingApi.middleware),
+    .concat(meetingApi.middleware)
+    .concat(offerApi.middleware)
 });
 
 export type RootState = ReturnType<typeof store.getState>;

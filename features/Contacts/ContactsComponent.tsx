@@ -1,22 +1,24 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
+import { Friend, SentInvite } from "./types";
 
-export default function ContactsComponent(){
-    const {height, width} = useWindowDimensions();
+export default function ContactsComponent(): React.JSX.Element {
+    const { height, width } = useWindowDimensions();
     const dispatch = useDispatch();
-    const userFromId = useSelector((state) => state.auth.user.id);
+    const userFromId: string = useSelector((state: RootState) => state.auth.user.id);
 
-    const sentInvites = useSelector((state)=> state.contacts.sentInvites);
+    const sentInvites: SentInvite[] = useSelector((state: RootState) => state.contacts.sentInvites);
     const [getSentInvites] = useGetSentInvitesMutation();
 
-    const [friends, setFriends] = useState([]);
+    const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
 
     useEffect(()=> { 
@@ -25,17 +27,17 @@ export default function ContactsComponent(){
     
     }, [])
 
-    const handleGetSentInvites = async () => {
-        const sentInvitesResult = await getSentInvites({id: userFromId});
+    const handleGetSentInvites = async (): Promise<void> => {
+        const sentInvitesResult = await getSentInvites({ id: userFromId });
         if (sentInvitesResult) {
-            dispatch(setSentInvites(sentInvitesResult.data))
+            dispatch(setSentInvites(sentInvitesResult.data));
         }
-    }
+    };
 
-    const handleGetFriends = async () => {
-       const friendsResult = await getFriends({id: userFromId});
-       setFriends(friendsResult.data);
-    }
+    const handleGetFriends = async (): Promise<void> => {
+        const friendsResult = await getFriends({ id: userFromId });
+        setFriends(friendsResult.data);
+    };
 
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>

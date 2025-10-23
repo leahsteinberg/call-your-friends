@@ -1,13 +1,14 @@
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { FriendProps } from "./types";
 
-export default function Friend(friend) {
-
+export default function Friend({ item }: FriendProps): React.JSX.Element {
   return (
     <View
       style={styles.container}
-      key={friend.index}
+      key={item.index}
     >
-      <Text>{friend.item.name} {friend.item.phoneNumber}</Text>
+      <Text>{item.name} {item.phoneNumber}</Text>
     </View>
   );
 }

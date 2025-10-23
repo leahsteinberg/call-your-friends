@@ -1,5 +1,7 @@
+import { WebLayout } from '@/components/WebLayout';
 import { Stack } from 'expo-router';
 import { Provider, useSelector } from 'react-redux';
+import '../global.css';
 import { store } from './store';
 
 
@@ -22,8 +24,10 @@ const InitialLayout = () => {
 
 export default function RootLayout() {
     return (
-        <Provider store={store}>
-            <InitialLayout/>
-        </Provider>
+        <WebLayout>
+            <Provider store={store}>
+                <InitialLayout/>
+            </Provider>
+        </WebLayout>
     );
 }
