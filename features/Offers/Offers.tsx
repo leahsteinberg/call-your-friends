@@ -17,7 +17,7 @@ export default function Offers () : React.JSX.Element {
 
 
     const handleGetOffers = async () => {
-        const offersResponse = await getOffers({ userId: 'uqE1jmBkAYpKrwqgaOD4RBWj9Am6TVW3'  });
+        const offersResponse = await getOffers({ userId });
         setOffers(offersResponse.data);
     }
 

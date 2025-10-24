@@ -21,7 +21,7 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   };
 
   return (<View style={styles.container} key={meeting.index}>
-            <Text>{meeting.item.displayScheduledFor}</Text>
+            <Text>{meeting.item.displayScheduledFor}---{meeting.item.id.slice(0,8)}</Text>
             {renderStateIcon()}
         </View>
         );

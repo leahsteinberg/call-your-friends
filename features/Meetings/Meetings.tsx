@@ -11,6 +11,7 @@ import { MeetingType, ProcessedMeetingType } from "./types";
 
 export default function Meetings() {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const userName: string = useSelector((state: RootState) => state.auth.user.email)
     const { height, width } = useWindowDimensions();
     
     const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
@@ -30,7 +31,7 @@ export default function Meetings() {
     return (
         <View style={[styles.container, {height: height*.3, width: width*.9}]}>
             <View style={[styles.component, ]}>
-                <Text>Set up phone calls</Text>
+                <Text>Set up phone calls, {userName}</Text>
             </View>
             {showMeetingCreator && 
                 <View style={[styles.component,]}>

@@ -18,7 +18,8 @@ export default function Offer({ offer }) {
 
     return (
         <View style={styles.container}>
-            <Text>{offer.id.slice(0, 8)}</Text>
+            <Text>offer-{offer.id.slice(0, 8)}</Text>
+            <Text>meeting-{offer.meeting.id.slice(0,8)}</Text>
             {offer.offerState === 'OPEN' && 
                 <TouchableOpacity
                     onPress={handleAcceptOffer}
