@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
     isAuthenticated: false,
     userToken: null,
@@ -18,9 +19,11 @@ const initialState = {
 
 // const initialState = {
 //     isAuthenticated: true,
-//     userToken: "YmkRNkS8rCizI1YZyU2vepVLCuwOQpAf",
+//     userToken: "pwH7ZC5IVcSKvQZ7OEwrYyNlYDAANib0",
+//     //userToken: "dIqiHERhz86DjlTz5k1JwK6dlcyPqtPr",
 //     user: {
-//         id: "DozxnwPNWuuhdHrINpeQvhtiJWmNJEGc",
+//         id: "uqE1jmBkAYpKrwqgaOD4RBWj9Am6TVW3",
+//         //id: "DozxnwPNWuuhdHrINpeQvhtiJWmNJEGc",
 //         email: 'leahsteinberg1@gmail.com',
 //         name: '',
 //         image: null,

@@ -29,7 +29,7 @@ export default function Meetings() {
     };  
 
     return (
-        <View style={[styles.container, {height: height*.3, width: width*.9}]}>
+        <View style={[styles.container, {height: height*.3}]}>
             <View style={[styles.component, ]}>
                 <Text>Set up phone calls, {userName}</Text>
             </View>
@@ -37,7 +37,6 @@ export default function Meetings() {
                 <View style={[styles.component,]}>
                         <MeetingCreator
                             refreshMeetings={handleGetMeetings}
-                            
                         />
                 </View>
             }
@@ -57,8 +56,8 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 400,
         backgroundColor: 'lightgreen',
-        alignContent: 'center',
-        justifyContent: 'space-around',
+        //alignContent: 'center',
+        justifyContent: 'space-between',
         overflow: 'scroll'
     },
     component: {

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     title: {
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: 'bold',
         color: BURGUNDY,
         textAlign: 'center',
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 14,
+        fontWeight: '500',
     },
     disabledButtonText: {
         color: '#666',

@@ -3,5 +3,10 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "typescript.preferences.removeUnusedImports": false,
+  "javascript.preferences.removeUnusedImports": false,
+  "editor.showUnused": false,
+  "typescript.validate.enable": true,
+  "typescript.tsc.autoDetect": "on"
 }

@@ -55,11 +55,11 @@ export default function WebDateTimePicker({ onDateTimeSelect, selectedDateTime }
     return (
       <View style={styles.container}>
         {/* Display selected date/time */}
-        <View style={styles.selectedDateTimeContainer}>
+        {/* <View style={styles.selectedDateTimeContainer}>
           <Text style={styles.selectedDateTimeText}>
             📅 {formatDisplayDateTime()}
           </Text>
-        </View>
+        </View> */}
 
         {/* Web HTML5 Date and Time Inputs */}
         <View style={styles.inputContainer}>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
     color: BURGUNDY,
     marginBottom: 8,
   },
@@ -135,16 +135,17 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 12,
     borderRadius: 8,
-    border: `2px solid ${BURGUNDY}`,
+    borderWidth: 0,
+    borderColor: BURGUNDY,
     backgroundColor: PALE_BLUE,
-    fontSize: 16,
+    fontSize: 14,
     color: BURGUNDY,
-    fontWeight: '600',
+    fontWeight: '400',
     outline: 'none',
-    ':focus': {
-      borderColor: BURGUNDY,
-      boxShadow: `0 0 0 2px ${BURGUNDY}20`,
-    },
+    // ':focus': {
+    //   borderColor: BURGUNDY,
+    //   boxShadow: `0 0 0 2px ${BURGUNDY}20`,
+    // },
   },
   fallbackText: {
     fontSize: 16,

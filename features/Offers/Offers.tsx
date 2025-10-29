@@ -12,7 +12,6 @@ export default function Offers () : React.JSX.Element {
 
     useEffect(async () => {
         handleGetOffers();
-
     }, []);
 
 
@@ -23,9 +22,9 @@ export default function Offers () : React.JSX.Element {
 
     return (
         <View>
-            <OffersList
+            {offers.length > 0 && <OffersList
                 offers={offers}
-            />
+            />}
         </View>
     );
 

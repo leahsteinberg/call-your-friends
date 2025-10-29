@@ -1,7 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -9,8 +9,6 @@ import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, SentInvite } from "./types";
-const safePadding = Platform.OS === 'ios' ? 60 : 0;
-
 
 export default function ContactsComponent(): React.JSX.Element {
     const { height, width } = useWindowDimensions();
@@ -22,15 +20,13 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
-    const {data, isLoading, isError, error} = useGetFriendsMutation();
-    console.log("00-000000", {data, isLoading, isError, error});
-
 
     useEffect(()=> { 
         handleGetFriends()
         handleGetSentInvites()
     
     }, [])
+
     const handleGetSentInvites = async (): Promise<void> => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
         if (sentInvitesResult) {
@@ -45,17 +41,17 @@ export default function ContactsComponent(): React.JSX.Element {
 
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>
-            <View  style={styles.selectorComponent}>
+            <View  style={styles.component}>
                 <ContactsSelector />
             </View>
-            <View style={styles.listComponent}>
+            <View style={styles.component}>
                 <ContactsList
                     friends={friends}
                     sentInvites={sentInvites}
                 />
             </View>
             { DEV_FLAG &&
-                <View style={styles.inviteComponent}>
+                <View style={styles.component}>
                     <InvitePhoneNumber />
                 </View>
             }
@@ -67,36 +63,13 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 500,
         //height: 600,
-       // flex: 1,
-       //flex: 'auto',
-        paddingTop: safePadding,
-        paddingBottom: 20,
-        display: 'flex',
-        flexDirection: 'column',
         backgroundColor: 'lightpink',
-        justifyContent: 'space-between',
-       // height: hp(100)-90,
-        //paddingBottom: 30,
     },
-    selectorComponent: {
-        //height: hp(20),
-        //flex: 1,
-        //flex: 'auto',
-
-    },
-    listComponent: {
-        overflow: 'scroll',
-        flex: 'auto',
-        flexGrow: 1,
-        //paddingVertical: 20,
-        marginVertical: 20,
-        //maxHeight: hp(80)
-
-    },
-    inviteComponent: {
-        //height: hp(20),
-        flex: 'auto',
-        flexShrink: 0,
-
+    component: {
+        // flex: 1,
+        // borderColor: 'green',
+        // borderWidth: 1,
+        // margin: 10,
+        // padding: 15,
     },
 });

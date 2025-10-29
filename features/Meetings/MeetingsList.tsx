@@ -36,5 +36,5 @@ const styles = StyleSheet.create({
     },
     sectionHeading: {
         padding: 10,
-    }
+    },
 });
