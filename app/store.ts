@@ -1,5 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
 // Reducers
 import authReducer from '../features/Auth/authSlice';
@@ -12,6 +14,13 @@ import { authApi } from '@/services/authApi';
 import { contactsApi } from '@/services/contactsApi';
 import { meetingApi } from '@/services/meetingApi';
 import { offerApi } from '@/services/offersApi';
+import persistStore from 'redux-persist/es/persistStore';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth'],
+}
 
 
 const rootReducer = combineReducers({
@@ -25,10 +34,12 @@ const rootReducer = combineReducers({
   offer: offerReducer,
   })
 
+  const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
     middleware: (getDefaultMiddleware) => 
       getDefaultMiddleware()
     .concat(authApi.middleware)
@@ -41,6 +52,8 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 setupListeners(store.dispatch);
+
+export const persistor = persistStore(store);
 
 // export type AppThunk<ReturnType = void> = ThunkAction<
 //   ReturnType,

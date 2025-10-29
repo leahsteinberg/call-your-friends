@@ -1,8 +1,10 @@
 import { WebLayout } from '@/components/WebLayout';
 import { Stack } from 'expo-router';
 import { Provider, useSelector } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import '../global.css';
-import { store } from './store';
+import { persistor, store } from './store';
+
 
 
 
@@ -26,7 +28,9 @@ export default function RootLayout() {
     return (
         <WebLayout>
             <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
                 <InitialLayout/>
+                </PersistGate>
             </Provider>
         </WebLayout>
     );
