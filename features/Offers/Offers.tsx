@@ -20,9 +20,12 @@ export default function Offers () : React.JSX.Element {
 
     return (
         <View>
-            {offers.length > 0 && <OffersList
-                offers={offers}
-            />}
+            
+            {offers.length > 0 &&
+                <OffersList
+                    offers={offers}
+                />
+            }
         </View>
     );
 

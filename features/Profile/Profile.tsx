@@ -31,7 +31,7 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>
-            <Text>Signout not fully handled on backend, does not work!</Text>
+            <Text>Signout not fully handled on backend, does not work! LOL O LO</Text>
             <EntryButton
                 title="Sign Out"
                 onPressQuery={(e) => {handleAuthQuery(e, signOutUser)}}

@@ -38,6 +38,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@kingstinct/react-native-healthkit",
       "expo-router",
       [
         "expo-splash-screen",

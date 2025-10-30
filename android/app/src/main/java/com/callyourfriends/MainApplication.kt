@@ -1,4 +1,4 @@
-package com.leahsteinberg.callyourfriends
+package com.callyourfriends
 
 import android.app.Application
 import android.content.res.Configuration

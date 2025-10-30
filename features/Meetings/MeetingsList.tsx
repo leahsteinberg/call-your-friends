@@ -5,7 +5,7 @@ import { MeetingType, MeetingsListProps } from "./types";
 export default function MeetingsList({ meetings }: MeetingsListProps) {
     const sectionListData = [
         {
-            title: "Meetings -",
+            title: "Meetings -fjdkfjslfk",
             data: meetings,
             renderItem: ({ item, index }: { item: MeetingType; index: number }) => 
                 (<MeetingDisplay
