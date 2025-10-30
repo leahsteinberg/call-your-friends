@@ -23,25 +23,26 @@ export default function ContactsComponent(): React.JSX.Element {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
     const {data, isLoading, isError, error} = useGetFriendsMutation();
-    console.log("00-000000", {data, isLoading, isError, error});
 
 
     useEffect(()=> { 
+        async function handleGetSentInvites() {
+            const sentInvitesResult = await getSentInvites({ id: userFromId });
+            if (sentInvitesResult) {
+                dispatch(setSentInvites(sentInvitesResult.data));
+            }
+        }
+        async function handleGetFriends() {
+            const friendsResult = await getFriends({ id: userFromId });
+            setFriends(friendsResult.data);
+        };
+
         handleGetFriends()
         handleGetSentInvites()
     
+    
     }, [])
-    const handleGetSentInvites = async (): Promise<void> => {
-        const sentInvitesResult = await getSentInvites({ id: userFromId });
-        if (sentInvitesResult) {
-            dispatch(setSentInvites(sentInvitesResult.data));
-        }
-    };
 
-    const handleGetFriends = async (): Promise<void> => {
-        const friendsResult = await getFriends({ id: userFromId });
-        setFriends(friendsResult.data);
-    };
 
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>

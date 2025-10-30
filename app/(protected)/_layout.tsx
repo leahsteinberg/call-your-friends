@@ -35,6 +35,16 @@ const Layout = () => {
                     tabBarHideOnKeyboard: true,
                 }}
             />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    headerShown: false,
+                    title: "profile",
+                    tabBarIcon: ({ color }) => <Check  color="green" size={23}/>,
+                    tabBarHideOnKeyboard: true,
+                }}
+            />
+
         </Tabs>
     );
 };

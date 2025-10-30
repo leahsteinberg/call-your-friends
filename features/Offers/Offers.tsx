@@ -10,15 +10,13 @@ export default function Offers () : React.JSX.Element {
     const [getOffers] = useGetOffersMutation();
     const [offers, setOffers] = useState([])
 
-    useEffect(async () => {
+    useEffect(() => {
+        async function handleGetOffers() {
+            const offersResponse = await getOffers({ userId });
+            setOffers(offersResponse.data);
+        }
         handleGetOffers();
     }, []);
-
-
-    const handleGetOffers = async () => {
-        const offersResponse = await getOffers({ userId });
-        setOffers(offersResponse.data);
-    }
 
     return (
         <View>

@@ -10,7 +10,6 @@ import { persistor, store } from './store';
 
 const InitialLayout = () => {
  const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
-// const isAuthenticated = true;
   return (
     <Stack>
             <Stack.Protected guard={isAuthenticated}>
@@ -30,7 +29,7 @@ export default function RootLayout() {
             <Provider store={store}>
             <PersistGate loading={null} persistor={persistor}>
                 <InitialLayout/>
-                </PersistGate>
+            </PersistGate>
             </Provider>
         </WebLayout>
     );

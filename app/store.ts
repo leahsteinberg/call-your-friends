@@ -1,7 +1,10 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { persistReducer } from 'redux-persist';
+import persistStore from 'redux-persist/es/persistStore';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+
+//import AsyncStorage from '@react-native-community/async-storage';
 
 // Reducers
 import authReducer from '../features/Auth/authSlice';
@@ -14,7 +17,6 @@ import { authApi } from '@/services/authApi';
 import { contactsApi } from '@/services/contactsApi';
 import { meetingApi } from '@/services/meetingApi';
 import { offerApi } from '@/services/offersApi';
-import persistStore from 'redux-persist/es/persistStore';
 
 const persistConfig = {
   key: 'root',

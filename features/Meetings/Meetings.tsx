@@ -19,10 +19,15 @@ export default function Meetings() {
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
 
     useEffect(() => {
+        async function handleGetMeetings() {
+            const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
+            const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
+            setMeetings(processedMeetings);
+        };  
         handleGetMeetings();
-    }, []);
+    }, [])
 
-    const handleGetMeetings = async (): Promise<void> => {
+    const handleGetMeetings = async () =>  {
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
         setMeetings(processedMeetings);
@@ -48,6 +53,7 @@ export default function Meetings() {
             <View style={styles.component}>
                 <Offers/>
             </View>
+
         </View>
     )
 }
@@ -68,3 +74,4 @@ const styles = StyleSheet.create({
         // padding: 15,
     },
 });
+

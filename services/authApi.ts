@@ -25,11 +25,23 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
               body: credentials,
             }
           },
-        })
+        }),
+        postSignOut: builder.mutation({
+          query: (credentials) => {
+              return {
+              url: 'api/signout',
+              method: 'POST',
+              body: {
+                rememberMe: true,
+                ...credentials,
+              }
+            };
+          }
+        }),
       })
   });
 
-const {usePostSignInMutation, usePostPhoneSignupMutation} = authApi;
+const {usePostSignInMutation, usePostPhoneSignupMutation, usePostSignOutMutation} = authApi;
 
-export { usePostPhoneSignupMutation, usePostSignInMutation };
+export { usePostPhoneSignupMutation, usePostSignInMutation, usePostSignOutMutation };
 
