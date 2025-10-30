@@ -62,7 +62,9 @@ export default function ContactsComponent(): React.JSX.Element {
                     <InvitePhoneNumber />
                 </View>
             }
-            <StepTimes/>
+            { Platform.OS === 'ios' &&
+                <StepTimes/>
+            }
         </View>
     );
 }

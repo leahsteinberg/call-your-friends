@@ -1,16 +1,39 @@
 
 // make sure that you've requested authorization before requesting data, otherwise your app will crash
-import { isHealthDataAvailable } from '@kingstinct/react-native-healthkit';
+import { isHealthDataAvailable, useHealthkitAuthorization, useMostRecentQuantitySample } from '@kingstinct/react-native-healthkit';
 import { Text, View } from 'react-native';
 
 
 
 
-export default function StepTimes () : React.JSX.Element {
-    console.log("IN Step", {isHealthDataAvailable})
+export default async function StepTimes () : Promise<React.JSX.Element> {
+    //  unknown = 0,
+//   shouldRequest = 1,
+//   unnecessary = 2,
+    // useEffect(() => {
+    //     async function findStuff() {
+            const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization(['HKQuantityTypeIdentifierBloodGlucose'])
+            console.log("authorization Status????", authorizationStatus)
+            const isAvailable = await isHealthDataAvailable();
+            console.log("Is Available ----- ", isAvailable);
+            if (authorizationStatus === 1) {
+                console.log("should request auth")
+                const authStatus2 = await requestAuthorization(); // request read permission for bodyFatPercentage
+                console.log("auth status 2", authStatus2)
+            }
+            if (authorizationStatus === 2) {
+                const mostRecentBloodGlucoseSample = useMostRecentQuantitySample('HKQuantityTypeIdentifierBloodGlucose')
+                console.log("mostRecentBloodGlucoseSample", mostRecentBloodGlucoseSample)
+            }
+    //     }
+    //     findStuff()
+    // }, [])
 
-    // const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization(['HKQuantityTypeIdentifierBloodGlucose'])
 
+
+   //const auth = await requestAuthorization(['HKQuantityTypeIdentifierBodyFatPercentage']); // request read permission for bodyFatPercentage
+
+    //console.log({authorizationStatus})
     // const isAvailable = await isHealthDataAvailable();
 
 
