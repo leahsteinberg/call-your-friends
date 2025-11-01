@@ -1,9 +1,11 @@
 import { usePostSignOutMutation } from "@/services/authApi";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import EntryButton from "../Auth/EntryButton";
+import HealthKitData from "../StepTime/HealthKitData";
+import StepTimes from '../StepTime/StepTimes';
 
 const safePadding = Platform.OS === 'ios' ? 60 : 0;
 
@@ -13,6 +15,8 @@ export default function Profile(): React.JSX.Element {
     const dispatch = useDispatch();
     const [signOutUser] = usePostSignOutMutation();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const [data, setData] = useState([])
+
 
     const handleAuthQuery = async (e: any, authQuery: any) => {
         const result = await authQuery({userId}).unwrap();
@@ -24,11 +28,6 @@ export default function Profile(): React.JSX.Element {
     }
 
 
-    useEffect(()=> { 
-    
-    }, [])
-
-
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>
             <Text>Signout not fully handled on backend, does not work! LOL O LO</Text>
@@ -36,6 +35,12 @@ export default function Profile(): React.JSX.Element {
                 title="Sign Out"
                 onPressQuery={(e) => {handleAuthQuery(e, signOutUser)}}
             />
+
+                <StepTimes />
+                {Platform.OS === 'ios' &&
+                    <HealthKitData/>
+                }
+            
         </View>
     );
 }

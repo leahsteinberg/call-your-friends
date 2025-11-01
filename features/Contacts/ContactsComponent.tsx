@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
-import StepTimes from "../StepTime/StepTimes";
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
@@ -61,9 +60,6 @@ export default function ContactsComponent(): React.JSX.Element {
                 <View style={styles.inviteComponent}>
                     <InvitePhoneNumber />
                 </View>
-            }
-            { Platform.OS === 'ios' &&
-                <StepTimes/>
             }
         </View>
     );
