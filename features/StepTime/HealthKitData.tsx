@@ -44,16 +44,17 @@ export default function HealthKitData () {
                     //const { quantity, unit, startDate, endDate } = await getMostRecentQuantitySample(HK_DATA_TYPE); // read latest sample
                     const sample = await queryQuantitySamples(
                         HK_DATA_TYPE,
-                        { filter:
-                            {
+                        {
+                            filter: {
                                 startDate: yesterdayMidnight,
                                 endDate: today
-                            }
+                            },
+                            limit: 35,
                         }
                     );
                     setDataSample(sample)
                     // console.log("got the data", { quantity, unit, startDate, endDate })
-                    console.log("got the sample jkj- ", sample)
+                    console.log("got the sample LLLLLLLjkj- ", sample)
                 }
             } catch (error) {
                 console.log("error getting the data", error)
@@ -65,27 +66,18 @@ export default function HealthKitData () {
       };
     }, []);
 
-
-    
-
-
-
-
-    // useEffect(() => {
-
-    //     console.log("i   n use effect");
-    //     const req = await requestAuthorization(['HKQuantityTypeIdentifierBodyFatPercentage']); // request read permission for bodyFatPercentage
-
-    // }, [authed])
-
     return (
         <View>
             <Text>
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
             <Text>
-                {JSON.stringify(dataSample.map((d) => ({quant: d.quantity, end: d.endDate, start: d.startDate})))}
-            </Text>
+                Got this many step unitssss: {dataSample.length}
+                </Text>
+
+                <Text>
+                    {JSON.stringify(dataSample.map((d) => ({quant: d.quantity, end: d.endDate, start: d.startDate})))}
+                </Text>
         </View>
     );
 
