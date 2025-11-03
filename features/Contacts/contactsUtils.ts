@@ -61,7 +61,7 @@ export const formatPhoneNumber = (digits) => {
         const areaCode = digits.slice(0,3);
         const firstPortion = digits.slice(3,6)
         const secondPortion = digits.slice(6, 10)
-        return `(${areaCode}) ${firstPortion} - ${secondPortion}`
+        return `(${areaCode}) ${firstPortion}-${secondPortion}`
     }
     console.log("incorrectly formatted digits")
     return digits;

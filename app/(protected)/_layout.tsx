@@ -1,3 +1,4 @@
+import { BRIGHT_BLUE, BRIGHT_GREEN, DARK_BLUE, LIGHT_BEIGE } from "@/styles/styles";
 import { Tabs } from "expo-router";
 import { Check } from "lucide-react-native";
 
@@ -5,12 +6,13 @@ const Layout = () => {
     return (
         <Tabs
         screenOptions={{
-            tabBarActiveTintColor: 'purple',
-            tabBarInactiveTintColor: 'red',
+            tabBarActiveTintColor: BRIGHT_BLUE,
+            tabBarInactiveTintColor: DARK_BLUE,
             tabBarStyle: {
-              backgroundColor: 'yellow',
-              borderTopColor: 'green',
-              height: 90,
+              backgroundColor: LIGHT_BEIGE,
+              borderTopColor: BRIGHT_BLUE,
+              borderTopWidth: 4,
+              height: 60,
               // Add other ViewStyle properties as needed
             },
             headerShown: false, // Hide the header for all tab screens
@@ -19,8 +21,8 @@ const Layout = () => {
             <Tabs.Screen
                 options={{
                     title: 'Home', // Title displayed on the tab label and header
-                    tabBarLabel: 'friends', // Custom label for the tab
-                    tabBarIcon: ({ color }) => <Check  color="green" size={23}/>, // Custom icon component
+                    tabBarLabel: 'MY FRIENDS', // Custom label for the tab
+                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>, // Custom icon component
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
                   }}
@@ -30,8 +32,8 @@ const Layout = () => {
                 name="friendchats"
                 options={{
                     headerShown: false,
-                    title: "let's talk",
-                    tabBarIcon: ({ color }) => <Check  color="green" size={23}/>,
+                    title: "MY CHATS",
+                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />
@@ -39,8 +41,8 @@ const Layout = () => {
                 name="profile"
                 options={{
                     headerShown: false,
-                    title: "profile",
-                    tabBarIcon: ({ color }) => <Check  color="green" size={23}/>,
+                    title: "MY WALKS",
+                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />

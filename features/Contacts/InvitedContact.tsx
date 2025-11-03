@@ -5,7 +5,6 @@ import { InvitedContactProps } from "./types";
 
 export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
 
-  console.log("Invited COntact,", contact)
   const phoneNumber = formatPhoneNumber(contact.item.userToPhoneNumber)
   return (
     <View style={styles.container} key={contact.index}>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
+import { handleAuthQuery } from "../Auth/authUtils";
 import EntryButton from "../Auth/EntryButton";
 import HealthKitData from "../StepTime/HealthKitData";
 import StepTimes from '../StepTime/StepTimes';
@@ -18,16 +19,6 @@ export default function Profile(): React.JSX.Element {
     const [data, setData] = useState([])
 
 
-    const handleAuthQuery = async (e: any, authQuery: any) => {
-        const result = await authQuery({userId}).unwrap();
-        if (result) {
-            //dispatch(setLogInCredentials({ token: result.token, user: result.user }))
-        } else {
-            console.log("error logging in / signing in")
-        }
-    }
-
-
     return (
         <View style={[styles.container, {height: height*.7, width: width*.9}]}>
             <Text>Signout not fully handled on backend, does not work! LOL O LO</Text>
@@ -35,12 +26,10 @@ export default function Profile(): React.JSX.Element {
                 title="Sign Out"
                 onPressQuery={(e) => {handleAuthQuery(e, signOutUser)}}
             />
-
                 <StepTimes />
                 {Platform.OS === 'ios' &&
                     <HealthKitData/>
                 }
-            
         </View>
     );
 }

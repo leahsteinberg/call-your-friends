@@ -30,9 +30,7 @@ export function AuthComponent()  {
 
     return (
 
-        <TouchableWithoutFeedback
-            style={[styles.container,]}
-        >
+        <TouchableWithoutFeedback style={[styles.container,]}>
             <View style={[styles.wrapper, {height: height*.7, width: width*.9} ]}>
             <Text style={[styles.title]}>
                 Call Your Friends
