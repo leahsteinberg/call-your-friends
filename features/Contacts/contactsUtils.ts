@@ -56,6 +56,18 @@ export const createSmsUrl = (token: string, phoneNumber: string): string => {
     // TODO: add an actual link to the app
 };
 
+export const formatPhoneNumber = (digits) => {
+    if (digits.length === 10) {
+        const areaCode = digits.slice(0,3);
+        const firstPortion = digits.slice(3,6)
+        const secondPortion = digits.slice(6, 10)
+        return `(${areaCode}) ${firstPortion} - ${secondPortion}`
+    }
+    console.log("incorrectly formatted digits")
+    return digits;
+    
+}
+
 // export const fakeContact = {
 //     contactType: 'person',
 //     firstName: 'FakeJason',

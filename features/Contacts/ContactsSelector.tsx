@@ -1,5 +1,5 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
-import { BURGUNDY } from "@/styles/styles";
+import { CHOCOLATE_COLOR } from "@/styles/styles";
 import * as Contacts from "expo-contacts";
 import React, { useEffect, useState } from "react";
 import { Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -81,7 +81,7 @@ export default function ContactsSelector(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: BURGUNDY,
+        backgroundColor: CHOCOLATE_COLOR,
         margin: 10,
         padding: 10,
         borderRadius: 3,

@@ -47,5 +47,7 @@ export default function Profile(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'lightgreen',
     },
+    component: {}
 });

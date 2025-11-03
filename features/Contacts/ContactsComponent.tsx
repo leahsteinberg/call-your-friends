@@ -1,5 +1,6 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
+import { CLOUDY_SKY_COLOR } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,9 +41,23 @@ export default function ContactsComponent(): React.JSX.Element {
 
         handleGetFriends()
         handleGetSentInvites()
-    
-    
     }, [])
+
+    // useEffect(() => {
+    //     async function handleGetMeetings() {
+    //         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
+    //         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
+    //         setMeetings(processedMeetings);
+    //     };  
+    //     handleGetMeetings();
+    // }, [])
+
+    // const handleGetMeetings = async () =>  {
+    //     const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
+    //     const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
+    //     setMeetings(processedMeetings);
+    // };  
+
 
 
     return (
@@ -67,19 +82,24 @@ export default function ContactsComponent(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        minHeight: 500,
-        //height: 600,
-       // flex: 1,
-       //flex: 'auto',
-        paddingTop: safePadding,
-        paddingBottom: 20,
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'lightpink',
+        minHeight: 400,
+        backgroundColor: CLOUDY_SKY_COLOR,
         justifyContent: 'space-between',
-       // height: hp(100)-90,
-        //paddingBottom: 30,
+        overflow: 'scroll'
+    //     minHeight: 500,
+    //     //height: 600,
+    //    // flex: 1,
+    //    //flex: 'auto',
+    //     paddingTop: safePadding,
+    //     paddingBottom: 20,
+    //     display: 'flex',
+    //     flexDirection: 'column',
+    //     backgroundColor: 'lightpink',
+    //     justifyContent: 'space-between',
+    //    // height: hp(100)-90,
+    //     //paddingBottom: 30,
     },
+
     selectorComponent: {
         //height: hp(20),
         //flex: 1,
@@ -102,3 +122,16 @@ const styles = StyleSheet.create({
 
     },
 });
+
+
+// const styles = StyleSheet.create({
+//     container: {
+//         minHeight: 400,
+//         backgroundColor: 'lightgreen',
+//         justifyContent: 'space-between',
+//         overflow: 'scroll'
+//     },
+//     component: {
+//         maxHeight: '100%',
+//     },
+// });

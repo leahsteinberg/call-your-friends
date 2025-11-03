@@ -1,7 +1,7 @@
 import { useGetMeetingsMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 import Offers from "../Offers/Offers";
 import MeetingCreator from "./MeetingCreator";
@@ -17,31 +17,28 @@ export default function Meetings() {
     const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
     const [getMeetings] = useGetMeetingsMutation();
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
+    const [needGetMeetings, setNeedGetMeetings] = useState<Boolean>(false);
 
-    useEffect(() => {
-        async function handleGetMeetings() {
-            const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
-            const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
-            setMeetings(processedMeetings);
-        };  
-        handleGetMeetings();
-    }, [])
-
-    const handleGetMeetings = async () =>  {
+    const fetchProcessMeetings = async () =>  {
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
         setMeetings(processedMeetings);
     };  
 
+    useEffect(() => {
+        async function handleGetMeetings() {
+            fetchProcessMeetings();
+        };  
+        handleGetMeetings();
+    }, []);
+
+ 
     return (
         <View style={[styles.container, {height: height*.3}]}>
-            <View style={[styles.component, ]}>
-                <Text>Set up phone calls, {userName}</Text>
-            </View>
             {showMeetingCreator && 
                 <View style={[styles.component,]}>
                         <MeetingCreator
-                            refreshMeetings={handleGetMeetings}
+                            refreshMeetings={fetchProcessMeetings}
                         />
                 </View>
             }

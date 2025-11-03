@@ -1,8 +1,23 @@
 import { queryQuantitySamples, useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
+
+
+const getPastDate = ({daysAgo}) => {
+    let pastDate = new Date();
+
+    // 2. Set the time to midnight (00:00:00.000)
+    pastDate.setHours(0, 0, 0, 0);
+    
+    // 3. Subtract one day to get yesterday's date
+    pastDate.setDate(pastDate.getDate() - daysAgo);
+    
+    console.log("yesterday midngith", pastDate.toLocaleDateString());
+    return pastDate;
+
+}
 
 export default function HealthKitData () {
     const [authed, setAuthed] = useState([false])
@@ -10,16 +25,7 @@ export default function HealthKitData () {
     const [dataSample, setDataSample] = useState([])
     console.log("auth stat - ", authorizationStatus, "authed- ", authed)
 
-    let yesterdayMidnight = new Date();
-
-    // 2. Set the time to midnight (00:00:00.000)
-    yesterdayMidnight.setHours(0, 0, 0, 0);
-    
-    // 3. Subtract one day to get yesterday's date
-    yesterdayMidnight.setDate(yesterdayMidnight.getDate() - 2);
-    
-    console.log("yesterday midngith", yesterdayMidnight.toLocaleDateString());
-
+    const pastDate = getPastDate({daysAgo: 31});
     let today = new Date();
 
 
@@ -31,7 +37,7 @@ export default function HealthKitData () {
                 console.log("trying")
                 const response = await requestAuthorization([HK_DATA_TYPE]); // request read permission for bodyFatPercentage
                 if (response) { // Only update state if component is still mounted
-                    console.log("response", response)
+                    //console.log("response", response)
                     setAuthed([response])
                 
                 }
@@ -40,21 +46,17 @@ export default function HealthKitData () {
             }
             try {
                 if(authed ) {
-                    console.log("tryinmmg    query")
-                    //const { quantity, unit, startDate, endDate } = await getMostRecentQuantitySample(HK_DATA_TYPE); // read latest sample
                     const sample = await queryQuantitySamples(
                         HK_DATA_TYPE,
                         {
                             filter: {
-                                startDate: yesterdayMidnight,
+                                startDate: pastDate,
                                 endDate: today
                             },
-                            limit: 35,
+                            limit: 100,
                         }
                     );
                     setDataSample(sample)
-                    // console.log("got the data", { quantity, unit, startDate, endDate })
-                    console.log("got the sample LLLLLLLjkj- ", sample)
                 }
             } catch (error) {
                 console.log("error getting the data", error)
@@ -67,18 +69,17 @@ export default function HealthKitData () {
     }, []);
 
     return (
-        <View>
+        <ScrollView>
             <Text>
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
             <Text>
-                Got this many step unitssss: {dataSample.length}
+                Got this many step units: {dataSample.length}
                 </Text>
-
                 <Text>
-                    {JSON.stringify(dataSample.map((d) => ({quant: d.quantity, end: d.endDate, start: d.startDate})))}
+                    {dataSample.map((d, i) => (`#${i} - ${d.quantity}: ${d.startDate} --> \n${d.endDate} \n \n`))}
                 </Text>
-        </View>
+        </ScrollView>
     );
 
 }

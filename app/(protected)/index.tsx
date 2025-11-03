@@ -1,4 +1,5 @@
 import ContactsComponent from '@/features/Contacts/ContactsComponent';
+import { CLOUDY_SKY_COLOR } from '@/styles/styles';
 import { StyleSheet, View } from 'react-native';
 
 export default function Index(){
@@ -12,10 +13,9 @@ export default function Index(){
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: 'lightblue',
-    // // height
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: CLOUDY_SKY_COLOR,
   },
 });

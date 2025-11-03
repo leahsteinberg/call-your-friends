@@ -37,7 +37,6 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
 const styles = StyleSheet.create({
     container: {
         margin: 20,
-
     },
     sectionHeader: {
         marginBottom: 5,
