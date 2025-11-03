@@ -6,7 +6,6 @@ import { StyleSheet, View, useWindowDimensions } from 'react-native';
 export default function LogIn() {
 
     const {height, width, scale, fontScale} = useWindowDimensions();
-    console.log({height, width, scale, fontScale})
 
     return (
         <View style={{...styles.container}}>

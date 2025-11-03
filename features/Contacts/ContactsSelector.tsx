@@ -32,7 +32,7 @@ export default function ContactsSelector(): React.JSX.Element {
             const { status } = await Contacts.requestPermissionsAsync();
             if (status === "granted") {
                 const chosenContact = await Contacts.presentContactPickerAsync();
-                console.log("chosen Contact ", chosenContact);
+                // console.log("chosen Contact ", chosenContact);
                 await selectContact(chosenContact);
             }
         } catch {
@@ -82,7 +82,7 @@ export default function ContactsSelector(): React.JSX.Element {
 const styles = StyleSheet.create({
     button: {
         backgroundColor: CHOCOLATE_COLOR,
-        margin: 10,
+        margin: 5,
         padding: 10,
         borderRadius: 3,
         justifyContent: 'center',

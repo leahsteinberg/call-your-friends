@@ -1,4 +1,5 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
+import { BRIGHT_BLUE, CLOUDY_SKY_COLOR, LIGHT_GREEN } from "@/styles/styles";
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
@@ -24,10 +25,10 @@ export default function InvitePhoneNumber(): React.JSX.Element {
     const renderSendInviteButton = (): React.JSX.Element => {
         const phoneNumberValid = isPhoneNumberValid(userToPhoneNumber);
         return (
-            <View style={{ width: '70%', backgroundColor: (phoneNumberValid ? 'dodgerblue' : 'grey') }}>
+            <View style={{...styles.button, backgroundColor: (phoneNumberValid ? BRIGHT_BLUE : CLOUDY_SKY_COLOR)}}>
                 <TouchableOpacity
                     onPress={sendInviteToPhoneNumber}
-                    disabled={!isPhoneNumberValid}
+                    disabled={!phoneNumberValid}
                 >
                     <Text style={{ textAlign: 'center' }}>Invite Friend By Phone Number</Text>
                 </TouchableOpacity>
@@ -53,5 +54,12 @@ export default function InvitePhoneNumber(): React.JSX.Element {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: LIGHT_GREEN,
+        },
+        button: {
+            width: '70%',
+            marginVertical: 10,
+            borderRadius: 8,
+            paddingVertical: 5,
         }
     });

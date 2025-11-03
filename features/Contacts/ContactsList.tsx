@@ -1,3 +1,4 @@
+import { PALE_BLUE } from "@/styles/styles";
 import React from "react";
 import { SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
@@ -13,7 +14,7 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
                 (<Friend item={{ ...item, index }} />)
         },
         {
-            title: "Invites You've Sent",
+            title: "Waiting for these friends to join the fun:",
             data: sentInvites,
             renderItem: ({ item, index }: { item: SentInvite; index: number }) => 
                 (<InvitedContact contact={{ item, index }} />)
@@ -27,8 +28,11 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
                 renderSectionHeader={({section: {title}}) =>
-                    <Text style={[{fontWeight: 'bold'}, styles.sectionHeader]}>{title}</Text>
+                    <Text style={styles.sectionHeader}>{title}</Text>
+
+                    // <Text style={[{fontWeight: 'bold'}, styles.sectionHeader]}>{title}</Text>
                 }
+                stickySectionHeadersEnabled={true} // Enable sticky headers
             />
         </View>);
 }
@@ -39,7 +43,12 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     sectionHeader: {
-        marginBottom: 5,
-        marginTop: 30,
+        // marginBottom: 5,
+        // color: ORANGE,
+        //marginTop: 30,
+        padding:10,
+        backgroundColor: PALE_BLUE,
+        fontWeight: 'bold',
+        borderRadius: 5,
     }
-})
+});

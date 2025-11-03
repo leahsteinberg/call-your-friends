@@ -6,6 +6,7 @@ import { MeetingDisplayProps, MeetingState } from "./types";
 export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   const meetingState: MeetingState = meeting.item.meetingState;
   const iconSize: number = 24;
+  console.log(meeting.item)
   
   const renderStateIcon = (): React.JSX.Element | null => {
     if (meetingState === 'SEARCHING') {
@@ -21,7 +22,10 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   };
 
   return (<View style={styles.container} key={meeting.index}>
-            <Text>{meeting.item.displayScheduledFor}---{meeting.item.id.slice(0,8)}</Text>
+            <Text>{meeting.item.displayScheduledFor}</Text>
+            {meeting.item.acceptedUser && meeting.item.acceptedUser.name &&
+              <Text>with: {meeting.item.acceptedUser.name}</Text>
+            }
             {renderStateIcon()}
         </View>
         );

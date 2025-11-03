@@ -1,4 +1,5 @@
 import { useGetMeetingsMutation } from "@/services/meetingApi";
+import { BRIGHT_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { StyleSheet, View, useWindowDimensions } from "react-native";
@@ -50,7 +51,6 @@ export default function Meetings() {
             <View style={styles.component}>
                 <Offers/>
             </View>
-
         </View>
     )
 }
@@ -58,17 +58,16 @@ export default function Meetings() {
 const styles = StyleSheet.create({
     container: {
         minHeight: 400,
-        backgroundColor: 'lightgreen',
+        backgroundColor: BRIGHT_GREEN,
         //alignContent: 'center',
+        //flow: 1,
         justifyContent: 'space-between',
-        overflow: 'scroll'
+        overflow: 'scroll',
+        maxHeight: '100%',
+        flex: 1,
     },
     component: {
         maxHeight: '100%',
-        // borderColor: 'green',
-        // borderWidth: 1,
-        // margin: 10,
-        // padding: 15,
     },
 });
 
