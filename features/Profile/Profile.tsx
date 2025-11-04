@@ -25,7 +25,7 @@ export default function Profile(): React.JSX.Element {
                 onPressQuery={(e) => {handleAuthQuery(e, signOutUser)}}
             />
                 <StepTimes />
-                {Platform.OS === 'ios' &&
+                {Platform.OS === 'ios' && false &&
                     <HealthKitData/>
                 }
         </View>

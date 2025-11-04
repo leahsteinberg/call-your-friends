@@ -19,18 +19,24 @@ export default function Meetings() {
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
     const [needGetMeetings, setNeedGetMeetings] = useState<Boolean>(false);
     const [getOffers] = useGetOffersMutation();
-    const [offers, setOffers] = useState([])
+    const [offers, setOffers] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+
 
     const fetchProcessMeetings = async () =>  {
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
         setMeetings(processedMeetings);
     }; 
+    const fetchOffers = async () => {
+        const offersResponse = await getOffers({ userId });
+        setOffers(offersResponse.data);
+    };
 
     useEffect(() => {
         async function handleGetOffers() {
-            const offersResponse = await getOffers({ userId });
-            setOffers(offersResponse.data);
+            fetchOffers();
         }
         handleGetOffers();
     }, []);
@@ -41,6 +47,13 @@ export default function Meetings() {
         };  
         handleGetMeetings();
     }, []);
+
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        // Your data fetching or update logic here
+        await fetchProcessMeetings(); // Example: function to fetch new data
+        setRefreshing(false);
+    };
 
  
     return (
@@ -56,6 +69,8 @@ export default function Meetings() {
                 <MeetingsList
                     meetings={meetings}
                     offers={offers}
+                    refresh={handleRefresh}
+                    refreshing={refreshing}
                 />
             </View>
         </View>

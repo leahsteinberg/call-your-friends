@@ -39,6 +39,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-notifications",
       ["@kingstinct/react-native-healthkit", {
         "NSHealthShareUsageDescription": "Use your steps data to help find times to chat with friends while walking.",
         "NSHealthUpdateUsageDescription": "Use your steps data to help find times to chat with friends while walking.",

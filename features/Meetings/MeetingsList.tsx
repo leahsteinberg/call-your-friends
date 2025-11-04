@@ -1,11 +1,11 @@
 import { CREAM, ORANGE } from "@/styles/styles";
-import { SectionList, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Offer from "../Offers/Offer";
 import MeetingDisplay from "./MeetingDisplay";
 import { MeetingType, MeetingsListProps } from "./types";
 
 
-export default function MeetingsList({ meetings, offers }: MeetingsListProps) {
+export default function MeetingsList({ meetings, offers, refresh, refreshing }: MeetingsListProps) {
     console.log("offers is", offers)
 
     const meetingsListData =         {
@@ -36,8 +36,17 @@ export default function MeetingsList({ meetings, offers }: MeetingsListProps) {
                     <Text style={styles.sectionHeader}>{title}</Text>
                 }
                 sections={sectionListData}
-
                 stickySectionHeadersEnabled={true} // Enable sticky headers
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={refresh}
+                        // Optional: Customize colors, title, etc.
+                        // tintColor="#f8f8f8"
+                        // title="Refreshing..."
+                    />
+                }
+
                 />
         </View>
     )
@@ -45,7 +54,6 @@ export default function MeetingsList({ meetings, offers }: MeetingsListProps) {
 
 const styles = StyleSheet.create({
     container: {
-        //overflow: 'scroll',
        flex: 1,
     },
     sectionList: {

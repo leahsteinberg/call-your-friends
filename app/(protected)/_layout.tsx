@@ -3,6 +3,10 @@ import { Tabs } from "expo-router";
 import { Check } from "lucide-react-native";
 
 const Layout = () => {
+
+
+
+
     return (
         <Tabs
         screenOptions={{
