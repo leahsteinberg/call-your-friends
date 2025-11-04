@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'center',
       marginVertical: 3,
-      paddingVertical: 3,
-      paddingHorizontal: 5,
+      paddingVertical: 5,
+      paddingHorizontal: 10,
       marginHorizontal: 10,
       borderRadius: 15,
       flex: 1, // Ensures the View takes up the entire screen

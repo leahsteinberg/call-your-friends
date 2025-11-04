@@ -1,8 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
-import { BRIGHT_GREEN, CREAM } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -11,11 +10,10 @@ import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, SentInvite } from "./types";
 
-const safePadding = Platform.OS === 'ios' ? 60 : 0;
+
 
 
 export default function ContactsComponent(): React.JSX.Element {
-    const { height, width } = useWindowDimensions();
     const dispatch = useDispatch();
     const userFromId: string = useSelector((state: RootState) => state.auth.user.id);
 
@@ -61,7 +59,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
 
     return (
-        <View style={[styles.container, {height: height*.7, width: width*.9}]}>
+        <View style={styles.container}>
             <View  style={styles.selectorComponent}>
                 <ContactsSelector />
             </View>
@@ -83,31 +81,19 @@ export default function ContactsComponent(): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         minHeight: 400,
-        backgroundColor: CREAM,
+        minWidth: 300,
+        maxHeight: '100%',
+        width: '100%',
         justifyContent: 'space-between',
         overflow: 'scroll',
         flex: 1,
-        maxHeight: '100%',
-
-    },
-
-    selectorComponent: {
-        backgroundColor: BRIGHT_GREEN,
-
     },
     listComponent: {
         overflow: 'scroll',
         flex: 'auto',
         flexGrow: 1,
-       // maxHeight: '100%',
-
-        //paddingVertical: 20,
-        //marginVertical: 20,
-        //maxHeight: hp(80)
-
     },
     inviteComponent: {
-        //height: hp(20),
         flex: 'auto',
         flexShrink: 0,
 

@@ -1,3 +1,4 @@
+import { CORNFLOWER_BLUE } from "@/styles/styles";
 import { Check, Radar, X } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -33,11 +34,16 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    borderRadius: 15,
+    backgroundColor: CORNFLOWER_BLUE,
 
   },
   icon: {

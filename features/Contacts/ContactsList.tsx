@@ -6,21 +6,31 @@ import InvitedContact from "./InvitedContact";
 import { ContactsListProps, Friend as FriendType, SentInvite } from "./types";
 
 export default function ContactsList({ friends, sentInvites }: ContactsListProps): React.JSX.Element {
-    const sectionListData = [
-        {
-            title: "Your Friends",
-            data: friends,
-            renderItem: ({ item, index }: { item: FriendType; index: number }) => 
-                (<Friend item={{ ...item, index }} />)
-        },
-        {
-            title: "Waiting for these friends to join the fun:",
-            data: sentInvites,
-            renderItem: ({ item, index }: { item: SentInvite; index: number }) => 
-                (<InvitedContact contact={{ item, index }} />)
-        },
+   
+    const friendListData = 
+    {
+        title: "Your Friends",
+        data: friends,
+        renderItem: ({ item, index }: { item: FriendType; index: number }) => 
+            (<Friend item={{ ...item, index }} />)
+    };
 
-    ] as any;
+    const invitedListData = 
+    {
+        title: "Waiting for these friends to join the fun:",
+        data: sentInvites,
+        renderItem: ({ item, index }: { item: SentInvite; index: number }) => 
+            (<InvitedContact contact={{ item, index }} />)
+    };
+   
+    
+    const sectionListData =  (
+        sentInvites.length > 0
+            ? [friendListData, invitedListData]
+            : [friendListData]
+        ) as any;
+
+
 
     return (
         <View style={styles.container}>

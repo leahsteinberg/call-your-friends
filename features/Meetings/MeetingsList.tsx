@@ -1,4 +1,4 @@
-import { BRIGHT_BLUE, PEACH } from "@/styles/styles";
+import { PEACH } from "@/styles/styles";
 import { SectionList, StyleSheet, Text, View } from "react-native";
 import MeetingDisplay from "./MeetingDisplay";
 import { MeetingType, MeetingsListProps } from "./types";
@@ -23,7 +23,7 @@ export default function MeetingsList({ meetings }: MeetingsListProps) {
                     sections={sectionListData}
                     keyExtractor={(item, index) => item.id + index}
                     renderSectionHeader={({section: {title}}) =>
-                        <Text style={{padding:10, backgroundColor: PEACH, fontWeight: 'bold'}}>{title}</Text>
+                        <Text style={styles.sectionHeader}>{title}</Text>
                     }
                     stickySectionHeadersEnabled={true} // Enable sticky headers
                 />
@@ -34,9 +34,12 @@ export default function MeetingsList({ meetings }: MeetingsListProps) {
 const styles = StyleSheet.create({
     container: {
         maxHeight: 200,
-        backgroundColor: BRIGHT_BLUE,
     },
-    sectionHeading: {
+    sectionHeader: {
         padding: 10,
+        borderRadius: 10,
+        padding:10,
+        backgroundColor: PEACH,
+        fontWeight: 'bold'
     },
 });

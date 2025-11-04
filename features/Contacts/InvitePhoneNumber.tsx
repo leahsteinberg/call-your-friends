@@ -1,5 +1,5 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
-import { BRIGHT_BLUE, CLOUDY_SKY_COLOR, LIGHT_GREEN } from "@/styles/styles";
+import { BRIGHT_BLUE, CLOUDY_SKY_COLOR } from "@/styles/styles";
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from "react-redux";
@@ -54,10 +54,9 @@ export default function InvitePhoneNumber(): React.JSX.Element {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: LIGHT_GREEN,
         },
         button: {
-            width: '70%',
+            width: '40%',
             marginVertical: 10,
             borderRadius: 8,
             paddingVertical: 5,

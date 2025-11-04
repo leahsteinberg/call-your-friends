@@ -1,5 +1,5 @@
 import { useCreateInviteMutation } from "@/services/contactsApi";
-import { CHOCOLATE_COLOR } from "@/styles/styles";
+import { CREAM, ORANGE } from "@/styles/styles";
 import * as Contacts from "expo-contacts";
 import React, { useEffect, useState } from "react";
 import { Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -71,8 +71,8 @@ export default function ContactsSelector(): React.JSX.Element {
     };
 
     return (
-        <View style={styles.button}>
-            <TouchableOpacity onPress={openContactsPicker}>
+        <View style={styles.container} >
+            <TouchableOpacity style={styles.button} onPress={openContactsPicker}>
                 <Text style={styles.text}>Add a friend from your phone contacts.</Text>
             </TouchableOpacity>
         </View>
@@ -80,16 +80,22 @@ export default function ContactsSelector(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
+    container: {        alignItems: 'center',
+    },
     button: {
-        backgroundColor: CHOCOLATE_COLOR,
+        backgroundColor: ORANGE,
         margin: 5,
         padding: 10,
-        borderRadius: 3,
+        borderRadius: 20,
         justifyContent: 'center',
+        alignItems: 'center',
+        width: '60%',
     },
     text: {
         textAlign: 'center',
-        color: 'white',
+        color: CREAM,
+        fontWeight: 600,
+        //backgroundColor: 'white',
     },
     buttonContainer: {
     },
