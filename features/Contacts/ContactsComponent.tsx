@@ -11,8 +11,6 @@ import { setSentInvites } from "./contactsSlice";
 import { Friend, SentInvite } from "./types";
 
 
-
-
 export default function ContactsComponent(): React.JSX.Element {
     const dispatch = useDispatch();
     const userFromId: string = useSelector((state: RootState) => state.auth.user.id);

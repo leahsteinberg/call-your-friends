@@ -1,9 +1,12 @@
 import { PEACH } from "@/styles/styles";
 import { SectionList, StyleSheet, Text, View } from "react-native";
+import Offer from "../Offers/Offer";
 import MeetingDisplay from "./MeetingDisplay";
 import { MeetingType, MeetingsListProps } from "./types";
 
-export default function MeetingsList({ meetings }: MeetingsListProps) {
+
+export default function MeetingsList({ meetings, offers }: MeetingsListProps) {
+    console.log("offers is", offers)
     const sectionListData = [
         {
             title: "Chats Planned:",
@@ -13,9 +16,15 @@ export default function MeetingsList({ meetings }: MeetingsListProps) {
                     meeting={{ item, index }}
                 />)
         },
+        {
+            title: "Offers",
+            data: offers,
+            renderItem: ({ item, index }: { item: OfferType; index: number }) =>
+                <Offer offer={item}/>
+            
+        }
+
     ];
-
-
     
     return (
         <View style={styles.container}>

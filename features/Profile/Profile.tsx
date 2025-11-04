@@ -1,6 +1,7 @@
 import { usePostSignOutMutation } from "@/services/authApi";
+import { CORNFLOWER_BLUE } from "@/styles/styles";
 import React, { useState } from "react";
-import { Platform, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import { handleAuthQuery } from "../Auth/authUtils";
@@ -12,7 +13,6 @@ const safePadding = Platform.OS === 'ios' ? 60 : 0;
 
 
 export default function Profile(): React.JSX.Element {
-    const { height, width } = useWindowDimensions();
     const dispatch = useDispatch();
     const [signOutUser] = usePostSignOutMutation();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -20,10 +20,9 @@ export default function Profile(): React.JSX.Element {
 
 
     return (
-        <View style={[styles.container, {height: height*.7, width: width*.9}]}>
-            <Text>Signout not fully handled on backend, does not work! LOL O LO</Text>
+        <View style={styles.container}>
             <EntryButton
-                title="Sign Out"
+                title="Sign Out -- DOES NOT WORK"
                 onPressQuery={(e) => {handleAuthQuery(e, signOutUser)}}
             />
                 <StepTimes />
@@ -36,7 +35,15 @@ export default function Profile(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'lightgreen',
+        minHeight: 400,
+        minWidth: 300,
+        maxHeight: '100%',
+        width: '100%',
+        justifyContent: 'start',
+        overflow: 'scroll',
+        flex: 1,
+        backgroundColor: CORNFLOWER_BLUE,
     },
+
     component: {}
 });

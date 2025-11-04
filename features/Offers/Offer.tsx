@@ -1,4 +1,5 @@
 import { useAcceptOfferMutation } from "@/services/offersApi";
+import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -35,16 +36,51 @@ export default function Offer({ offer }) {
 
 }
 
+// const styles = StyleSheet.create({
+//     container: {
+//         flexDirection: 'row',
+//         margin: 5,
+//         gap: 5,
+//         justifyContent: 'space-between'
+
+//     },
+//     acceptButton: {
+//         borderColor: 'black',
+//         borderWidth: 1,
+//     }
+// })
+
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        margin: 5,
-        gap: 5,
-        justifyContent: 'space-between'
-
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 5,
+      paddingHorizontal: 5,
+      marginVertical: 5,
+      marginHorizontal: 10,
+      borderRadius: 15,
+      backgroundColor: CORNFLOWER_BLUE,
+  
     },
-    acceptButton: {
-        borderColor: 'black',
-        borderWidth: 1,
-    }
-})
+    icon: {
+      paddingRight: 10,
+    },
+    timeText: {
+      color: ORANGE,
+      fontWeight: 900,
+      flexGrow: 1,
+      paddingVertical: 10,
+      paddingLeft: 5,
+      
+    },
+    nameText: {
+      color: ORANGE,
+      fontWeight: 900,
+      flexGrow: 1,
+      paddingVertical: 10,
+      paddingLeft: 5,
+  
+    },
+  });

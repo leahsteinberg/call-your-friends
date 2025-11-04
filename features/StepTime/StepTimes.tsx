@@ -1,7 +1,7 @@
 
 import { HOST_WITH_PORT } from '@/environment';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 export default function StepTimes() {
   const [data, setData] = useState(null);
@@ -30,8 +30,8 @@ export default function StepTimes() {
 
   return (
     <View>
-        <Text>I am the steppppppp component</Text>
-      {data ? <Text>Data: {JSON.stringify(data)}</Text> : <Text>Loading...</Text>}
+        <Text>{Platform.OS === 'ios' ? 'Step Component' : 'Step Component only works on iOS.'}</Text>
+      {/* {data ? <Text>Data: {JSON.stringify(data)}</Text> : <Text>Loading...</Text>} */}
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import { CORNFLOWER_BLUE } from "@/styles/styles";
+import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
 import { Check, Radar, X } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -23,9 +23,9 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   };
 
   return (<View style={styles.container} key={meeting.index}>
-            <Text>{meeting.item.displayScheduledFor}</Text>
+            <Text style={styles.timeText}>{meeting.item.displayScheduledFor}</Text>
             {meeting.item.acceptedUser && meeting.item.acceptedUser.name &&
-              <Text>with: {meeting.item.acceptedUser.name}</Text>
+              <Text style={styles.nameText}>with: {meeting.item.acceptedUser.name}</Text>
             }
             {renderStateIcon()}
         </View>
@@ -48,5 +48,21 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingRight: 10,
-  }
+  },
+  timeText: {
+    color: ORANGE,
+    fontWeight: 900,
+    flexGrow: 1,
+    paddingVertical: 10,
+    paddingLeft: 5,
+    
+  },
+  nameText: {
+    color: ORANGE,
+    fontWeight: 900,
+    flexGrow: 1,
+    paddingVertical: 10,
+    paddingLeft: 5,
+
+  },
 });

@@ -1,29 +1,40 @@
 import { useGetMeetingsMutation } from "@/services/meetingApi";
+import { useGetOffersMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
-import Offers from "../Offers/Offers";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
 import { processMeetings } from "./meetingsUtils";
 import { MeetingType, ProcessedMeetingType } from "./types";
 
+
 export default function Meetings() {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string = useSelector((state: RootState) => state.auth.user.email)
-    const { height, width } = useWindowDimensions();
     
     const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
     const [getMeetings] = useGetMeetingsMutation();
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
     const [needGetMeetings, setNeedGetMeetings] = useState<Boolean>(false);
+    const [getOffers] = useGetOffersMutation();
+    const [offers, setOffers] = useState([])
 
     const fetchProcessMeetings = async () =>  {
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
         setMeetings(processedMeetings);
-    };  
+    }; 
+
+
+    useEffect(() => {
+        async function handleGetOffers() {
+            const offersResponse = await getOffers({ userId });
+            setOffers(offersResponse.data);
+        }
+        handleGetOffers();
+    }, []);
 
     useEffect(() => {
         async function handleGetMeetings() {
@@ -34,7 +45,7 @@ export default function Meetings() {
 
  
     return (
-        <View style={[styles.container, {height: height*.3}]}>
+        <View style={[styles.container,]}>
             {showMeetingCreator && 
                 <View style={[styles.component,]}>
                         <MeetingCreator
@@ -42,13 +53,11 @@ export default function Meetings() {
                         />
                 </View>
             }
-            <View style={[styles.listComponent]}>
+            <View style={styles.listComponent}>
                 <MeetingsList
                     meetings={meetings}
+                    offers={offers}
                 />
-            </View>
-            <View style={styles.component}>
-                <Offers/>
             </View>
         </View>
     )
@@ -65,11 +74,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1,
     },
-    component: {
-        // flex: 'auto',
-        // flexShrink: 0,
-        //maxHeight: '100%',
-    },
+
     listComponent: {
         overflow: 'scroll',
         flex: 'auto',
