@@ -50,15 +50,13 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20,
+        flex: 1,
     },
     sectionHeader: {
-        // marginBottom: 5,
-        // color: ORANGE,
-        //marginTop: 30,
         padding:10,
         backgroundColor: PALE_BLUE,
         fontWeight: 'bold',
         borderRadius: 5,
+        marginHorizontal: 10,
     }
 });

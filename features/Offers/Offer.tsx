@@ -1,5 +1,5 @@
 import { useAcceptOfferMutation } from "@/services/offersApi";
-import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
+import { CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -36,33 +36,30 @@ export default function Offer({ offer }) {
 
 }
 
-// const styles = StyleSheet.create({
-//     container: {
-//         flexDirection: 'row',
-//         margin: 5,
-//         gap: 5,
-//         justifyContent: 'space-between'
-
-//     },
-//     acceptButton: {
-//         borderColor: 'black',
-//         borderWidth: 1,
-//     }
-// })
-
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 5,
-      paddingHorizontal: 5,
-      marginVertical: 5,
-      marginHorizontal: 10,
-      borderRadius: 15,
-      backgroundColor: CORNFLOWER_BLUE,
-  
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 5,
+        paddingHorizontal: 5,
+        marginVertical: 5,
+        marginHorizontal: 10,
+        borderRadius: 15,
+        backgroundColor: CREAM,
+        borderWidth: 2,
+        borderColor: DARK_BEIGE,
+    //   flex: 1,
+    //   flexDirection: 'row',
+    //   justifyContent: 'space-between',
+    //   alignItems: 'center',
+    //   paddingVertical: 5,
+    //   paddingHorizontal: 5,
+    //   marginVertical: 5,
+    //   marginHorizontal: 10,
+    //   borderRadius: 15,
+    //   backgroundColor: CORNFLOWER_BLUE,
     },
     icon: {
       paddingRight: 10,

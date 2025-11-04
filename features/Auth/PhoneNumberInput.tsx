@@ -1,4 +1,4 @@
-import { DARK_BEIGE, LIGHT_BEIGE } from '@/styles/styles';
+import { BRIGHT_BLUE, CREAM } from '@/styles/styles';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import PhoneNumberValidity from './PhoneNumberValidity';
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     textInput: {
         borderRadius: 10,
         padding: 10,
-        backgroundColor: LIGHT_BEIGE,
+        backgroundColor: BRIGHT_BLUE,
         width: 200,
-        color: DARK_BEIGE,
+        color: CREAM,
         fontWeight: 800,
         flexGrow: 1,
     },

@@ -27,7 +27,6 @@ export default function Meetings() {
         setMeetings(processedMeetings);
     }; 
 
-
     useEffect(() => {
         async function handleGetOffers() {
             const offersResponse = await getOffers({ userId });
@@ -47,7 +46,7 @@ export default function Meetings() {
     return (
         <View style={[styles.container,]}>
             {showMeetingCreator && 
-                <View style={[styles.component,]}>
+                <View style={styles.creatorComponent}>
                         <MeetingCreator
                             refreshMeetings={fetchProcessMeetings}
                         />
@@ -66,21 +65,23 @@ export default function Meetings() {
 const styles = StyleSheet.create({
     container: {
         minHeight: 400,
-        justifyContent: 'space-between',
-        overflow: 'scroll',
+        minWidth: 300,
+
         maxHeight: '100%',
         maxWidth: '100%',
-        minWidth: 300,
         width: '100%',
-        flex: 1,
-    },
-
-    listComponent: {
+        
+        justifyContent: 'space-between',
         overflow: 'scroll',
-        flex: 'auto',
-        flexGrow: 1,
-        maxHeight: '100%',
+        flex: 1,
 
+    },
+    creatorComponent: {
+       flexShrink: 0,
+    
+    },
+    listComponent: {
+        flex: 1,
+        margin: 10,
     }
 });
-

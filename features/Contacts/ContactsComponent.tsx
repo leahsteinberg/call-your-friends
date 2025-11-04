@@ -81,21 +81,28 @@ const styles = StyleSheet.create({
         minHeight: 400,
         minWidth: 300,
         maxHeight: '100%',
+
         width: '100%',
+
         justifyContent: 'space-between',
         overflow: 'scroll',
+
+
         flex: 1,
     },
     listComponent: {
-        overflow: 'scroll',
-        flex: 'auto',
-        flexGrow: 1,
+        flex: 1,
+        //flexGrow: 1,
     },
     inviteComponent: {
-        flex: 'auto',
+        //flex: 'auto',
         flexShrink: 0,
-
+        //flex: 1,
     },
+    selectorComponent: {
+        flexShrink: 0,
+        //flex: 1,
+    }
 });
 
 

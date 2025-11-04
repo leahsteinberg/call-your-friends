@@ -12,7 +12,7 @@ const Layout = () => {
               backgroundColor: LIGHT_BEIGE,
               borderTopColor: BRIGHT_BLUE,
               borderTopWidth: 4,
-              height: 60,
+              height: 90,
               // Add other ViewStyle properties as needed
             },
             headerShown: false, // Hide the header for all tab screens

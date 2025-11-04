@@ -1,4 +1,4 @@
-import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
+import { BRIGHT_BLUE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { Check, Radar, X } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -43,14 +43,16 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 15,
-    backgroundColor: CORNFLOWER_BLUE,
+    backgroundColor: CREAM,
+    borderWidth: 2,
+    borderColor: DARK_BEIGE,
 
   },
   icon: {
     paddingRight: 10,
   },
   timeText: {
-    color: ORANGE,
+    color: BRIGHT_BLUE,
     fontWeight: 900,
     flexGrow: 1,
     paddingVertical: 10,

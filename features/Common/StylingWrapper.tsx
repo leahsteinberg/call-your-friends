@@ -1,6 +1,6 @@
 import { CREAM } from '@/styles/styles';
 import { Platform, StyleSheet, View } from 'react-native';
-const safePadding = Platform === 'ios' ? 60 : 10;
+const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
 
 export default function FullScreenStylingWrapper({children}){
@@ -17,9 +17,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: CREAM,
+    backgroundColor: CREAM, 
     paddingTop: safePadding,
-    paddingHorizontal: 10,
     
   },
 });
