@@ -1,6 +1,7 @@
 import { queryQuantitySamples, useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { ScrollView, Text } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { dateObjToMinutesString } from '../Meetings/meetingsUtils';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
 
@@ -68,18 +69,26 @@ export default function HealthKitData () {
       };
     }, []);
 
+
     return (
-        <ScrollView>
+        <ScrollView style={styles.container}>
             <Text>
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
             <Text>
-                Got this many step units: {dataSample.length}
+                Got this many step entries: {dataSample.length}
                 </Text>
                 <Text>
-                    {dataSample.map((d, i) => (`#${i} - ${d.quantity}: ${d.startDate} --> \n${d.endDate} \n \n`))}
+                    {dataSample.map((d, i) => (`#${i}: Steps: ${d.quantity}\nStart: ${dateObjToMinutesString(d.startDate)} \nEnd: ${dateObjToMinutesString(d.endDate)} \n \n`))}
                 </Text>
         </ScrollView>
     );
 
 }
+
+
+const styles= StyleSheet.create({
+    container: {
+        paddingLeft: 20,
+    }
+})

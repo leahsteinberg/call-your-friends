@@ -1,5 +1,4 @@
 import { usePostSignOutMutation } from "@/services/authApi";
-import { CORNFLOWER_BLUE } from "@/styles/styles";
 import React, { useState } from "react";
 import { Platform, StyleSheet, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,8 +41,6 @@ const styles = StyleSheet.create({
         justifyContent: 'start',
         overflow: 'scroll',
         flex: 1,
-        backgroundColor: CORNFLOWER_BLUE,
     },
-
     component: {}
 });

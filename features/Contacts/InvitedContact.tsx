@@ -1,4 +1,4 @@
-import { LIGHT_BEIGE } from "@/styles/styles";
+import { CREAM, DARK_BEIGE } from "@/styles/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneNumberDisplay from "../Common/PhoneNumberDisplay";
@@ -17,7 +17,7 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: LIGHT_BEIGE,
+    //backgroundColor: LIGHT_BEIGE,
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 3,
@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
 
     borderRadius: 15,
+    backgroundColor: CREAM,
+    borderWidth: 2,
+    borderColor: DARK_BEIGE,
     flex: 1, // Ensures the View takes up the entire screen
 
 

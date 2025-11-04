@@ -1,4 +1,4 @@
-import { BRIGHT_BLUE, LIGHT_BEIGE } from "@/styles/styles";
+import { BRIGHT_BLUE, CREAM, DARK_BEIGE } from "@/styles/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneNumberDisplay from "../Common/PhoneNumberDisplay";
@@ -16,7 +16,9 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 const styles = StyleSheet.create({
     container: { 
       flexDirection: 'row',
-      backgroundColor: LIGHT_BEIGE,
+      backgroundColor: CREAM,
+      borderWidth: 2,
+      borderColor: DARK_BEIGE,
       justifyContent: 'space-between',
       alignItems: 'center',
       marginVertical: 3,
