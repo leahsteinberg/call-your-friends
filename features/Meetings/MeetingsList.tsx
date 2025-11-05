@@ -23,7 +23,6 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
             <Offer offer={item}/>
     }
 
-
     const sectionListData = offers.length > 0 ? [meetingsListData, offersListData] : [meetingsListData];
     
     return (

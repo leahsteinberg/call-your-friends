@@ -29,14 +29,11 @@ export default function UserDataInput({onChangeName, onChangePhoneNumber, showNa
 
 const styles = StyleSheet.create({
     container: {
-        //backgroundColor: PALE_BLUE,
-        //alignItems: 'center',
         borderRadius: 3,
         flex: 1,
-        //margin: 10,
     },
     phoneInput: {
-        flex:1,
+        flex: 1,
     },
     textInput: {
         flex: 1,
