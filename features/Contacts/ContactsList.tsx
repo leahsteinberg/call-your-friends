@@ -6,7 +6,9 @@ import InvitedContact from "./InvitedContact";
 import { ContactsListProps, Friend as FriendType, SentInvite } from "./types";
 
 export default function ContactsList({ friends, sentInvites }: ContactsListProps): React.JSX.Element {
-   
+
+
+
     const friendListData = 
     {
         title: "Friends",
@@ -60,14 +62,13 @@ const styles = StyleSheet.create({
     },
     sectionHeaderContainer: {
         backgroundColor: CREAM,
-        //flex:1,
         marginHorizontal: 10,
+        borderBottomLeftRadius: 5,
     },
     sectionHeader: {
         paddingVertical:10,
         backgroundColor: PALE_BLUE,
         fontWeight: 'bold',
         borderRadius: 5,
-        //marginHorizontal: 10,
     }
 });

@@ -1,12 +1,16 @@
 import { BaseEntity } from "@/types/common";
 
-export interface MeetingType extends BaseEntity {
-    meetingState: 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
-    title: string;
+
+export interface MeetingEvent extends BaseEntity {
     displayScheduledFor: string;
     scheduledFor: string;
     scheduledEnd: string;
     userFromId: string;
+}
+
+export interface MeetingType extends MeetingEvent {
+    meetingState: 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
+    title: string;
 }
 
 export interface ProcessedMeetingType extends MeetingType {
@@ -15,10 +19,5 @@ export interface ProcessedMeetingType extends MeetingType {
 
 export interface MeetingsListProps {
     meetings: ProcessedMeetingType[];
-}
-
-export interface OfferType extends BaseEntity {
-    meetingId: string;
-    offerState: 'PENDING' | 'ACCEPTED' | 'REJECTED';
 }
 

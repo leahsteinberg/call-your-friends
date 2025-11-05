@@ -44,22 +44,6 @@ export default function ContactsComponent(): React.JSX.Element {
         handleGetSentInvites()
     }, [])
 
-    // useEffect(() => {
-    //     async function handleGetMeetings() {
-    //         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
-    //         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
-    //         setMeetings(processedMeetings);
-    //     };  
-    //     handleGetMeetings();
-    // }, [])
-
-    // const handleGetMeetings = async () =>  {
-    //     const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
-    //     const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
-    //     setMeetings(processedMeetings);
-    // };  
-
-
 
     return (
         <View style={styles.container}>

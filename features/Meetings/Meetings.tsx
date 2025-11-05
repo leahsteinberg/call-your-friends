@@ -2,17 +2,17 @@ import { useGetMeetingsMutation } from "@/services/meetingApi";
 import { useGetOffersMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
-import { processMeetings } from "./meetingsUtils";
+import { processMeetings, processOffers } from "./meetingsUtils";
 import { MeetingType, ProcessedMeetingType } from "./types";
 
 
 export default function Meetings() {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const userName: string = useSelector((state: RootState) => state.auth.user.email)
+    const userName: string = useSelector((state: RootState) => state.auth.user.name)
     
     const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
     const [getMeetings] = useGetMeetingsMutation();
@@ -31,7 +31,10 @@ export default function Meetings() {
     }; 
     const fetchOffers = async () => {
         const offersResponse = await getOffers({ userId });
-        setOffers(offersResponse.data);
+        console.log("offers response", offersResponse)
+        const processedOffers: ProcessedOfferType[] = await processOffers(offersResponse.data);
+        console.log("Procesesd offers", processedOffers)
+        setOffers(processedOffers);
     };
 
     useEffect(() => {
@@ -58,6 +61,7 @@ export default function Meetings() {
  
     return (
         <View style={[styles.container,]}>
+            <Text>{userName}</Text>
             {showMeetingCreator && 
                 <View style={styles.creatorComponent}>
                         <MeetingCreator
