@@ -1,4 +1,4 @@
-import { SignIn } from '@/features/Auth/SignIn';
+import { SignUp } from '@/features/Auth/SignUp';
 import FullScreenStylingWrapper from '@/features/Common/StylingWrapper';
 import React from 'react';
 import { StyleSheet } from 'react-native';
@@ -10,7 +10,7 @@ export default function LogIn() {
 
     return (
         <FullScreenStylingWrapper>
-            <SignIn/>
+            <SignUp/>
         </FullScreenStylingWrapper>
     );
 }

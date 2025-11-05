@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface MeetingState {}
 
-const initialState = {
+const initialState = {// Not currently being used.
     meetings: [],
     offers: [],
 }
@@ -10,15 +10,8 @@ const initialState = {
 export const meetingSlice = createSlice({
     name: 'meeting',
     initialState,
-    reducers: {
-        addMeeting: (state, action: PayloadAction<Meeting>) => {
-            const meetingExists = state.meetings
-                .find((meeting) => meeting.id === action.payload.id);
-            if (!meetingExists) 
-                state.meetings.push(action.payload);
-            }
-        }
-    });
+    reducers: {}
+});
 
 export const {} = meetingSlice.actions;
 

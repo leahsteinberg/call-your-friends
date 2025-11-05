@@ -25,6 +25,7 @@ export default function Meetings() {
 
 
     const fetchProcessMeetings = async () =>  {
+        console.log("fetch and process meetings")
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
         const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
         setMeetings(processedMeetings);

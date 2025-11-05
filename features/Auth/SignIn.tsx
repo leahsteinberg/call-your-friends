@@ -1,25 +1,21 @@
-import { usePostPhoneSignupMutation, usePostSignInMutation } from '@/services/authApi';
+import { usePostSignInMutation } from '@/services/authApi';
 import { BURGUNDY, CREAM } from '@/styles/styles';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
 import EntryButton from './EntryButton';
-import PhoneNumberInput from './PhoneNumberInput';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
-export function AuthComponent()  {
+export function SignIn()  {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
     const dispatch = useDispatch();
-    const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
-        const result = await authQuery({email, password, phoneNumber, name}).unwrap();
+        const result = await authQuery({email, password}).unwrap();
         if (result) {
             dispatch(setLogInCredentials({ token: result.token, user: result.user }))
         } else {
@@ -28,17 +24,12 @@ export function AuthComponent()  {
     }
 
     return (
-        <TouchableWithoutFeedback style={[styles.container,]}>
-            <View style={[styles.wrapper]}>
+        <View style={[styles.container,]}>
             <Text style={[styles.title]}>
                 Call Your Friends
             </Text>
             
             <View style={styles.component}>
-                <PhoneNumberInput
-                    onDataChange={setPhoneNumber}
-                    phoneNumber={phoneNumber}
-                />
                 <UserEmailPasswordInput
                     onChangeEmail={(text: string)=> setEmail(text)}
                     onChangePassword={(text: string) => setPassword(text)}
@@ -58,13 +49,10 @@ export function AuthComponent()  {
                     title="Sign In"
                     onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
                 />
-                <EntryButton
-                    title="Sign Up"
-                    onPressQuery={phoneSignUpUser}
-                />
+                {/* TO DO: link to sign up page! */}
             </View>
-            </View>
-</TouchableWithoutFeedback>);
+    </View>
+    );
 }
 
 

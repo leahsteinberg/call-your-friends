@@ -8,7 +8,7 @@ import EntryButton from './EntryButton';
 import PhoneNumberInput from './PhoneNumberInput';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
-export function AuthComponent()  {
+export function SignUp()  {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,6 +17,7 @@ export function AuthComponent()  {
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
+    
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
         const result = await authQuery({email, password, phoneNumber, name}).unwrap();
@@ -54,14 +55,16 @@ export function AuthComponent()  {
             <View 
                 style={styles.component}
             >
+                {/* TO DO - LINK TO SIGN IN PAGE!!!
                 <EntryButton
                     title="Sign In"
                     onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
-                />
+                /> */}
                 <EntryButton
                     title="Sign Up"
                     onPressQuery={phoneSignUpUser}
                 />
+                
             </View>
             </View>
 </TouchableWithoutFeedback>);
