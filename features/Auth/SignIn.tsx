@@ -22,6 +22,7 @@ export function SignIn()  {
             console.log("error logging in / signing in")
         }
     }
+    const isSigninButtonDisabled = () => !(email.length > 0 && password.length > 0);
 
     return (
         <View style={[styles.container,]}>
@@ -34,20 +35,12 @@ export function SignIn()  {
                     onChangeEmail={(text: string)=> setEmail(text)}
                     onChangePassword={(text: string) => setPassword(text)}
                 />
-                {/* <UserDataInput
-                    
-                    onChangeName={(text: string) => setName(text)}
-                    showName={true}
-                    //TO DO - deal with showing name - sign IN vs sign Up                  
-                /> */}
             </View>
-
-            <View 
-                style={styles.component}
-            >
+            <View style={styles.component}>
                 <EntryButton
                     title="Sign In"
                     onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
+                    isDisabled={isSigninButtonDisabled()}
                 />
                 {/* TO DO: link to sign up page! */}
             </View>
@@ -65,7 +58,6 @@ export function SignIn()  {
     wrapper: {
         justifyContent: 'center',
         backgroundColor: CREAM,
-
         minHeight: 500,
     },
     title: {

@@ -1,11 +1,10 @@
 import { usePostPhoneSignupMutation } from '@/services/authApi';
-import { BURGUNDY, CREAM } from '@/styles/styles';
+import { BURGUNDY } from '@/styles/styles';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
 import EntryButton from './EntryButton';
-import PhoneNumberInput from './PhoneNumberInput';
 import UserDataInput from './UserDataInput';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
@@ -17,10 +16,8 @@ export function SignUp()  {
     const [phoneNumber, setPhoneNumber] = useState('');
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
-        console.log("IN SIGN UP !")
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
-        console.log("sign up handle A", authQuery)
         const result = await authQuery({email, password, phoneNumber, name}).unwrap();
         if (result) {
             dispatch(setLogInCredentials({ token: result.token, user: result.user }))
@@ -28,35 +25,34 @@ export function SignUp()  {
             console.log("error logging in / signing in")
         }
     }
+    
     const isSignupButtonDisabled = () => !(
-        email.length > 0 && password.length> 0 && name.length > 0 && phoneNumber.length === 10)
+        email.length > 0
+        && password.length > 0
+        && name.length > 0
+        && phoneNumber.length === 10
+    );
     
 
     return (
-        <TouchableWithoutFeedback style={[styles.container,]}>
-            <View style={[styles.wrapper]}>
+        <View style={styles.container}>
             <Text style={[styles.title]}>
                 Call Your Friends
             </Text>
-            
             <View style={styles.component}>
-                <PhoneNumberInput
-                    onDataChange={setPhoneNumber}
+                <UserDataInput
+                    onChangeName={(text: string) => setName(text)}
+                    onChangePhoneNumber={setPhoneNumber}
                     phoneNumber={phoneNumber}
+                    showName={true}
+                    showPhoneNumber={true}
                 />
                 <UserEmailPasswordInput
                     onChangeEmail={(text: string)=> setEmail(text)}
                     onChangePassword={(text: string) => setPassword(text)}
                 />
-                <UserDataInput
-                    onChangeName={(text: string) => setName(text)}
-                    showName={true}
-                />
             </View>
 
-            <View 
-                style={styles.component}
-            >
                 {/* TO DO - LINK TO SIGN IN PAGE!!!*/}
                 <EntryButton
                     title="Sign Up"
@@ -64,9 +60,7 @@ export function SignUp()  {
                     isDisabled={isSignupButtonDisabled()}
                 />
                 
-            </View>
-            </View>
-</TouchableWithoutFeedback>);
+</View>);
 }
 
 
@@ -75,12 +69,6 @@ export function SignUp()  {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    wrapper: {
-        justifyContent: 'center',
-        backgroundColor: CREAM,
-
-        minHeight: 500,
     },
     title: {
         fontSize: 40,

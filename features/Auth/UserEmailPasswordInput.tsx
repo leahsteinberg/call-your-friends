@@ -25,12 +25,10 @@ export default function UserEmailPasswordInput({onChangeEmail, onChangePassword}
 const styles = StyleSheet.create({
     container: {
         padding: 10,
-        backgroundColor: BRIGHT_BLUE,
         borderRadius: 3,
         //margin: 10,
     },
     textInput: {
-
         borderRadius: 10,
         marginVertical: 10,
         padding: 10,

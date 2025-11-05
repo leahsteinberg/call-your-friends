@@ -1,46 +1,48 @@
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM } from '@/styles/styles';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import PhoneNumberInput from './PhoneNumberInput';
 
 
-export default function UserDataInput({onChangeEmail, onChangePassword, onChangeName, onChangePhoneNumber, showName, showPhoneNumber}) {
+export default function UserDataInput({onChangeName, onChangePhoneNumber, showName, phoneNumber, showPhoneNumber}) {
     return (
-            <View style={styles.container}>
-                {
-                    showPhoneNumber &&
-                    <PhoneNumberInput
-                    onDataChange={setPhoneNumber}
+        <View style={styles.container}>
+            { showPhoneNumber &&
+            <View style={styles.phoneInput}>
+                <PhoneNumberInput
+                    onDataChange={onChangePhoneNumber}
                     phoneNumber={phoneNumber}
                 />
-                }
-                {showName &&
-                    <TextInput
-                        placeholder="Your Name"
-                        style={styles.textInput}
-                        onChangeText={(text)=> onChangeName(text)}
-                    />
-                }
-            </View>
+                </View>
+            }
+            { showName &&
+                <TextInput
+                    placeholder="Your Name"
+                    style={styles.textInput}
+                    onChangeText={(text)=> onChangeName(text)}
+                />
+            }
+        </View>
     );
 }
 
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
-        backgroundColor: 'lightblue',
+        //backgroundColor: PALE_BLUE,
         //alignItems: 'center',
         borderRadius: 3,
+        flex: 1,
         //margin: 10,
     },
+    phoneInput: {
+        flex:1,
+    },
     textInput: {
-        // borderRadius: 3,
-        // margin: 10,
-        // padding: 10,
-        // backgroundColor: LIGHT_GREEN,
+        flex: 1,
         borderRadius: 10,
         marginVertical: 10,
-        padding: 10,
+        padding: 5,
         backgroundColor: CREAM,
         width: 200,
         color: BRIGHT_BLUE,

@@ -1,4 +1,4 @@
-import { BRIGHT_BLUE, CLOUDY_SKY_COLOR } from "@/styles/styles";
+import { BRIGHT_BLUE, CLOUDY_SKY_COLOR, CREAM } from "@/styles/styles";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function EntryButton({title, onPressQuery, isDisabled}) {
@@ -16,17 +16,20 @@ export default function EntryButton({title, onPressQuery, isDisabled}) {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#8fa4d1',
+        backgroundColor: BRIGHT_BLUE,
         // paddingTop: 15,
         // paddingBottom: 15,
         // paddingLeft: 10,
         // paddingRight: 10,
+        padding: 10,
         margin: 10,
         borderRadius: 3,
         justifyContent: 'center',
     },
     text: {
         // color: 'white',
+        color: CREAM,
+        fontWeight: 900,
         textAlign: 'center',
 
     },
