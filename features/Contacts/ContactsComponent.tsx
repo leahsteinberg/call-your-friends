@@ -1,7 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -22,6 +22,11 @@ export default function ContactsComponent(): React.JSX.Element {
     const [getFriends] = useGetFriendsMutation();
     const {data, isLoading, isError, error} = useGetFriendsMutation();
 
+    const DismissKeyboard = ({ children }) => (
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
+          {children}
+        </TouchableWithoutFeedback>
+      );
 
     useEffect(()=> { 
         async function handleGetSentInvites() {
@@ -57,22 +62,25 @@ export default function ContactsComponent(): React.JSX.Element {
 
 
     return (
+        <DismissKeyboard>
         <View style={styles.container}>
             <View  style={styles.selectorComponent}>
                 <ContactsSelector />
-            </View>
-            <View style={styles.listComponent}>
-                <ContactsList
-                    friends={friends}
-                    sentInvites={sentInvites}
-                />
             </View>
             { DEV_FLAG &&
                 <View style={styles.inviteComponent}>
                     <InvitePhoneNumber />
                 </View>
             }
+            <View style={styles.listComponent}>
+                <ContactsList
+                    friends={friends}
+                    sentInvites={sentInvites}
+                />
+            </View>
+
         </View>
+        </DismissKeyboard>
     );
 }
 

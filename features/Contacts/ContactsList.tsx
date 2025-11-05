@@ -9,7 +9,7 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
    
     const friendListData = 
     {
-        title: "Your Friends",
+        title: "Friends",
         data: friends,
         renderItem: ({ item, index }: { item: FriendType; index: number }) => 
             (<Friend item={{ ...item, index }} />)

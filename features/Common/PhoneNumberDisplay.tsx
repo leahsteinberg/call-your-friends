@@ -1,11 +1,16 @@
 import { MID_BLUE } from '@/styles/styles';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { formatPhoneNumber } from '../Contacts/contactsUtils';
 
 export default function PhoneNumberDisplay({digits}){
+  const makeCall = () => {
+    Linking.openURL(`tel:${digits}`);
+  };
+
+
     return (
         <View style={styles.container}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={makeCall}>
                 <Text style={styles.text}>call them at: </Text>
                 <Text style={styles.number}>{formatPhoneNumber(digits)}</Text>
             </TouchableOpacity>

@@ -17,11 +17,10 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
             />)
     };
     const offersListData =         {
-        title: "Offers",
+        title: "Offers:",
         data: offers,
         renderItem: ({ item, index }: { item: OfferType; index: number }) =>
             <Offer offer={item}/>
-        
     }
 
 
@@ -41,9 +40,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={refresh}
-                        // Optional: Customize colors, title, etc.
-                        // tintColor="#f8f8f8"
-                        // title="Refreshing..."
+                        tintColor={ORANGE}
                     />
                 }
 

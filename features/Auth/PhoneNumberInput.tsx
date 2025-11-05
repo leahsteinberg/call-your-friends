@@ -1,4 +1,4 @@
-import { BRIGHT_BLUE, CREAM } from '@/styles/styles';
+import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM } from '@/styles/styles';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import PhoneNumberValidity from './PhoneNumberValidity';
@@ -29,18 +29,20 @@ export default function PhoneNumberInput({onDataChange, phoneNumber}) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingTop: 10,
+        justifyContent: 'space-between',
     },
     textInput: {
         borderRadius: 10,
         padding: 10,
-        backgroundColor: BRIGHT_BLUE,
+        backgroundColor: CREAM,
         width: 200,
-        color: CREAM,
+        color: BRIGHT_BLUE,
         fontWeight: 800,
         flexGrow: 1,
+        borderWidth: 3,
+        borderColor: BRIGHT_GREEN,
     },
 
 });
