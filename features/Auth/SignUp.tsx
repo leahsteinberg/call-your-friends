@@ -1,4 +1,4 @@
-import { usePostPhoneSignupMutation, usePostSignInMutation } from '@/services/authApi';
+import { usePostPhoneSignupMutation } from '@/services/authApi';
 import { BURGUNDY, CREAM } from '@/styles/styles';
 import { useState } from 'react';
 import { Platform, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
@@ -17,7 +17,6 @@ export function SignUp()  {
     const [phoneNumber, setPhoneNumber] = useState('');
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
-    const [signInUser] = usePostSignInMutation();
         console.log("IN SIGN UP !")
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
@@ -29,6 +28,9 @@ export function SignUp()  {
             console.log("error logging in / signing in")
         }
     }
+    const isSignupButtonDisabled = () => !(
+        email.length > 0 && password.length> 0 && name.length > 0 && phoneNumber.length === 10)
+    
 
     return (
         <TouchableWithoutFeedback style={[styles.container,]}>
@@ -59,6 +61,7 @@ export function SignUp()  {
                 <EntryButton
                     title="Sign Up"
                     onPressQuery={(e: any) => handleAuthQuery(e, phoneSignUpUser)}
+                    isDisabled={isSignupButtonDisabled()}
                 />
                 
             </View>
