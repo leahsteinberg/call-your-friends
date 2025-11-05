@@ -35,6 +35,7 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
     return (
         <View style={styles.container}>
             <SectionList
+            style={styles.sectionList}
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
                 renderSectionHeader={({section: {title}}) =>
@@ -53,9 +54,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    sectionList: {
+        removeClippedSubviews: false,
+
+    },
     sectionHeaderContainer: {
         backgroundColor: CREAM,
-        flex:1,
+        //flex:1,
         marginHorizontal: 10,
     },
     sectionHeader: {

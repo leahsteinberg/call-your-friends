@@ -73,15 +73,12 @@ export default function ContactsComponent(): React.JSX.Element {
                     <InvitePhoneNumber />
                 </View>
             }
-            <DismissKeyboard>
-
                 <View style={styles.listComponent}>
                     <ContactsList
                         friends={friends}
                         sentInvites={sentInvites}
                     />
                 </View>
-            </DismissKeyboard>
         </View>
     );
 }

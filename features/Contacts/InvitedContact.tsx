@@ -3,7 +3,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import PhoneNumberDisplay from "../Common/PhoneNumberDisplay";
 import { InvitedContactProps } from "./types";
-
 export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
 
   return (
