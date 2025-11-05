@@ -20,17 +20,6 @@ export default function UserDataInput({onChangeEmail, onChangePassword, onChange
                         onChangeText={(text)=> onChangeName(text)}
                     />
                 }
-                <TextInput
-                    placeholder="Email address"
-                    style={styles.textInput}
-                    onChangeText={(text)=> onChangeEmail(text)}
-                />
-                <TextInput
-                    placeholder="Password"
-                    style={styles.textInput}
-                    onChangeText={(text)=> onChangePassword(text)}
-                    secureTextEntry
-                />
             </View>
     );
 }

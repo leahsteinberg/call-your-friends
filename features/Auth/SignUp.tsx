@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
 import EntryButton from './EntryButton';
 import PhoneNumberInput from './PhoneNumberInput';
+import UserDataInput from './UserDataInput';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
 export function SignUp()  {
@@ -17,9 +18,10 @@ export function SignUp()  {
     const dispatch = useDispatch();
     const [phoneSignUpUser, phoneSignUpStatus] = usePostPhoneSignupMutation();
     const [signInUser] = usePostSignInMutation();
-    
+        console.log("IN SIGN UP !")
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
+        console.log("sign up handle A", authQuery)
         const result = await authQuery({email, password, phoneNumber, name}).unwrap();
         if (result) {
             dispatch(setLogInCredentials({ token: result.token, user: result.user }))
@@ -44,25 +46,19 @@ export function SignUp()  {
                     onChangeEmail={(text: string)=> setEmail(text)}
                     onChangePassword={(text: string) => setPassword(text)}
                 />
-                {/* <UserDataInput
-                    
+                <UserDataInput
                     onChangeName={(text: string) => setName(text)}
                     showName={true}
-                    //TO DO - deal with showing name - sign IN vs sign Up                  
-                /> */}
+                />
             </View>
 
             <View 
                 style={styles.component}
             >
-                {/* TO DO - LINK TO SIGN IN PAGE!!!
-                <EntryButton
-                    title="Sign In"
-                    onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
-                /> */}
+                {/* TO DO - LINK TO SIGN IN PAGE!!!*/}
                 <EntryButton
                     title="Sign Up"
-                    onPressQuery={phoneSignUpUser}
+                    onPressQuery={(e: any) => handleAuthQuery(e, phoneSignUpUser)}
                 />
                 
             </View>
