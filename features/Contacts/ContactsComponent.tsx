@@ -62,25 +62,27 @@ export default function ContactsComponent(): React.JSX.Element {
 
 
     return (
-        <DismissKeyboard>
         <View style={styles.container}>
-            <View  style={styles.selectorComponent}>
-                <ContactsSelector />
-            </View>
+            <DismissKeyboard>
+                <View  style={styles.selectorComponent}>
+                    <ContactsSelector />
+                </View>
+            </DismissKeyboard>
             { DEV_FLAG &&
                 <View style={styles.inviteComponent}>
                     <InvitePhoneNumber />
                 </View>
             }
-            <View style={styles.listComponent}>
-                <ContactsList
-                    friends={friends}
-                    sentInvites={sentInvites}
-                />
-            </View>
+            <DismissKeyboard>
 
+                <View style={styles.listComponent}>
+                    <ContactsList
+                        friends={friends}
+                        sentInvites={sentInvites}
+                    />
+                </View>
+            </DismissKeyboard>
         </View>
-        </DismissKeyboard>
     );
 }
 

@@ -21,7 +21,7 @@ export const buildFriendUser = (user: Contacts.Contact, phoneNumberObj: Contacts
         lastName,
         digits: phoneNumberObj.digits || '',
         label: phoneNumberObj.label,
-        number: phoneNumberObj.number,
+        number: cleanPhoneNumber(phoneNumberObj.number),
         countryCode: phoneNumberObj.countryCode,
     };
 };

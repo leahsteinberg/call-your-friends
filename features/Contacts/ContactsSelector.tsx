@@ -6,7 +6,7 @@ import { Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import { addSentInvite } from "./contactsSlice";
-import { createSmsUrl, processContact } from "./contactsUtils";
+import { cleanPhoneNumber, createSmsUrl, processContact } from "./contactsUtils";
 
 export default function ContactsSelector(): React.JSX.Element {
     const [permissionStatus, setPermissionStatus] = useState<boolean>(false);
@@ -60,7 +60,8 @@ export default function ContactsSelector(): React.JSX.Element {
             return;
         }
         const friendUser = processContact(chosenContact);
-        const userToPhoneNumber = friendUser.digits;
+        const userToPhoneNumber = cleanPhoneNumber(friendUser.digits);
+        
         const response = await createInvite({ userFromId, userToPhoneNumber }).unwrap();
         if (response) {
             dispatch(addSentInvite(friendUser));

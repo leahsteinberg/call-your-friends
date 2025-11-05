@@ -1,4 +1,4 @@
-import { PALE_BLUE } from "@/styles/styles";
+import { CREAM, PALE_BLUE } from "@/styles/styles";
 import React from "react";
 import { SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
@@ -38,8 +38,9 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
                 renderSectionHeader={({section: {title}}) =>
-                    <Text style={styles.sectionHeader}>{title}</Text>
-
+                    <View style={styles.sectionHeaderContainer}>
+                        <Text style={styles.sectionHeader}>{title}</Text>
+                    </View>
                     // <Text style={[{fontWeight: 'bold'}, styles.sectionHeader]}>{title}</Text>
                 }
                 stickySectionHeadersEnabled={true} // Enable sticky headers
@@ -52,11 +53,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    sectionHeaderContainer: {
+        backgroundColor: CREAM,
+        flex:1,
+        marginHorizontal: 10,
+    },
     sectionHeader: {
-        padding:10,
+        paddingVertical:10,
         backgroundColor: PALE_BLUE,
         fontWeight: 'bold',
         borderRadius: 5,
-        marginHorizontal: 10,
+        //marginHorizontal: 10,
     }
 });

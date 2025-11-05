@@ -7,7 +7,6 @@ import { MeetingDisplayProps, MeetingState } from "./types";
 export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   const meetingState: MeetingState = meeting.item.meetingState;
   const iconSize: number = 24;
-  console.log(meeting.item)
   
   const renderStateIcon = (): React.JSX.Element | null => {
     if (meetingState === 'SEARCHING') {
