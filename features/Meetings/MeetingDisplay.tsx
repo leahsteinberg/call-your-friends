@@ -4,7 +4,7 @@ import { Check, Radar, X } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { MeetingDisplayProps, MeetingState } from "./types";
+import type { MeetingDisplayProps, MeetingState } from "./types";
 
 export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
   const userId: string = useSelector((state: RootState) => state.auth.user.id)
