@@ -24,41 +24,49 @@ export const processStepsData = async (data) => {
       // based on its start time, we add it to the bucket.  
 
   const mostRecentTime = data[0].endDate;
-  const oldestTime = data[data.length - 1].startDate;
-  const oldestHour = getStartOfHour(oldestTime);
-  const latestHour = getStartOfHour(mostRecentTime);
-  const hoursDuration = hoursBetween(oldestHour, latestHour)
+  const mostPastTime = data[data.length - 1 ].startDate;
+
+  console.log("most past time -- ",dateObjToMinutesString(data[data.length-1].startDate));
+
+
+  const mostPastHour = getStartOfHour(mostPastTime);
+  console.log("most past hour", dateObjToMinutesString(mostPastHour));
+
+  const mostRecentHour = getStartOfHour(mostRecentTime);
+  console.log("latest hour -", dateObjToMinutesString(mostRecentHour));
+  const hoursDuration = hoursBetween(mostPastHour, mostRecentHour);
   const hoursObj = new Object();
   
+  const mostPastHourString = dateObjToMinutesString(mostPastHour);
+  console.log("mostPastHourString", mostPastHourString, "should be - ", dateObjToMinutesString(data[data.length-1].startDate))
 
-  const oldestHourString = dateObjToMinutesString(oldestHour);
 
-    for (let i = 0; i < hoursDuration; i++) {
-      // take the oldest hour string and turn it into a NEW "Date Object"
-      const newDate = new Date(oldestHourString);
-      if (i < 3){ console.log("New date -- not yet changed", dateObjToMinutesString(newDate)); }
-      
-      // add i (number of hours) to that new date object
+    for (let i = 0; i < hoursDuration + 1; i++) {
+
+      const newDate= new Date(mostPastHour);
+      //const newDate = new Date(mostPastHourString); 
+      if (i === 0 ) {console.log("previous new date=====", dateObjToMinutesString(newDate));  }
       newDate.setHours(newDate.getHours() + i);
-      
-      // turn that new Date object into a string
       const newDateString = dateObjToMinutesString(newDate);
+      //console.log("new Date string", newDateString);
 
-      if (i < 3){ console.log("new date, has been changed i is:", i, " ---", newDateString); }
-
-      // add a new entry into the big object we are building up, with 0 steps.
       hoursObj[newDateString] = 0;
 
     }
-    console.log(hoursObj);
+    //console.log(hoursObj);
 
 
-  // for (let stepCount of data) {
-  //   console.log(dateObjToMinutesString(stepCount.startDate));
-  //   console.log(stepCount.quantity)
-  //   // 
+  for (let stepCount of data) {
+    //console.log(dateObjToMinutesString(getStartOfHour(stepCount.startDate)));
+    const startHourString = dateObjToMinutesString(getStartOfHour(stepCount.startDate));
+    //console.log(dateObjToMinutesString(stepCount.startDate),"----", startHourString)
+    //console.log(stepCount.quantity)
+   console.log("lookup", hoursObj[startHourString]);
+    hoursObj[startHourString] = hoursObj[startHourString] + stepCount.quantity
+    // 
 
-  //}
+  }
+  console.log(hoursObj)
 
   
 
