@@ -51,9 +51,16 @@ export function SignIn()  {
 
  const styles = StyleSheet.create({
     container: {
+        minHeight: 400,
+        minWidth: 300,
+
+        maxHeight: '100%',
+        maxWidth: '100%',
+        width: '100%',
+        
+        justifyContent: 'space-between',
+        overflow: 'scroll',
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     wrapper: {
         justifyContent: 'center',

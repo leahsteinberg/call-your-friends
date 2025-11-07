@@ -7,7 +7,7 @@ const HOST = 'cyf-backend.onrender.com';
 //export const HOST_WITH_PORT = `http://${HOST}:3000`;
 
 
-// this is if we are running on render (httpSSSSSS and no port 3000)
+// this is if we are running on render (httpS and no port 3000)
 export const HOST_WITH_PORT = `https://${HOST}`;
 console.log("HOST_WITH_PORT", HOST_WITH_PORT);
 

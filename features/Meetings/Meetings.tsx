@@ -12,7 +12,7 @@ import { MeetingType, ProcessedMeetingType } from "./types";
 
 export default function Meetings() {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const userName: string = useSelector((state: RootState) => state.auth.user.name)
+    const userName: string = useSelector((state: RootState) => state.auth.user.name);
     
     const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
     const [getMeetings] = useGetMeetingsMutation();

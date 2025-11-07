@@ -1,7 +1,8 @@
 
 import { HOST_WITH_PORT } from '@/environment';
 import React, { useEffect, useState } from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import HealthKitData from './HealthKitData';
 
 export default function StepTimes() {
   const [data, setData] = useState(null);
@@ -29,12 +30,22 @@ export default function StepTimes() {
   }, []);
 
   return (
-    <View>
+    <View style={styles.container}>
         <Text>{Platform.OS === 'ios' ? 'Step Component' : 'Step Component only works on iOS.'}</Text>
-      {/* {data ? <Text>Data: {JSON.stringify(data)}</Text> : <Text>Loading...</Text>} */}
+        <HealthKitData/>
     </View>
   );
 }
+
+const styles= StyleSheet.create({
+  container: {
+      flex: 1,
+      paddingLeft: 20,
+  },
+  item: {
+
+  }
+});
 
 
 

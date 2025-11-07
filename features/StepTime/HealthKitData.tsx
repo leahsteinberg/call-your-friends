@@ -1,9 +1,11 @@
 import { queryQuantitySamples, useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { dateObjToMinutesString } from '../Meetings/meetingsUtils';
+import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
+const daysPast = 3;
 
 
 const getPastDate = ({daysAgo}) => {
@@ -15,39 +17,35 @@ const getPastDate = ({daysAgo}) => {
     // 3. Subtract one day to get yesterday's date
     pastDate.setDate(pastDate.getDate() - daysAgo);
     
-    console.log("yesterday midngith", pastDate.toLocaleDateString());
     return pastDate;
-
 }
 
 export default function HealthKitData () {
+
     const [loading, setLoading] = useState(true);
     const [authed, setAuthed] = useState([false])
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE])
-    const [dataSample, setDataSample] = useState([])
-    console.log("auth stat - ", authorizationStatus, "authed- ", authed)
+    const [dataSample, setDataSample] = useState([]);
+    console.log("auth stat - ", authorizationStatus, "authed- ", authed);
 
-    const pastDate = getPastDate({daysAgo: 31});
+    const pastDate = getPastDate({daysAgo: daysPast});
     let today = new Date();
 
 
     useEffect(() => {
-        let isMounted = true; // Flag to track if component is mounted
-        console.log("in use Effect, auth isbmnbmn ", authed)
+        let isMounted = true;
+        console.log("health kit - in use Effect, auth", authed)
         const fetchAuth = async () => {
             try {
-                console.log("trying")
-                const response = await requestAuthorization([HK_DATA_TYPE]); // request read permission for bodyFatPercentage
-                if (response) { // Only update state if component is still mounted
-                    //console.log("response", response)
-                    setAuthed([response])
-                
+                const response = await requestAuthorization([HK_DATA_TYPE]); 
+                if (response) { 
+                    setAuthed([response]);
                 }
             } catch (error) {
-            console.error('Error fetching/requesting data:', error);
+                console.error('Error fetching/requesting data:', error);
             }
             try {
-                if(authed ) {
+                if ( authed ) {
                     const sample = await queryQuantitySamples(
                         HK_DATA_TYPE,
                         {
@@ -58,11 +56,12 @@ export default function HealthKitData () {
                             limit: 100,
                         }
                     );
+                    const processedSample = processStepsData(sample);
                     setDataSample(sample)
                     setLoading(false)
                 }
             } catch (error) {
-                console.log("error getting the data", error)
+                console.log("error getting the da    ta", error)
             }
       };
       fetchAuth();
@@ -71,31 +70,46 @@ export default function HealthKitData () {
       };
     }, []);
 
+                            // {dataSample.map((d, i) => (`#${i}: Steps: ${d.quantity}\nStart: ${dateObjToMinutesString(d.startDate)} \nEnd: ${dateObjToMinutesString(d.endDate)} \n \n`))}
+
 
     return (
-        <ScrollView style={styles.container}>
-            <Text>
+        <View style={styles.container}>
+            <Text >
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
-            {loading && <Text>LOADING!!!</Text>}
-            {!loading &&
-                (<View>
-                    <Text>
-                    Got this many step entries: {dataSample.length}
-                    </Text>
-                    <Text>
-                        {dataSample.map((d, i) => (`#${i}: Steps: ${d.quantity}\nStart: ${dateObjToMinutesString(d.startDate)} \nEnd: ${dateObjToMinutesString(d.endDate)} \n \n`))}
-                    </Text>
-                </View>)
-            }
-        </ScrollView>
+            <Text >
+            Got this many step entries: {dataSample.length}
+            </Text>
+            <FlatList
+                contentContainerStyle={{ flexGrow: 1 }}
+                data={dataSample}
+                style={styles.list}
+                renderItem={({item}) => (
+                    <View style={styles.item}>
+                        <Text>{item.quantity}</Text>
+                        <Text>Start: {dateObjToMinutesString(item.startDate)}</Text> 
+                        <Text>End: {dateObjToMinutesString(item.endDate)}</Text>
+                        <Text/>
+                    </View>)
+                }
+            />
+        </View>
     );
-
 }
+
+
 
 
 const styles= StyleSheet.create({
     container: {
+        flex: 1,
         paddingLeft: 20,
+    },
+    list: {
+        flex: 1,
+    },
+    item: {
+
     }
-})
+});

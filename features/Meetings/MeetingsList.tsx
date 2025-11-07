@@ -27,23 +27,22 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
     
     return (
         <View style={styles.container}>
-                <SectionList
-                style={styles.sectionList}
-                keyExtractor={(item, index) => item.id + index}
-                renderSectionHeader={({section: {title}}) =>
+            <SectionList
+            style={styles.sectionList}
+            keyExtractor={(item, index) => item.id + index}
+            renderSectionHeader={({section: {title}}) =>
                     <Text style={styles.sectionHeader}>{title}</Text>
                 }
-                sections={sectionListData}
-                stickySectionHeadersEnabled={true} // Enable sticky headers
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={refresh}
-                        tintColor={ORANGE}
-                    />
-                }
-
+            sections={sectionListData}
+            stickySectionHeadersEnabled={true} // Enable sticky headers
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={refresh}
+                    tintColor={ORANGE}
                 />
+            }
+            />
         </View>
     )
 }

@@ -46,6 +46,7 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
 };
 
 export const dateObjToMinutesString = (dateObj: Date): string => {
+    //console.log(dateObj.toDateString())
     const isoStringFull = dateObj.toISOString();
     const isoStringUpToMinutes = isoStringFull.substring(0, 16);
     return isoStringUpToMinutes;
