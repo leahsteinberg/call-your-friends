@@ -24,6 +24,7 @@ export default function HealthKitData () {
 
     const [loading, setLoading] = useState(true);
     const [authed, setAuthed] = useState([false])
+    const [processedStepsData, setProcessedStepsData] = useState({});
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE])
     const [dataSample, setDataSample] = useState([]);
     console.log("auth stat - ", authorizationStatus, "authed- ", authed);
@@ -57,6 +58,8 @@ export default function HealthKitData () {
                         }
                     );
                     const processedSample = processStepsData(sample);
+                    console.log("processedSample", processedSample)
+                    setProcessedStepsData(processedSample)
                     setDataSample(sample)
                     setLoading(false)
                 }
