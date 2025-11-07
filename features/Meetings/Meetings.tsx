@@ -62,7 +62,7 @@ export default function Meetings() {
  
     return (
         <View style={[styles.container,]}>
-            <Text>{userName}</Text>
+            <Text>{userName} {userId}</Text>
             {showMeetingCreator && 
                 <View style={styles.creatorComponent}>
                         <MeetingCreator

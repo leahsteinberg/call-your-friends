@@ -50,16 +50,6 @@ const styles = StyleSheet.create({
         backgroundColor: CREAM,
         borderWidth: 2,
         borderColor: DARK_BEIGE,
-    //   flex: 1,
-    //   flexDirection: 'row',
-    //   justifyContent: 'space-between',
-    //   alignItems: 'center',
-    //   paddingVertical: 5,
-    //   paddingHorizontal: 5,
-    //   marginVertical: 5,
-    //   marginHorizontal: 10,
-    //   borderRadius: 15,
-    //   backgroundColor: CORNFLOWER_BLUE,
     },
     icon: {
       paddingRight: 10,
@@ -78,6 +68,9 @@ const styles = StyleSheet.create({
       flexGrow: 1,
       paddingVertical: 10,
       paddingLeft: 5,
-  
+    },
+    acceptButton: {
+        backgroundColor: ORANGE,
+
     },
   });
