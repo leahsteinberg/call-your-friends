@@ -1,5 +1,15 @@
 import { dateObjToMinutesString } from "../Meetings/meetingsUtils";
 
+const dayNumberToDayName = {
+  0: 'Sunday',
+  1: 'Monday',
+  2: 'Tuesday',
+  3: 'Wednesday',
+  4: 'Thursday',
+  5: 'Friday',
+  6: 'Saturday'
+};
+
 
 
 function getStartOfHour(date) {
@@ -20,10 +30,14 @@ function hoursBetween(date1, date2): number {
 
 const makeEmptyHoursBucket = ({hoursDuration, mostPastHour}: {hoursDuration: number, mostPastHour: Date}): Object => {
   const hoursObj = new Object();
-  for (let i = 0; i < hoursDuration + 1; i++) {
-    const newDate= new Date(mostPastHour);
+  for (let i = 0; i < 36; i++) {
+    const newDate = new Date(mostPastHour);
+    console.log(mostPastHour.getHours(), "newDate.getHours()", newDate.getHours(), i)
+    
     newDate.setHours(newDate.getHours() + i);
+    console.log("new datttt", newDate.getHours())
     const newDateString = dateObjToMinutesString(newDate);
+    //console.log("new date string", newDateString)
     hoursObj[newDateString] = 0;
   }
   return hoursObj;
@@ -32,16 +46,15 @@ const makeEmptyHoursBucket = ({hoursDuration, mostPastHour}: {hoursDuration: num
 
 
 export const processStepsData = (data) => {  
-
   const mostRecentTime = data[0].endDate;
   const mostPastTime = data[data.length - 1].startDate;
   console.log(dateObjToMinutesString(mostPastTime))
-
 
   const mostPastHour = getStartOfHour(mostPastTime);
   const mostRecentHour = getStartOfHour(mostRecentTime);
 
   const hoursDuration = hoursBetween(mostPastHour, mostRecentHour);
+  const hi = makeEmptyHoursBucket({hoursDuration, mostPastHour});
   const hoursObj = new Object();
   
   for (let stepCount of data) {
@@ -49,7 +62,7 @@ export const processStepsData = (data) => {
     const utcHours: number = stepCount.startDate.getUTCHours()
     const weekdayHour: string = [dayOfWeek, utcHours].toString();
 
-    if (hoursObj[weekdayHour]=== undefined) {
+    if (hoursObj[weekdayHour] === undefined) {
       hoursObj[weekdayHour] = 0
     } else {
       hoursObj[weekdayHour] = hoursObj[weekdayHour] + stepCount.quantity
@@ -65,11 +78,36 @@ export const processStepsData = (data) => {
     }, ['', 0]);
   
     console.log("max Day  Hour", maxDayHour);
+    // form of max day hour [[dayOfWeek,utcHour], accumulatedStepCount]
+    // should turn [dayOfWeek,utcHour] into a date in the future with the same
+    // day of week and time (localize)
+    const dayHour = maxDayHour[0]
+    const [dayNumber, hour] = dayHour.split(',')
+    console.log("x ====", dayNumber, "--", hour);
 
+  const upcoming = dateOfWeekString({dayNumber, hour})
+  console.log("UPCOMING  - ", dateObjToMinutesString(upcoming))
   return maxDayHour;
 }
 
+const dateOfWeekString = ({dayNumber, hour}) => {
+  console.log("args", {dayNumber, hour});
+  const aimDay = dayNumberToDayName[dayNumber]
+  console.log("AIM DAY - ", aimDay)
+  const today = new Date()
+  const currentDay = today.getDay();
+  let f = ((7 + dayNumber - currentDay) % 7) || 7;
+  console.log("f", f)
+  console.log("TODAY ---", dateObjToMinutesString(today))
 
 
 
-
+  const futureDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + f);
+  console.log("Future Day - (before setHours) - ", dateObjToMinutesString(futureDay), hour)
+  
+  
+  futureDay.setHours(23);
+  console.log(futureDay.getHours())
+  console.log("after set hours, ", dateObjToMinutesString(futureDay))
+  return futureDay
+}

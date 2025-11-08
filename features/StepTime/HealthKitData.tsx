@@ -83,7 +83,7 @@ export default function HealthKitData () {
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
             <Text >
-            Day of week & time with most steps: {processedStepsData}
+            {/* Day of week & time with most steps: {processedStepsData} */}
             </Text>
             <FlatList
                 contentContainerStyle={{ flexGrow: 1 }}
