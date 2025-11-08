@@ -36,7 +36,7 @@ export function SignIn()  {
                     onChangePassword={(text: string) => setPassword(text)}
                 />
             </View>
-            <View style={styles.component}>
+            <View style={[styles.component,{paddingBottom: 20}]}>
                 <EntryButton
                     title="Sign In"
                     onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}

@@ -5,7 +5,8 @@ import { dateObjToMinutesString } from '../Meetings/meetingsUtils';
 import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
-const daysPast = 3;
+const daysPast = 100;
+const entriesLimit = 1000;
 
 
 const getPastDate = ({daysAgo}) => {
@@ -54,12 +55,12 @@ export default function HealthKitData () {
                                 startDate: pastDate,
                                 endDate: today
                             },
-                            limit: 100,
+                            limit: entriesLimit,
                         }
                     );
                     const processedSample = processStepsData(sample);
                     console.log("processedSample", processedSample)
-                    setProcessedStepsData(processedSample)
+                    setProcessedStepsData(processedSample[0])
                     setDataSample(sample)
                     setLoading(false)
                 }
@@ -82,7 +83,7 @@ export default function HealthKitData () {
                 Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
             </Text>
             <Text >
-            Got this many step entries: {dataSample.length}
+            Day of week & time with most steps: {processedStepsData}
             </Text>
             <FlatList
                 contentContainerStyle={{ flexGrow: 1 }}
