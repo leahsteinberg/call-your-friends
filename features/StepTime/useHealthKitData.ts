@@ -48,13 +48,9 @@ const makeEmptyHoursBucket = ({hoursDuration, mostPastHour}: {hoursDuration: num
 export const processStepsData = (data) => {  
   const mostRecentTime = data[0].endDate;
   const mostPastTime = data[data.length - 1].startDate;
-  console.log(dateObjToMinutesString(mostPastTime))
-
   const mostPastHour = getStartOfHour(mostPastTime);
   const mostRecentHour = getStartOfHour(mostRecentTime);
-
   const hoursDuration = hoursBetween(mostPastHour, mostRecentHour);
-  const hi = makeEmptyHoursBucket({hoursDuration, mostPastHour});
   const hoursObj = new Object();
   
   for (let stepCount of data) {
@@ -77,37 +73,20 @@ export const processStepsData = (data) => {
       return acc
     }, ['', 0]);
   
-    console.log("max Day  Hour", maxDayHour);
-    // form of max day hour [[dayOfWeek,utcHour], accumulatedStepCount]
-    // should turn [dayOfWeek,utcHour] into a date in the future with the same
-    // day of week and time (localize)
     const dayHour = maxDayHour[0]
     const [dayNumber, hour] = dayHour.split(',')
-    console.log("x ====", dayNumber, "--", hour);
 
-  const upcoming = dateOfWeekString({dayNumber, hour})
-  console.log("UPCOMING  - ", dateObjToMinutesString(upcoming))
-  return maxDayHour;
+  const upcomingWalkTime = upcomingDateHourWalk({dayNumber, hour})
+  console.log("Upcoming- ", dateObjToMinutesString(upcomingWalkTime))
+  return upcomingWalkTime;
 }
 
-const dateOfWeekString = ({dayNumber, hour}) => {
-  console.log("args", {dayNumber, hour});
+const upcomingDateHourWalk = ({dayNumber, hour}) => {
   const aimDay = dayNumberToDayName[dayNumber]
-  console.log("AIM DAY - ", aimDay)
   const today = new Date()
   const currentDay = today.getDay();
-  let f = ((7 + dayNumber - currentDay) % 7) || 7;
-  console.log("f", f)
-  console.log("TODAY ---", dateObjToMinutesString(today))
-
-
-
-  const futureDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + f);
-  console.log("Future Day - (before setHours) - ", dateObjToMinutesString(futureDay), hour)
-  
-  
-  futureDay.setHours(23);
-  console.log(futureDay.getHours())
-  console.log("after set hours, ", dateObjToMinutesString(futureDay))
+  const additionalDays = ((7 + dayNumber - currentDay) % 7) || 7;
+  const futureDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + additionalDays);
+  futureDay.setUTCHours(23);
   return futureDay
 }
