@@ -1,7 +1,7 @@
 import { BURGUNDY, LIGHT_GREEN, ORANGE, PALE_BLUE } from '@/styles/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 interface SimpleDateTimePickerProps {
   onDateTimeSelect: (dateTime: Date) => void;
@@ -9,13 +9,9 @@ interface SimpleDateTimePickerProps {
 }
 
 export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTime }: SimpleDateTimePickerProps) {
-  const [showDatePicker, setShowDatePicker] = useState(true);
-  const [showTimePicker, setShowTimePicker] = useState(true);
   const [selectedDate, setSelectedDate   ] = useState<Date>(selectedDateTime || new Date());
   const [selectedTime, setSelectedTime] = useState<Date>(selectedDateTime || new Date());
-  console.log("showTimePicker", showTimePicker, "showDatePicker", showDatePicker);
   const handleDateChange = (event: any, date?: Date) => {
-    setShowDatePicker(Platform.OS === 'ios');
     
     if (date) {
       setSelectedDate(date);
@@ -28,7 +24,6 @@ export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTim
   };
 
   const handleTimeChange = (event: any, time?: Date) => {
-    setShowTimePicker(Platform.OS === 'ios');
     if (time) {
       setSelectedTime(time);
       // Combine with existing date
@@ -58,22 +53,22 @@ export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTim
   return (
     <View style={styles.container}>
       <View style={styles.selectorContainer}>
-          <DateTimePicker
-            value={selectedDate}
-            mode="date"
-            onChange={handleDateChange}
-            minimumDate={new Date()}
-            style={styles.picker}
-            themeVariant='light'
-          />
-          <DateTimePicker
-            value={selectedTime}
-            mode="time"
-            textColor="red"
-            onChange={handleTimeChange}
-            style={styles.picker}
-            themeVariant='light'
-          />
+        <DateTimePicker
+          value={selectedDate}
+          mode="date"
+          onChange={handleDateChange}
+          minimumDate={new Date()}
+          style={styles.picker}
+          themeVariant='light'
+        />
+        <DateTimePicker
+          value={selectedTime}
+          mode="time"
+          textColor="red"
+          onChange={handleTimeChange}
+          style={styles.picker}
+          themeVariant='light'
+        />
       </View>
     </View>
   );
