@@ -41,6 +41,7 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
         minute: 'numeric',
         timeZoneName: 'short',
     });
+    console.log("TIME ZONE", Intl.DateTimeFormat().resolvedOptions().timeZone)
     const displayTimeString = formatter.format(dateObj);
     return displayTimeString;
 };

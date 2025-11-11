@@ -1,12 +1,12 @@
 import { queryQuantitySamples, useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { dateObjToMinutesString } from '../Meetings/meetingsUtils';
+import { StyleSheet, Text, View } from "react-native";
+import { displayDateTime } from '../Meetings/meetingsUtils';
 import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
-const daysPast = 100;
-const entriesLimit = 1000;
+const daysPast = 200;
+const entriesLimit = 2000;
 
 
 const getPastDate = ({daysAgo}) => {
@@ -25,7 +25,7 @@ export default function HealthKitData () {
 
     const [loading, setLoading] = useState(true);
     const [authed, setAuthed] = useState([false])
-    const [processedStepsData, setProcessedStepsData] = useState({});
+    const [processedStepsData, setProcessedStepsData] = useState('');
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE])
     const [dataSample, setDataSample] = useState([]);
     console.log("auth stat - ", authorizationStatus, "authed- ", authed);
@@ -60,7 +60,7 @@ export default function HealthKitData () {
                     );
                     const processedSample = processStepsData(sample);
                     console.log("processedSample", processedSample)
-                    setProcessedStepsData(processedSample[0])
+                    setProcessedStepsData(displayDateTime(processedSample))
                     setDataSample(sample)
                     setLoading(false)
                 }
@@ -80,24 +80,14 @@ export default function HealthKitData () {
     return (
         <View style={styles.container}>
             <Text >
-                Use Health Kit Data - auth - {authed} auth statuys kit{authorizationStatus}
+                Using Health Kit Data
             </Text>
             <Text >
-            {/* Day of week & time with most steps: {processedStepsData} */}
+            Suggested next time to talk, based on your walking patterns:
             </Text>
-            <FlatList
-                contentContainerStyle={{ flexGrow: 1 }}
-                data={dataSample}
-                style={styles.list}
-                renderItem={({item}) => (
-                    <View style={styles.item}>
-                        <Text>{item.quantity}</Text>
-                        <Text>Start: {dateObjToMinutesString(item.startDate)}</Text> 
-                        <Text>End: {dateObjToMinutesString(item.endDate)}</Text>
-                        <Text/>
-                    </View>)
-                }
-            />
+            <Text >
+                {processedStepsData}
+             </Text>
         </View>
     );
 }

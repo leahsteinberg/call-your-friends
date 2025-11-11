@@ -1,4 +1,3 @@
-import { dateObjToMinutesString } from "../Meetings/meetingsUtils";
 
 const dayNumberToDayName = {
   0: 'Sunday',
@@ -27,24 +26,6 @@ function hoursBetween(date1, date2): number {
   return absoluteHours;
 }
 
-
-const makeEmptyHoursBucket = ({hoursDuration, mostPastHour}: {hoursDuration: number, mostPastHour: Date}): Object => {
-  const hoursObj = new Object();
-  for (let i = 0; i < 36; i++) {
-    const newDate = new Date(mostPastHour);
-    console.log(mostPastHour.getHours(), "newDate.getHours()", newDate.getHours(), i)
-    
-    newDate.setHours(newDate.getHours() + i);
-    console.log("new datttt", newDate.getHours())
-    const newDateString = dateObjToMinutesString(newDate);
-    //console.log("new date string", newDateString)
-    hoursObj[newDateString] = 0;
-  }
-  return hoursObj;
-
-}
-
-
 export const processStepsData = (data) => {  
   const mostRecentTime = data[0].endDate;
   const mostPastTime = data[data.length - 1].startDate;
@@ -54,7 +35,7 @@ export const processStepsData = (data) => {
   const hoursObj = new Object();
   
   for (let stepCount of data) {
-    const dayOfWeek: number = stepCount.startDate.getDay();
+    const dayOfWeek: number = stepCount.startDate.getUTCDay();
     const utcHours: number = stepCount.startDate.getUTCHours()
     const weekdayHour: string = [dayOfWeek, utcHours].toString();
 
@@ -73,12 +54,12 @@ export const processStepsData = (data) => {
       return acc
     }, ['', 0]);
   
-    const dayHour = maxDayHour[0]
-    const [dayNumber, hour] = dayHour.split(',')
+  const dayHour = maxDayHour[0]
+  const [dayNumber, hour] = dayHour.split(',')
 
   const upcomingWalkTime = upcomingDateHourWalk({dayNumber, hour})
-  console.log("Upcoming- ", dateObjToMinutesString(upcomingWalkTime))
-  return upcomingWalkTime;
+
+  return upcomingWalkTime.toString();
 }
 
 const upcomingDateHourWalk = ({dayNumber, hour}) => {

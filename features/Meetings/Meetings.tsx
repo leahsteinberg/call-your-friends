@@ -23,7 +23,6 @@ export default function Meetings() {
     const [refreshing, setRefreshing] = useState(false);
 
 
-
     const fetchProcessMeetings = async () =>  {
         console.log("fetch and process meetings")
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
