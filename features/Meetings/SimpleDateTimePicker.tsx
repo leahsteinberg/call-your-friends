@@ -1,7 +1,7 @@
-import { BURGUNDY, LIGHT_GREEN, PALE_BLUE } from '@/styles/styles';
+import { BURGUNDY, LIGHT_GREEN, ORANGE, PALE_BLUE } from '@/styles/styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 interface SimpleDateTimePickerProps {
   onDateTimeSelect: (dateTime: Date) => void;
@@ -9,13 +9,14 @@ interface SimpleDateTimePickerProps {
 }
 
 export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTime }: SimpleDateTimePickerProps) {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(selectedDateTime || new Date());
+  const [showDatePicker, setShowDatePicker] = useState(true);
+  const [showTimePicker, setShowTimePicker] = useState(true);
+  const [selectedDate, setSelectedDate   ] = useState<Date>(selectedDateTime || new Date());
   const [selectedTime, setSelectedTime] = useState<Date>(selectedDateTime || new Date());
-
+  console.log("showTimePicker", showTimePicker, "showDatePicker", showDatePicker);
   const handleDateChange = (event: any, date?: Date) => {
     setShowDatePicker(Platform.OS === 'ios');
+    
     if (date) {
       setSelectedDate(date);
       // Combine with existing time
@@ -56,56 +57,24 @@ export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTim
 
   return (
     <View style={styles.container}>
-      {/* Display selected date/time */}
-      <View style={styles.selectedDateTimeContainer}>
-        <Text style={styles.selectedDateTimeText}>
-          📅 {formatDisplayDate(selectedDate)} at {formatDisplayTime(selectedTime)}
-        </Text>
+      <View style={styles.selectorContainer}>
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            onChange={handleDateChange}
+            minimumDate={new Date()}
+            style={styles.picker}
+            themeVariant='light'
+          />
+          <DateTimePicker
+            value={selectedTime}
+            mode="time"
+            textColor="red"
+            onChange={handleTimeChange}
+            style={styles.picker}
+            themeVariant='light'
+          />
       </View>
-
-      {/* Date and Time Selection Buttons */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.dateButton]}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.buttonText}>
-            📅 Select Date
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.timeButton]}
-          onPress={() => setShowTimePicker(true)}
-        >
-          <Text style={styles.buttonText}>
-            🕐 Select Time
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Date Picker */}
-      {showDatePicker && (
-        <DateTimePicker
-          value={selectedDate}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleDateChange}
-          minimumDate={new Date()}
-          style={styles.picker}
-        />
-      )}
-
-      {/* Time Picker */}
-      {showTimePicker && (
-        <DateTimePicker
-          value={selectedTime}
-          mode="time"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleTimeChange}
-          style={styles.picker}
-        />
-      )}
     </View>
   );
 }
@@ -128,10 +97,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
-  buttonContainer: {
+  selectorContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
+    justifyContent: 'space-evenly',
   },
   button: {
     flex: 1,
@@ -155,10 +123,11 @@ const styles = StyleSheet.create({
     color: BURGUNDY,
   },
   picker: {
-    backgroundColor: 'white',
+    //backgroundColor: 'white',
+    textColor: ORANGE,
     borderRadius: 8,
     marginTop: 10,
-    borderWidth: 1,
-    borderColor: BURGUNDY,
+    //borderWidth: 1,
+    //borderColor: BURGUNDY,
   },
 });
