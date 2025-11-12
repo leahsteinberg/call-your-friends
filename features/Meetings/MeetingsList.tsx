@@ -1,4 +1,4 @@
-import { CREAM, ORANGE } from "@/styles/styles";
+import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Offer from "../Offers/Offer";
 import MeetingDisplay from "./MeetingDisplay";
@@ -6,7 +6,6 @@ import { MeetingType, MeetingsListProps } from "./types";
 
 
 export default function MeetingsList({ meetings, offers, refresh, refreshing }: MeetingsListProps) {
-    console.log("offers is", offers)
 
     const meetingsListData =         {
         title: "Chats Planned:",
@@ -39,7 +38,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
                 <RefreshControl
                     refreshing={refreshing}
                     onRefresh={refresh}
-                    tintColor={ORANGE}
+                    tintColor={PALE_BLUE}
                 />
             }
             />
@@ -57,9 +56,8 @@ const styles = StyleSheet.create({
     sectionHeader: {
         borderRadius: 10,
         padding: 10,
-        backgroundColor: ORANGE,
+        backgroundColor: PALE_BLUE,
         fontWeight: 'bold',
-        color: CREAM,
-
+        color: DARK_BLUE,
     },
 });

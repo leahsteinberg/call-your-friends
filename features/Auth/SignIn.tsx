@@ -7,6 +7,9 @@ import { setLogInCredentials } from './authSlice';
 import EntryButton from './EntryButton';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
+const safePadding = Platform.OS === 'ios' ? 60 : 10;
+
+
 export function SignIn()  {
 
     const [email, setEmail] = useState('');
@@ -61,6 +64,7 @@ export function SignIn()  {
         justifyContent: 'space-between',
         overflow: 'scroll',
         flex: 1,
+        paddingBottom: safePadding,
     },
     wrapper: {
         justifyContent: 'center',

@@ -62,13 +62,7 @@ export default function Meetings() {
     return (
         <View style={[styles.container,]}>
             <Text>{userName} {userId}</Text>
-            {showMeetingCreator && 
-                <View style={styles.creatorComponent}>
-                        <MeetingCreator
-                            refreshMeetings={fetchProcessMeetings}
-                        />
-                </View>
-            }
+
             <View style={styles.listComponent}>
                 <MeetingsList
                     meetings={meetings}
@@ -77,6 +71,13 @@ export default function Meetings() {
                     refreshing={refreshing}
                 />
             </View>
+            {showMeetingCreator && 
+                <View style={styles.creatorComponent}>
+                        <MeetingCreator
+                            refreshMeetings={fetchProcessMeetings}
+                        />
+                </View>
+            }
         </View>
     )
 }
