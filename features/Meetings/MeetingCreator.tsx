@@ -1,5 +1,5 @@
 import { useCreateMeetingMutation } from "@/services/meetingApi";
-import { BURGUNDY } from "@/styles/styles";
+import { CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
@@ -40,7 +40,7 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
     
     return (
         <View style={[styles.container]}>
-            <Text style={styles.title}>Schedule a Meeting</Text>
+            <Text style={styles.title}>When are you free to chat?</Text>
             <UnifiedDateTimePicker 
                 onDateTimeSelect={handleDateTimeSelect}
                 selectedDateTime={selectedDateTime || undefined}
@@ -52,7 +52,10 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
                 disabled={!selectedDateTime}
             >
                 <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                    Create Meeting{displayDateString && ` for ${displayDateString}`}
+                    Find a friend to talk on:
+                </Text>
+                <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
+                    {displayDateString && `${displayDateString}`}
                 </Text>
             </TouchableOpacity>
         </View>
@@ -61,28 +64,28 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
+        backgroundColor: LIGHT_BEIGE,
         borderRadius: 12,
         padding: 16,
         marginVertical: 8,
-        shadowColor: '#000',
+        marginHorizontal: 15,
+        shadowColor: PALE_BLUE,
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 10,
         },
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
     },
     title: {
-        fontSize: 14,
+        fontSize: 18,
         fontWeight: 'bold',
-        color: BURGUNDY,
+        color: DARK_GREEN,
         textAlign: 'center',
-        marginBottom: 16,
     },
     createButton: {
-        backgroundColor: BURGUNDY,
+        backgroundColor: DARK_GREEN,
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,
@@ -94,8 +97,8 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     buttonText: {
-        color: 'white',
-        fontSize: 14,
+        color: CREAM,
+        fontSize: 20,
         fontWeight: '500',
     },
     disabledButtonText: {

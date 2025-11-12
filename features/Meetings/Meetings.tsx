@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     },
     creatorComponent: {
        flexShrink: 0,
+       marginBottom: 15
     
     },
     listComponent: {

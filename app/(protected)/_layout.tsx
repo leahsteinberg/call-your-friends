@@ -1,6 +1,8 @@
-import { BRIGHT_BLUE, BRIGHT_GREEN, DARK_BLUE, LIGHT_BEIGE } from "@/styles/styles";
+import { BRIGHT_BLUE, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
 import { Tabs } from "expo-router";
-import { Check } from "lucide-react-native";
+import { Footprints, Sticker, TreePalm } from "lucide-react-native";
+
+const ICON_SIZE = 33;
 
 const Layout = () => {
 
@@ -11,22 +13,21 @@ const Layout = () => {
         <Tabs
         screenOptions={{
             tabBarActiveTintColor: BRIGHT_BLUE,
-            tabBarInactiveTintColor: DARK_BLUE,
+            tabBarInactiveTintColor: DARK_GREEN,
             tabBarStyle: {
               backgroundColor: LIGHT_BEIGE,
               borderTopColor: BRIGHT_BLUE,
               borderTopWidth: 4,
               height: 90,
-              // Add other ViewStyle properties as needed
             },
-            headerShown: false, // Hide the header for all tab screens
+            headerShown: false,
           }}
         >
             <Tabs.Screen
                 options={{
-                    title: 'Home', // Title displayed on the tab label and header
-                    tabBarLabel: 'MY FRIENDS', // Custom label for the tab
-                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>, // Custom icon component
+                    title: 'Home',
+                    tabBarLabel: 'MY FRIENDS',
+                    tabBarIcon: ({ color }) => <Sticker  color={color} size={ICON_SIZE}/>, // Custom icon component
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
                   }}
@@ -37,7 +38,7 @@ const Layout = () => {
                 options={{
                     headerShown: false,
                     title: "MY CHATS",
-                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>,
+                    tabBarIcon: ({ color }) => <TreePalm  color={color} size={ICON_SIZE}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />
@@ -46,7 +47,7 @@ const Layout = () => {
                 options={{
                     headerShown: false,
                     title: "MY WALKS",
-                    tabBarIcon: ({ color }) => <Check  color={BRIGHT_GREEN} size={23}/>,
+                    tabBarIcon: ({ color }) => <Footprints  color={color} size={ICON_SIZE} />,
                     tabBarHideOnKeyboard: true,
                 }}
             />
