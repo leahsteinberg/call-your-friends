@@ -50,6 +50,7 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
 
   return (<View style={styles.container} key={meeting.index}>
             <Text style={styles.timeText}>{meeting.item.displayScheduledFor}</Text>
+            {/* <Text>{relativeDateStringInDays(meeting.item.scheduledFor)}</Text> */}
             {renderMeetingFriend()}
             {renderStateIcon()}
         </View>

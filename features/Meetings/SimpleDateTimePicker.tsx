@@ -68,6 +68,7 @@ export default function SimpleDateTimePicker({ onDateTimeSelect, selectedDateTim
           onChange={handleTimeChange}
           style={styles.picker}
           themeVariant='light'
+          minuteInterval={15}
         />
       </View>
     </View>

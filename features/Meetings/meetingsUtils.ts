@@ -59,3 +59,12 @@ const sortMeetingsByScheduledTime = (meetingsList: ProcessedMeeting[]): Processe
         return dateA.getTime() - dateB.getTime();
     });
 };
+
+// export const relativeDateStringInDays = (date: Date): string => {
+
+//     const rtf = new Intl.RelativeTimeFormat('en', { numeric: "auto" });
+//     const timeMs = typeof date === "number" ? date : date.getTime();
+//     const deltaSeconds = (timeMs - Date.now())/1000;
+//     return rtf.format(deltaSeconds, 'day');
+
+// }
