@@ -1,32 +1,32 @@
-import { OfferType, ProcessedOfferType } from "../Offers/types";
-import { Meeting, ProcessedMeeting } from "./types";
+import { MeetingType, ProcessedMeetingType } from "./types";
 
-export const processMeetings = async (meetings: Meeting[]): Promise<ProcessedMeeting[]> => {
+export const processMeetings = async (meetings: MeetingType[]): Promise<ProcessedMeetingType[]> => {
     const meetingsWithDisplayTimePromises = meetings
-        .map(async (meeting): Promise<ProcessedMeeting> => 
+        .map(async (meeting): Promise<ProcessedMeetingType> =>
             ({
                 ...meeting,
                 displayScheduledFor: await displayDateTime(meeting.scheduledFor)
             })
         );
     const meetingsWithDisplayTime = await Promise.all(meetingsWithDisplayTimePromises);
-    const sortedMeetings = sortMeetingsByScheduledTime(meetingsWithDisplayTime);
+    const sortedMeetings = sortByScheduledTime(meetingsWithDisplayTime);
 
     return sortedMeetings;
 };
 
 
-export const processOffers = async (offers: OfferType[]): Promise<ProcessedOffer[]> => {
+export const processOffers = async (offers: any[]): Promise<any[]> => {
     console.log("offersssss", offers)
     const offersWithDislayTimePromises = offers
-        .map(async (offer): Promise<ProcessedOfferType> =>
+        .map(async (offer): Promise<any> =>
             ({
                 ...offer,
+                scheduledFor: offer.meeting.scheduledFor,
                 displayScheduledFor: await displayDateTime(offer.meeting.scheduledFor)
             })
         )
         const offersWithDisplayTime = await Promise.all(offersWithDislayTimePromises);
-        const sortedOffers = sortMeetingsByScheduledTime(offersWithDisplayTime);
+        const sortedOffers = sortByScheduledTime(offersWithDisplayTime);
         return sortedOffers;
 }
 
@@ -52,13 +52,17 @@ export const dateObjToMinutesString = (dateObj: Date): string => {
     return isoStringUpToMinutes;
 };
 
-const sortMeetingsByScheduledTime = (meetingsList: ProcessedMeeting[]): ProcessedMeeting[] => {
-    return meetingsList.sort((a, b) => {
+// Generic sort function that works for both meetings and offers
+const sortByScheduledTime = <T extends { scheduledFor: string }>(items: T[]): T[] => {
+    return items.sort((a, b) => {
         const dateA = new Date(a.scheduledFor);
         const dateB = new Date(b.scheduledFor);
         return dateA.getTime() - dateB.getTime();
     });
 };
+
+// Keep the old name for backwards compatibility
+const sortMeetingsByScheduledTime = sortByScheduledTime;
 
 // export const relativeDateStringInDays = (date: Date): string => {
 

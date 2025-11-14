@@ -19,10 +19,17 @@ export const offerApi = createApi({
                 body: { userId, offerId },
             })
         }),
+        rejectOffer: builder.mutation({
+            query: ({ userId, offerId }) => ({
+                url: '/api/reject-offer',
+                method: 'POST',
+                body: { userId, offerId },
+            })
+        }),
     })
 });
 
-const { useGetOffersMutation, useAcceptOfferMutation } = offerApi;
+const { useGetOffersMutation, useAcceptOfferMutation, useRejectOfferMutation } = offerApi;
 
-export { useAcceptOfferMutation, useGetOffersMutation };
+export { useAcceptOfferMutation, useGetOffersMutation, useRejectOfferMutation };
 
