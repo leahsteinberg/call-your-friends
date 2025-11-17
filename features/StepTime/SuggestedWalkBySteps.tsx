@@ -1,6 +1,10 @@
+import { useCreateMeetingMutation } from "@/services/meetingApi";
+import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
+import { RootState } from "@/types/redux";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
 import { processStepsData } from './useHealthKitData';
 
@@ -22,12 +26,20 @@ const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
     return pastDate;
 }
 
-export default function SuggestedWalkBySteps() {
+interface SuggestedWalkByStepsProps {
+    refreshMeetings?: () => void;
+}
+
+export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: SuggestedWalkByStepsProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');
+    const [suggestedWalkDateTime, setSuggestedWalkDateTime] = useState<Date | null>(null);
+    const [meetingCreated, setMeetingCreated] = useState<boolean>(false);
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
+    const [createMeeting] = useCreateMeetingMutation();
+    const userId = useSelector((state: RootState) => state.auth.user.id);
 
     console.log("auth status:", authorizationStatus, "authorized:", isAuthorized);
 
@@ -63,11 +75,14 @@ export default function SuggestedWalkBySteps() {
 
                     // Process steps data to find the best time for a walk
                     // This analyzes historical step patterns to suggest when the user is most active
-                    const suggestedWalkDateTime = processStepsData(stepsSamples);
-                    console.log("Suggested walk time:", suggestedWalkDateTime);
+                    const suggestedWalkDateTimeStr = processStepsData(stepsSamples);
+                    const suggestedDateTime = new Date(suggestedWalkDateTimeStr);
+                    console.log("Suggested walk time:", suggestedDateTime);
 
-                    setSuggestedWalkTime(displayDateTime(suggestedWalkDateTime));
-                    setStepsData(stepsSamples);
+                    setSuggestedWalkDateTime(suggestedDateTime);
+                    const displayString = await displayDateTime(suggestedDateTime.toISOString());
+                    setSuggestedWalkTime(displayString);
+                    setStepsData([...stepsSamples]);
                     setLoading(false);
                 }
             } catch (error) {
@@ -78,18 +93,67 @@ export default function SuggestedWalkBySteps() {
         fetchHealthKitDataAndGenerateSuggestion();
     }, [isAuthorized]);
 
+    const handleCreateMeetingWithSuggestedTime = async () => {
+        if (!suggestedWalkDateTime || meetingCreated) {
+            return;
+        }
+
+        try {
+            const scheduledFor = suggestedWalkDateTime.toISOString();
+            const scheduledEnd = new Date(suggestedWalkDateTime);
+            scheduledEnd.setHours(scheduledEnd.getHours() + 1);
+
+            await createMeeting({
+                userFromId: userId,
+                scheduledFor,
+                scheduledEnd: scheduledEnd.toISOString(),
+            }).unwrap();
+
+            // Mark as created and disable the button
+            setMeetingCreated(true);
+            refreshMeetings();
+        } catch (error) {
+            console.error("Error creating meeting:", error);
+            alert('Failed to create meeting. Please try again.');
+        }
+    };
+
+    const isDisabled = !suggestedWalkDateTime || loading;
+
+    // Show confirmation view after meeting is created
+    if (meetingCreated) {
+        return (
+            <View style={styles.confirmationContainer}>
+                <Text style={styles.confirmationTitle}>
+                    We'll find someone for you to chat with on your next walk:
+                </Text>
+                <Text style={styles.confirmationTime}>
+                    {suggestedWalkTime}
+                </Text>
+            </View>
+        );
+    }
+
+    // Show the button to create meeting
     return (
-        <View style={styles.container}>
+        <TouchableOpacity
+            style={[styles.container, isDisabled && styles.disabledContainer]}
+            onPress={handleCreateMeetingWithSuggestedTime}
+            disabled={isDisabled}
+        >
             <Text style={styles.title}>
                 Using HealthKit Data
             </Text>
             <Text style={styles.description}>
                 Suggested next time to talk, based on your walking patterns:
             </Text>
-            <Text style={styles.walkTime}>
-                {suggestedWalkTime}
+            <Text style={[styles.walkTime, isDisabled && styles.disabledText]}>
+                {suggestedWalkTime || 'Loading...'}
             </Text>
-        </View>
+            <Text style={styles.actionHint}>
+                Tap to create meeting
+            </Text>
+        </TouchableOpacity>
     );
 }
 
@@ -98,17 +162,78 @@ export default function SuggestedWalkBySteps() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        paddingLeft: 20,
+        backgroundColor: DARK_GREEN,
+        padding: 16,
+        marginVertical: 8,
+        marginHorizontal: 15,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    disabledContainer: {
+        backgroundColor: '#ccc',
+        opacity: 0.6,
     },
     title: {
         fontWeight: 'bold',
+        color: CREAM,
+        fontSize: 16,
     },
     description: {
         marginTop: 8,
+        color: CREAM,
+        fontSize: 14,
     },
     walkTime: {
         marginTop: 4,
         fontWeight: '600',
+        color: CREAM,
+        fontSize: 18,
+    },
+    disabledText: {
+        color: '#666',
+    },
+    actionHint: {
+        marginTop: 8,
+        color: CREAM,
+        fontSize: 12,
+        fontStyle: 'italic',
+        textAlign: 'center',
+    },
+    confirmationContainer: {
+        backgroundColor: LIGHT_BEIGE,
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 15,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: BRIGHT_GREEN,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    confirmationTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: DARK_GREEN,
+        textAlign: 'center',
+        marginBottom: 12,
+    },
+    confirmationTime: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: BRIGHT_GREEN,
+        textAlign: 'center',
     },
 });
