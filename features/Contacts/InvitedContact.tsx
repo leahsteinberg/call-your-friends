@@ -7,7 +7,7 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
 
   return (
     <View style={styles.container} key={contact.index}>
-      <Text style={styles.component}>{contact.item.createdAt} </Text>
+      <Text style={styles.component}>{contact.item.displayCreatedAt} </Text>
       <PhoneNumberDisplay digits={contact.item.userToPhoneNumber}/>
     </View>
   );

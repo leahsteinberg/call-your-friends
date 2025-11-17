@@ -1,4 +1,5 @@
 import { DEV_FLAG } from "@/environment";
+import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import React, { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
@@ -8,22 +9,18 @@ import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
-import { Friend, SentInvite } from "./types";
+import { Friend, ProcessedSentInvite } from "./types";
 
 
 export default function ContactsComponent(): React.JSX.Element {
     const dispatch = useDispatch();
     const userFromId: string = useSelector((state: RootState) => state.auth.user.id);
 
-    const sentInvites: SentInvite[] = useSelector((state: RootState) => state.contacts.sentInvites);
+    const [processedSentInvites, setProcessedSentInvites] = useState<ProcessedSentInvite[]>([]);
     const [getSentInvites] = useGetSentInvitesMutation();
-
-
-
 
     const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
-    const {data, isLoading, isError, error} = useGetFriendsMutation();
 
     const DismissKeyboard = ({ children }) => (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -31,11 +28,13 @@ export default function ContactsComponent(): React.JSX.Element {
         </TouchableWithoutFeedback>
       );
 
-    useEffect(()=> { 
+    useEffect(()=> {
         async function handleGetSentInvites() {
             const sentInvitesResult = await getSentInvites({ id: userFromId });
-            if (sentInvitesResult) {
+            if (sentInvitesResult && sentInvitesResult.data) {
                 dispatch(setSentInvites(sentInvitesResult.data));
+                const processed = await processSentInvites(sentInvitesResult.data);
+                setProcessedSentInvites(processed);
             }
         }
         async function handleGetFriends() {
@@ -63,7 +62,7 @@ export default function ContactsComponent(): React.JSX.Element {
                 <View style={styles.listComponent}>
                     <ContactsList
                         friends={friends}
-                        sentInvites={sentInvites}
+                        sentInvites={processedSentInvites}
                     />
                 </View>
         </View>

@@ -1,3 +1,4 @@
+import { ProcessedSentInvite, SentInvite } from "../Contacts/types";
 import { MeetingType, ProcessedMeetingType } from "./types";
 
 export const processMeetings = async (meetings: MeetingType[]): Promise<ProcessedMeetingType[]> => {
@@ -28,6 +29,18 @@ export const processOffers = async (offers: any[]): Promise<any[]> => {
         const offersWithDisplayTime = await Promise.all(offersWithDislayTimePromises);
         const sortedOffers = sortByScheduledTime(offersWithDisplayTime);
         return sortedOffers;
+}
+
+export const processSentInvites = async (sentInvites: SentInvite[]): Promise<ProcessedSentInvite[]> => {
+    const invitesWithDisplayTimePromises = sentInvites
+        .map(async (invite): Promise<ProcessedSentInvite> =>
+            ({
+                ...invite,
+                displayCreatedAt: await displayDateTime(invite.createdAt)
+            })
+        );
+    const invitesWithDisplayTime = await Promise.all(invitesWithDisplayTimePromises);
+    return invitesWithDisplayTime;
 }
 
 export const displayDateTime = async (dateTime: string): Promise<string> => {

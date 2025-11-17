@@ -27,6 +27,10 @@ export interface SentInvite extends BaseEntity {
   token?: string;
 }
 
+export interface ProcessedSentInvite extends SentInvite {
+  displayCreatedAt: string;
+}
+
 export interface Invite extends BaseEntity {
   fromUserId: string;
   toPhoneNumber: string;
@@ -60,7 +64,7 @@ export interface ContactsComponentProps {
 
 export interface ContactsListProps {
   friends: Friend[];
-  sentInvites: SentInvite[];
+  sentInvites: ProcessedSentInvite[];
 }
 
 export interface ContactsSelectorProps {
@@ -73,7 +77,7 @@ export interface InvitePhoneNumberProps {
 
 export interface InvitedContactProps {
   contact: {
-    item: SentInvite;
+    item: ProcessedSentInvite;
     index: number;
   };
 }

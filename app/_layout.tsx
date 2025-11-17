@@ -2,6 +2,7 @@ import { WebLayout } from '@/components/WebLayout';
 import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from '@/services/notificationsService';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import '../global.css';
@@ -13,10 +14,12 @@ const InitialLayout = () => {
  const [expoPushToken, setExpoPushToken] = useState<string>('');
 
   useEffect(() => {
+    console.log("In LAYOUT   TTT")
 
-    // if (Platform.OS === 'android' || Platform.OS === 'ios') {
-    //     return;
-    // }
+    if (Platform.OS === 'android' || Platform.OS === 'ios') {
+        return;
+    }
+    console.log("DOING NOTIFS!!")
     // Configure notification handler
     configureNotificationHandler();
 
