@@ -22,7 +22,7 @@ const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
     return pastDate;
 }
 
-export default function HealthKitData() {
+export default function SuggestedWalkBySteps() {
     const [loading, setLoading] = useState<boolean>(true);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');

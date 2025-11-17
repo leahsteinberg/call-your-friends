@@ -2,7 +2,7 @@ import React from "react";
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
-import HealthKitData from "../StepTime/HealthKitData";
+import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import SignOutButton from "./SignOutButton";
 
 const safePadding = Platform.OS === 'ios' ? 60 : 0;
@@ -16,7 +16,7 @@ export default function Profile(): React.JSX.Element {
             <SignOutButton />
             {/* <StepTimes /> */}
             {Platform.OS === 'ios' &&
-                <HealthKitData/>
+                <SuggestedWalkBySteps/>
             }
         </View>
     );
