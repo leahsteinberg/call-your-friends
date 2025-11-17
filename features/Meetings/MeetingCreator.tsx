@@ -1,8 +1,9 @@
 import { useCreateMeetingMutation } from "@/services/meetingApi";
 import { CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { ChevronDown, ChevronUp } from "lucide-react-native";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 import UnifiedDateTimePicker from "./UnifiedDateTimePicker";
 import { displayDateTime } from "./meetingsUtils";
@@ -13,6 +14,7 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
     const userId = useSelector((state: RootState) => state.auth.user.id);
     const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
     const [displayDateString, setDisplayDateString] = useState('');
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const handleDateTimeSelect = async (dateTime: Date) => {
         setSelectedDateTime(dateTime);
@@ -38,26 +40,46 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
         refreshMeetings();
     };
     
+    // On iOS, make it collapsible; on other platforms, always show expanded
+    const shouldUseCollapsible = Platform.OS === 'ios';
+    const showContent = !shouldUseCollapsible || isExpanded;
+
     return (
         <View style={[styles.container]}>
-            <Text style={styles.title}>When are you free to chat?</Text>
-            <UnifiedDateTimePicker 
-                onDateTimeSelect={handleDateTimeSelect}
-                selectedDateTime={selectedDateTime || undefined}
-            />
-            
-            <TouchableOpacity 
-                style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
-                onPress={handleCreateMeeting}
-                disabled={!selectedDateTime}
+            <TouchableOpacity
+                style={styles.titleContainer}
+                onPress={() => shouldUseCollapsible && setIsExpanded(!isExpanded)}
+                disabled={!shouldUseCollapsible}
             >
-                <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                    Find a friend to talk on:
-                </Text>
-                <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
-                    {displayDateString && `${displayDateString}`}
-                </Text>
+                <Text style={styles.title}>When are you free to chat?</Text>
+                {shouldUseCollapsible && (
+                    isExpanded ?
+                        <ChevronDown color={DARK_GREEN} size={24} /> :
+                        <ChevronUp color={DARK_GREEN} size={24} />
+                )}
             </TouchableOpacity>
+
+            {showContent && (
+                <>
+                    <UnifiedDateTimePicker
+                        onDateTimeSelect={handleDateTimeSelect}
+                        selectedDateTime={selectedDateTime || undefined}
+                    />
+
+                    <TouchableOpacity
+                        style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
+                        onPress={handleCreateMeeting}
+                        disabled={!selectedDateTime}
+                    >
+                        <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                            Find a friend to talk on:
+                        </Text>
+                        <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
+                            {displayDateString && `${displayDateString}`}
+                        </Text>
+                    </TouchableOpacity>
+                </>
+            )}
         </View>
     );
 }
@@ -77,6 +99,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
+    },
+    titleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
     },
     title: {
         fontSize: 18,
