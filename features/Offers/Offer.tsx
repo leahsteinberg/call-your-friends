@@ -27,8 +27,8 @@ export default function Offer({ offer }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.timeText}>{offer.displayScheduledFor}</Text>
-            <Text style={styles.nameText}>from: {offer.meeting.userFrom.name}</Text>
+            <Text style={styles.timeText} numberOfLines={2}>{offer.displayScheduledFor}</Text>
+            <Text style={styles.nameText} numberOfLines={2}>from: {offer.meeting.userFrom.name}</Text>
             {offer.offerState === 'OPEN' && (
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     timeText: {
         color: BRIGHT_BLUE,
         fontWeight: 900,
+        flexShrink: 1,
         flexGrow: 1,
         paddingVertical: 10,
         paddingLeft: 5,
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     nameText: {
         color: ORANGE,
         fontWeight: 900,
+        flexShrink: 1,
         flexGrow: 1,
         paddingVertical: 10,
         paddingLeft: 5,

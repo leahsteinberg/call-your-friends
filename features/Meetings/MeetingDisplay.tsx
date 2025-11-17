@@ -35,7 +35,7 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
         return
       }
       return (
-        <Text style={styles.nameText}>with: {name}</Text>
+        <Text style={styles.nameText} numberOfLines={2}>with: {name}</Text>
       );
     } else {
       const name = meeting.item.userFrom?.name;
@@ -43,13 +43,13 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
         return
       }
       return (
-        <Text style={styles.nameText}>meeting created by: {name}</Text>
+        <Text style={styles.nameText} numberOfLines={2}>meeting created by: {name}</Text>
       );
     }
   };
 
   return (<View style={styles.container} key={meeting.index}>
-            <Text style={styles.timeText}>{meeting.item.displayScheduledFor}</Text>
+            <Text style={styles.timeText} numberOfLines={2}>{meeting.item.displayScheduledFor}</Text>
             {/* <Text>{relativeDateStringInDays(meeting.item.scheduledFor)}</Text> */}
             {renderMeetingFriend()}
             {renderStateIcon()}
@@ -79,14 +79,16 @@ const styles = StyleSheet.create({
   timeText: {
     color: BRIGHT_BLUE,
     fontWeight: 900,
+    flexShrink: 1,
     flexGrow: 1,
     paddingVertical: 10,
     paddingLeft: 5,
-    
+
   },
   nameText: {
     color: ORANGE,
     fontWeight: 900,
+    flexShrink: 1,
     flexGrow: 1,
     paddingVertical: 10,
     paddingLeft: 5,
