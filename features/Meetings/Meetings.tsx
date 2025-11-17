@@ -14,7 +14,6 @@ import { MeetingType, ProcessedMeetingType } from "./types";
 export default function Meetings() {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const userName: string = useSelector((state: RootState) => state.auth.user.name);
 
     // Get raw meetings from Redux store
     const rawMeetings = useSelector((state: RootState) => state.meeting.meetings);
