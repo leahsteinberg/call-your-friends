@@ -18,11 +18,18 @@ export function SignIn()  {
     const [signInUser] = usePostSignInMutation();
     
     const handleAuthQuery = async (e: any, authQuery: any) => {
-        const result = await authQuery({email, password}).unwrap();
-        if (result) {
-            dispatch(setLogInCredentials({ token: result.token, user: result.user }))
-        } else {
-            console.log("error logging in / signing in")
+        try {
+            const result = await authQuery({email, password}).unwrap();
+            if (result) {
+                dispatch(setLogInCredentials({ token: result.token, user: result.user }))
+            } else {
+                console.log("error logging in / signing in")
+            }
+        } catch (error: any) {
+            console.error("Sign in error:", error);
+            console.error("Error status:", error.status);
+            console.error("Error data:", error.data);
+            alert(`Sign in failed: ${error.status || 'Unknown error'}. Check console for details.`);
         }
     }
     const isSigninButtonDisabled = () => !(email.length > 0 && password.length > 0);

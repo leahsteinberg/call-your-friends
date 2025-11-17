@@ -4,6 +4,7 @@ import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { ProcessedOfferType } from "../Offers/types";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
 import { setMeetings } from "./meetingSlice";
