@@ -1,34 +1,54 @@
 import { useGetMeetingsMutation } from "@/services/meetingApi";
 import { useGetOffersMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
+import { setMeetings } from "./meetingSlice";
 import { processMeetings, processOffers } from "./meetingsUtils";
 import { MeetingType, ProcessedMeetingType } from "./types";
 
 
 export default function Meetings() {
+    const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string = useSelector((state: RootState) => state.auth.user.name);
-    
-    const [meetings, setMeetings] = useState<ProcessedMeetingType[]>([]);
+
+    // Get raw meetings from Redux store
+    const rawMeetings = useSelector((state: RootState) => state.meeting.meetings);
+
     const [getMeetings] = useGetMeetingsMutation();
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
     const [needGetMeetings, setNeedGetMeetings] = useState<Boolean>(false);
     const [getOffers] = useGetOffersMutation();
     const [offers, setOffers] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [processedMeetings, setProcessedMeetings] = useState<ProcessedMeetingType[]>([]);
 
 
     const fetchProcessMeetings = async () =>  {
         console.log("fetch and process meetings")
         const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
-        const processedMeetings: ProcessedMeetingType[] = await processMeetings(meetingsResult.data);
-        setMeetings(processedMeetings);
-    }; 
+        // Store raw meetings in Redux
+        if (meetingsResult.data) {
+            dispatch(setMeetings(meetingsResult.data));
+        }
+    };
+
+    // Process raw meetings whenever they change
+    useEffect(() => {
+        const processAsync = async () => {
+            if (rawMeetings && rawMeetings.length > 0) {
+                const processed = await processMeetings(rawMeetings);
+                setProcessedMeetings(processed);
+            } else {
+                setProcessedMeetings([]);
+            }
+        };
+        processAsync();
+    }, [rawMeetings]); 
     const fetchOffers = async () => {
         const offersResponse = await getOffers({ userId });
         console.log("offers response", offersResponse)
@@ -65,7 +85,7 @@ export default function Meetings() {
 
             <View style={styles.listComponent}>
                 <MeetingsList
-                    meetings={meetings}
+                    meetings={processedMeetings}
                     offers={offers}
                     refresh={handleRefresh}
                     refreshing={refreshing}

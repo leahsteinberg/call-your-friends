@@ -4,10 +4,12 @@ import { RootState } from "@/types";
 import { Check, Radar, Trash2, X } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteMeetingOptimistic } from "./meetingSlice";
 import type { MeetingDisplayProps, MeetingState } from "./types";
 
 export default function MeetingDisplay({ meeting, refreshMeetings }: MeetingDisplayProps) {
+  const dispatch = useDispatch();
   const userId: string = useSelector((state: RootState) => state.auth.user.id)
   const [deleteMeeting] = useDeleteMeetingMutation();
 
@@ -19,18 +21,26 @@ export default function MeetingDisplay({ meeting, refreshMeetings }: MeetingDisp
 
   const handleDeleteMeeting = async () => {
     try {
+      // Optimistic deletion: remove from Redux state immediately
+      dispatch(deleteMeetingOptimistic(meeting.item.id));
+
+      // Then call the API to delete on backend
       await deleteMeeting({
         meetingId: meeting.item.id,
         userId
       }).unwrap();
 
-      // Refresh the meetings list after deletion
+      // Refresh the meetings list to sync with backend
       if (refreshMeetings) {
         refreshMeetings();
       }
     } catch (error) {
       console.error("Error deleting meeting:", error);
       alert('Failed to delete meeting. Please try again.');
+      // On error, refresh to restore the meeting from backend
+      if (refreshMeetings) {
+        refreshMeetings();
+      }
     }
   };
   
