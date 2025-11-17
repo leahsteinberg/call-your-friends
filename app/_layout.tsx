@@ -13,10 +13,15 @@ const InitialLayout = () => {
  const [expoPushToken, setExpoPushToken] = useState<string>('');
 
   useEffect(() => {
+
+    // if (Platform.OS === 'android' || Platform.OS === 'ios') {
+    //     return;
+    // }
     // Configure notification handler
     configureNotificationHandler();
 
     // Register for push notifications
+
     registerForPushNotificationsAsync()
       .then(token => {
         if (token) {
@@ -37,7 +42,6 @@ const InitialLayout = () => {
         console.log('Notification response:', response);
       }
     );
-
     return cleanup;
   }, []);
 
