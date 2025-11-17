@@ -41,7 +41,6 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
     const [createMeeting] = useCreateMeetingMutation();
     const userId = useSelector((state: RootState) => state.auth.user.id);
 
-    console.log("auth status:", authorizationStatus, "authorized:", isAuthorized);
 
     const pastDate = getPastDate({ daysAgo: DAYS_OF_HISTORY });
     const today = new Date();
@@ -77,7 +76,6 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
                     // This analyzes historical step patterns to suggest when the user is most active
                     const suggestedWalkDateTimeStr = processStepsData(stepsSamples);
                     const suggestedDateTime = new Date(suggestedWalkDateTimeStr);
-                    console.log("Suggested walk time:", suggestedDateTime);
 
                     setSuggestedWalkDateTime(suggestedDateTime);
                     const displayString = await displayDateTime(suggestedDateTime.toISOString());

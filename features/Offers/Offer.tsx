@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 
 
 export default function Offer({ offer }) {
-    console.log("offer is", offer);
     const offerId = offer.id
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
@@ -17,12 +16,10 @@ export default function Offer({ offer }) {
 
     const handleAcceptOffer = async () => {
         const acceptedOffer = await acceptOffer({ userId, offerId });
-        console.log("Accepted Offer", acceptedOffer)
     }
 
     const handleRejectOffer = async () => {
         const rejectedOffer = await rejectOffer({ userId, offerId });
-        console.log("Rejected Offer", rejectedOffer)
     }
 
     return (
