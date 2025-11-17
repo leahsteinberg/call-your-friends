@@ -1,5 +1,6 @@
 import { WebLayout } from '@/components/WebLayout';
 import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from '@/services/notificationsService';
+import { RootState } from '@/types';
 import { Stack } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
@@ -10,7 +11,7 @@ import { persistor, store } from './store';
 
 
 const InitialLayout = () => {
- const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
+ const isAuthenticated = useSelector((state: RootState)=> state.auth.isAuthenticated);
  const [expoPushToken, setExpoPushToken] = useState<string>('');
 
   useEffect(() => {
