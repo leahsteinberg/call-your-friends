@@ -142,16 +142,16 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
             disabled={isDisabled}
         >
             <Text style={styles.title}>
-                Using HealthKit Data
+                Chat with a friend on your next walk.
             </Text>
             <Text style={styles.description}>
-                Suggested next time to talk, based on your walking patterns:
+                Suggestion informed by your walking habits.
             </Text>
             <Text style={[styles.walkTime, isDisabled && styles.disabledText]}>
                 {suggestedWalkTime || 'Loading...'}
             </Text>
             <Text style={styles.actionHint}>
-                Tap to create meeting
+                Tap to find a friend who's free at that time
             </Text>
         </TouchableOpacity>
     );
