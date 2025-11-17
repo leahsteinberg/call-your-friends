@@ -17,7 +17,7 @@ const InitialLayout = () => {
   useEffect(() => {
     console.log("In LAYOUT   TTT")
 
-    if (Platform.OS === 'android' || Platform.OS === 'ios') {
+    if (Platform.OS === 'web') {
         return;
     }
     console.log("DOING NOTIFS!!")
@@ -25,6 +25,7 @@ const InitialLayout = () => {
     configureNotificationHandler();
 
     // Register for push notifications
+
 
     registerForPushNotificationsAsync()
       .then(token => {
