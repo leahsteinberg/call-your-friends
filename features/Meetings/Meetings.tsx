@@ -1,8 +1,8 @@
 import { useGetMeetingsMutation } from "@/services/meetingApi";
 import { useGetOffersMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
-import { useEffect, useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
@@ -81,8 +81,6 @@ export default function Meetings() {
  
     return (
         <View style={[styles.container,]}>
-            <Text>{userName} {userId}</Text>
-
             <View style={styles.listComponent}>
                 <MeetingsList
                     meetings={processedMeetings}
