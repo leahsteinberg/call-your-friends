@@ -36,7 +36,7 @@ export const processSentInvites = async (sentInvites: SentInvite[]): Promise<Pro
         .map(async (invite): Promise<ProcessedSentInvite> =>
             ({
                 ...invite,
-                displayCreatedAt: await displayDateTime(invite.createdAt)
+                displayCreatedAt: await displayDate(invite.createdAt)
             })
         );
     const invitesWithDisplayTime = await Promise.all(invitesWithDisplayTimePromises);
@@ -57,6 +57,18 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
     const displayTimeString = formatter.format(dateObj);
     return displayTimeString;
 };
+
+export const displayDate = async (dateTime: string): Promise<string> => {
+    const dateObj = new Date(dateTime);
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+    });
+    const displayTimeString = formatter.format(dateObj);
+    return displayTimeString;
+};
+
 
 export const dateObjToMinutesString = (dateObj: Date): string => {
     //console.log(dateObj.toDateString())
