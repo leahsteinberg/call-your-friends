@@ -21,3 +21,13 @@ export interface MeetingsListProps {
     meetings: ProcessedMeetingType[];
 }
 
+export interface MeetingDisplayProps {
+    meeting: {
+        item: ProcessedMeetingType;
+        index: number;
+    };
+    refreshMeetings?: () => void;
+}
+
+export type MeetingState = 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
+

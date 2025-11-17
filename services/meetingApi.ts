@@ -24,10 +24,17 @@ export const meetingApi = createApi({
                 body: { userFromId },
             })
         }),
+        deleteMeeting: builder.mutation({
+            query: ({ meetingId, userId }) => ({
+                url: '/api/delete-meeting',
+                method: 'POST',
+                body: { meetingId, userId },
+            })
+        }),
     })
 });
 
-const { useCreateMeetingMutation, useGetMeetingsMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsMutation, useDeleteMeetingMutation } = meetingApi;
 
-export { useCreateMeetingMutation, useGetMeetingsMutation };
+export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsMutation };
 

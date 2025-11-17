@@ -1,19 +1,38 @@
+import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types";
-import { Check, Radar, X } from "lucide-react-native";
+import { Check, Radar, Trash2, X } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import type { MeetingDisplayProps, MeetingState } from "./types";
 
-export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
+export default function MeetingDisplay({ meeting, refreshMeetings }: MeetingDisplayProps) {
   const userId: string = useSelector((state: RootState) => state.auth.user.id)
+  const [deleteMeeting] = useDeleteMeetingMutation();
 
   const meetingState: MeetingState = meeting.item.meetingState;
 
   const selfCreatedMeeting = meeting.item.userFromId === userId;
 
   const iconSize: number = 24;
+
+  const handleDeleteMeeting = async () => {
+    try {
+      await deleteMeeting({
+        meetingId: meeting.item.id,
+        userId
+      }).unwrap();
+
+      // Refresh the meetings list after deletion
+      if (refreshMeetings) {
+        refreshMeetings();
+      }
+    } catch (error) {
+      console.error("Error deleting meeting:", error);
+      alert('Failed to delete meeting. Please try again.');
+    }
+  };
   
   const renderStateIcon = (): React.JSX.Element | null => {
     if (meetingState === 'SEARCHING') {
@@ -53,6 +72,12 @@ export default function MeetingDisplay({ meeting }: MeetingDisplayProps) {
             {/* <Text>{relativeDateStringInDays(meeting.item.scheduledFor)}</Text> */}
             {renderMeetingFriend()}
             {renderStateIcon()}
+            <TouchableOpacity
+              onPress={handleDeleteMeeting}
+              style={styles.deleteButton}
+            >
+              <Trash2 color="red" size={20} />
+            </TouchableOpacity>
         </View>
         );
 }
@@ -75,6 +100,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingRight: 10,
+  },
+  deleteButton: {
+    padding: 8,
+    marginLeft: 8,
   },
   timeText: {
     color: BRIGHT_BLUE,
