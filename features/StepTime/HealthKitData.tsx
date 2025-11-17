@@ -1,93 +1,94 @@
-import { queryQuantitySamples, useHealthkitAuthorization } from '@kingstinct/react-native-healthkit';
+import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { displayDateTime } from '../Meetings/meetingsUtils';
 import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
-const daysPast = 200;
-const entriesLimit = 2000;
+const DAYS_OF_HISTORY = 200;
+const MAX_ENTRIES = 2000;
 
+interface GetPastDateParams {
+    daysAgo: number;
+}
 
-const getPastDate = ({daysAgo}) => {
-    let pastDate = new Date();
-
-    // 2. Set the time to midnight (00:00:00.000)
+/**
+ * Get a date in the past, set to midnight
+ */
+const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
+    const pastDate = new Date();
     pastDate.setHours(0, 0, 0, 0);
-    
-    // 3. Subtract one day to get yesterday's date
     pastDate.setDate(pastDate.getDate() - daysAgo);
-    
     return pastDate;
 }
 
-export default function HealthKitData () {
+export default function HealthKitData() {
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+    const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');
+    const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
+    const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
 
-    const [loading, setLoading] = useState(true);
-    const [authed, setAuthed] = useState([false])
-    const [processedStepsData, setProcessedStepsData] = useState('');
-    const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE])
-    const [dataSample, setDataSample] = useState([]);
-    console.log("auth stat - ", authorizationStatus, "authed- ", authed);
+    console.log("auth status:", authorizationStatus, "authorized:", isAuthorized);
 
-    const pastDate = getPastDate({daysAgo: daysPast});
-    let today = new Date();
+    const pastDate = getPastDate({ daysAgo: DAYS_OF_HISTORY });
+    const today = new Date();
 
 
     useEffect(() => {
-        let isMounted = true;
-        console.log("health kit - in use Effect, auth", authed)
-        const fetchAuth = async () => {
+        const fetchHealthKitDataAndGenerateSuggestion = async () => {
             try {
-                const response = await requestAuthorization([HK_DATA_TYPE]); 
-                if (response) { 
-                    setAuthed([response]);
+                // Request HealthKit authorization
+                const authResponse = await requestAuthorization([HK_DATA_TYPE]);
+                if (authResponse) {
+                    setIsAuthorized(true);
                 }
             } catch (error) {
-                console.error('Error fetching/requesting data:', error);
+                console.error('Error requesting HealthKit authorization:', error);
             }
+
             try {
-                if ( authed ) {
-                    const sample = await queryQuantitySamples(
+                if (isAuthorized) {
+                    // Query step count data from HealthKit
+                    const stepsSamples = await queryQuantitySamples(
                         HK_DATA_TYPE,
                         {
                             filter: {
                                 startDate: pastDate,
                                 endDate: today
                             },
-                            limit: entriesLimit,
+                            limit: MAX_ENTRIES,
                         }
                     );
-                    const processedSample = processStepsData(sample);
-                    console.log("processedSample", processedSample)
-                    setProcessedStepsData(displayDateTime(processedSample))
-                    setDataSample(sample)
-                    setLoading(false)
+
+                    // Process steps data to find the best time for a walk
+                    // This analyzes historical step patterns to suggest when the user is most active
+                    const suggestedWalkDateTime = processStepsData(stepsSamples);
+                    console.log("Suggested walk time:", suggestedWalkDateTime);
+
+                    setSuggestedWalkTime(displayDateTime(suggestedWalkDateTime));
+                    setStepsData(stepsSamples);
+                    setLoading(false);
                 }
             } catch (error) {
-                console.log("error getting the da    ta", error)
+                console.error("Error fetching steps data:", error);
             }
-      };
-      fetchAuth();
-      return () => {
-        //isMounted = false; // Set flag to false when component unmounts
-      };
-    }, []);
+        };
 
-                            // {dataSample.map((d, i) => (`#${i}: Steps: ${d.quantity}\nStart: ${dateObjToMinutesString(d.startDate)} \nEnd: ${dateObjToMinutesString(d.endDate)} \n \n`))}
-
+        fetchHealthKitDataAndGenerateSuggestion();
+    }, [isAuthorized]);
 
     return (
         <View style={styles.container}>
-            <Text >
-                Using Health Kit Data
+            <Text style={styles.title}>
+                Using HealthKit Data
             </Text>
-            <Text >
-            Suggested next time to talk, based on your walking patterns:
+            <Text style={styles.description}>
+                Suggested next time to talk, based on your walking patterns:
             </Text>
-            <Text >
-                {processedStepsData}
-             </Text>
+            <Text style={styles.walkTime}>
+                {suggestedWalkTime}
+            </Text>
         </View>
     );
 }
@@ -95,15 +96,19 @@ export default function HealthKitData () {
 
 
 
-const styles= StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingLeft: 20,
     },
-    list: {
-        flex: 1,
+    title: {
+        fontWeight: 'bold',
     },
-    item: {
-
-    }
+    description: {
+        marginTop: 8,
+    },
+    walkTime: {
+        marginTop: 4,
+        fontWeight: '600',
+    },
 });
