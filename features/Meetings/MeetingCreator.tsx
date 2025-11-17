@@ -65,19 +65,21 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
                         onDateTimeSelect={handleDateTimeSelect}
                         selectedDateTime={selectedDateTime || undefined}
                     />
-
-                    <TouchableOpacity
-                        style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
-                        onPress={handleCreateMeeting}
-                        disabled={!selectedDateTime}
-                    >
-                        <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                            Find a friend to talk on:
-                        </Text>
-                        <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
-                            {displayDateString && `${displayDateString}`}
-                        </Text>
-                    </TouchableOpacity>
+                    { selectedDateTime && (
+                        <TouchableOpacity
+                            style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
+                            onPress={handleCreateMeeting}
+                            disabled={!selectedDateTime}
+                        >
+                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                                Find a friend to talk on:
+                            </Text>
+                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
+                                {displayDateString && `${displayDateString}`}
+                            </Text>
+                        </TouchableOpacity>
+                        )
+                    }
                 </>
             )}
         </View>
