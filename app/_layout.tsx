@@ -15,18 +15,14 @@ const InitialLayout = () => {
  const [expoPushToken, setExpoPushToken] = useState<string>('');
 
   useEffect(() => {
-    console.log("In LAYOUT   TTT")
 
     if (Platform.OS === 'web') {
         return;
     }
-    console.log("DOING NOTIFS!!")
     // Configure notification handler
     configureNotificationHandler();
 
     // Register for push notifications
-
-
     registerForPushNotificationsAsync()
       .then(token => {
         if (token) {
