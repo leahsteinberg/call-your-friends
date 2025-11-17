@@ -16,6 +16,7 @@ import offerReducer from '../features/Offers/offerSlice';
 import { authApi } from '@/services/authApi';
 import { contactsApi } from '@/services/contactsApi';
 import { meetingApi } from '@/services/meetingApi';
+import { notificationApi } from '@/services/notificationApi';
 import { offerApi } from '@/services/offersApi';
 
 const persistConfig = {
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   [contactsApi.reducerPath]: contactsApi.reducer,
   [meetingApi.reducerPath]: meetingApi.reducer,
   [offerApi.reducerPath]: offerApi.reducer,
+  [notificationApi.reducerPath]: notificationApi.reducer,
   auth: authReducer,
   contacts: contactsReducer,
   meeting: meetingReducer,
@@ -48,6 +50,7 @@ export const store = configureStore({
     .concat(contactsApi.middleware)
     .concat(meetingApi.middleware)
     .concat(offerApi.middleware)
+    .concat(notificationApi.middleware)
 });
 
 export type RootState = ReturnType<typeof store.getState>;

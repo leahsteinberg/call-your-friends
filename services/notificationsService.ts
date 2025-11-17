@@ -22,7 +22,7 @@ function handleRegistrationError(errorMessage: string) {
 
 export async function registerForPushNotificationsAsync(): Promise<string | undefined> {
   // Configure Android notification channel
-  console.log("in register for push notificationssss")
+  console.log("in register for push notificationssss local")
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -69,7 +69,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
         projectId,
       })
     ).data;
-    console.log('Push notification to   ken:', pushTokenString);
+    console.log('Push notification token:', pushTokenString);
     return pushTokenString;
   } catch (e: unknown) {
     handleRegistrationError(`${e}`);

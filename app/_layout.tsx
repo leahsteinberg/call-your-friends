@@ -1,9 +1,6 @@
 import { WebLayout } from '@/components/WebLayout';
-import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from '@/services/notificationsService';
 import { RootState } from '@/types';
 import { Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import '../global.css';
@@ -12,39 +9,7 @@ import { persistor, store } from './store';
 
 const InitialLayout = () => {
  const isAuthenticated = useSelector((state: RootState)=> state.auth.isAuthenticated);
- const [expoPushToken, setExpoPushToken] = useState<string>('');
 
-  useEffect(() => {
-
-    if (Platform.OS === 'web') {
-        return;
-    }
-    // Configure notification handler
-    configureNotificationHandler();
-
-    // Register for push notifications
-    registerForPushNotificationsAsync()
-      .then(token => {
-        if (token) {
-          setExpoPushToken(token);
-          console.log('Successfully registered for push notifications:', token);
-        }
-      })
-      .catch((error: any) => {
-        console.error('Failed to register for push notifications:', error);
-      });
-
-    // Setup notification listeners
-    const cleanup = setupNotificationListeners(
-      (notification) => {
-        console.log('Notification received:', notification);
-      },
-      (response) => {
-        console.log('Notification response:', response);
-      }
-    );
-    return cleanup;
-  }, []);
 
   return (
     <Stack>
