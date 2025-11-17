@@ -1,4 +1,4 @@
-import FullScreenStylingWrapper from '@/features/Common/StylingWrapper';
+import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
 import ContactsComponent from '@/features/Contacts/ContactsComponent';
 import { StyleSheet, View } from 'react-native';
 

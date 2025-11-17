@@ -1,4 +1,4 @@
-import FullScreenStylingWrapper from '@/features/Common/StylingWrapper';
+import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
 import Meetings from '@/features/Meetings/Meetings';
 import { StyleSheet, View } from 'react-native';
 

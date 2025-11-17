@@ -1,5 +1,5 @@
 import { SignUp } from '@/features/Auth/SignUp';
-import FullScreenStylingWrapper from '@/features/Common/StylingWrapper';
+import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
