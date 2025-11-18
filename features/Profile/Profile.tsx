@@ -1,23 +1,17 @@
 import React from "react";
 import { Platform, StyleSheet, View } from 'react-native';
-import { useSelector } from 'react-redux';
-import { RootState } from "../../types/redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
+import TodayList from "../Today/TodayList";
 import SignOutButton from "./SignOutButton";
 
-const safePadding = Platform.OS === 'ios' ? 60 : 0;
-
-
 export default function Profile(): React.JSX.Element {
-    const userId: string = useSelector((state: RootState) => state.auth.user.id);
-
     return (
         <View style={styles.container}>
-            <SignOutButton />
-            {/* <StepTimes /> */}
+            <TodayList />
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
             }
+            <SignOutButton />
         </View>
     );
 }
