@@ -16,6 +16,14 @@ export interface MeetingType extends MeetingEvent {
 
 export interface ProcessedMeetingType extends MeetingType {
     displayScheduledFor: string;
+    acceptedUser?: {
+        name?: string;
+        id?: string;
+    };
+    userFrom?: {
+        name?: string;
+        id?: string;
+    };
 }
 
 export interface MeetingsListProps {

@@ -17,6 +17,25 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
     const offerId = offer.id;
 
+    // Format date to show "Today" if the offer is today
+    const getDisplayDate = () => {
+        const offerDate = new Date(offer.scheduledFor);
+        const today = new Date();
+
+        const isToday =
+            offerDate.getFullYear() === today.getFullYear() &&
+            offerDate.getMonth() === today.getMonth() &&
+            offerDate.getDate() === today.getDate();
+
+        if (isToday) {
+            // Extract time portion from displayScheduledFor (e.g., "at 3:00 PM PST")
+            const timeMatch = offer.displayScheduledFor.match(/at\s+.+$/i);
+            return timeMatch ? `Today ${timeMatch[0]}` : offer.displayScheduledFor;
+        }
+
+        return offer.displayScheduledFor;
+    };
+
     const handleAcceptOffer = async () => {
         try {
             await acceptOffer({ userId, offerId });
@@ -37,12 +56,12 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
     // Get the name from the offer
     const getFromName = () => {
-        return offer.meeting?.userFrom?.name || offer.userFromName || 'Unknown';
+        return offer.userFromName || 'Unknown';
     };
 
     const getStatusText = () => {
         switch (offer.offerState) {
-            case 'OPEN':
+            case 'PENDING':
                 return 'Pending';
             case 'ACCEPTED':
                 return 'Accepted';
@@ -59,7 +78,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>Offer</Text>
                 </View>
-                {offer.offerState === 'OPEN' && (
+                {offer.offerState === 'PENDING' && (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             onPress={handleAcceptOffer}
@@ -77,7 +96,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 )}
             </View>
 
-            <Text style={styles.timeText}>{offer.displayScheduledFor}</Text>
+            <Text style={styles.timeText}>{getDisplayDate()}</Text>
 
             <Text style={styles.nameText}>from: {getFromName()}</Text>
 
