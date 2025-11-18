@@ -1,25 +1,24 @@
 import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
-import Offer from "../Offers/Offer";
-import MeetingDisplay from "./MeetingDisplay";
-import { MeetingType, MeetingsListProps } from "./types";
+import MeetingCard from "../Common/MeetingCard";
+import OfferCard from "../Common/OfferCard";
+import { ProcessedOfferType } from "../Offers/types";
+import { MeetingsListProps, ProcessedMeetingType } from "./types";
 
 
 export default function MeetingsList({ meetings, offers, refresh, refreshing }: MeetingsListProps) {
 
-    const meetingsListData =         {
+    const meetingsListData = {
         title: "Chats Planned:",
         data: meetings,
-        renderItem: ({ item, index }: { item: MeetingType; index: number }) => 
-            (<MeetingDisplay
-                meeting={{ item, index }}
-            />)
+        renderItem: ({ item }: { item: ProcessedMeetingType }) =>
+            <MeetingCard meeting={item} />
     };
-    const offersListData =         {
+    const offersListData = {
         title: "Offers:",
         data: offers,
-        renderItem: ({ item, index }: { item: OfferType; index: number }) =>
-            <Offer offer={item}/>
+        renderItem: ({ item }: { item: ProcessedOfferType }) =>
+            <OfferCard offer={item} />
     }
 
     const sectionListData = offers.length > 0 ? [meetingsListData, offersListData] : [meetingsListData];
