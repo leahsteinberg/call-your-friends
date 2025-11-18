@@ -1,5 +1,5 @@
-import { useGetMeetingsMutation } from "@/services/meetingApi";
-import { useGetOffersMutation } from "@/services/offersApi";
+import { useGetMeetingsQuery } from "@/services/meetingApi";
+import { useGetOffersQuery } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -9,37 +9,37 @@ import MeetingCreator from "./MeetingCreator";
 import MeetingsList from "./MeetingsList";
 import { setMeetings } from "./meetingSlice";
 import { processMeetings, processOffers } from "./meetingsUtils";
-import { MeetingType, ProcessedMeetingType } from "./types";
+import { ProcessedMeetingType } from "./types";
 
 
 export default function Meetings() {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
-    // Get raw meetings from Redux store
-    const rawMeetings = useSelector((state: RootState) => state.meeting.meetings);
+    // Query hooks auto-fetch and auto-refetch when tags are invalidated
+    const {
+        data: rawMeetings = [],
+        isLoading: meetingsLoading,
+        refetch: refetchMeetings
+    } = useGetMeetingsQuery({ userFromId: userId });
 
-    const [getMeetings] = useGetMeetingsMutation();
+    const {
+        data: rawOffers = [],
+        isLoading: offersLoading,
+        refetch: refetchOffers
+    } = useGetOffersQuery({ userId });
+
     const [showMeetingCreator, setShowMeetingCreator] = useState<Boolean>(true);
-    const [needGetMeetings, setNeedGetMeetings] = useState<Boolean>(false);
-    const [getOffers] = useGetOffersMutation();
-    const [offers, setOffers] = useState([]);
+    const [offers, setOffers] = useState<ProcessedOfferType[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [processedMeetings, setProcessedMeetings] = useState<ProcessedMeetingType[]>([]);
 
-
-    const fetchProcessMeetings = async () =>  {
-        console.log("fetch and process meetings")
-        const meetingsResult: { data: MeetingType[] } = await getMeetings({ userFromId: userId });
-        // Store raw meetings in Redux
-        if (meetingsResult.data) {
-            dispatch(setMeetings(meetingsResult.data));
-        }
-    };
-
-    // Process raw meetings whenever they change
+    // Store raw meetings in Redux and process them when data changes
     useEffect(() => {
         const processAsync = async () => {
+            // Update Redux store with raw meetings
+            dispatch(setMeetings(rawMeetings));
+
             if (rawMeetings && rawMeetings.length > 0) {
                 const processed = await processMeetings(rawMeetings);
                 setProcessedMeetings(processed);
@@ -47,34 +47,32 @@ export default function Meetings() {
                 setProcessedMeetings([]);
             }
         };
-        processAsync();
-    }, [rawMeetings]); 
-    const fetchOffers = async () => {
-        const offersResponse = await getOffers({ userId });
-        console.log("offers response", offersResponse)
-        const processedOffers: ProcessedOfferType[] = await processOffers(offersResponse.data);
-        console.log("Procesesd offers", processedOffers)
-        setOffers(processedOffers);
-    };
 
-    useEffect(() => {
-        async function handleGetOffers() {
-            fetchOffers();
+        if (!meetingsLoading) {
+            processAsync();
         }
-        handleGetOffers();
-    }, []);
+    }, [rawMeetings, meetingsLoading, dispatch]);
 
+    // Process offers when data changes
     useEffect(() => {
-        async function handleGetMeetings() {
-            fetchProcessMeetings();
-        };  
-        handleGetMeetings();
-    }, []);
+        const processAsync = async () => {
+            if (rawOffers && rawOffers.length > 0) {
+                const processed = await processOffers(rawOffers);
+                setOffers(processed);
+            } else {
+                setOffers([]);
+            }
+        };
 
+        if (!offersLoading) {
+            processAsync();
+        }
+    }, [rawOffers, offersLoading]);
+
+    // Manual refresh via pull-to-refresh
     const handleRefresh = async () => {
         setRefreshing(true);
-        // Your data fetching or update logic here
-        await fetchProcessMeetings(); // Example: function to fetch new data
+        await Promise.all([refetchMeetings(), refetchOffers()]);
         setRefreshing(false);
     };
 
@@ -89,11 +87,10 @@ export default function Meetings() {
                     refreshing={refreshing}
                 />
             </View>
-            {showMeetingCreator && 
+            {showMeetingCreator &&
                 <View style={styles.creatorComponent}>
-                        <MeetingCreator
-                            refreshMeetings={fetchProcessMeetings}
-                        />
+                        {/* No need to pass refreshMeetings - cache tags auto-refetch */}
+                        <MeetingCreator />
                 </View>
             }
         </View>

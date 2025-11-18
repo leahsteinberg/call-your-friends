@@ -1,4 +1,5 @@
 import { BaseEntity } from "@/types/common";
+import { ProcessedOfferType } from "../Offers/types";
 
 
 export interface MeetingEvent extends BaseEntity {
@@ -19,6 +20,9 @@ export interface ProcessedMeetingType extends MeetingType {
 
 export interface MeetingsListProps {
     meetings: ProcessedMeetingType[];
+    offers: ProcessedOfferType[];
+    refresh: () => void;
+    refreshing: boolean;
 }
 
 export interface MeetingDisplayProps {

@@ -1,5 +1,5 @@
-import { useGetMeetingsMutation } from "@/services/meetingApi";
-import { useGetOffersMutation } from "@/services/offersApi";
+import { useGetMeetingsQuery } from "@/services/meetingApi";
+import { useGetOffersQuery } from "@/services/offersApi";
 import { CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -30,67 +30,76 @@ function isToday(dateString: string): boolean {
 
 export default function TodayList(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [getMeetings] = useGetMeetingsMutation();
-    const [getOffers] = useGetOffersMutation();
+
+    // Query hooks automatically fetch on mount and return { data, isLoading, refetch }
+    // They also auto-refetch when their tags are invalidated!
+    const {
+        data: meetings = [],
+        isLoading: meetingsLoading,
+        refetch: refetchMeetings
+    } = useGetMeetingsQuery({ userFromId: userId });
+
+    const {
+        data: offers = [],
+        isLoading: offersLoading,
+        refetch: refetchOffers
+    } = useGetOffersQuery({ userId });
+
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
-    const [loading, setLoading] = useState(true);
 
-    const fetchTodayItems = async () => {
-        try {
-            // Fetch meetings
-            const meetingsResult = await getMeetings({ userFromId: userId });
-            const meetings = meetingsResult.data || [];
-            const processedMeetings = await processMeetings(meetings);
-
-            // Fetch offers
-            const offersResult = await getOffers({ userId });
-            const offers = offersResult.data || [];
-            const processedOffers = await processOffers(offers);
-
-            // Filter for today and combine
-            const todayMeetings: TodayItem[] = processedMeetings
-                .filter(meeting => isToday(meeting.scheduledFor))
-                .map(meeting => ({
-                    id: `meeting-${meeting.id}`,
-                    type: 'meeting' as const,
-                    displayScheduledFor: meeting.displayScheduledFor,
-                    scheduledFor: meeting.scheduledFor,
-                    data: meeting,
-                }));
-
-            const todayOffers: TodayItem[] = processedOffers
-                .filter(offer => isToday(offer.scheduledFor))
-                .map(offer => ({
-                    id: `offer-${offer.id}`,
-                    type: 'offer' as const,
-                    displayScheduledFor: offer.displayScheduledFor,
-                    scheduledFor: offer.scheduledFor,
-                    data: offer,
-                }));
-
-            // Combine and sort by time
-            const combined = [...todayMeetings, ...todayOffers].sort(
-                (a, b) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime()
-            );
-
-            setTodayItems(combined);
-        } catch (error) {
-            console.error("Error fetching today's items:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    // Process and filter data when it changes
     useEffect(() => {
-        fetchTodayItems();
-    }, []);
+        const processData = async () => {
+            try {
+                const processedMeetings = await processMeetings(meetings);
+                const processedOffers = await processOffers(offers);
 
+                // Filter for today and combine
+                const todayMeetings: TodayItem[] = processedMeetings
+                    .filter(meeting => isToday(meeting.scheduledFor))
+                    .map(meeting => ({
+                        id: `meeting-${meeting.id}`,
+                        type: 'meeting' as const,
+                        displayScheduledFor: meeting.displayScheduledFor,
+                        scheduledFor: meeting.scheduledFor,
+                        data: meeting,
+                    }));
+
+                const todayOffers: TodayItem[] = processedOffers
+                    .filter(offer => isToday(offer.scheduledFor))
+                    .map(offer => ({
+                        id: `offer-${offer.id}`,
+                        type: 'offer' as const,
+                        displayScheduledFor: offer.displayScheduledFor,
+                        scheduledFor: offer.scheduledFor,
+                        data: offer,
+                    }));
+
+                // Combine and sort by time
+                const combined = [...todayMeetings, ...todayOffers].sort(
+                    (a, b) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime()
+                );
+
+                setTodayItems(combined);
+            } catch (error) {
+                console.error("Error processing today's items:", error);
+            }
+        };
+
+        if (!meetingsLoading && !offersLoading) {
+            processData();
+        }
+    }, [meetings, offers, meetingsLoading, offersLoading]);
+
+    // Manual refresh still available via pull-to-refresh
     const handleRefresh = async () => {
         setRefreshing(true);
-        await fetchTodayItems();
+        await Promise.all([refetchMeetings(), refetchOffers()]);
         setRefreshing(false);
     };
+
+    const loading = meetingsLoading || offersLoading;
 
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {

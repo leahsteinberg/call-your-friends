@@ -8,7 +8,8 @@ import { useSelector } from "react-redux";
 import UnifiedDateTimePicker from "./UnifiedDateTimePicker";
 import { displayDateTime } from "./meetingsUtils";
 
-export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () => void}) {
+// refreshMeetings is now optional - cache tags auto-refetch when createMeeting invalidates 'Meeting' tag
+export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () => void}) {
     const { height, width } = useWindowDimensions();
     const [createMeeting] = useCreateMeetingMutation();
     const userId = useSelector((state: RootState) => state.auth.user.id);
@@ -47,7 +48,8 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings: () =
             scheduledFor,
             scheduledEnd: scheduledEnd.toISOString(),
         });
-        refreshMeetings();
+        // Optional callback - with cache tags, getMeetings auto-refetches anyway
+        refreshMeetings?.();
     };
     
     // On iOS, make it collapsible; on other platforms, always show expanded

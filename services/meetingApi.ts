@@ -4,6 +4,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const meetingApi = createApi({
     reducerPath: 'meetingApi',
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
+    // Step 1: Declare the tag types this API uses
+    // This registers 'Meeting' as a valid tag that queries can provide
+    // and mutations can invalidate
+    tagTypes: ['Meeting'],
     endpoints: (builder) => ({
         createMeeting: builder.mutation({
             query: ({
@@ -15,26 +19,38 @@ export const meetingApi = createApi({
                 url: '/api/create-meeting',
                 method: 'POST',
                 body: { userFromId, scheduledFor, scheduledEnd, title},
-            })
+            }),
+            // Step 3: invalidatesTags tells RTK Query:
+            // "After this mutation succeeds, any cached data tagged 'Meeting' is stale"
+            // This triggers automatic refetch of getMeetings
+            invalidatesTags: ['Meeting'],
         }),
-        getMeetings: builder.mutation({
-            query: ({userFromId }) => ({
+        // Step 2: Convert from mutation to query
+        // Queries cache their results and can "provide" tags
+        getMeetings: builder.query({
+            query: ({ userFromId }) => ({
                 url: '/api/get-meetings',
                 method: 'POST',
                 body: { userFromId },
-            })
+            }),
+            // providesTags tells RTK Query: "This cached data is labeled as 'Meeting'"
+            // When ANY mutation invalidates 'Meeting', this query will refetch
+            providesTags: ['Meeting'],
         }),
         deleteMeeting: builder.mutation({
             query: ({ meetingId, userId }) => ({
                 url: '/api/delete-meeting',
                 method: 'POST',
                 body: { meetingId, userId },
-            })
+            }),
+            // Same pattern: deleting a meeting invalidates the cached meetings list
+            invalidatesTags: ['Meeting'],
         }),
     })
 });
 
-const { useCreateMeetingMutation, useGetMeetingsMutation, useDeleteMeetingMutation } = meetingApi;
+// Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
+const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation } = meetingApi;
 
-export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsMutation };
+export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery };
 
