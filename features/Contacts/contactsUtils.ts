@@ -1,4 +1,3 @@
-import { LOCAL_DEV_SERVER_ADDRESS } from "@/environment";
 import * as Contacts from "expo-contacts";
 import { SentInvite } from "./types";
 
@@ -52,7 +51,10 @@ export const cleanPhoneNumber = (phoneNumberString: string): string | null => {
 };
 
 export const createSmsUrl = (token: string, phoneNumber: string): string => {
-    const urlWithToken = `${LOCAL_DEV_SERVER_ADDRESS}/invite?userToPhoneNumber=${phoneNumber}&token=${token}`
+    //const urlWithToken = `${LOCAL_DEV_SERVER_ADDRESS}/invite?userToPhoneNumber=${phoneNumber}&token=${token}`
+  // '34BG2J75ZG.com.leahsteinberg.callyourfriends'
+    //const urlWithToken = `34BG2J75ZG.com.leahsteinberg.callyourfriends/invite?userToPhoneNumber=${phoneNumber}&token=${token}`
+    const urlWithToken = `https://call-your-friends.expo.app/invite?userToPhoneNumber=${phoneNumber}&token=${token}`;
     const message = `This is your invite to join me on Call Your Friends, an app to make planning to talk easier! Here is your link: ${urlWithToken}`;
     return `sms:${phoneNumber}?body=${encodeURIComponent(message)}`;
 };
