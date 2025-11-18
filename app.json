@@ -12,7 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.leahsteinberg.callyourfriends",
       "associatedDomains": [
-        "applink:call-your-friends.expo.app"
+        "applinks:call-your-friends.expo.app"
       ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
