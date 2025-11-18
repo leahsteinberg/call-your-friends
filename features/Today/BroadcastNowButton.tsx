@@ -1,19 +1,23 @@
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 
 export default function BroadcastNowButton(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [broadcastNow, { isLoading }] = useBroadcastNowMutation();
+    const [broadcastNow] = useBroadcastNowMutation();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handlePress = async () => {
+        setIsLoading(true);
         try {
             await broadcastNow({ userId });
+            // Keep loading indefinitely for now
         } catch (error) {
             console.error("Error broadcasting:", error);
+            setIsLoading(false);
         }
     };
 
@@ -23,9 +27,11 @@ export default function BroadcastNowButton(): React.JSX.Element {
             onPress={handlePress}
             disabled={isLoading}
         >
-            <Text style={styles.buttonText}>
-                {isLoading ? "..." : "find someone to talk to now"}
-            </Text>
+            {isLoading ? (
+                <ActivityIndicator color={CREAM} />
+            ) : (
+                <Text style={styles.buttonText}>find someone to talk to now</Text>
+            )}
         </TouchableOpacity>
     );
 }
