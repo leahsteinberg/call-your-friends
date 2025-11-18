@@ -21,7 +21,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
             <OfferCard offer={item} />
     }
 
-    const sectionListData = offers.length > 0 ? [meetingsListData, offersListData] : [meetingsListData];
+    const sectionListData = offers.length > 0 ? [offersListData, meetingsListData] : [meetingsListData];
     
     return (
         <View style={styles.container}>
