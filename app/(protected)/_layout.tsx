@@ -23,7 +23,6 @@ const Layout = () => {
        if (Platform.OS === 'web') {
            return;
        }
-       console.log("configure notif handler (in layout)")
        // Configure notification handler
        configureNotificationHandler();
    

@@ -1,10 +1,9 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { persistReducer } from 'redux-persist';
 import persistStore from 'redux-persist/es/persistStore';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-
-//import AsyncStorage from '@react-native-community/async-storage';
 
 // Reducers
 import authReducer from '../features/Auth/authSlice';
@@ -21,7 +20,7 @@ import { offerApi } from '@/services/offersApi';
 
 const persistConfig = {
   key: 'root',
-  storage,
+  storage: AsyncStorage,
   whitelist: ['auth'],
 }
 
@@ -44,8 +43,12 @@ const rootReducer = combineReducers({
 
 export const store = configureStore({
   reducer: persistedReducer,
-    middleware: (getDefaultMiddleware) => 
-      getDefaultMiddleware()
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      })
     .concat(authApi.middleware)
     .concat(contactsApi.middleware)
     .concat(meetingApi.middleware)
