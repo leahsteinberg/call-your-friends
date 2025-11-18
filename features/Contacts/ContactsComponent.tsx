@@ -21,6 +21,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
+    const [refreshing, setRefreshing] = useState(false);
 
     const DismissKeyboard = ({ children }) => (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
@@ -28,22 +29,29 @@ export default function ContactsComponent(): React.JSX.Element {
         </TouchableWithoutFeedback>
       );
 
-    useEffect(()=> {
-        async function handleGetSentInvites() {
-            const sentInvitesResult = await getSentInvites({ id: userFromId });
-            if (sentInvitesResult && sentInvitesResult.data) {
-                dispatch(setSentInvites(sentInvitesResult.data));
-                const processed = await processSentInvites(sentInvitesResult.data);
-                setProcessedSentInvites(processed);
-            }
+    const fetchSentInvites = async () => {
+        const sentInvitesResult = await getSentInvites({ id: userFromId });
+        if (sentInvitesResult && sentInvitesResult.data) {
+            dispatch(setSentInvites(sentInvitesResult.data));
+            const processed = await processSentInvites(sentInvitesResult.data);
+            setProcessedSentInvites(processed);
         }
-        async function handleGetFriends() {
-            const friendsResult = await getFriends({ id: userFromId });
-            setFriends(friendsResult.data);
-        };
+    };
 
-        handleGetFriends()
-        handleGetSentInvites()
+    const fetchFriends = async () => {
+        const friendsResult = await getFriends({ id: userFromId });
+        setFriends(friendsResult.data);
+    };
+
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        await Promise.all([fetchFriends(), fetchSentInvites()]);
+        setRefreshing(false);
+    };
+
+    useEffect(()=> {
+        fetchFriends();
+        fetchSentInvites();
     }, [])
 
 
@@ -63,6 +71,8 @@ export default function ContactsComponent(): React.JSX.Element {
                     <ContactsList
                         friends={friends}
                         sentInvites={processedSentInvites}
+                        onRefresh={handleRefresh}
+                        refreshing={refreshing}
                     />
                 </View>
         </View>

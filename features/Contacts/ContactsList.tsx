@@ -1,11 +1,16 @@
 import { CREAM, PALE_BLUE } from "@/styles/styles";
 import React from "react";
-import { SectionList, StyleSheet, Text, View } from "react-native";
+import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
 import InvitedContact from "./InvitedContact";
 import { ContactsListProps, Friend as FriendType, SentInvite } from "./types";
 
-export default function ContactsList({ friends, sentInvites }: ContactsListProps): React.JSX.Element {
+interface ContactsListPropsExtended extends ContactsListProps {
+    onRefresh?: () => void;
+    refreshing?: boolean;
+}
+
+export default function ContactsList({ friends, sentInvites, onRefresh, refreshing = false }: ContactsListPropsExtended): React.JSX.Element {
 
 
 
@@ -47,6 +52,14 @@ export default function ContactsList({ friends, sentInvites }: ContactsListProps
                     // <Text style={[{fontWeight: 'bold'}, styles.sectionHeader]}>{title}</Text>
                 }
                 stickySectionHeadersEnabled={true} // Enable sticky headers
+                refreshControl={
+                    onRefresh ? (
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    ) : undefined
+                }
             />
         </View>);
 }
