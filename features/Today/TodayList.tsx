@@ -1,10 +1,12 @@
 import { useGetMeetingsQuery } from "@/services/meetingApi";
 import { useGetOffersQuery } from "@/services/offersApi";
-import { CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import MeetingCard from "../Common/MeetingCard";
+import OfferCard from "../Common/OfferCard";
 import { processMeetings, processOffers } from "../Meetings/meetingsUtils";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
@@ -104,52 +106,9 @@ export default function TodayList(): React.JSX.Element {
 
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
-            const meeting = item.data as ProcessedMeetingType;
-            const selfCreatedMeeting = meeting.userFromId === userId;
-
-            // Get the name to display based on who created the meeting
-            const getName = () => {
-                if (selfCreatedMeeting) {
-                    const name = meeting.acceptedUser?.name;
-                    return name ? `with: ${name}` : null;
-                } else {
-                    const name = meeting.userFrom?.name;
-                    return name ? `from: ${name}` : null;
-                }
-            };
-
-            const nameDisplay = getName();
-
-            return (
-                <View style={styles.itemContainer}>
-                    <View style={styles.typeIndicator}>
-                        <Text style={styles.typeText}>Meeting</Text>
-                    </View>
-                    <Text style={styles.timeText}>{meeting.displayScheduledFor}</Text>
-                    {nameDisplay && (
-                        <Text style={styles.nameText}>{nameDisplay}</Text>
-                    )}
-                    <Text style={styles.statusText}>
-                        Status: {meeting.meetingState}
-                    </Text>
-                </View>
-            );
+            return <MeetingCard meeting={item.data as ProcessedMeetingType} />;
         } else {
-            const offer = item.data as ProcessedOfferType;
-            return (
-                <View style={[styles.itemContainer, styles.offerContainer]}>
-                    <View style={[styles.typeIndicator, styles.offerIndicator]}>
-                        <Text style={styles.typeText}>Offer</Text>
-                    </View>
-                    <Text style={styles.timeText}>{offer.displayScheduledFor}</Text>
-                    <Text style={styles.nameText}>
-                        from: {offer.meeting?.userFrom?.name || offer.userFromName}
-                    </Text>
-                    <Text style={styles.statusText}>
-                        Status: {offer.offerState}
-                    </Text>
-                </View>
-            );
+            return <OfferCard offer={item.data as ProcessedOfferType} />;
         }
     };
 
@@ -201,52 +160,6 @@ const styles = StyleSheet.create({
     },
     listContent: {
         paddingBottom: 16,
-    },
-    itemContainer: {
-        backgroundColor: LIGHT_BEIGE,
-        borderRadius: 8,
-        padding: 12,
-        marginBottom: 8,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 2,
-    },
-    offerContainer: {
-        backgroundColor: PALE_BLUE,
-    },
-    typeIndicator: {
-        backgroundColor: DARK_GREEN,
-        alignSelf: 'flex-start',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-        marginBottom: 8,
-    },
-    offerIndicator: {
-        backgroundColor: '#5a7d9a',
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    timeText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: DARK_GREEN,
-        marginBottom: 4,
-    },
-    nameText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
-    },
-    statusText: {
-        fontSize: 14,
-        color: '#666',
     },
     emptyText: {
         fontSize: 16,
