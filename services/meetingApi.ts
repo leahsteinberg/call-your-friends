@@ -46,11 +46,18 @@ export const meetingApi = createApi({
             // Same pattern: deleting a meeting invalidates the cached meetings list
             invalidatesTags: ['Meeting'],
         }),
+        broadcastNow: builder.mutation({
+            query: ({ userId }) => ({
+                url: '/api/broadcast-now',
+                method: 'POST',
+                body: { userId },
+            }),
+        }),
     })
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation } = meetingApi;
 
-export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery };
+export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation };
 

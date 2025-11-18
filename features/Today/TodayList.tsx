@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { processMeetings, processOffers } from "../Meetings/meetingsUtils";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
+import BroadcastNowButton from "./BroadcastNowButton";
 
 type TodayItem = {
     id: string;
@@ -138,6 +139,7 @@ export default function TodayList(): React.JSX.Element {
         return (
             <View style={styles.container}>
                 <Text style={styles.headerText}>Today</Text>
+                <BroadcastNowButton />
                 <Text style={styles.emptyText}>Loading...</Text>
             </View>
         );
@@ -146,6 +148,7 @@ export default function TodayList(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Today</Text>
+            <BroadcastNowButton />
             {todayItems.length === 0 ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
