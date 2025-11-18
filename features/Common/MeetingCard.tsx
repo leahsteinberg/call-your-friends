@@ -1,6 +1,7 @@
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { getDisplayDate } from "@/utils/timeStringUtils";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,25 +19,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const meetingState: MeetingState = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
-
-    // Format date to show "Today" if the meeting is today
-    const getDisplayDate = () => {
-        const meetingDate = new Date(meeting.scheduledFor);
-        const today = new Date();
-
-        const isToday =
-            meetingDate.getFullYear() === today.getFullYear() &&
-            meetingDate.getMonth() === today.getMonth() &&
-            meetingDate.getDate() === today.getDate();
-
-        if (isToday) {
-            // Extract time portion from displayScheduledFor (e.g., "at 3:00 PM PST")
-            const timeMatch = meeting.displayScheduledFor.match(/at\s+.+$/i);
-            return timeMatch ? `Today ${timeMatch[0]}` : meeting.displayScheduledFor;
-        }
-
-        return meeting.displayScheduledFor;
-    };
 
     // Get the name to display based on who created the meeting
     const getNameDisplay = () => {
@@ -94,7 +76,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.timeText}>{getDisplayDate()}</Text>
+            <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
 
             {nameDisplay && (
                 <Text style={styles.nameText}>{nameDisplay}</Text>

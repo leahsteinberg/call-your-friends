@@ -1,6 +1,7 @@
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { getDisplayDate } from "@/utils/timeStringUtils";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -16,25 +17,6 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const [rejectOffer] = useRejectOfferMutation();
 
     const offerId = offer.id;
-
-    // Format date to show "Today" if the offer is today
-    const getDisplayDate = () => {
-        const offerDate = new Date(offer.scheduledFor);
-        const today = new Date();
-
-        const isToday =
-            offerDate.getFullYear() === today.getFullYear() &&
-            offerDate.getMonth() === today.getMonth() &&
-            offerDate.getDate() === today.getDate();
-
-        if (isToday) {
-            // Extract time portion from displayScheduledFor (e.g., "at 3:00 PM PST")
-            const timeMatch = offer.displayScheduledFor.match(/at\s+.+$/i);
-            return timeMatch ? `Today ${timeMatch[0]}` : offer.displayScheduledFor;
-        }
-
-        return offer.displayScheduledFor;
-    };
 
     const handleAcceptOffer = async () => {
         try {
@@ -96,7 +78,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 )}
             </View>
 
-            <Text style={styles.timeText}>{getDisplayDate()}</Text>
+            <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
 
             <Text style={styles.nameText}>from: {getFromName()}</Text>
 
