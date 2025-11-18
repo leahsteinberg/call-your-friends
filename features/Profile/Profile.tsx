@@ -2,7 +2,6 @@ import React from "react";
 import { Platform, StyleSheet, View } from 'react-native';
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import TodayList from "../Today/TodayList";
-import SignOutButton from "./SignOutButton";
 
 export default function Profile(): React.JSX.Element {
     return (
@@ -11,7 +10,6 @@ export default function Profile(): React.JSX.Element {
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
             }
-            <SignOutButton />
         </View>
     );
 }
