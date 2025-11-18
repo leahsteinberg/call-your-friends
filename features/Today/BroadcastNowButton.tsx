@@ -31,7 +31,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>find someone to talk to now</Text>
+            <Text style={styles.label}>Find someone to talk to now</Text>
             {isEnabled && (
                 <ActivityIndicator color={DARK_GREEN} style={styles.loader} />
             )}

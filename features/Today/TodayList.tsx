@@ -1,6 +1,6 @@
 import { useGetMeetingsQuery } from "@/services/meetingApi";
 import { useGetOffersQuery } from "@/services/offersApi";
-import { CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
+import { CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
@@ -105,12 +105,30 @@ export default function TodayList(): React.JSX.Element {
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
+            const selfCreatedMeeting = meeting.userFromId === userId;
+
+            // Get the name to display based on who created the meeting
+            const getName = () => {
+                if (selfCreatedMeeting) {
+                    const name = meeting.acceptedUser?.name;
+                    return name ? `with: ${name}` : null;
+                } else {
+                    const name = meeting.userFrom?.name;
+                    return name ? `from: ${name}` : null;
+                }
+            };
+
+            const nameDisplay = getName();
+
             return (
                 <View style={styles.itemContainer}>
                     <View style={styles.typeIndicator}>
                         <Text style={styles.typeText}>Meeting</Text>
                     </View>
                     <Text style={styles.timeText}>{meeting.displayScheduledFor}</Text>
+                    {nameDisplay && (
+                        <Text style={styles.nameText}>{nameDisplay}</Text>
+                    )}
                     <Text style={styles.statusText}>
                         Status: {meeting.meetingState}
                     </Text>
@@ -124,8 +142,8 @@ export default function TodayList(): React.JSX.Element {
                         <Text style={styles.typeText}>Offer</Text>
                     </View>
                     <Text style={styles.timeText}>{offer.displayScheduledFor}</Text>
-                    <Text style={styles.statusText}>
-                        From: {offer.userFromName}
+                    <Text style={styles.nameText}>
+                        from: {offer.meeting?.userFrom?.name || offer.userFromName}
                     </Text>
                     <Text style={styles.statusText}>
                         Status: {offer.offerState}
@@ -218,6 +236,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: DARK_GREEN,
+        marginBottom: 4,
+    },
+    nameText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: ORANGE,
         marginBottom: 4,
     },
     statusText: {
