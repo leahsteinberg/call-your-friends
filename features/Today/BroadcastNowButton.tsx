@@ -1,4 +1,4 @@
-import { useBroadcastNowMutation } from "@/services/meetingApi";
+import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 export default function BroadcastNowButton(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [broadcastNow] = useBroadcastNowMutation();
+    const [broadcastEnd] = useBroadcastEndMutation();
     const [isEnabled, setIsEnabled] = useState(false);
 
     const handleToggle = async (value: boolean) => {
@@ -15,10 +16,15 @@ export default function BroadcastNowButton(): React.JSX.Element {
         if (value) {
             try {
                 await broadcastNow({ userId });
-                // Keep enabled indefinitely for now
             } catch (error) {
                 console.error("Error broadcasting:", error);
                 setIsEnabled(false);
+            }
+        } else {
+            try {
+                await broadcastEnd({ userId });
+            } catch (error) {
+                console.error("Error ending broadcast:", error);
             }
         }
     };
