@@ -12,6 +12,7 @@ export default function InviteAccept() {
     const dispatch = useDispatch();
     const params = useLocalSearchParams();
     const {token, userToPhoneNumber} = params;
+    console.log({token, userToPhoneNumber});
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
