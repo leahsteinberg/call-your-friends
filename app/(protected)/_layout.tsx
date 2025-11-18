@@ -25,33 +25,37 @@ const Layout = () => {
           }}
         >
             <Tabs.Screen
+                name="friendchats"
+                options={{
+                    headerShown: false,
+                    title: "PLAN",
+                    tabBarIcon: ({ color }) => <TreePalm  color={color} size={ICON_SIZE}/>,
+                    tabBarHideOnKeyboard: true,
+                }}
+            />
+                                  <Tabs.Screen
+                name="profile"
+                options={{
+                    headerShown: false,
+                    title: "TODAY",
+                    tabBarIcon: ({ color }) => <Footprints  color={color} size={ICON_SIZE} />,
+                    tabBarHideOnKeyboard: true,
+                }}
+            />
+
+            <Tabs.Screen
                 options={{
                     title: 'Home',
-                    tabBarLabel: 'MY FRIENDS',
+                    tabBarLabel: 'ME',
                     tabBarIcon: ({ color }) => <Sticker  color={color} size={ICON_SIZE}/>, // Custom icon component
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
                   }}
                 name="index"
             />
-            <Tabs.Screen
-                name="friendchats"
-                options={{
-                    headerShown: false,
-                    title: "MY CHATS",
-                    tabBarIcon: ({ color }) => <TreePalm  color={color} size={ICON_SIZE}/>,
-                    tabBarHideOnKeyboard: true,
-                }}
-            />
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    headerShown: false,
-                    title: "MY WALKS",
-                    tabBarIcon: ({ color }) => <Footprints  color={color} size={ICON_SIZE} />,
-                    tabBarHideOnKeyboard: true,
-                }}
-            />
+  
+
+
 
         </Tabs>
     );
