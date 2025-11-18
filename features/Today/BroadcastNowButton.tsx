@@ -1,54 +1,59 @@
 import { useBroadcastNowMutation } from "@/services/meetingApi";
-import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, StyleSheet, Switch, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
 export default function BroadcastNowButton(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [broadcastNow] = useBroadcastNowMutation();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(false);
 
-    const handlePress = async () => {
-        setIsLoading(true);
-        try {
-            await broadcastNow({ userId });
-            // Keep loading indefinitely for now
-        } catch (error) {
-            console.error("Error broadcasting:", error);
-            setIsLoading(false);
+    const handleToggle = async (value: boolean) => {
+        setIsEnabled(value);
+        if (value) {
+            try {
+                await broadcastNow({ userId });
+                // Keep enabled indefinitely for now
+            } catch (error) {
+                console.error("Error broadcasting:", error);
+                setIsEnabled(false);
+            }
         }
     };
 
     return (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={handlePress}
-            disabled={isLoading}
-        >
-            {isLoading ? (
-                <ActivityIndicator color={CREAM} />
-            ) : (
-                <Text style={styles.buttonText}>find someone to talk to now</Text>
+        <View style={styles.container}>
+            <Text style={styles.label}>find someone to talk to now</Text>
+            {isEnabled && (
+                <ActivityIndicator color={DARK_GREEN} style={styles.loader} />
             )}
-        </TouchableOpacity>
+            <Switch
+                trackColor={{ false: '#767577', true: DARK_GREEN }}
+                thumbColor={isEnabled ? '#fff' : '#f4f3f4'}
+                onValueChange={handleToggle}
+                value={isEnabled}
+            />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: DARK_GREEN,
-        borderRadius: 100,
-        paddingVertical: 16,
-        paddingHorizontal: 24,
-        alignSelf: 'center',
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 8,
         marginBottom: 16,
     },
-    buttonText: {
-        color: CREAM,
+    label: {
+        color: DARK_GREEN,
         fontSize: 14,
         fontWeight: '600',
-        textAlign: 'center',
+        flex: 1,
+    },
+    loader: {
+        marginRight: 8,
     },
 });
