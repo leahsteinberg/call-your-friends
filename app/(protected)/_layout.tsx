@@ -33,8 +33,9 @@ const Layout = () => {
             console.log("is there at token??", token)
            if (token) {
              setExpoPushToken(token);
+             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
              console.log("aobut to do network call with pushtoken,")
-             postRegisterPushToken({pushToken: token, userId});
+             postRegisterPushToken({pushToken: token, userId, timeZone});
              console.log('Successfully registered for push notifications:', token);
            }
          })

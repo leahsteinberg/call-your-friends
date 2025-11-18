@@ -6,13 +6,14 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
       baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
       endpoints: (builder) => ({
         postRegisterPush: builder.mutation({
-          query: ({pushToken, userId}) => {
+          query: ({pushToken, userId, timeZone}) => {
               return {
               url: 'api/register-push',
               method: 'POST',
               body: {
                 pushToken,
                 userId,
+                timeZone,
               }
             };
           }
