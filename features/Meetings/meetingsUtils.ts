@@ -88,12 +88,3 @@ const sortByScheduledTime = <T extends { scheduledFor: string }>(items: T[]): T[
 
 // Keep the old name for backwards compatibility
 const sortMeetingsByScheduledTime = sortByScheduledTime;
-
-// export const relativeDateStringInDays = (date: Date): string => {
-
-//     const rtf = new Intl.RelativeTimeFormat('en', { numeric: "auto" });
-//     const timeMs = typeof date === "number" ? date : date.getTime();
-//     const deltaSeconds = (timeMs - Date.now())/1000;
-//     return rtf.format(deltaSeconds, 'day');
-
-// }
