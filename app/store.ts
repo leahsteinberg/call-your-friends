@@ -1,15 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
-import { persistReducer } from 'redux-persist';
+import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import persistStore from 'redux-persist/es/persistStore';
 
 // Reducers
 import authReducer from '../features/Auth/authSlice';
 import contactsReducer from '../features/Contacts/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
-import offerReducer from '../features/Offers/offerSlice';
 
 // APIs
 import { authApi } from '@/services/authApi';
@@ -34,7 +32,6 @@ const rootReducer = combineReducers({
   auth: authReducer,
   contacts: contactsReducer,
   meeting: meetingReducer,
-  offer: offerReducer,
   })
 
   const persistedReducer = persistReducer(persistConfig, rootReducer);
