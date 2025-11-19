@@ -64,10 +64,12 @@ export default function ContactsSelector(): React.JSX.Element {
         
         const response = await createInvite({ userFromId, userToPhoneNumber }).unwrap();
         if (response) {
-            dispatch(addSentInvite(friendUser));
-            await openSMSInvite(response.token, userToPhoneNumber);
+            if (userToPhoneNumber) {
+                dispatch(addSentInvite(friendUser));
+                await openSMSInvite(response.token, userToPhoneNumber);
+            }
         } else {
-            console.log("error with response from create invite");
+            Alert.alert('Error', 'Could not invite contact.');
         }
     };
 
