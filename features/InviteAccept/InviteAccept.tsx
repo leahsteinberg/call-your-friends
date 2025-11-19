@@ -7,16 +7,21 @@ import { setLogInCredentials } from '../Auth/authSlice';
 import EntryButton from '../Auth/EntryButton';
 import PhoneNumberInput from '../Auth/PhoneNumberInput';
 import UserDataInput from '../Auth/UserDataInput';
+import UserEmailPasswordInput from '../Auth/UserEmailPasswordInput';
 
 export default function InviteAccept() {
-    const dispatch = useDispatch();
-    const params = useLocalSearchParams();
-    const {token, userToPhoneNumber} = params;
-    console.log({token, userToPhoneNumber});
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState(userToPhoneNumber || '');
+    const dispatch = useDispatch();
+
+
+    const params = useLocalSearchParams();
+    const {token, userToPhoneNumber} = params;
+    console.log({token, userToPhoneNumber});
+
+
     const [userToExists, setUserToExists] = useState(false);
     const [findUserByPhone] = useUserByPhoneMutation();
     const [acceptInviteNewUser] = useAcceptInviteSignUpMutation();
@@ -26,6 +31,7 @@ export default function InviteAccept() {
         (async () => {
             if (userToPhoneNumber) {
                 const user = await findUserByPhone({userPhoneNumber: userToPhoneNumber}).unwrap();
+                console.log("Is there a user???", !!user, user);
                 setUserToExists(!!user);
             }
         })();
@@ -35,7 +41,6 @@ export default function InviteAccept() {
         let result;
         if (userToExists) {
             result = await acceptInviteExistingUser({token, email, phoneNumber, password})
-
         } else {
             result = await acceptInviteNewUser({token, email, phoneNumber, name, password});
             console.log("result from accept new user", result);
@@ -47,22 +52,53 @@ export default function InviteAccept() {
         }
     }
 
-    const userAuthButton = () => {
-        return (userToExists ?
+
+    const authButtonSignIn = () => {
+        return (
             <EntryButton
                 title="Sign In & Accept Friend"
                 onPressQuery={handleAcceptInvite}
+                isDisabled={false}
             />
-            :
+        );
+    };
+
+    const authButtonSignUp = () => {
+        return (
             <EntryButton
                 title="Sign Up & Accept Friend"
                 onPressQuery={handleAcceptInvite}
-            />
+                isDisabled={false}
+            />)
+    }
+
+
+    if (!userToExists) {
+        return (
+            <View style={styles.container}>
+                <Text style={{fontFamily: 'Catamaran', fontSize: 30}}>
+                    Call Your Friends - make a new account
+                </Text>
+                <PhoneNumberInput
+                    onDataChange={setPhoneNumber}
+                    phoneNumber={phoneNumber}
+                />
+                <UserDataInput
+                    onChangeEmail={(text)=> setEmail(text)}
+                    onChangePassword={(text) => setPassword(text)}
+                    onChangeName={(text) => setName(text)}
+                    showName={!userToExists}
+                    
+                />
+                <UserEmailPasswordInput
+                    onChangeEmail={(text: string)=> setEmail(text)}
+                    onChangePassword={(text: string) => setPassword(text)}
+                />
+                {authButtonSignUp()}
+            </View>        
         );
 
-
-        // renderUserAuthButton("Sign In & Accept Friend")
-        // : renderUserAuthButton("Sign Up & Accept Friend")
+        
     }
     
     return (
@@ -79,8 +115,9 @@ export default function InviteAccept() {
                 onChangePassword={(text) => setPassword(text)}
                 onChangeName={(text) => setName(text)}
                 showName={!userToExists}
+                
             />
-            {userAuthButton()}
+            {authButtonSignIn()}
         </View>        
     );
 }
