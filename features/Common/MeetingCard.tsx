@@ -1,12 +1,13 @@
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
+import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import type { ProcessedMeetingType, MeetingState } from "../Meetings/types";
+import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface MeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -58,13 +59,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const getStatusText = () => {
         switch (meetingState) {
-            case 'SEARCHING':
+            case SEARCHING_MEETING_STATE:
                 return 'Searching';
-            case 'ACCEPTED':
+            case ACCEPTED_MEETING_STATE:
                 return 'Confirmed';
-            case 'REJECTED':
+            case REJECTED_MEETING_STATE:
                 return 'Rejected';
-            case 'PAST':
+            case PAST_MEETING_STATE:
                 return 'Past';
             default:
                 return meetingState;

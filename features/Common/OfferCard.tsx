@@ -1,5 +1,6 @@
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
+import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React from "react";
@@ -60,7 +61,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>Offer</Text>
                 </View>
-                {offer.offerState === 'OPEN' && (
+                {offer.offerState === OPEN_OFFER_STATE && (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             onPress={handleAcceptOffer}
