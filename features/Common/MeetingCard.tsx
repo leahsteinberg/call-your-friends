@@ -2,8 +2,8 @@ import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedMeetingType, MeetingState } from "../Meetings/types";
@@ -16,9 +16,18 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [deleteMeeting] = useDeleteMeetingMutation();
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
+
+    // Check if meeting is PAST and started more than 30 minutes ago
+    const isOldPastMeeting = () => {
+        if (meetingState !== 'PAST') return false;
+        const scheduledTime = new Date(meeting.scheduledFor).getTime();
+        const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
+        return scheduledTime < thirtyMinutesAgo;
+    };
 
     // Get the name to display based on who created the meeting
     const getNameDisplay = () => {
@@ -33,15 +42,17 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const handleDeleteMeeting = async () => {
         try {
-            // Optimistic deletion
-            dispatch(deleteMeetingOptimistic(meeting.id));
+            setIsDeleting(true);
             await deleteMeeting({
                 meetingId: meeting.id,
                 userId
             }).unwrap();
+            // Remove from Redux after successful deletion
+            dispatch(deleteMeetingOptimistic(meeting.id));
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. Please try again.');
+            setIsDeleting(false);
         }
     };
 
@@ -63,16 +74,21 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const nameDisplay = getNameDisplay();
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>Meeting</Text>
                 </View>
                 <TouchableOpacity
                     onPress={handleDeleteMeeting}
-                    style={styles.deleteButton}
+                    style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
+                    disabled={isDeleting}
                 >
-                    <Text style={styles.deleteButtonText}>Delete</Text>
+                    {isDeleting ? (
+                        <ActivityIndicator size="small" color="red" />
+                    ) : (
+                        <Text style={styles.deleteButtonText}>Delete</Text>
+                    )}
                 </TouchableOpacity>
             </View>
 
@@ -95,6 +111,10 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         borderWidth: 2,
         borderColor: DARK_BEIGE,
+    },
+    oldPastContainer: {
+        backgroundColor: '#E8E8E8',
+        opacity: 0.7,
     },
     header: {
         flexDirection: 'row',
@@ -135,6 +155,11 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
+        minWidth: 50,
+        alignItems: 'center',
+    },
+    deleteButtonDisabled: {
+        opacity: 0.6,
     },
     deleteButtonText: {
         color: 'red',

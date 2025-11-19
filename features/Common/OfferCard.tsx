@@ -43,8 +43,8 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
     const getStatusText = () => {
         switch (offer.offerState) {
-            case 'PENDING':
-                return 'Pending';
+            case 'OPEN':
+                return 'Open';
             case 'ACCEPTED':
                 return 'Accepted';
             case 'REJECTED':
@@ -60,7 +60,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>Offer</Text>
                 </View>
-                {offer.offerState === 'PENDING' && (
+                {offer.offerState === 'OPEN' && (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             onPress={handleAcceptOffer}
