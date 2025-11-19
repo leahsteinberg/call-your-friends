@@ -33,7 +33,7 @@ const Layout = () => {
                     tabBarHideOnKeyboard: true,
                 }}
             />
-                                  <Tabs.Screen
+            <Tabs.Screen
                 name="profile"
                 options={{
                     headerShown: false,
@@ -42,7 +42,6 @@ const Layout = () => {
                     tabBarHideOnKeyboard: true,
                 }}
             />
-
             <Tabs.Screen
                 options={{
                     title: 'Home',
