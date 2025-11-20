@@ -42,14 +42,12 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
         const scheduledFor = selectedDateTime.toISOString();
         const scheduledEnd = new Date(selectedDateTime);
         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
-        
+
         createMeeting({
             userFromId: userId,
             scheduledFor,
             scheduledEnd: scheduledEnd.toISOString(),
         });
-        // Optional callback - with cache tags, getMeetings auto-refetches anyway
-        refreshMeetings?.();
     };
     
     // On iOS, make it collapsible; on other platforms, always show expanded
@@ -101,7 +99,7 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                             <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
                                 Find a friend to talk on:
                             </Text>
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
+                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
                                 {displayDateString && `${displayDateString}`}
                             </Text>
                         </TouchableOpacity>
@@ -123,7 +121,7 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                             <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
                                 Find a friend to talk on:
                             </Text>
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText, ]}>
+                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
                                 {displayDateString && `${displayDateString}`}
                             </Text>
                         </TouchableOpacity>

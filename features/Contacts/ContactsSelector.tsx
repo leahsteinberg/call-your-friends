@@ -8,7 +8,7 @@ import { RootState } from "../../types/redux";
 import { addSentInvite } from "./contactsSlice";
 import { cleanPhoneNumber, createSmsUrl, processContact } from "./contactsUtils";
 
-export default function ContactsSelector(): React.JSX.Element {
+export default function ContactsSelector() {
     const [permissionStatus, setPermissionStatus] = useState<boolean>(false);
     const dispatch = useDispatch();
     const [createInvite] = useCreateInviteMutation();
@@ -67,9 +67,10 @@ export default function ContactsSelector(): React.JSX.Element {
             if (userToPhoneNumber) {
                 dispatch(addSentInvite(friendUser));
                 await openSMSInvite(response.token, userToPhoneNumber);
+                return;
             }
-        } else {
-            Alert.alert('Error', 'Could not invite contact.');
+        Alert.alert('Error', 'Could not invite contact.');
+        
         }
     };
 
@@ -83,7 +84,8 @@ export default function ContactsSelector(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-    container: {        alignItems: 'center',
+    container: {
+         alignItems: 'center',
     },
     button: {
         backgroundColor: ORANGE,
@@ -102,4 +104,4 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
     },
-});
+})

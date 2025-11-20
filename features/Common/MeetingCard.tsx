@@ -16,10 +16,11 @@ interface MeetingCardProps {
 export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const userName: string = useSelector((state: RootState) => state.auth.user.name);
     const [deleteMeeting] = useDeleteMeetingMutation();
     const [isDeleting, setIsDeleting] = useState(false);
 
-    const meetingState: MeetingState = meeting.meetingState;
+    const meetingState: MeetingState  = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
 
     // Check if meeting is PAST and started more than 30 minutes ago
@@ -33,12 +34,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     // Get the name to display based on who created the meeting
     const getNameDisplay = () => {
         if (selfCreatedMeeting) {
-            const name = meeting.acceptedUser?.name;
-            return name ? `with: ${name}` : null;
-        } else {
-            const name = meeting.userFrom?.name;
-            return name ? `from: ${name}` : null;
+            if (meeting.acceptedUser) {
+                const name = meeting.acceptedUser?.name;
+                return name ? `with: ${name}` : null;
+            }
         }
+        const name = userName;
+        return name ? `from: ${name}` : null;
     };
 
     const handleDeleteMeeting = async () => {
