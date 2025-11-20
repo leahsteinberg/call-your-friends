@@ -23,7 +23,8 @@ export const processOffers = async (offers: any[]): Promise<any[]> => {
             ({
                 ...offer,
                 scheduledFor: offer.meeting.scheduledFor,
-                displayScheduledFor: await displayDateTime(offer.meeting.scheduledFor)
+                displayScheduledFor: await displayDateTime(offer.meeting.scheduledFor),
+                displayExpiresAt: await displayTimeUntil(offer.expiresAt),
             })
         )
         const offersWithDisplayTime = await Promise.all(offersWithDislayTimePromises);
@@ -56,6 +57,32 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
     });
     const displayTimeString = formatter.format(dateObj);
     return displayTimeString;
+};
+
+export const displayTimeUntil = async (dateTime: string): Promise<string> => {
+    /// if less than a day, return "x hours"
+    // if a day or more, return "1 day" or "2 days" up to "x days"
+    const targetDate = new Date(dateTime);
+    const now = new Date();
+    const diffMs = targetDate.getTime() - now.getTime();
+
+    // If already expired
+    if (diffMs <= 0) {
+        return 'expired';
+    }
+
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays >= 1) {
+        return diffDays === 1 ? '1 day' : `${diffDays} days`;
+    } else {
+        if (diffHours < 1) {
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            return diffMinutes <= 1 ? '1 minute' : `${diffMinutes} minutes`;
+        }
+        return diffHours === 1 ? '1 hour' : `${diffHours} hours`;
+    }
 };
 
 export const displayDate = async (dateTime: string): Promise<string> => {

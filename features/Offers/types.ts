@@ -9,4 +9,5 @@ export interface OfferType extends MeetingEvent {
 export interface ProcessedOfferType extends OfferType {
     userFromName: string;
     displayScheduledFor: string;
+    displayExpiresAt: string;
 }

@@ -16,6 +16,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [rejectOffer] = useRejectOfferMutation();
+    console.log("offer ==", offer)
 
     const offerId = offer.id;
 
@@ -84,6 +85,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             <Text style={styles.nameText}>from: {getFromName()}</Text>
 
             <Text style={styles.statusText}>Status: {getStatusText()}</Text>
+            <Text>Expires in: {offer.displayExpiresAt}</Text>
         </View>
     );
 }
