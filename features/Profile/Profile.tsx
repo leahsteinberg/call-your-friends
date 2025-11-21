@@ -1,11 +1,16 @@
+import { RootState } from "@/types/redux";
 import React from "react";
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { useSelector } from "react-redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import TodayList from "../Today/TodayList";
 
 export default function Profile(): React.JSX.Element {
+    const userName = useSelector((state: RootState) => state.auth.user.name);
+
     return (
         <View style={styles.container}>
+            <Text style={styles.greetingText}>Hi, {userName}</Text>
             <TodayList />
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
@@ -22,10 +27,17 @@ const styles = StyleSheet.create({
         maxHeight: '100%',
         maxWidth: '100%',
         width: '100%',
-        
+
         justifyContent: 'space-between',
         // overflow: 'scroll',
         flex: 1,
+    },
+    greetingText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#2D5016',
+        marginTop: 8,
+        marginHorizontal: 15,
     },
     component: {}
 });

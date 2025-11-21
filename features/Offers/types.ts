@@ -1,5 +1,5 @@
-import { MeetingEvent } from "../Meetings/types";
 import { OfferState } from "@/types/meetings-offers";
+import { MeetingEvent } from "../Meetings/types";
 
 export type OfferTypeValue = 'ADVANCE' | 'BROADCAST';
 

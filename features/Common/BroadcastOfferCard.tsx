@@ -55,7 +55,8 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
 
     // Get the name from the offer
     const getFromName = () => {
-        return offer.userFromName || 'Unknown';
+        //console.log("broadcast - ", offer.meeting.userFrom.name);
+        return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
     const getStatusText = () => {

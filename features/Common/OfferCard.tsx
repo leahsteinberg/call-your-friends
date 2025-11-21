@@ -57,7 +57,7 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
     // Get the name from the offer
     const getFromName = () => {
-        return offer.userFromName || 'Unknown';
+        return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
     const getStatusText = () => {
