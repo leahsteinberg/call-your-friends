@@ -1,3 +1,4 @@
+import { DEV_FLAG } from "@/environment";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
@@ -104,6 +105,9 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             )}
 
             <Text style={styles.statusText}>Status: {getStatusText()}</Text>
+            {DEV_FLAG && (
+                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+            )}
         </View>
     );
 }
@@ -153,6 +157,12 @@ const styles = StyleSheet.create({
     statusText: {
         fontSize: 14,
         color: '#666',
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#999',
+        marginTop: 4,
+        fontFamily: 'monospace',
     },
     deleteButton: {
         borderWidth: 1,

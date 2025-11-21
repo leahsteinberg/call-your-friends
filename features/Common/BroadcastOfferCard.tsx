@@ -1,3 +1,4 @@
+import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
@@ -108,6 +109,9 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
 
             <Text style={styles.statusText}>Status: {getStatusText()}</Text>
             <Text>Expires in: {offer.displayExpiresAt}</Text>
+            {DEV_FLAG && (
+                <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
+            )}
         </View>
     );
 }
@@ -153,6 +157,12 @@ const styles = StyleSheet.create({
     statusText: {
         fontSize: 14,
         color: '#666',
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#999',
+        marginTop: 4,
+        fontFamily: 'monospace',
     },
     buttonContainer: {
         flexDirection: 'row',
