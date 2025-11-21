@@ -4,7 +4,7 @@ import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
@@ -20,13 +20,19 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [rejectOffer] = useRejectOfferMutation();
-    const [isResponding, setIsResponding] = useState(false);
+    const [isAccepting, setIsAccepting] = useState(false);
+    const [isRejecting, setIsRejecting] = useState(false);
+
 
     const offerId = offer.id;
 
     const handleAcceptOffer = async () => {
         try {
+            setIsAccepting(true)
             await acceptOffer({ userId, offerId });
+            refresh();
+            setIsRejecting(false)
+
         } catch (error) {
             console.error("Error accepting offer:", error);
             alert('Failed to accept offer. Please try again.');
@@ -35,11 +41,12 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
     const handleRejectOffer = async () => {
         try {
-            setIsResponding(true);
+            setIsRejecting(true);
             await rejectOffer({ userId, offerId }).unwrap();
             dispatch(deleteOfferOptimistic(offerId))
 
-            //refresh();
+            refresh();
+            setIsAccepting(false)
             
         } catch (error) {
             console.error("Error rejecting offer:", error);
@@ -77,13 +84,21 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
                             onPress={handleAcceptOffer}
                             style={styles.acceptButton}
                         >
-                            <Text style={styles.acceptButtonText}>Accept</Text>
+                        {isAccepting ? (
+                            <ActivityIndicator size="small" color="green" />
+                            ) : (
+                                <Text style={styles.acceptButtonText}>Accept</Text>
+                        )}
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleRejectOffer}
                             style={styles.rejectButton}
                         >
-                            <Text style={styles.rejectButtonText}>Reject</Text>
+                        {isRejecting ? (
+                            <ActivityIndicator size="small" color="red" />
+                            ) : (
+                                <Text style={styles.rejectButtonText}>Reject</Text>
+                        )}
                         </TouchableOpacity>
                     </View>
                 )}

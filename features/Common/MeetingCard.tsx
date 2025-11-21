@@ -37,6 +37,8 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             if (meeting.acceptedUser) {
                 const name = meeting.acceptedUser?.name;
                 return name ? `with: ${name}` : null;
+            } else {
+                return 'from: me!'
             }
         }
         const name = userName;
