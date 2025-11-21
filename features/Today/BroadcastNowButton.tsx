@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Switch, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 
-export default function BroadcastNowButton(): React.JSX.Element {
+export default function BroadcastNowButton({refresh}): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [broadcastNow] = useBroadcastNowMutation();
     const [broadcastEnd] = useBroadcastEndMutation();
@@ -27,6 +27,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
                 console.error("Error ending broadcast:", error);
             }
         }
+        refresh();
     };
 
     return (

@@ -99,7 +99,10 @@ export default function TodayList(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Today</Text>
-            <BroadcastNowButton />
+            <BroadcastNowButton
+                refresh={handleRefresh}
+            
+            />
             {todayItems.length === 0 ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
