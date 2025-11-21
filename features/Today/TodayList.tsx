@@ -1,13 +1,10 @@
-import { useGetMeetingsQuery } from "@/services/meetingApi";
-import { useGetOffersQuery } from "@/services/offersApi";
+import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
+import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { DARK_GREEN } from "@/styles/styles";
-import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
-import { useSelector } from "react-redux";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
-import { processMeetings, processOffers } from "../Meetings/meetingsUtils";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
 import BroadcastNowButton from "./BroadcastNowButton";
@@ -32,36 +29,22 @@ function isToday(dateString: string): boolean {
 }
 
 export default function TodayList(): React.JSX.Element {
-    const userId: string = useSelector((state: RootState) => state.auth.user.id);
-
-    // Query hooks automatically fetch on mount and return { data, isLoading, refetch }
-    // They also auto-refetch when their tags are invalidated!
-    const {
-        data: meetings = [],
-        isLoading: meetingsLoading,
-        refetch: refetchMeetings
-    } = useGetMeetingsQuery({ userFromId: userId });
-
-    const {
-        data: offers = [],
-        isLoading: offersLoading,
-        refetch: refetchOffers
-    } = useGetOffersQuery({ userId });
-
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [forceReprocess, setForceReprocess] = useState(0);
+
+    // Use custom hooks for data fetching and processing
+    const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
+    const { offers, refetch: refetchOffers } = useProcessedOffers(forceReprocess);
 
     // Process and filter data when it changes
     useEffect(() => {
         const processData = async () => {
             try {
-                const processedMeetings = await processMeetings(meetings);
-                const processedOffers = await processOffers(offers);
-
                 // Filter for today and combine
-                const todayMeetings: TodayItem[] = processedMeetings
-                    .filter(meeting => isToday(meeting.scheduledFor))
-                    .map(meeting => ({
+                const todayMeetings: TodayItem[] = meetings
+                    .filter((meeting:ProcessedMeetingType )=> isToday(meeting.scheduledFor))
+                    .map((meeting: ProcessedMeetingType) => ({
                         id: `meeting-${meeting.id}`,
                         type: 'meeting' as const,
                         displayScheduledFor: meeting.displayScheduledFor,
@@ -69,9 +52,9 @@ export default function TodayList(): React.JSX.Element {
                         data: meeting,
                     }));
 
-                const todayOffers: TodayItem[] = processedOffers
-                    .filter(offer => isToday(offer.scheduledFor))
-                    .map(offer => ({
+                const todayOffers: TodayItem[] = offers
+                    .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
+                    .map((offer: ProcessedOfferType) => ({
                         id: `offer-${offer.id}`,
                         type: 'offer' as const,
                         displayScheduledFor: offer.displayScheduledFor,
@@ -90,19 +73,18 @@ export default function TodayList(): React.JSX.Element {
             }
         };
 
-        if (!meetingsLoading && !offersLoading) {
-            processData();
-        }
-    }, [meetings, offers, meetingsLoading, offersLoading]);
+        processData();
+    }, [meetings, offers]);
 
     // Manual refresh still available via pull-to-refresh
     const handleRefresh = async () => {
         setRefreshing(true);
         await Promise.all([refetchMeetings(), refetchOffers()]);
+        setForceReprocess(prev => prev + 1);
         setRefreshing(false);
     };
 
-    const loading = meetingsLoading || offersLoading;
+    //const loading = meetingsLoading || offersLoading;
 
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
@@ -112,15 +94,6 @@ export default function TodayList(): React.JSX.Element {
         }
     };
 
-    if (loading) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.headerText}>Today</Text>
-                <BroadcastNowButton />
-                <Text style={styles.emptyText}>Loading...</Text>
-            </View>
-        );
-    }
 
     return (
         <View style={styles.container}>
