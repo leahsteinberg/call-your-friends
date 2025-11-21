@@ -12,6 +12,9 @@ export interface RootState {
     isAuthenticated: boolean;
     loading: boolean;
   };
+  broadcast: {
+    isBroadcasting: boolean;
+  };
   contacts: {
     sentInvites: any[]; // You can type this more specifically later
     friends: any[];     // You can type this more specifically later

@@ -6,6 +6,7 @@ import persistStore from 'redux-persist/es/persistStore';
 
 // Reducers
 import authReducer from '../features/Auth/authSlice';
+import broadcastReducer from '../features/Broadcast/broadcastSlice';
 import contactsReducer from '../features/Contacts/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
 
@@ -19,7 +20,7 @@ import { offerApi } from '@/services/offersApi';
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['auth'],
+  whitelist: ['auth', 'broadcast'],
 }
 
 
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   [offerApi.reducerPath]: offerApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
   auth: authReducer,
+  broadcast: broadcastReducer,
   contacts: contactsReducer,
   meeting: meetingReducer,
   })
