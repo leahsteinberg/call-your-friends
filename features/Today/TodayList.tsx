@@ -29,6 +29,52 @@ function isToday(dateString: string): boolean {
     );
 }
 
+/**
+ * Pure function to sort today items with custom ordering:
+ * 1. Self-created broadcast meetings first
+ * 2. Broadcast offers in chronological order (earliest to latest)
+ * 3. All other meetings and offers in chronological order (soonest to latest)
+ *
+ * @param items - Array of TodayItem to sort
+ * @param userId - The current user's ID to identify self-created items
+ * @returns Sorted array of TodayItem
+ */
+export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: string): TodayItem[] {
+    // Separate items into three categories
+    const selfCreatedBroadcastMeetings: TodayItem[] = [];
+    const broadcastOffers: TodayItem[] = [];
+    const otherItems: TodayItem[] = [];
+
+    items.forEach(item => {
+        if (item.type === 'meeting') {
+            const meeting = item.data as ProcessedMeetingType;
+            if (meeting.meetingType === 'BROADCAST' && meeting.userFromId === userId) {
+                selfCreatedBroadcastMeetings.push(item);
+            } else {
+                otherItems.push(item);
+            }
+        } else if (item.type === 'offer') {
+            const offer = item.data as ProcessedOfferType;
+            if (offer.offerType === 'BROADCAST') {
+                broadcastOffers.push(item);
+            } else {
+                otherItems.push(item);
+            }
+        }
+    });
+
+    // Sort each category by scheduledFor time (earliest to latest)
+    const sortByTime = (a: TodayItem, b: TodayItem) =>
+        new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime();
+
+    selfCreatedBroadcastMeetings.sort(sortByTime);
+    broadcastOffers.sort(sortByTime);
+    otherItems.sort(sortByTime);
+
+    // Combine in the desired order
+    return [...selfCreatedBroadcastMeetings, ...broadcastOffers, ...otherItems];
+}
+
 export default function TodayList(): React.JSX.Element {
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
