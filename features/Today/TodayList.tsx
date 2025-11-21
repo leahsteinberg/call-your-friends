@@ -1,22 +1,17 @@
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { DARK_GREEN } from "@/styles/styles";
+import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
 import BroadcastNowButton from "./BroadcastNowButton";
-
-type TodayItem = {
-    id: string;
-    type: 'meeting' | 'offer';
-    displayScheduledFor: string;
-    scheduledFor: string;
-    data: ProcessedMeetingType | ProcessedOfferType;
-};
+import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
 function isToday(dateString: string): boolean {
     const itemDate = new Date(dateString);
@@ -29,53 +24,9 @@ function isToday(dateString: string): boolean {
     );
 }
 
-/**
- * Pure function to sort today items with custom ordering:
- * 1. Self-created broadcast meetings first
- * 2. Broadcast offers in chronological order (earliest to latest)
- * 3. All other meetings and offers in chronological order (soonest to latest)
- *
- * @param items - Array of TodayItem to sort
- * @param userId - The current user's ID to identify self-created items
- * @returns Sorted array of TodayItem
- */
-export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: string): TodayItem[] {
-    // Separate items into three categories
-    const selfCreatedBroadcastMeetings: TodayItem[] = [];
-    const broadcastOffers: TodayItem[] = [];
-    const otherItems: TodayItem[] = [];
-
-    items.forEach(item => {
-        if (item.type === 'meeting') {
-            const meeting = item.data as ProcessedMeetingType;
-            if (meeting.meetingType === 'BROADCAST' && meeting.userFromId === userId) {
-                selfCreatedBroadcastMeetings.push(item);
-            } else {
-                otherItems.push(item);
-            }
-        } else if (item.type === 'offer') {
-            const offer = item.data as ProcessedOfferType;
-            if (offer.offerType === 'BROADCAST') {
-                broadcastOffers.push(item);
-            } else {
-                otherItems.push(item);
-            }
-        }
-    });
-
-    // Sort each category by scheduledFor time (earliest to latest)
-    const sortByTime = (a: TodayItem, b: TodayItem) =>
-        new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime();
-
-    selfCreatedBroadcastMeetings.sort(sortByTime);
-    broadcastOffers.sort(sortByTime);
-    otherItems.sort(sortByTime);
-
-    // Combine in the desired order
-    return [...selfCreatedBroadcastMeetings, ...broadcastOffers, ...otherItems];
-}
-
 export default function TodayList(): React.JSX.Element {
+    const userId: string = useSelector((state: RootState) => state.auth.user.id);
+
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [forceReprocess, setForceReprocess] = useState(0);
@@ -110,9 +61,8 @@ export default function TodayList(): React.JSX.Element {
                     }));
 
                 // Combine and sort by time
-                const combined = [...todayMeetings, ...todayOffers].sort(
-                    (a, b) => new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime()
-                );
+                const combined = sortTodayItemsWithBroadcastPriority([...todayOffers, ...todayMeetings], userId)
+                
 
                 setTodayItems(combined);
             } catch (error) {
