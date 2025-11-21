@@ -16,7 +16,7 @@ interface MeetingCardProps {
 export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const userName: string = useSelector((state: RootState) => state.auth.user.name);
+    const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
     const [deleteMeeting] = useDeleteMeetingMutation();
     const [isDeleting, setIsDeleting] = useState(false);
 

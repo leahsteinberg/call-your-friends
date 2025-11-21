@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface OfferState {}
+export interface OffersSliceState {}
 
-const initialState = {}
+const initialState: OffersSliceState = {}
 
 export const offerSlice = createSlice({
     name: 'offer',

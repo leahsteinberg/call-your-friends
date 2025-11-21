@@ -1,8 +1,9 @@
 import { MeetingEvent } from "../Meetings/types";
+import { OfferState } from "@/types/meetings-offers";
 
 export interface OfferType extends MeetingEvent {
     meetingId: string;
-    offerState: 'PENDING' | 'ACCEPTED' | 'REJECTED';
+    offerState: OfferState;
     //scheduledFor: string;
 }
 
