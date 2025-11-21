@@ -3,6 +3,7 @@ import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { DARK_GREEN } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
 import { ProcessedMeetingType } from "../Meetings/types";
@@ -90,7 +91,11 @@ export default function TodayList(): React.JSX.Element {
         if (item.type === 'meeting') {
             return <MeetingCard meeting={item.data as ProcessedMeetingType} />;
         } else {
-            return <OfferCard offer={item.data as ProcessedOfferType} refresh={handleRefresh} />;
+            const offer = item.data as ProcessedOfferType;
+            if (offer.offerType === 'BROADCAST') {
+                return <BroadcastOfferCard offer={offer} refresh={handleRefresh} />;
+            }
+            return <OfferCard offer={offer} refresh={handleRefresh} />;
         }
     };
 

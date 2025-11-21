@@ -1,5 +1,6 @@
 import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
+import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
 import { ProcessedOfferType } from "../Offers/types";
@@ -17,11 +18,12 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
     const offersListData = {
         title: "Offers:",
         data: offers,
-        renderItem: ({ item }: { item: ProcessedOfferType }) =>
-            <OfferCard
-                offer={item}
-                refresh={refresh}
-            />
+        renderItem: ({ item }: { item: ProcessedOfferType }) => {
+            if (item.offerType === 'BROADCAST') {
+                return <BroadcastOfferCard offer={item} refresh={refresh} />;
+            }
+            return <OfferCard offer={item} refresh={refresh} />;
+        }
     }
 
     const sectionListData = offers.length > 0 ? [offersListData, meetingsListData] : [meetingsListData];
