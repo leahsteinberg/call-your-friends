@@ -42,12 +42,18 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
         const scheduledFor = selectedDateTime.toISOString();
         const scheduledEnd = new Date(selectedDateTime);
         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
-
-        createMeeting({
-            userFromId: userId,
-            scheduledFor,
-            scheduledEnd: scheduledEnd.toISOString(),
-        });
+        console.log("REGULAR create -", scheduledFor);
+        try {
+            createMeeting({
+                userFromId: userId,
+                scheduledFor,
+                scheduledEnd: scheduledEnd.toISOString(),
+            });
+        } catch {
+            console.error("Error creating meeting:", error);
+            alert('Failed to create meeting. Please try again.');
+            
+        }
     };
     
     // On iOS, make it collapsible; on other platforms, always show expanded

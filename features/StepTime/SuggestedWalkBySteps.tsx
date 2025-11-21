@@ -98,6 +98,9 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
 
         try {
             const scheduledFor = suggestedWalkDateTime.toISOString();
+            //const scheduledFor = suggestedWalkDateTime;
+            console.log("STEPS scheduled FOr", scheduledFor)
+
             const scheduledEnd = new Date(suggestedWalkDateTime);
             scheduledEnd.setHours(scheduledEnd.getHours() + 1);
 
@@ -105,6 +108,7 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
                 userFromId: userId,
                 scheduledFor,
                 scheduledEnd: scheduledEnd.toISOString(),
+                title: '',
             }).unwrap();
 
             // Mark as created and disable the button

@@ -60,8 +60,8 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
 };
 
 export const displayTimeUntil = async (dateTime: string): Promise<string> => {
-    /// if less than a day, return "x hours"
-    // if a day or more, return "1 day" or "2 days" up to "x days"
+    /// if less than 12 hours, return "x hours" or "x minutes"
+    // if 12 hours or more, count calendar day differences and return "x days"
     const targetDate = new Date(dateTime);
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
@@ -72,17 +72,25 @@ export const displayTimeUntil = async (dateTime: string): Promise<string> => {
     }
 
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays >= 1) {
-        return diffDays === 1 ? '1 day' : `${diffDays} days`;
-    } else {
+    // For durations less than 12 hours, use time-based calculation
+    if (diffHours < 12) {
         if (diffHours < 1) {
             const diffMinutes = Math.floor(diffMs / (1000 * 60));
             return diffMinutes <= 1 ? '1 minute' : `${diffMinutes} minutes`;
         }
         return diffHours === 1 ? '1 hour' : `${diffHours} hours`;
     }
+
+    // For durations 12 hours or more, count calendar day differences
+    // Convert UTC times to local time and strip time component to get calendar dates
+    const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const targetDateOnly = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+
+    // Calculate calendar day difference
+    const calendarDaysDiff = Math.round((targetDateOnly.getTime() - nowDateOnly.getTime()) / (1000 * 60 * 60 * 24));
+
+    return calendarDaysDiff === 1 ? '1 day' : `${calendarDaysDiff} days`;
 };
 
 export const displayDate = async (dateTime: string): Promise<string> => {
