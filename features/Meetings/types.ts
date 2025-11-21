@@ -1,6 +1,7 @@
 import { BaseEntity } from "@/types/common";
 import { ProcessedOfferType } from "../Offers/types";
 
+export type MeetingTypeValue = 'ADVANCE' | 'BROADCAST';
 
 export interface MeetingEvent extends BaseEntity {
     displayScheduledFor: string;
@@ -11,6 +12,7 @@ export interface MeetingEvent extends BaseEntity {
 
 export interface MeetingType extends MeetingEvent {
     meetingState: 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
+    meetingType: MeetingTypeValue;
     title: string;
 }
 

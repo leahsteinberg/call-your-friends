@@ -82,8 +82,15 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     return (
         <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
             <View style={styles.header}>
-                <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>Meeting</Text>
+                <View style={styles.typeIndicatorContainer}>
+                    <View style={styles.typeIndicator}>
+                        <Text style={styles.typeText}>Meeting</Text>
+                    </View>
+                    {meeting.meetingType === 'BROADCAST' && (
+                        <View style={styles.broadcastIndicator}>
+                            <Text style={styles.broadcastText}>BROADCAST</Text>
+                        </View>
+                    )}
                 </View>
                 <TouchableOpacity
                     onPress={handleDeleteMeeting}
@@ -131,11 +138,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
     },
+    typeIndicatorContainer: {
+        flexDirection: 'row',
+        gap: 6,
+        alignItems: 'center',
+    },
     typeIndicator: {
         backgroundColor: DARK_GREEN,
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
+    },
+    broadcastIndicator: {
+        backgroundColor: '#5a7d9a',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 4,
+    },
+    broadcastText: {
+        color: CREAM,
+        fontSize: 12,
+        fontWeight: '600',
     },
     typeText: {
         color: CREAM,
