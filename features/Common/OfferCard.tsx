@@ -1,11 +1,12 @@
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
-import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
+import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OfferCardProps {
@@ -15,6 +16,7 @@ interface OfferCardProps {
 }
 
 export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX.Element {
+    const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [rejectOffer] = useRejectOfferMutation();
@@ -35,7 +37,9 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
         try {
             setIsResponding(true);
             await rejectOffer({ userId, offerId }).unwrap();
-            refresh();
+            dispatch(deleteOfferOptimistic(offerId))
+
+            //refresh();
             
         } catch (error) {
             console.error("Error rejecting offer:", error);
@@ -50,11 +54,11 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
     const getStatusText = () => {
         switch (offer.offerState) {
-            case 'OPEN':
+            case OPEN_OFFER_STATE:
                 return 'Open';
-            case 'ACCEPTED':
+            case ACCEPTED_OFFER_STATE:
                 return 'Accepted';
-            case 'REJECTED':
+            case REJECTED_OFFER_STATE:
                 return 'Rejected';
             default:
                 return offer.offerState;

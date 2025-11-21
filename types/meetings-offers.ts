@@ -9,5 +9,5 @@ export const SEARCHING_MEETING_STATE = 'SEARCHING';
 export const REJECTED_MEETING_STATE = 'REJECTED';
 export const PAST_MEETING_STATE = 'PAST';
 
-export type OfferState = "OPEN" | "ACCEPTED" | "REJECTED" | "EXPIRED";
-export type MeetingState = "SEARCHING" | "ACCEPTED" | "REJECTED" | "PAST";
+export type OfferState = 'OPEN' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+export type MeetingState = 'SEARCHING' | 'ACCEPTED' | 'REJECTED' | 'PAST';
