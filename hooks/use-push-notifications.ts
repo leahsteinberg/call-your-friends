@@ -1,11 +1,14 @@
+import { meetingApi } from "@/services/meetingApi";
 import { usePostRegisterPushMutation } from "@/services/notificationApi";
+import { offerApi } from "@/services/offersApi";
 import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from "@/services/notificationsService";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export function usePushNotifications() {
+    const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [expoPushToken, setExpoPushToken] = useState<string>('');
     const [postRegisterPushToken] = usePostRegisterPushMutation();
@@ -43,6 +46,9 @@ export function usePushNotifications() {
             },
             (response) => {
                 console.log('Notification response:', response);
+                // Invalidate offers and meetings cache to trigger a refresh
+                dispatch(offerApi.util.invalidateTags(['Offer']));
+                dispatch(meetingApi.util.invalidateTags(['Meeting']));
             }
         );
 
