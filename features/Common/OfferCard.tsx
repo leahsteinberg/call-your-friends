@@ -3,20 +3,22 @@ import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/s
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OfferCardProps {
     offer: ProcessedOfferType;
+    refresh: () => void;
+
 }
 
-export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element {
+export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [rejectOffer] = useRejectOfferMutation();
-    console.log("offer ==", offer)
+    const [isResponding, setIsResponding] = useState(false);
 
     const offerId = offer.id;
 
@@ -31,7 +33,10 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
     const handleRejectOffer = async () => {
         try {
-            await rejectOffer({ userId, offerId });
+            setIsResponding(true);
+            await rejectOffer({ userId, offerId }).unwrap();
+            refresh();
+            
         } catch (error) {
             console.error("Error rejecting offer:", error);
             alert('Failed to reject offer. Please try again.');

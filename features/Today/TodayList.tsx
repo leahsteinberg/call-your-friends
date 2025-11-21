@@ -90,7 +90,7 @@ export default function TodayList(): React.JSX.Element {
         if (item.type === 'meeting') {
             return <MeetingCard meeting={item.data as ProcessedMeetingType} />;
         } else {
-            return <OfferCard offer={item.data as ProcessedOfferType} />;
+            return <OfferCard offer={item.data as ProcessedOfferType} refresh={handleRefresh} />;
         }
     };
 

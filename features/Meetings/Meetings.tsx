@@ -17,6 +17,7 @@ export default function Meetings() {
 
     // Manual refresh via pull-to-refresh
     const handleRefresh = async () => {
+        console.log("HANDLE REFRESH");
         setRefreshing(true);
         await Promise.all([refetchMeetings(), refetchOffers()]);
         // Force reprocessing to update time-based fields like displayExpiresAt

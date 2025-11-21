@@ -18,7 +18,10 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         title: "Offers:",
         data: offers,
         renderItem: ({ item }: { item: ProcessedOfferType }) =>
-            <OfferCard offer={item} />
+            <OfferCard
+                offer={item}
+                refresh={refresh}
+            />
     }
 
     const sectionListData = offers.length > 0 ? [offersListData, meetingsListData] : [meetingsListData];
