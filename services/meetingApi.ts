@@ -60,11 +60,18 @@ export const meetingApi = createApi({
                 body: { userId },
             }),
         }),
+        isUserBroadcasting: builder.query({
+            query: ({ userId }) => ({
+                url: '/api/is-user-broadcasting',
+                method: 'POST',
+                body: { userId },
+            }),
+        }),
     })
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery } = meetingApi;
 
-export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation, useBroadcastEndMutation };
+export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery };
 
