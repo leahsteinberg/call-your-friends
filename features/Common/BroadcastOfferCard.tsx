@@ -1,5 +1,9 @@
 import { DEV_FLAG } from "@/environment";
-import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
+import {
+    useAcceptBroadcastMutation,
+    useRejectBroadcastMutation,
+    useTryAcceptBroadcastMutation
+} from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
@@ -18,38 +22,62 @@ interface BroadcastOfferCardProps {
 export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [acceptOffer] = useAcceptOfferMutation();
-    const [rejectOffer] = useRejectOfferMutation();
+
+    // Broadcast-specific mutations
+    const [tryAcceptBroadcast] = useTryAcceptBroadcastMutation();
+    const [acceptBroadcast] = useAcceptBroadcastMutation();
+    const [rejectBroadcast] = useRejectBroadcastMutation();
+
+    // State management
+    const [hasTried, setHasTried] = useState(false);
+    const [isAccepted, setIsAccepted] = useState(false);
+    const [isTryingAccept, setIsTryingAccept] = useState(false);
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
 
     const offerId = offer.id;
 
-    const handleAcceptOffer = async () => {
+    const handleTryAccept = async () => {
         try {
-            setIsAccepting(true)
-            await acceptOffer({ userId, offerId });
-            refresh();
-            setIsRejecting(false)
+            setIsTryingAccept(true);
+            const response = await tryAcceptBroadcast({ userId, offerId }).unwrap();
 
+            if (response.success) {
+                setHasTried(true);
+            } else {
+                alert(response.message || 'Could not claim broadcast');
+            }
         } catch (error) {
-            console.error("Error accepting offer:", error);
-            alert('Failed to accept offer. Please try again.');
+            console.error("Error trying to accept broadcast:", error);
+            alert('Failed to claim broadcast. Please try again.');
+        } finally {
+            setIsTryingAccept(false);
         }
     };
 
-    const handleRejectOffer = async () => {
+    const handleAccept = async () => {
+        try {
+            setIsAccepting(true);
+            await acceptBroadcast({ userId, offerId }).unwrap();
+            setIsAccepted(true);
+            refresh();
+        } catch (error) {
+            console.error("Error accepting broadcast:", error);
+            alert('Failed to accept broadcast. Please try again.');
+            setIsAccepting(false);
+        }
+    };
+
+    const handleReject = async () => {
         try {
             setIsRejecting(true);
-            await rejectOffer({ userId, offerId }).unwrap();
-            dispatch(deleteOfferOptimistic(offerId))
-
+            await rejectBroadcast({ userId, offerId }).unwrap();
+            dispatch(deleteOfferOptimistic(offerId));
             refresh();
-            setIsAccepting(false)
-
         } catch (error) {
-            console.error("Error rejecting offer:", error);
-            alert('Failed to reject offer. Please try again.');
+            console.error("Error rejecting broadcast:", error);
+            alert('Failed to reject broadcast. Please try again.');
+            setIsRejecting(false);
         }
     };
 
@@ -77,28 +105,70 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
                 <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>BROADCAST</Text>
                 </View>
-                {offer.offerState === OPEN_OFFER_STATE && (
+
+                {/* Show buttons if offer is open and not yet accepted */}
+                {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={handleAcceptOffer}
-                            style={styles.acceptButton}
-                        >
-                        {isAccepting ? (
-                            <ActivityIndicator size="small" color="green" />
-                            ) : (
-                                <Text style={styles.acceptButtonText}>Accept</Text>
+                        {!hasTried ? (
+                            <>
+                                {/* Initial state: TRY-ACCEPT + REJECT */}
+                                <TouchableOpacity
+                                    onPress={handleTryAccept}
+                                    style={styles.acceptButton}
+                                    disabled={isTryingAccept}
+                                >
+                                    {isTryingAccept ? (
+                                        <ActivityIndicator size="small" color="green" />
+                                    ) : (
+                                        <Text style={styles.acceptButtonText}>TRY-ACCEPT</Text>
+                                    )}
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={handleReject}
+                                    style={styles.rejectButton}
+                                    disabled={isRejecting}
+                                >
+                                    {isRejecting ? (
+                                        <ActivityIndicator size="small" color="red" />
+                                    ) : (
+                                        <Text style={styles.rejectButtonText}>REJECT</Text>
+                                    )}
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <>
+                                {/* After successful try: ACCEPT + CANCEL */}
+                                <TouchableOpacity
+                                    onPress={handleAccept}
+                                    style={styles.acceptButton}
+                                    disabled={isAccepting}
+                                >
+                                    {isAccepting ? (
+                                        <ActivityIndicator size="small" color="green" />
+                                    ) : (
+                                        <Text style={styles.acceptButtonText}>ACCEPT</Text>
+                                    )}
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={handleReject}
+                                    style={styles.rejectButton}
+                                    disabled={isRejecting}
+                                >
+                                    {isRejecting ? (
+                                        <ActivityIndicator size="small" color="red" />
+                                    ) : (
+                                        <Text style={styles.rejectButtonText}>CANCEL</Text>
+                                    )}
+                                </TouchableOpacity>
+                            </>
                         )}
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={handleRejectOffer}
-                            style={styles.rejectButton}
-                        >
-                        {isRejecting ? (
-                            <ActivityIndicator size="small" color="red" />
-                            ) : (
-                                <Text style={styles.rejectButtonText}>Reject</Text>
-                        )}
-                        </TouchableOpacity>
+                    </View>
+                )}
+
+                {/* Show "Accepted" label after successful acceptance */}
+                {isAccepted && (
+                    <View style={styles.acceptedLabel}>
+                        <Text style={styles.acceptedText}>Accepted</Text>
                     </View>
                 )}
             </View>
