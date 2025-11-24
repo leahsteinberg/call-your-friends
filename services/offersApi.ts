@@ -35,11 +35,49 @@ export const offerApi = createApi({
             // Rejecting also changes the offer
             invalidatesTags: ['Offer'],
         }),
+        // Broadcast-specific mutations
+        tryAcceptBroadcast: builder.mutation({
+            query: ({ userId, offerId }) => ({
+                url: '/api/try-accept-broadcast',
+                method: 'POST',
+                body: { userId, offerId },
+            }),
+        }),
+        acceptBroadcast: builder.mutation({
+            query: ({ userId, offerId }) => ({
+                url: '/api/accept-broadcast',
+                method: 'POST',
+                body: { userId, offerId },
+            }),
+            invalidatesTags: ['Offer'],
+        }),
+        rejectBroadcast: builder.mutation({
+            query: ({ userId, offerId }) => ({
+                url: '/api/reject-broadcast',
+                method: 'POST',
+                body: { userId, offerId },
+            }),
+            invalidatesTags: ['Offer'],
+        }),
     })
 });
 
 // getOffers is now a query, so hook name changes to useGetOffersQuery
-const { useGetOffersQuery, useAcceptOfferMutation, useRejectOfferMutation } = offerApi;
+const {
+    useGetOffersQuery,
+    useAcceptOfferMutation,
+    useRejectOfferMutation,
+    useTryAcceptBroadcastMutation,
+    useAcceptBroadcastMutation,
+    useRejectBroadcastMutation
+} = offerApi;
 
-export { useAcceptOfferMutation, useGetOffersQuery, useRejectOfferMutation };
+export {
+    useAcceptOfferMutation,
+    useGetOffersQuery,
+    useRejectOfferMutation,
+    useTryAcceptBroadcastMutation,
+    useAcceptBroadcastMutation,
+    useRejectBroadcastMutation
+};
 
