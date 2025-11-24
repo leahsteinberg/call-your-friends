@@ -99,6 +99,49 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
         }
     };
 
+    // Button render functions
+    const renderTryAcceptButton = () => (
+        <TouchableOpacity
+            onPress={handleTryAccept}
+            style={styles.acceptButton}
+            disabled={isTryingAccept}
+        >
+            {isTryingAccept ? (
+                <ActivityIndicator size="small" color="green" />
+            ) : (
+                <Text style={styles.acceptButtonText}>TRY-ACCEPT</Text>
+            )}
+        </TouchableOpacity>
+    );
+
+    const renderAcceptButton = () => (
+        <TouchableOpacity
+            onPress={handleAccept}
+            style={styles.acceptButton}
+            disabled={isAccepting}
+        >
+            {isAccepting ? (
+                <ActivityIndicator size="small" color="green" />
+            ) : (
+                <Text style={styles.acceptButtonText}>ACCEPT</Text>
+            )}
+        </TouchableOpacity>
+    );
+
+    const renderRejectButton = (label: string) => (
+        <TouchableOpacity
+            onPress={handleReject}
+            style={styles.rejectButton}
+            disabled={isRejecting}
+        >
+            {isRejecting ? (
+                <ActivityIndicator size="small" color="red" />
+            ) : (
+                <Text style={styles.rejectButtonText}>{label}</Text>
+            )}
+        </TouchableOpacity>
+    );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -112,54 +155,14 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
                         {!hasTried ? (
                             <>
                                 {/* Initial state: TRY-ACCEPT + REJECT */}
-                                <TouchableOpacity
-                                    onPress={handleTryAccept}
-                                    style={styles.acceptButton}
-                                    disabled={isTryingAccept}
-                                >
-                                    {isTryingAccept ? (
-                                        <ActivityIndicator size="small" color="green" />
-                                    ) : (
-                                        <Text style={styles.acceptButtonText}>TRY-ACCEPT</Text>
-                                    )}
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={handleReject}
-                                    style={styles.rejectButton}
-                                    disabled={isRejecting}
-                                >
-                                    {isRejecting ? (
-                                        <ActivityIndicator size="small" color="red" />
-                                    ) : (
-                                        <Text style={styles.rejectButtonText}>REJECT</Text>
-                                    )}
-                                </TouchableOpacity>
+                                {renderTryAcceptButton()}
+                                {renderRejectButton('REJECT')}
                             </>
                         ) : (
                             <>
                                 {/* After successful try: ACCEPT + CANCEL */}
-                                <TouchableOpacity
-                                    onPress={handleAccept}
-                                    style={styles.acceptButton}
-                                    disabled={isAccepting}
-                                >
-                                    {isAccepting ? (
-                                        <ActivityIndicator size="small" color="green" />
-                                    ) : (
-                                        <Text style={styles.acceptButtonText}>ACCEPT</Text>
-                                    )}
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={handleReject}
-                                    style={styles.rejectButton}
-                                    disabled={isRejecting}
-                                >
-                                    {isRejecting ? (
-                                        <ActivityIndicator size="small" color="red" />
-                                    ) : (
-                                        <Text style={styles.rejectButtonText}>CANCEL</Text>
-                                    )}
-                                </TouchableOpacity>
+                                {renderAcceptButton()}
+                                {renderRejectButton('CANCEL')}
                             </>
                         )}
                     </View>
