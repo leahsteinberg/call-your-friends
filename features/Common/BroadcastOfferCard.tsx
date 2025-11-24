@@ -262,4 +262,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
     },
+    acceptedLabel: {
+        backgroundColor: BRIGHT_GREEN,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 4,
+    },
+    acceptedText: {
+        color: CREAM,
+        fontSize: 12,
+        fontWeight: '600',
+    },
 });
