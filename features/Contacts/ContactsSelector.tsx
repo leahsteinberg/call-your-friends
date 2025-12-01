@@ -1,4 +1,4 @@
-import { useCreateInviteMutation } from "@/services/contactsApi";
+import { useCreateInviteMutation, useUserByPhoneMutation } from "@/services/contactsApi";
 import { CREAM, ORANGE } from "@/styles/styles";
 import * as Contacts from "expo-contacts";
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ export default function ContactsSelector() {
     const [permissionStatus, setPermissionStatus] = useState<boolean>(false);
     const dispatch = useDispatch();
     const [createInvite] = useCreateInviteMutation();
+    const [findUserByPhone] = useUserByPhoneMutation();
+
     const userFromId: string = useSelector((state: RootState) => state.auth.user.id);
 
     useEffect(()=> {
@@ -65,6 +67,12 @@ export default function ContactsSelector() {
         const response = await createInvite({ userFromId, userToPhoneNumber }).unwrap();
         if (response) {
             if (userToPhoneNumber) {
+                const user = await findUserByPhone({userPhoneNumber: userToPhoneNumber}).unwrap();
+                console.log("Is there a user???", !!user, user);
+                if (user) {
+                    
+                }
+
                 dispatch(addSentInvite(friendUser));
                 await openSMSInvite(response.token, userToPhoneNumber);
                 return;

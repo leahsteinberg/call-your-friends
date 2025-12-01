@@ -60,7 +60,7 @@ export const createSmsUrl = (token: string, phoneNumber: string): string => {
 };
 
 export const formatPhoneNumber = (digits) => {
-    if (digits.length === 10) {
+    if (digits && digits.length === 10) {
         const areaCode = digits.slice(0,3);
         const firstPortion = digits.slice(3,6)
         const secondPortion = digits.slice(6, 10)

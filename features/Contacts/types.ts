@@ -16,6 +16,13 @@ export interface Friend extends BaseEntity {
   userId: string;
 }
 
+export interface FriendRequest extends BaseEntity {
+  name: string;
+  phoneNumber: string;
+  email?: string;
+  userId: string;
+}
+
 export interface SentInvite extends BaseEntity {
   userToPhoneNumber: string;
   firstName?: string;
@@ -64,6 +71,7 @@ export interface ContactsComponentProps {
 
 export interface ContactsListProps {
   friends: Friend[];
+  friendRequests: FriendRequest[];
   sentInvites: ProcessedSentInvite[];
 }
 
@@ -86,6 +94,16 @@ export interface FriendProps {
   item: {
     name: string;
     phoneNumber: string;
+    index?: number;
+  };
+}
+
+export interface FriendRequestProps {
+  item: FriendRequest & {
+    userFrom: {
+      name: string;
+      phoneNumber: string;
+    };
     index?: number;
   };
 }

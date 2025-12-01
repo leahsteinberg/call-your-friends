@@ -2,40 +2,54 @@ import { CREAM, PALE_BLUE } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
+import FriendRequest from "./FriendRequest";
 import InvitedContact from "./InvitedContact";
-import { ContactsListProps, Friend as FriendType, SentInvite } from "./types";
+import { ContactsListProps, Friend as FriendType, FriendRequest as FriendRequestType, SentInvite } from "./types";
 
 interface ContactsListPropsExtended extends ContactsListProps {
     onRefresh?: () => void;
     refreshing?: boolean;
 }
 
-export default function ContactsList({ friends, sentInvites, onRefresh, refreshing = false }: ContactsListPropsExtended): React.JSX.Element {
+export default function ContactsList({ friends, friendRequests, sentInvites, onRefresh, refreshing = false }: ContactsListPropsExtended): React.JSX.Element {
 
 
 
-    const friendListData = 
+    const friendListData =
     {
         title: "Friends",
         data: friends,
-        renderItem: ({ item, index }: { item: FriendType; index: number }) => 
+        renderItem: ({ item, index }: { item: FriendType; index: number }) =>
             (<Friend item={{ ...item, index }} />)
     };
 
-    const invitedListData = 
+    const friendRequestsListData =
+    {
+        title: "Friend Requests",
+        data: friendRequests,
+        renderItem: ({ item, index }: { item: FriendRequestType; index: number }) =>
+            (<FriendRequest item={{ ...item, index }} />)
+    };
+
+    const invitedListData =
     {
         title: "Waiting for these friends to join the fun:",
         data: sentInvites,
-        renderItem: ({ item, index }: { item: SentInvite; index: number }) => 
+        renderItem: ({ item, index }: { item: SentInvite; index: number }) =>
             (<InvitedContact contact={{ item, index }} />)
     };
-   
-    
-    const sectionListData =  (
-        sentInvites.length > 0
-            ? [friendListData, invitedListData]
-            : [friendListData]
-        ) as any;
+
+
+    const sections = [];
+    sections.push(friendListData);
+    if (friendRequests.length > 0) {
+        sections.push(friendRequestsListData);
+    }
+    if (sentInvites.length > 0) {
+        sections.push(invitedListData);
+    }
+
+    const sectionListData = sections as any;
 
 
 

@@ -46,6 +46,20 @@ export const contactsApi = createApi({
                 method: 'POST',
                 body: { id },
             })
+        }),
+        getFriendInvites: builder.mutation({
+            query: ({id}) => ({
+                url: '/api/get-friend-invites',
+                method: 'POST',
+                body: { id },
+            })
+        }),
+        acceptFriendRequest: builder.mutation({
+            query: ({userId, friendRequestId, token}) => ({
+                url: '/api/accept-invite',
+                method: 'POST',
+                body: { userId, friendRequestId, token },
+            })
         })
     })
 });
@@ -57,14 +71,14 @@ const {
     useUserByPhoneMutation,
     useGetFriendsMutation,
     useGetSentInvitesMutation,
+    useGetFriendInvitesMutation,
+    useAcceptFriendRequestMutation,
     } = contactsApi;
 
 export {
-    useAcceptInviteSignInMutation,
+    useAcceptFriendRequestMutation, useAcceptInviteSignInMutation,
     useAcceptInviteSignUpMutation,
-    useCreateInviteMutation,
-    useGetFriendsMutation,
-    useGetSentInvitesMutation,
-    useUserByPhoneMutation
+    useCreateInviteMutation, useGetFriendInvitesMutation, useGetFriendsMutation,
+    useGetSentInvitesMutation, useUserByPhoneMutation
 };
 
