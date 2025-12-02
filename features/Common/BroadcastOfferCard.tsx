@@ -46,10 +46,10 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
 
     // Logical flags for different broadcast states
     const isUnclaimed = subState === 'UNCLAIMED';
-    const isPendingClaimedBySelf = subState === 'PENDING_CLAIMED' && offerClaimedId === userId;
-    const isPendingClaimedByOther = subState === 'PENDING_CLAIMED' && offerClaimedId !== userId;
-    const isClaimedBySelf = subState === 'CLAIMED' && offerClaimedId === userId;
-    const isClaimedByOther = subState === 'CLAIMED' && offerClaimedId !== userId;
+    const isPendingClaimedBySelf = subState === 'PENDING_CLAIMED' && offerClaimedId === offerId;
+    const isPendingClaimedByOther = subState === 'PENDING_CLAIMED' && offerClaimedId !== offerId;
+    const isClaimedBySelf = subState === 'CLAIMED' && offerClaimedId === offerId;
+    const isClaimedByOther = subState === 'CLAIMED' && offerClaimedId !== offerId;
 
     const handleTryAccept = async () => {
         try {

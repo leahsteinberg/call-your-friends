@@ -1,4 +1,5 @@
 import { DEV_FLAG } from "@/environment";
+import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
@@ -53,8 +54,14 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 meetingId: meeting.id,
                 userId
             }).unwrap();
+
             // Remove from Redux after successful deletion
             dispatch(deleteMeetingOptimistic(meeting.id));
+
+            // If this is a self-created broadcast meeting, turn off the broadcast toggle
+            if (selfCreatedMeeting && meeting.meetingType === 'BROADCAST') {
+                dispatch(endBroadcast());
+            }
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. Please try again.');
