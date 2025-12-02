@@ -13,6 +13,8 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
+import MyClaimedBroadcastOfferCard from "./MyClaimedBroadcastOfferCard";
+import OtherClaimedBroadcastOfferCard from "./OtherClaimedBroadcastOfferCard";
 
 interface BroadcastOfferCardProps {
     offer: ProcessedOfferType;
@@ -36,6 +38,18 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
     const [isRejecting, setIsRejecting] = useState(false);
 
     const offerId = offer.id;
+
+    // Broadcast metadata
+    const broadcastMetadata = offer.meeting?.broadcastMetadata;
+    const subState = broadcastMetadata?.subState;
+    const offerClaimedId = broadcastMetadata?.offerClaimedId;
+
+    // Logical flags for different broadcast states
+    const isUnclaimed = subState === 'UNCLAIMED';
+    const isPendingClaimedBySelf = subState === 'PENDING_CLAIMED' && offerClaimedId === userId;
+    const isPendingClaimedByOther = subState === 'PENDING_CLAIMED' && offerClaimedId !== userId;
+    const isClaimedBySelf = subState === 'CLAIMED' && offerClaimedId === userId;
+    const isClaimedByOther = subState === 'CLAIMED' && offerClaimedId !== userId;
 
     const handleTryAccept = async () => {
         try {
@@ -142,6 +156,16 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
         </TouchableOpacity>
     );
 
+    // Render child components based on claim state
+    if (isPendingClaimedBySelf || isClaimedBySelf) {
+        return <MyClaimedBroadcastOfferCard offer={offer} refresh={refresh} />;
+    }
+
+    if (isPendingClaimedByOther || isClaimedByOther) {
+        return <OtherClaimedBroadcastOfferCard offer={offer} />;
+    }
+
+    // Default: UNCLAIMED state - render original TRY-ACCEPT flow
     return (
         <View style={styles.container}>
             <View style={styles.header}>

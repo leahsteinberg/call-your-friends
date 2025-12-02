@@ -3,6 +3,13 @@ import { ProcessedOfferType } from "../Offers/types";
 
 export type MeetingTypeValue = 'ADVANCE' | 'BROADCAST';
 
+export type BroadcastSubState = 'CLAIMED' | 'UNCLAIMED' | 'PENDING_CLAIMED';
+
+export interface BroadcastMetadata {
+    subState: BroadcastSubState;
+    offerClaimedId?: string; // userId of person who claimed/pending claimed
+}
+
 export interface MeetingEvent extends BaseEntity {
     displayScheduledFor: string;
     scheduledFor: string;
@@ -14,6 +21,7 @@ export interface MeetingType extends MeetingEvent {
     meetingState: 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
     meetingType: MeetingTypeValue;
     title: string;
+    broadcastMetadata?: BroadcastMetadata;
 }
 
 export interface ProcessedMeetingType extends MeetingType {
