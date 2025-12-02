@@ -67,11 +67,20 @@ export const meetingApi = createApi({
                 body: { userId },
             }),
         }),
+        cancelBroadcastAcceptance: builder.mutation({
+            query: ({ meetingId, userId }) => ({
+                url: '/api/cancel-broadcast-acceptance',
+                method: 'POST',
+                body: { meetingId, userId },
+            }),
+            // Invalidate meetings cache to trigger refetch after canceling
+            invalidatesTags: ['Meeting'],
+        }),
     })
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation } = meetingApi;
 
-export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery };
+export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation };
 

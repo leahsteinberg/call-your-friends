@@ -1,6 +1,6 @@
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { useDeleteMeetingMutation } from "@/services/meetingApi";
+import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
@@ -20,7 +20,9 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
     const [deleteMeeting] = useDeleteMeetingMutation();
+    const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isCanceling, setIsCanceling] = useState(false);
 
     const meetingState: MeetingState  = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
@@ -69,6 +71,23 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         }
     };
 
+    const handleCancelBroadcastAcceptance = async () => {
+        try {
+            setIsCanceling(true);
+            await cancelBroadcastAcceptance({
+                meetingId: meeting.id,
+                userId
+            }).unwrap();
+
+            // Remove from Redux after successful cancellation
+            dispatch(deleteMeetingOptimistic(meeting.id));
+        } catch (error) {
+            console.error("Error canceling broadcast acceptance:", error);
+            alert('Failed to cancel acceptance. Please try again.');
+            setIsCanceling(false);
+        }
+    };
+
     const getStatusText = () => {
         switch (meetingState) {
             case SEARCHING_MEETING_STATE:
@@ -99,17 +118,33 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                         </View>
                     )}
                 </View>
-                <TouchableOpacity
-                    onPress={handleDeleteMeeting}
-                    style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                    disabled={isDeleting}
-                >
-                    {isDeleting ? (
-                        <ActivityIndicator size="small" color="red" />
-                    ) : (
-                        <Text style={styles.deleteButtonText}>Delete</Text>
-                    )}
-                </TouchableOpacity>
+
+                {/* Show "Cancel Acceptance" for broadcast meetings not created by user */}
+                {meeting.meetingType === 'BROADCAST' && !selfCreatedMeeting ? (
+                    <TouchableOpacity
+                        onPress={handleCancelBroadcastAcceptance}
+                        style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
+                        disabled={isCanceling}
+                    >
+                        {isCanceling ? (
+                            <ActivityIndicator size="small" color="orange" />
+                        ) : (
+                            <Text style={styles.cancelButtonText}>Cancel</Text>
+                        )}
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        onPress={handleDeleteMeeting}
+                        style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? (
+                            <ActivityIndicator size="small" color="red" />
+                        ) : (
+                            <Text style={styles.deleteButtonText}>Delete</Text>
+                        )}
+                    </TouchableOpacity>
+                )}
             </View>
 
             <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
@@ -208,6 +243,23 @@ const styles = StyleSheet.create({
     },
     deleteButtonText: {
         color: 'red',
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    cancelButton: {
+        borderWidth: 1,
+        borderColor: ORANGE,
+        borderRadius: 4,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        minWidth: 50,
+        alignItems: 'center',
+    },
+    cancelButtonDisabled: {
+        opacity: 0.6,
+    },
+    cancelButtonText: {
+        color: ORANGE,
         fontSize: 12,
         fontWeight: '600',
     },
