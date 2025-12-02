@@ -45,7 +45,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 return 'from: me!'
             }
         }
-        const name = userName;
+        const name = meeting.userFrom?.name;
         return name ? `from: ${name}` : null;
     };
 
@@ -246,21 +246,21 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
     },
-    cancelButton: {
+   cancelButton: {
         borderWidth: 1,
         borderColor: ORANGE,
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
         minWidth: 50,
-        alignItems: 'center',
+        alignItems: 'center'
     },
     cancelButtonDisabled: {
-        opacity: 0.6,
+        opacity: 0.
     },
     cancelButtonText: {
         color: ORANGE,
         fontSize: 12,
-        fontWeight: '600',
+         fontWeight: '600',
     },
-});
+         });
