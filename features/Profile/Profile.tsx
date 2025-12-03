@@ -1,3 +1,4 @@
+import { CustomFonts } from "@/constants/theme";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -33,11 +34,14 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     greetingText: {
-        fontSize: 20,
-        fontWeight: '600',
+        // fontSize: 20,
+        // fontWeight: '600',
         color: '#2D5016',
         marginTop: 8,
         marginHorizontal: 15,
+        fontFamily: CustomFonts.catamaran,
+        fontSize: 30,
+        fontWeight: '600',
     },
     component: {}
 });
