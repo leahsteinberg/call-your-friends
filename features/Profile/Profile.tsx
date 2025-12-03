@@ -1,4 +1,6 @@
+import StarPerson from '@/assets/images/star-person.svg';
 import { CustomFonts } from "@/constants/theme";
+import { DARK_GREEN } from '@/styles/styles';
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -11,6 +13,12 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
+            <StarPerson
+                width={200}
+                height={200}
+                fill={DARK_GREEN}
+                stroke={DARK_GREEN}
+            />
             <Text style={styles.greetingText}>Hi, {userName}</Text>
             <TodayList />
             {Platform.OS === 'ios' &&
