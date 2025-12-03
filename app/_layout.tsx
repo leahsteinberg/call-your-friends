@@ -2,12 +2,17 @@ import { WebLayout } from '@/components/WebLayout';
 import { setBroadcastState } from '@/features/Broadcast/broadcastSlice';
 import { useIsUserBroadcastingQuery } from '@/services/meetingApi';
 import { RootState } from '@/types';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import '../global.css';
 import { persistor, store } from './store';
+
+// Prevent the splash screen from auto-hiding before font loading completes
+SplashScreen.preventAutoHideAsync();
 
 
 const InitialLayout = () => {
@@ -43,6 +48,24 @@ const InitialLayout = () => {
 }
 
 export default function RootLayout() {
+    const [fontsLoaded, fontError] = useFonts({
+        'Catamaran': require('../assets/images/fonts/Catamaran.otf'),
+        'Clockwise': require('../assets/images/fonts/clockwise_light.otf'),
+        'SantaAna': require('../assets/images/fonts/SantaAnaTRIAL-Medium.otf'),
+    });
+
+    useEffect(() => {
+        if (fontsLoaded || fontError) {
+            // Hide the splash screen once fonts are loaded or if there's an error
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded, fontError]);
+
+    // Don't render the app until fonts are loaded
+    if (!fontsLoaded && !fontError) {
+        return null;
+    }
+
     return (
         <WebLayout>
             <Provider store={store}>

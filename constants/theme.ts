@@ -51,3 +51,10 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+// Custom fonts - these work across all platforms (iOS, Android, Web)
+export const CustomFonts = {
+  catamaran: 'Catamaran',
+  clockwise: 'Clockwise',
+  santaAna: 'SantaAna',
+} as const;
