@@ -52,6 +52,8 @@ export const meetingApi = createApi({
                 method: 'POST',
                 body: { userId },
             }),
+            // Invalidate meetings cache when starting broadcast
+            invalidatesTags: ['Meeting'],
         }),
         broadcastEnd: builder.mutation({
             query: ({ userId }) => ({
@@ -59,6 +61,8 @@ export const meetingApi = createApi({
                 method: 'POST',
                 body: { userId },
             }),
+            // Invalidate meetings cache when ending broadcast
+            invalidatesTags: ['Meeting'],
         }),
         isUserBroadcasting: builder.query({
             query: ({ userId }) => ({

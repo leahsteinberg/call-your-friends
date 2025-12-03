@@ -32,12 +32,13 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
         try {
             setIsAccepting(true)
             await acceptOffer({ userId, offerId });
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
             setIsRejecting(false)
 
         } catch (error) {
             console.error("Error accepting offer:", error);
             alert('Failed to accept offer. Please try again.');
+            setIsAccepting(false);
         }
     };
 
@@ -47,12 +48,13 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
             await rejectOffer({ userId, offerId }).unwrap();
             dispatch(deleteOfferOptimistic(offerId))
 
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
             setIsAccepting(false)
-            
+
         } catch (error) {
             console.error("Error rejecting offer:", error);
             alert('Failed to reject offer. Please try again.');
+            setIsRejecting(false);
         }
     };
 

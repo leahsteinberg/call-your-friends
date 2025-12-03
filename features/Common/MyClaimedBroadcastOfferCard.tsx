@@ -40,7 +40,7 @@ export default function MyClaimedBroadcastOfferCard({
             setIsAccepting(true);
             await acceptBroadcast({ userId, offerId }).unwrap();
             setIsAccepted(true);
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
         } catch (error) {
             console.error("Error accepting broadcast:", error);
             alert('Failed to accept broadcast. Please try again.');
@@ -53,7 +53,7 @@ export default function MyClaimedBroadcastOfferCard({
             setIsRejecting(true);
             await rejectBroadcast({ userId, offerId }).unwrap();
             dispatch(deleteOfferOptimistic(offerId));
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
         } catch (error) {
             console.error("Error canceling broadcast claim:", error);
             alert('Failed to cancel claim. Please try again.');

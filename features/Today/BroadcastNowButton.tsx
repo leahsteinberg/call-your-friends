@@ -7,7 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, w
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
 
-export default function BroadcastNowButton({refresh}: {refresh: () => void}): React.JSX.Element {
+export default function BroadcastNowButton(): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const isEnabled: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
@@ -56,6 +56,7 @@ export default function BroadcastNowButton({refresh}: {refresh: () => void}): Re
             dispatch(startBroadcast());
             try {
                 await broadcastNow({ userId });
+                // RTK Query will auto-refresh via cache invalidation
             } catch (error) {
                 console.error("Error broadcasting:", error);
                 dispatch(endBroadcast());
@@ -64,11 +65,11 @@ export default function BroadcastNowButton({refresh}: {refresh: () => void}): Re
             dispatch(endBroadcast());
             try {
                 await broadcastEnd({ userId });
+                // RTK Query will auto-refresh via cache invalidation
             } catch (error) {
                 console.error("Error ending broadcast:", error);
             }
         }
-        refresh();
     };
 
     return (

@@ -95,14 +95,18 @@ export default function TodayList(): React.JSX.Element {
         }
     };
 
+    // Provide estimated item height to prevent layout shifts
+    const getItemLayout = (_data: ArrayLike<TodayItem> | null | undefined, index: number) => ({
+        length: 150, // Estimated average height of cards
+        offset: 150 * index,
+        index,
+    });
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Today</Text>
-            <BroadcastNowButton
-                refresh={handleRefresh}
-            
-            />
+            <BroadcastNowButton />
             {todayItems.length === 0 ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
@@ -110,6 +114,7 @@ export default function TodayList(): React.JSX.Element {
                     data={todayItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
+                    getItemLayout={getItemLayout}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}

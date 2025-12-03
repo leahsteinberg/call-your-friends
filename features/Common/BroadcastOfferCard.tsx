@@ -74,7 +74,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             setIsAccepting(true);
             await acceptBroadcast({ userId, offerId }).unwrap();
             setIsAccepted(true);
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
         } catch (error) {
             console.error("Error accepting broadcast:", error);
             alert('Failed to accept broadcast. Please try again.');
@@ -87,7 +87,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             setIsRejecting(true);
             await rejectBroadcast({ userId, offerId }).unwrap();
             dispatch(deleteOfferOptimistic(offerId));
-            refresh();
+            // RTK Query will auto-refresh via cache invalidation
         } catch (error) {
             console.error("Error rejecting broadcast:", error);
             alert('Failed to reject broadcast. Please try again.');
