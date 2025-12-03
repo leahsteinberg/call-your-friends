@@ -2,12 +2,12 @@ import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/mee
 import { DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming, withSequence } from "react-native-reanimated";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
 
-export default function BroadcastNowButton({refresh}): React.JSX.Element {
+export default function BroadcastNowButton({refresh}: {refresh: () => void}): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const isEnabled: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
@@ -25,7 +25,7 @@ export default function BroadcastNowButton({refresh}): React.JSX.Element {
             glowOpacity.value = withRepeat(
                 withSequence(
                     withTiming(0.8, { duration: 1000 }),
-                    withTiming(0.3, { duration: 1000 })
+                    withTiming(0, { duration: 1000 })
                 ),
                 -1, // Repeat indefinitely
                 false
@@ -74,9 +74,6 @@ export default function BroadcastNowButton({refresh}): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Find someone to talk to now</Text>
-            {isEnabled && (
-                <ActivityIndicator color="#ff4444" style={styles.loader} />
-            )}
             <TouchableOpacity
                 onPress={handleToggle}
                 activeOpacity={0.7}
