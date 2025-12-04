@@ -1,8 +1,5 @@
-import FlowerBlob from '@/assets/images/flower-blob.svg';
-import StarPerson from '@/assets/images/star-person.svg';
-import HighFiveIcon from '@/components/HighFiveIcon';
+import HighFive from '@/assets/images/high-five.svg';
 import { CustomFonts } from "@/constants/theme";
-import { DARK_GREEN, ORANGE } from '@/styles/styles';
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -15,24 +12,7 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <StarPerson
-                width={200}
-                height={200}
-                fill={DARK_GREEN}
-                stroke={DARK_GREEN}
-            />
-            <FlowerBlob
-                width={150}
-                height={150}
-                fill={DARK_GREEN}
-            />
-            <HighFiveIcon
-                width={150}
-                height={135}
-                primaryColor={DARK_GREEN}
-                secondaryColor={ORANGE}
-                accentColor="#df583f"
-            />
+            <HighFive/>
             <Text style={styles.greetingText}>Hi, {userName}</Text>
             <TodayList />
             {Platform.OS === 'ios' &&

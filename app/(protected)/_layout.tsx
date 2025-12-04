@@ -1,8 +1,9 @@
+import FlowerBlob from "@/assets/images/flower-blob.svg";
 import StarPerson from "@/assets/images/star-person.svg";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { BRIGHT_BLUE, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
 import { Tabs } from "expo-router";
-import { Footprints, Sticker } from "lucide-react-native";
+import { Sticker } from "lucide-react-native";
 const ICON_SIZE = 33;
 
 const Layout = () => {
@@ -42,7 +43,11 @@ const Layout = () => {
                 options={{
                     headerShown: false,
                     title: "TODAY",
-                    tabBarIcon: ({ color }) => <Footprints  color={color} size={ICON_SIZE} />,
+                    tabBarIcon: ({ color }) => <FlowerBlob
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    fill={color}
+                />,
                     tabBarHideOnKeyboard: true,
                 }}
             />
