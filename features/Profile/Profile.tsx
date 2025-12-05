@@ -1,4 +1,3 @@
-import HighFive from '@/assets/images/high-five.svg';
 import { CustomFonts } from "@/constants/theme";
 import { RootState } from "@/types/redux";
 import React from "react";
@@ -12,7 +11,6 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <HighFive/>
             <Text style={styles.greetingText}>Hi, {userName}</Text>
             <TodayList />
             {Platform.OS === 'ios' &&

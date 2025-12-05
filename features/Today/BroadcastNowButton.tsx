@@ -1,11 +1,15 @@
+import BirdSoaring from '@/assets/images/bird-soaring.svg';
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
-import { DARK_GREEN } from "@/styles/styles";
+import { DARK_GREEN, ORANGE, PEACH } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Animated, { interpolateColor, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
+
+// Create an animated version of the SVG component
+const AnimatedBirdSoaring = Animated.createAnimatedComponent(BirdSoaring);
 
 export default function BroadcastNowButton(): React.JSX.Element {
     const dispatch = useDispatch();
@@ -18,6 +22,9 @@ export default function BroadcastNowButton(): React.JSX.Element {
     const glowOpacity = useSharedValue(0);
     const glowScale = useSharedValue(1);
 
+    // Animation value for color (0 = disabled color, 1 = enabled color)
+    const colorProgress = useSharedValue(0);
+
     // Start/stop glow animation based on isEnabled state
     useEffect(() => {
         if (isEnabled) {
@@ -28,7 +35,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
                     withTiming(0, { duration: 1000 })
                 ),
                 -1, // Repeat indefinitely
-                false
+                false// does not reverse
             );
             glowScale.value = withRepeat(
                 withSequence(
@@ -38,16 +45,31 @@ export default function BroadcastNowButton(): React.JSX.Element {
                 -1,
                 false
             );
+            // Animate color to enabled state - smooth back and forth
+            colorProgress.value = withRepeat(
+                withTiming(1, { duration: 1000 }),
+                -1,
+                true // reverse = true makes it go back and forth smoothly
+            );
         } else {
             // Reset to no glow when disabled
             glowOpacity.value = withTiming(0, { duration: 300 });
             glowScale.value = withTiming(1, { duration: 300 });
+            colorProgress.value = withTiming(0, { duration: 300 });
         }
     }, [isEnabled]);
 
     const animatedGlowStyle = useAnimatedStyle(() => ({
         opacity: glowOpacity.value,
         transform: [{ scale: glowScale.value }],
+    }));
+
+    const animatedBirdProps = useAnimatedProps(() => ({
+        color: interpolateColor(
+            colorProgress.value,
+            [0, 1],
+            [ORANGE, PEACH] // Smoothly transitions back and forth between ORANGE and PEACH
+        ),
     }));
 
     const handleToggle = async () => {
@@ -85,6 +107,9 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
                 {/* The actual button */}
                 <View style={[styles.button, isEnabled && styles.buttonActive]}>
+                    <AnimatedBirdSoaring
+                        animatedProps={animatedBirdProps}
+                    />
                     <Text style={[styles.buttonText, isEnabled && styles.buttonTextActive]}>
                         {isEnabled ? 'ON' : 'OFF'}
                     </Text>
@@ -123,8 +148,8 @@ const styles = StyleSheet.create({
         width: 70,
         height: 46,
         borderRadius: 23,
-        backgroundColor: '#ff4444',
-        shadowColor: '#ff0000',
+        backgroundColor: PEACH,
+        shadowColor: ORANGE,
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 1,
         shadowRadius: 15,
@@ -134,15 +159,15 @@ const styles = StyleSheet.create({
         width: 60,
         height: 36,
         borderRadius: 18,
-        backgroundColor: '#e0e0e0',
+        //backgroundColor: '#e0e0e0',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: '#999',
+        // borderWidth: 2,
+        // borderColor: '#999',
     },
     buttonActive: {
-        backgroundColor: '#ff4444',
-        borderColor: '#ff0000',
+        // backgroundColor: CREAM,
+        borderColor: PEACH,
     },
     buttonText: {
         fontSize: 14,
