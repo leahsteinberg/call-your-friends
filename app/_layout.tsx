@@ -54,6 +54,13 @@ export default function RootLayout() {
         'SantaAna': require('../assets/images/fonts/SantaAnaTRIAL-Medium.otf'),
         'Muirenn': require('../assets/images/fonts/Muirenn.otf'),
         'Mattone': require('../assets/images/fonts/Mattone-Regular.otf'),
+        'GC': require('../assets/images/fonts/GC-font.ttf'),
+        'ZTNature-bold': require('../assets/images/fonts/ZTNature-Bold.otf'),
+        'ZTNature-medium': require('../assets/images/fonts/ZTNature-Medium.otf'),
+        'ZTNature-regular': require('../assets/images/fonts/ZTNature-Regular.otf'),
+        'ZTNature-light': require('../assets/images/fonts/ZTNature-Light.otf'),
+        'ZTNature-lightitalic': require('../assets/images/fonts/ZTNature-LightItalic.otf'),
+        'ZTNature-extralight': require('../assets/images/fonts/ZTNature-ExtraLight.otf'),
 
     });
 

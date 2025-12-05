@@ -59,4 +59,16 @@ export const CustomFonts = {
   santaAna: 'SantaAna',
   muirenn: 'Muirenn',
   mattone: 'Mattone',
+  gc: 'GC',
+  ztnaturebold: 'ZTNature-bold',
+  ztnaturemedium: 'ZTNature-medium',
+  ztnatureregular: 'ZTNature-regular',
+  ztnaturelight: 'ZTNature-light',
+  ztnatureextralight: 'ZTNature-extralight',
+  ztnaturelightitalic: 'ZTNature-lightitalic',
+
+
+
+
+  perfectbarista: 'perfectbarista',
 } as const;

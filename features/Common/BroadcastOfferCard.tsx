@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, PEACH } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE, PEACH } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -182,13 +182,13 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             <View style={styles.nameContainer}>
             <FlowerBlob
                     style={{height: 30, width: 30}}
-                    fill={CORNFLOWER_BLUE}
+                    fill={PALE_BLUE}
                 />
-                <Text style={styles.nameText}>{getFromName()}</Text>
-                <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
-            <Text>Expires in: {offer.displayExpiresAt}</Text>
+               
+            {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
             </View>
-
+            <Text style={styles.nameText}>{getFromName()}</Text>
+            <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
             
                 {/* Show buttons if offer is open and not yet accepted */}
             {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
@@ -250,9 +250,9 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 14,
         fontWeight: '600',
-        color: BRIGHT_GREEN,
+        color: CREAM,
         marginBottom: 4,
-        fontFamily: CustomFonts.mattone,
+        fontFamily: CustomFonts.ztnatureregular,
     },
     nameContainer: {
         flexDirection: 'row',
@@ -264,7 +264,9 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: CORNFLOWER_BLUE,
         marginBottom: 4,
-        fontFamily: CustomFonts.mattone,
+        fontFamily: CustomFonts.ztnaturebold,
+
+        // fontFamily: CustomFonts.perfectbarista,
     },
     statusText: {
         fontSize: 14,

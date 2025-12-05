@@ -23,6 +23,6 @@ export const DARK_GREEN = "#646225";
 
 //// WARM TONES
 export const ORANGE = "#ea5831";
-export const PEACH = "#fcb091";
+export const PEACH = "#efadad";
 
 
