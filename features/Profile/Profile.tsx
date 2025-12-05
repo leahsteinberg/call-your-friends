@@ -35,11 +35,9 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 400,
         minWidth: 300,
-
         maxHeight: '100%',
         maxWidth: '100%',
         width: '100%',
-
         justifyContent: 'space-between',
         // overflow: 'scroll',
         flex: 1,
@@ -48,12 +46,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
+
     },
     flowerStyle: {
         position: 'absolute',
         zIndex: 0,
-        marginTop: -20,
-        marginLeft: -10,
+        marginTop: -10,
+        marginLeft: -4,
+        transform: [{ rotate: '15deg' }],
     },
     greetingText: {
         // fontSize: 20,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         color: CORNFLOWER_BLUE,
         //marginLeft: 80,
 
-        marginTop: 40,
+        marginTop: 37,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,

@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE, PEACH } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE, PEACH } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -179,16 +179,17 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             </View>
             {/* <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text> */}
             <View style={styles.nameContainer}>
-            <FlowerBlob
-                    style={{height: 30, width: 30}}
-                    fill={CORNFLOWER_BLUE}
-                />
-               
-            {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
+                <FlowerBlob
+                        style={styles.flower}
+                        fill={ORANGE}
+                    />
+                
+                {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
+                <Text style={styles.nameText}>{getFromName()}</Text>
             </View>
-            <Text style={styles.nameText}>{getFromName()}</Text>
-            <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
-            
+
+                <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
+
                 {/* Show buttons if offer is open and not yet accepted */}
             {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
                 <View style={styles.buttonContainer}>
@@ -218,6 +219,7 @@ const styles = StyleSheet.create({
         padding: 12,
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
+        overflow: 'visible',
         // borderWidth: 2,
         // borderColor: DARK_BEIGE,
 
@@ -258,11 +260,21 @@ const styles = StyleSheet.create({
         flex: 1,
 
     },
+    flower: {
+        height:65,
+        width: 65,
+        marginTop: -35,
+        marginLeft: -25,
+        position: 'absolute',
+        transform: [{ rotate: '240deg' }],
+
+    },
     nameText: {
         fontSize: 30,
         fontWeight: '600',
         color: CORNFLOWER_BLUE,
         marginBottom: 4,
+        marginLeft: 20,
         fontFamily: CustomFonts.ztnaturebold,
 
         // fontFamily: CustomFonts.perfectbarista,
