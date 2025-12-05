@@ -50,11 +50,6 @@ const InitialLayout = () => {
 export default function RootLayout() {
     const [fontsLoaded, fontError] = useFonts({
         'Catamaran': require('../assets/images/fonts/Catamaran.otf'),
-        'Clockwise': require('../assets/images/fonts/clockwise_light.otf'),
-        'SantaAna': require('../assets/images/fonts/SantaAnaTRIAL-Medium.otf'),
-        'Muirenn': require('../assets/images/fonts/Muirenn.otf'),
-        'Mattone': require('../assets/images/fonts/Mattone-Regular.otf'),
-        'GC': require('../assets/images/fonts/GC-font.ttf'),
         'ZTNature-bold': require('../assets/images/fonts/ZTNature-Bold.otf'),
         'ZTNature-medium': require('../assets/images/fonts/ZTNature-Medium.otf'),
         'ZTNature-regular': require('../assets/images/fonts/ZTNature-Regular.otf'),

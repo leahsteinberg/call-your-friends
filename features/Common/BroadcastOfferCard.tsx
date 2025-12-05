@@ -182,7 +182,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             <View style={styles.nameContainer}>
             <FlowerBlob
                     style={{height: 30, width: 30}}
-                    fill={PALE_BLUE}
+                    fill={CORNFLOWER_BLUE}
                 />
                
             {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        backgroundColor: PEACH,
+        backgroundColor: PALE_BLUE,
         // borderWidth: 2,
         // borderColor: DARK_BEIGE,
 
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 14,
         fontWeight: '600',
-        color: CREAM,
+        color: CORNFLOWER_BLUE,
         marginBottom: 4,
         fontFamily: CustomFonts.ztnatureregular,
     },
