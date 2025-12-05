@@ -24,6 +24,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
     // Animation value for color (0 = disabled color, 1 = enabled color)
     const colorProgress = useSharedValue(0);
+    const birdScale = useSharedValue(1);
 
     // Start/stop glow animation based on isEnabled state
     useEffect(() => {
@@ -51,10 +52,20 @@ export default function BroadcastNowButton(): React.JSX.Element {
                 -1,
                 true // reverse = true makes it go back and forth smoothly
             );
-        } else {
+
+            birdScale.value = withRepeat(
+                withSequence(
+                    withTiming(1.4, { duration: 1000 }),
+                    withTiming(1, { duration: 1000 })
+                ),
+                -1,
+                false
+            );        } else {
             // Reset to no glow when disabled
             glowOpacity.value = withTiming(0, { duration: 300 });
             glowScale.value = withTiming(1, { duration: 300 });
+            birdScale.value = withTiming(1, { duration: 300 });
+
             colorProgress.value = withTiming(0, { duration: 300 });
         }
     }, [isEnabled]);
@@ -70,6 +81,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
             [0, 1],
             [ORANGE, PEACH] // Smoothly transitions back and forth between ORANGE and PEACH
         ),
+        transform: [{ scale: birdScale.value }],
     }));
 
     const handleToggle = async () => {

@@ -1,7 +1,7 @@
 export const TAB_HEIGHT = 30;
 
 //// NEUTRALS
-export const CREAM = "#fdfaf1";
+export const CREAM = "#fefbea";
 export const LIGHT_BEIGE = "#fae2c0"
 export const DARK_BEIGE = "#ae6e17";
 export const BURGUNDY = "#390617"
