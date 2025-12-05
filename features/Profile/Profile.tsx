@@ -1,4 +1,6 @@
+import FlowersWithStem from '@/assets/images/flowers-with-stem.svg';
 import { CustomFonts } from "@/constants/theme";
+import { CORNFLOWER_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -11,7 +13,16 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.greetingText}>Hi, {userName}!</Text>
+            <View style={styles.headerContainer}>
+                <Text style={styles.greetingText}>Hi, {userName}</Text>
+                <FlowersWithStem
+                    style={styles.flowerStyle}
+                    fill={PALE_BLUE}
+                    height={150}
+                    width={150}
+                />
+            </View>
+
             <TodayList />
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
@@ -33,15 +44,29 @@ const styles = StyleSheet.create({
         // overflow: 'scroll',
         flex: 1,
     },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    flowerStyle: {
+        position: 'absolute',
+        zIndex: 0,
+        marginTop: -20,
+        marginLeft: -10,
+    },
     greetingText: {
         // fontSize: 20,
         // fontWeight: '600',
-        color: '#2D5016',
-        marginTop: 8,
+        color: CORNFLOWER_BLUE,
+        //marginLeft: 80,
+
+        marginTop: 40,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 30,
+        fontSize: 50,
         fontWeight: '600',
+        zIndex: 1,
     },
     component: {}
 });
