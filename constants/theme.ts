@@ -57,4 +57,6 @@ export const CustomFonts = {
   catamaran: 'Catamaran',
   clockwise: 'Clockwise',
   santaAna: 'SantaAna',
+  muirenn: 'Muirenn',
+  mattone: 'Mattone',
 } as const;

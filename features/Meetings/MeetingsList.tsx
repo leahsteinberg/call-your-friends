@@ -1,5 +1,9 @@
 import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
+import { RootState } from "@/types/redux";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
+import AcceptedBroadcastMeetingCard from "../Common/AcceptedBroadcastMeetingCard";
+import BroadcastMeetingCard from "../Common/BroadcastMeetingCard";
 import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
@@ -8,12 +12,23 @@ import { MeetingsListProps, ProcessedMeetingType } from "./types";
 
 
 export default function MeetingsList({ meetings, offers, refresh, refreshing }: MeetingsListProps) {
+    const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
     const meetingsListData = {
         title: "Chats Planned:",
         data: meetings,
-        renderItem: ({ item }: { item: ProcessedMeetingType }) =>
-            <MeetingCard meeting={item} />
+        renderItem: ({ item }: { item: ProcessedMeetingType }) => {
+            if (item.meetingType === 'BROADCAST') {
+                // Check if user created this broadcast or accepted it
+                const selfCreated = item.userFromId === userId;
+                if (selfCreated) {
+                    return <BroadcastMeetingCard meeting={item} />;
+                } else {
+                    return <AcceptedBroadcastMeetingCard meeting={item} />;
+                }
+            }
+            return <MeetingCard meeting={item} />;
+        }
     };
     const offersListData = {
         title: "Offers:",

@@ -52,6 +52,9 @@ export default function RootLayout() {
         'Catamaran': require('../assets/images/fonts/Catamaran.otf'),
         'Clockwise': require('../assets/images/fonts/clockwise_light.otf'),
         'SantaAna': require('../assets/images/fonts/SantaAnaTRIAL-Medium.otf'),
+        'Muirenn': require('../assets/images/fonts/Muirenn.otf'),
+        'Mattone': require('../assets/images/fonts/Mattone-Regular.otf'),
+
     });
 
     useEffect(() => {

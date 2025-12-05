@@ -11,7 +11,7 @@ export const CHOCOLATE_COLOR = "#500F0A"
 export const PALE_BLUE = "#b8d1ec";
 export const CLOUDY_SKY_COLOR = "#A9C1C9"
 export const MID_BLUE = "#4070c2";
-export const CORNFLOWER_BLUE = "#91bbec";
+export const CORNFLOWER_BLUE = "#2d76f7";
 export const BRIGHT_BLUE = "#60a2ee";
 export const DARK_BLUE = "#172741";
 

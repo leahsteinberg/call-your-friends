@@ -44,19 +44,22 @@ export const eventCardText = {
     broadcast_self_expired: {
         title: () => `Your broadcast created by youexpired.`,
     },
+    broadcast_other_open: {
+        title: (userName: string) => `Give ${userName} a call, they're free to talk.`,
+    },
     broadcast_other_accepted: {
-        title: (userName: string) => `Your broadcast created by ${userName} was accepted by you.`,
+        title: (userName: string) => `The broadcast created by ${userName} was accepted by you.`,
     },
     broadcast_other_pending: {
-        title: (userName: string) => `Your broadcast created by ${userName} is pending by you.`,
+        title: (userName: string) => `The broadcast created by ${userName} is pending by you.`,
     },
     broadcast_other_rejected: {
-        title: (userName: string) => `Your broadcast created by ${userName} was rejected by you.`,
+        title: (userName: string) => `The broadcast created by ${userName} was rejected by you.`,
     },
     broadcast_other_cancelled: {
-        title: (userName: string) => `Your broadcast created by ${userName} was cancelled by you.`,
+        title: (userName: string) => `The broadcast created by ${userName} was cancelled by you.`,
     },
     broadcast_other_expired: {
-        title: (userName: string) => `Your broadcast created by ${userName} was expired by you.`,
+        title: (userName: string) => `The broadcast created by ${userName} was expired by you.`,
     },
 } as Record<string, { title: (userName: string) => string }>;

@@ -1,13 +1,14 @@
-import { DEV_FLAG } from "@/environment";
+import FlowerBlob from "@/assets/images/flower-blob.svg";
+import { eventCardText } from "@/constants/event_card_strings";
+import { CustomFonts } from "@/constants/theme";
 import {
     useAcceptBroadcastMutation,
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, PEACH } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -168,30 +169,8 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
     // Default: UNCLAIMED state - render original TRY-ACCEPT flow
     return (
         <View style={styles.container}>
+
             <View style={styles.header}>
-                <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>BROADCAST</Text>
-                </View>
-
-                {/* Show buttons if offer is open and not yet accepted */}
-                {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
-                    <View style={styles.buttonContainer}>
-                        {!hasTried ? (
-                            <>
-                                {/* Initial state: TRY-ACCEPT + REJECT */}
-                                {renderTryAcceptButton()}
-                                {renderRejectButton('REJECT')}
-                            </>
-                        ) : (
-                            <>
-                                {/* After successful try: ACCEPT + CANCEL */}
-                                {renderAcceptButton()}
-                                {renderRejectButton('CANCEL')}
-                            </>
-                        )}
-                    </View>
-                )}
-
                 {/* Show "Accepted" label after successful acceptance */}
                 {isAccepted && (
                     <View style={styles.acceptedLabel}>
@@ -199,34 +178,57 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
                     </View>
                 )}
             </View>
-
-            <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
-
-            <Text style={styles.nameText}>from: {getFromName()}</Text>
-
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
+            {/* <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text> */}
+            <View style={styles.nameContainer}>
+            <FlowerBlob
+                    style={{height: 30, width: 30}}
+                    fill={CORNFLOWER_BLUE}
+                />
+                <Text style={styles.nameText}>{getFromName()}</Text>
+                <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
             <Text>Expires in: {offer.displayExpiresAt}</Text>
-            {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
-            )}
+            </View>
+
+            
+                {/* Show buttons if offer is open and not yet accepted */}
+            {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
+                <View style={styles.buttonContainer}>
+                    {!hasTried ? (
+                        <>
+                            {/* Initial state: TRY-ACCEPT + REJECT */}
+                            {renderTryAcceptButton()}
+                            {renderRejectButton('REJECT')}
+                        </>
+                    ) : (
+                        <>
+                            {/* After successful try: ACCEPT + CANCEL */}
+                            {renderAcceptButton()}
+                            {renderRejectButton('CANCEL')}
+                        </>
+                    )}
+                    </View>
+                )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CREAM,
+        // backgroundColor: CORNFLOWER_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        borderWidth: 2,
-        borderColor: DARK_BEIGE,
+        backgroundColor: PEACH,
+        // borderWidth: 2,
+        // borderColor: DARK_BEIGE,
+
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 8,
+        backgroundColor: PEACH,
     },
     typeIndicator: {
         backgroundColor: '#5a7d9a',
@@ -242,14 +244,27 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 16,
         fontWeight: '600',
-        color: BRIGHT_BLUE,
+        color: CREAM,
         marginBottom: 4,
     },
-    nameText: {
+    titleText: {
         fontSize: 14,
         fontWeight: '600',
-        color: ORANGE,
+        color: BRIGHT_GREEN,
         marginBottom: 4,
+        fontFamily: CustomFonts.mattone,
+    },
+    nameContainer: {
+        flexDirection: 'row',
+        flex: 1,
+
+    },
+    nameText: {
+        fontSize: 30,
+        fontWeight: '600',
+        color: CORNFLOWER_BLUE,
+        marginBottom: 4,
+        fontFamily: CustomFonts.mattone,
     },
     statusText: {
         fontSize: 14,
