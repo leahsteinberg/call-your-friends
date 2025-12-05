@@ -11,7 +11,7 @@ export default function Profile(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.greetingText}>Hi, {userName}</Text>
+            <Text style={styles.greetingText}>Hi, {userName}!</Text>
             <TodayList />
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         color: '#2D5016',
         marginTop: 8,
         marginHorizontal: 15,
-        fontFamily: CustomFonts.catamaran,
+        fontFamily: CustomFonts.ztnaturebold,
         fontSize: 30,
         fontWeight: '600',
     },

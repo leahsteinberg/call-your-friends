@@ -1,4 +1,5 @@
 import BirdSoaring from '@/assets/images/bird-soaring.svg';
+import { CustomFonts } from '@/constants/theme';
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { DARK_GREEN, ORANGE, PEACH } from "@/styles/styles";
 import { RootState } from "@/types/redux";
@@ -144,6 +145,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         flex: 1,
+        fontFamily: CustomFonts.ztnaturebold,
+
     },
     loader: {
         marginRight: 8,
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
         //backgroundColor: '#e0e0e0',
         justifyContent: 'center',
         alignItems: 'center',
+
         // borderWidth: 2,
         // borderColor: '#999',
     },
@@ -185,6 +189,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '700',
         color: '#666',
+        fontFamily: CustomFonts.ztnaturelight,
+
     },
     buttonTextActive: {
         color: '#fff',

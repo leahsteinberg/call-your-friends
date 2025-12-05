@@ -1,3 +1,4 @@
+import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { DARK_GREEN } from "@/styles/styles";
@@ -139,6 +140,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: DARK_GREEN,
         marginBottom: 12,
+        fontFamily: CustomFonts.ztnaturemedium,
+
     },
     listContent: {
         paddingBottom: 16,
