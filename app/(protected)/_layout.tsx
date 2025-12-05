@@ -1,10 +1,11 @@
 import FlowerBlob from "@/assets/images/flower-blob.svg";
+import HighFiveStar from "@/assets/images/high-five-star.svg";
 import StarPerson from "@/assets/images/star-person.svg";
+
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { BRIGHT_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
 import { Tabs } from "expo-router";
-import { Sticker } from "lucide-react-native";
 import { StyleSheet } from "react-native";
 const ICON_SIZE = 33;
 
@@ -27,7 +28,7 @@ const Layout = () => {
             tabBarLabelStyle: {
                 paddingTop: 10,
                 fontSize: 15,
-                fontFamily: CustomFonts.ztnaturebold,
+                fontFamily: CustomFonts.ztnatureregular,
             },
             headerShown: false,
           }}
@@ -50,11 +51,7 @@ const Layout = () => {
                 options={{
                     headerShown: false,
                     title: "TODAY",
-                    tabBarIcon: ({ color }) => <FlowerBlob
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    fill={color}
-                />,
+                    tabBarIcon: ({ color }) => <HighFiveStar fill={color}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />
@@ -62,7 +59,11 @@ const Layout = () => {
                 options={{
                     title: 'Home',
                     tabBarLabel: 'ME',
-                    tabBarIcon: ({ color }) => <Sticker  color={color} size={ICON_SIZE}/>, // Custom icon component
+                    tabBarIcon: ({ color }) => <FlowerBlob
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    fill={color}
+                />, // Custom icon component
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
                   }}
