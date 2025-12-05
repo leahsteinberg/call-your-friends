@@ -15,7 +15,6 @@ export default function WebDateTimePicker({ onDateTimeSelect, selectedDateTime }
     selectedDateTime ? selectedDateTime.toTimeString().slice(0, 5) : ''
   );
 
-  console.log("hi", selectedDate, selectedTime)
 
   const handleDateChange = (dateString: string) => {
     setSelectedDate(dateString);

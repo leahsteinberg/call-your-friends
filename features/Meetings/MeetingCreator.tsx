@@ -33,7 +33,7 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
         setDisplayDateString(displayString);
     };
 
-    const handleCreateMeeting = () => {
+    const handleCreateMeeting = async () => {
         if (!selectedDateTime) {
             alert('Please select a date and time first');
             return;
@@ -44,15 +44,15 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
         console.log("REGULAR create -", scheduledFor);
         try {
-            createMeeting({
+            await createMeeting({
                 userFromId: userId,
                 scheduledFor,
                 scheduledEnd: scheduledEnd.toISOString(),
-            });
-        } catch {
+            }).unwrap();
+        } catch (error) {
             console.error("Error creating meeting:", error);
             alert('Failed to create meeting. Please try again.');
-            
+
         }
     };
     
