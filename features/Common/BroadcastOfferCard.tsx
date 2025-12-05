@@ -14,7 +14,6 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
-import MyClaimedBroadcastOfferCard from "./MyClaimedBroadcastOfferCard";
 import OtherClaimedBroadcastOfferCard from "./OtherClaimedBroadcastOfferCard";
 
 interface BroadcastOfferCardProps {
@@ -159,7 +158,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
 
     // Render child components based on claim state
     if (isPendingClaimedBySelf || isClaimedBySelf) {
-        return <MyClaimedBroadcastOfferCard offer={offer} refresh={refresh} />;
+        return <SelfBroadcastCard offer={offer} refresh={refresh} />;
     }
 
     if (isPendingClaimedByOther || isClaimedByOther) {
