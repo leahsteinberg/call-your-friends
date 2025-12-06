@@ -124,7 +124,6 @@ export default function TodayList(): React.JSX.Element {
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
                 <FlatList
-                    style={{ overflow: 'visible' }}
                     data={todayItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
