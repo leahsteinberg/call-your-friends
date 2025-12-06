@@ -2,11 +2,11 @@ import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import AcceptedBroadcastMeetingCard from "../Common/AcceptedBroadcastMeetingCard";
-import BroadcastMeetingCard from "../Common/BroadcastMeetingCard";
-import MeetingCard from "../Common/MeetingCard";
-import OfferCard from "../Common/OfferCard";
-import BroadcastOfferCard from "../Common/OtherBroadcastCard";
+import AcceptedBroadcastMeetingCard from "../EventCards/AcceptedBroadcastMeetingCard";
+import BroadcastMeetingCard from "../EventCards/BroadcastMeetingCard";
+import MeetingCard from "../EventCards/MeetingCard";
+import OfferCard from "../EventCards/OfferCard";
+import OtherBroadcastCard from "../EventCards/OtherBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
 
@@ -35,7 +35,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         data: offers,
         renderItem: ({ item }: { item: ProcessedOfferType }) => {
             if (item.offerType === 'BROADCAST') {
-                return <BroadcastOfferCard offer={item} refresh={refresh} />;
+                return <OtherBroadcastCard offer={item} refresh={refresh} />;
             }
             return <OfferCard offer={item} refresh={refresh} />;
         }
