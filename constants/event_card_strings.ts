@@ -42,10 +42,10 @@ export const eventCardText = {
         title: () => `Your broadcast was cancelled by you.`,
     },
     broadcast_self_expired: {
-        title: () => `Your broadcast created by youexpired.`,
+        title: () => `Your broadcast created by you expired.`,
     },
     broadcast_other_open: {
-        title: (userName: string) => `Give ${userName} a call, they're free to talk.`,
+        title: (userName: string) => `Asking for phone calls now. Claim to call.`,
     },
     broadcast_other_accepted: {
         title: (userName: string) => `The broadcast created by ${userName} was accepted by you.`,

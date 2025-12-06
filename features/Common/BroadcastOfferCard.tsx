@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE, PEACH } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -123,7 +123,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             {isTryingAccept ? (
                 <ActivityIndicator size="small" color="green" />
             ) : (
-                <Text style={styles.acceptButtonText}>TRY-ACCEPT</Text>
+                <Text style={styles.acceptButtonText}>CLAIM CALL</Text>
             )}
         </TouchableOpacity>
     );
@@ -137,7 +137,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             {isAccepting ? (
                 <ActivityIndicator size="small" color="green" />
             ) : (
-                <Text style={styles.acceptButtonText}>ACCEPT</Text>
+                <Text style={styles.acceptButtonText}>CLAIMED. PRESS TO CALL</Text>
             )}
         </TouchableOpacity>
     );
@@ -168,7 +168,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
     // Default: UNCLAIMED state - render original TRY-ACCEPT flow
     return (
         <View style={styles.container}>
-
+            <View style={styles.content}>
             <View style={styles.header}>
                 {/* Show "Accepted" label after successful acceptance */}
                 {isAccepted && (
@@ -189,7 +189,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             </View>
 
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
-
+                </View>
                 {/* Show buttons if offer is open and not yet accepted */}
             {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
                 <View style={styles.buttonContainer}>
@@ -220,6 +220,8 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
         overflow: 'visible',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         // borderWidth: 2,
         // borderColor: DARK_BEIGE,
 
@@ -229,7 +231,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 8,
-        backgroundColor: PEACH,
     },
     typeIndicator: {
         backgroundColor: '#5a7d9a',
@@ -241,6 +242,10 @@ const styles = StyleSheet.create({
         color: CREAM,
         fontSize: 12,
         fontWeight: '600',
+    },
+    content: {
+        // backgroundColor: PEACH,
+        // flexDirection: 'row',
     },
     timeText: {
         fontSize: 16,
@@ -290,15 +295,16 @@ const styles = StyleSheet.create({
         fontFamily: 'monospace',
     },
     buttonContainer: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         gap: 8,
     },
     acceptButton: {
-        borderWidth: 1,
+        //borderWidth: 1,
         borderColor: BRIGHT_GREEN,
         borderRadius: 4,
+        backgroundColor: CREAM,
         paddingHorizontal: 10,
-        paddingVertical: 4,
+        paddingVertical: 10,
     },
     acceptButtonText: {
         color: BRIGHT_GREEN,

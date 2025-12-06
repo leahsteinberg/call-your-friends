@@ -3,7 +3,7 @@ import {
     useAcceptBroadcastMutation,
     useRejectBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
@@ -125,12 +125,13 @@ export default function MyClaimedBroadcastOfferCard({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CREAM,
+        backgroundColor: DARK_GREEN,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         borderWidth: 2,
         borderColor: DARK_BEIGE,
+
     },
     header: {
         flexDirection: 'row',
