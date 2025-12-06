@@ -1,6 +1,6 @@
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE, PEACH } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -123,7 +123,7 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CREAM,
+        backgroundColor: PEACH,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,

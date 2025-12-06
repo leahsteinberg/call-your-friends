@@ -3,7 +3,7 @@ import {
     useAcceptBroadcastMutation,
     useRejectBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHARTREUSE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
@@ -21,6 +21,7 @@ export default function SelfBroadcastCard({
     offer,
     refresh
 }: MyClaimedBroadcastOfferCardProps): React.JSX.Element {
+    console.log ("SELF BROADCAST CARD", offer);
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
@@ -62,14 +63,14 @@ export default function SelfBroadcastCard({
     };
 
     const getFromName = () => {
-        return offer.meeting?.userFrom?.name || 'Unknown';
+        return offer.meeting?.userFromId || 'Unknown';
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>BROADCAST</Text>
+                    <Text style={styles.typeText}>SELF BROADCAST CARD</Text>
                 </View>
 
                 {subState === 'PENDING_CLAIMED' && !isAccepted && (
@@ -125,7 +126,7 @@ export default function SelfBroadcastCard({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: DARK_GREEN,
+        backgroundColor: CHARTREUSE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,

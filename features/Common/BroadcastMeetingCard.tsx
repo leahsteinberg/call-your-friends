@@ -1,7 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { BRIGHT_GREEN, CREAM, DARK_GREEN } from "@/styles/styles";
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -101,7 +101,7 @@ export default function BroadcastMeetingCard({ meeting }: BroadcastMeetingCardPr
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: BRIGHT_GREEN,
+        backgroundColor: CORNFLOWER_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,

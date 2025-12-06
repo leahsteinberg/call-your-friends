@@ -1,7 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, ORANGE } from "@/styles/styles";
+import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -112,11 +112,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     <View style={styles.typeIndicator}>
                         <Text style={styles.typeText}>Meeting</Text>
                     </View>
-                    {meeting.meetingType === 'BROADCAST' && (
-                        <View style={styles.broadcastIndicator}>
-                            <Text style={styles.broadcastText}>BROADCAST</Text>
-                        </View>
-                    )}
                 </View>
 
                 {/* Show "Cancel Acceptance" for broadcast meetings not created by user */}
@@ -163,7 +158,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CREAM,
+        backgroundColor: LIGHT_BEIGE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,

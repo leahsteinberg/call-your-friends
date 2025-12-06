@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
 import OtherBroadcastCard from "../Common/OtherBroadcastCard";
+import SelfBroadcastCard from "../Common/SelfBroadcastCard";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
@@ -85,6 +86,19 @@ export default function TodayList(): React.JSX.Element {
 
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
+            const meeting = item.data as ProcessedMeetingType;
+            if (meeting.meetingType === 'BROADCAST') {
+                if (meeting.userFromId === userId) {
+                    return <SelfBroadcastCard offer={item.data as ProcessedOfferType}/>
+                } else {
+                    return <>ACCEPTED OTHER BROADCAST</>;
+
+                    // accepted broadcast card
+                }
+            
+            }
+            //item.data.
+            
             return <MeetingCard meeting={item.data as ProcessedMeetingType} />;
         } else {
             const offer = item.data as ProcessedOfferType;

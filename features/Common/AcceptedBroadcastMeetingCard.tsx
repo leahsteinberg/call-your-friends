@@ -92,7 +92,7 @@ export default function AcceptedBroadcastMeetingCard({ meeting }: AcceptedBroadc
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CREAM,
+        backgroundColor: ORANGE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
