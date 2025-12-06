@@ -110,7 +110,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>I'm free for a call</Text>
+            <Text style={styles.label}>Share you're open for calls</Text>
             <TouchableOpacity
                 onPress={handleToggle}
                 activeOpacity={0.7}
