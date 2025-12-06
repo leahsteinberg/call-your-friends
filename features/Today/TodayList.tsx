@@ -89,7 +89,7 @@ export default function TodayList(): React.JSX.Element {
             const meeting = item.data as ProcessedMeetingType;
             if (meeting.meetingType === 'BROADCAST') {
                 if (meeting.userFromId === userId) {
-                    return <SelfBroadcastCard offer={item.data as ProcessedOfferType}/>
+                    return <SelfBroadcastCard offer={item.data as ProcessedOfferType} refresh={handleRefresh}/>
                 } else {
                     return <>ACCEPTED OTHER BROADCAST</>;
 
@@ -124,6 +124,7 @@ export default function TodayList(): React.JSX.Element {
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
                 <FlatList
+                    style={{ overflow: 'visible' }}
                     data={todayItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
 
     },
     listContent: {
-        paddingBottom: 16,        
+        paddingBottom: 16,
     },
     emptyText: {
         fontSize: 16,
