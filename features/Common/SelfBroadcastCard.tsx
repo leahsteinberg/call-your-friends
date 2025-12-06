@@ -17,7 +17,7 @@ interface MyClaimedBroadcastOfferCardProps {
     refresh: () => void;
 }
 
-export default function MyClaimedBroadcastOfferCard({
+export default function SelfBroadcastCard({
     offer,
     refresh
 }: MyClaimedBroadcastOfferCardProps): React.JSX.Element {

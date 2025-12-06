@@ -1,11 +1,11 @@
-import FlowersWithStem from '@/assets/images/flowers-with-stem.svg';
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, PALE_BLUE } from "@/styles/styles";
+import { CORNFLOWER_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
+import BroadcastNowButton from '../Today/BroadcastNowButton';
 import TodayList from "../Today/TodayList";
 
 export default function Profile(): React.JSX.Element {
@@ -14,14 +14,18 @@ export default function Profile(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
+                <View>
                 <Text style={styles.greetingText}>Hi, {userName}</Text>
-                <FlowersWithStem
+                {/* <FlowersWithStem
                     style={styles.flowerStyle}
                     fill={PALE_BLUE}
                     height={150}
                     width={150}
-                />
+                /> */}
+                </View>
+                <BroadcastNowButton />
             </View>
+
 
             <TodayList />
             {Platform.OS === 'ios' &&
@@ -44,17 +48,19 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
+        //alignItems: 'center',
         marginBottom: 20,
 
+        justifyContent: 'space-between',
+
     },
-    flowerStyle: {
-        position: 'absolute',
-        zIndex: 0,
-        marginTop: -10,
-        marginLeft: -4,
-        transform: [{ rotate: '15deg' }],
-    },
+    // flowerStyle: {
+    //     position: 'absolute',
+    //     zIndex: 0,
+    //     marginTop: -10,
+    //     marginLeft: -4,
+    //     transform: [{ rotate: '15deg' }],
+    // },
     greetingText: {
         // fontSize: 20,
         // fontWeight: '600',

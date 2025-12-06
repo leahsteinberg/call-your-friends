@@ -61,7 +61,8 @@ export default function BroadcastNowButton(): React.JSX.Element {
                 ),
                 -1,
                 false
-            );        } else {
+            );
+        } else {
             // Reset to no glow when disabled
             glowOpacity.value = withTiming(0, { duration: 300 });
             glowScale.value = withTiming(1, { duration: 300 });
@@ -138,7 +139,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 8,
-        marginBottom: 16,
+        //marginBottom: 16,
+        marginTop: 16,
+        marginRight: 10,
+        marginBottom: 4,
+        // borderWidth: 3,
+        borderRadius: 10,
+        backgroundColor: PEACH,
     },
     label: {
         color: DARK_GREEN,

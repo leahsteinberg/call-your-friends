@@ -9,21 +9,24 @@ import {
 import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 import OtherClaimedBroadcastOfferCard from "./OtherClaimedBroadcastOfferCard";
+import SelfBroadcastCard from "./SelfBroadcastCard";
 
 interface BroadcastOfferCardProps {
     offer: ProcessedOfferType;
     refresh: () => void;
 }
 
-export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCardProps): React.JSX.Element {
+export default function OtherBroadcastCard({ offer, refresh }: BroadcastOfferCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const flowerRotation = useSharedValue(240);
 
     // Broadcast-specific mutations
     const [tryAcceptBroadcast] = useTryAcceptBroadcastMutation();
@@ -50,6 +53,23 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
     const isPendingClaimedByOther = subState === 'PENDING_CLAIMED' && offerClaimedId !== offerId;
     const isClaimedBySelf = subState === 'CLAIMED' && offerClaimedId === offerId;
     const isClaimedByOther = subState === 'CLAIMED' && offerClaimedId !== offerId;
+
+
+    const animatedFlowerStyle = useAnimatedStyle(() => ({
+        transform: [{rotate: `${flowerRotation.value}deg`}]
+    }));
+
+    useEffect(()=>{
+        flowerRotation.value = withRepeat(
+            withSequence(
+                withTiming(270, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
+                withTiming(240, { duration: 3000, easing: Easing.inOut(Easing.ease) })
+            ),
+            -1, // Repeat indefinitely
+            false
+        );
+    },
+    []);
 
     const handleTryAccept = async () => {
         try {
@@ -123,7 +143,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             {isTryingAccept ? (
                 <ActivityIndicator size="small" color="green" />
             ) : (
-                <Text style={styles.acceptButtonText}>CLAIM CALL</Text>
+                <Text style={styles.acceptButtonText}>Claim call</Text>
             )}
         </TouchableOpacity>
     );
@@ -137,7 +157,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             {isAccepting ? (
                 <ActivityIndicator size="small" color="green" />
             ) : (
-                <Text style={styles.acceptButtonText}>CLAIMED. PRESS TO CALL</Text>
+                <Text style={styles.acceptButtonText}>Call</Text>
             )}
         </TouchableOpacity>
     );
@@ -179,11 +199,12 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
             </View>
             {/* <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text> */}
             <View style={styles.nameContainer}>
-                <FlowerBlob
-                        style={styles.flower}
+                <Animated.View style={[styles.flower, animatedFlowerStyle]}>
+                    <FlowerBlob
                         fill={ORANGE}
                     />
-                
+                </Animated.View>
+
                 {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
                 <Text style={styles.nameText}>{getFromName()}</Text>
             </View>
@@ -197,7 +218,7 @@ export default function BroadcastOfferCard({ offer, refresh }: BroadcastOfferCar
                         <>
                             {/* Initial state: TRY-ACCEPT + REJECT */}
                             {renderTryAcceptButton()}
-                            {renderRejectButton('REJECT')}
+                            {/* {renderRejectButton('Ca')} */}
                         </>
                     ) : (
                         <>
@@ -222,8 +243,6 @@ const styles = StyleSheet.create({
         overflow: 'visible',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // borderWidth: 2,
-        // borderColor: DARK_BEIGE,
 
     },
     header: {
@@ -271,7 +290,7 @@ const styles = StyleSheet.create({
         marginTop: -35,
         marginLeft: -25,
         position: 'absolute',
-        transform: [{ rotate: '240deg' }],
+        //transform: [{ rotate: '240deg' }],
 
     },
     nameText: {

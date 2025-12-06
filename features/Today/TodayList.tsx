@@ -6,12 +6,11 @@ import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
+import OtherBroadcastCard from "../Common/OtherBroadcastCard";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
-import BroadcastNowButton from "./BroadcastNowButton";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
 function isToday(dateString: string): boolean {
@@ -90,7 +89,7 @@ export default function TodayList(): React.JSX.Element {
         } else {
             const offer = item.data as ProcessedOfferType;
             if (offer.offerType === 'BROADCAST') {
-                return <BroadcastOfferCard offer={offer} refresh={handleRefresh} />;
+                return <OtherBroadcastCard offer={offer} refresh={handleRefresh} />;
             }
             return <OfferCard offer={offer} refresh={handleRefresh} />;
         }
@@ -107,7 +106,6 @@ export default function TodayList(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Today</Text>
-            <BroadcastNowButton />
             {todayItems.length === 0 ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (

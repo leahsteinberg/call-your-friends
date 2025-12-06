@@ -4,9 +4,9 @@ import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-nativ
 import { useSelector } from "react-redux";
 import AcceptedBroadcastMeetingCard from "../Common/AcceptedBroadcastMeetingCard";
 import BroadcastMeetingCard from "../Common/BroadcastMeetingCard";
-import BroadcastOfferCard from "../Common/BroadcastOfferCard";
 import MeetingCard from "../Common/MeetingCard";
 import OfferCard from "../Common/OfferCard";
+import BroadcastOfferCard from "../Common/OtherBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
 
