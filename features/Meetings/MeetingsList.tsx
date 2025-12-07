@@ -4,9 +4,9 @@ import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-nativ
 import { useSelector } from "react-redux";
 import MeetingCard from "../EventCards/MeetingCard";
 import OfferCard from "../EventCards/OfferCard";
-import AcceptedBroadcastMeetingCard from "../EventCards/OtherMeetingBroadcastCard";
-import OtherBroadcastCard from "../EventCards/OtherOfferBroadcastCard";
-import BroadcastMeetingCard from "../EventCards/SelfBroadcastCard";
+import OtherMeetingBroadcastCard from "../EventCards/OtherMeetingBroadcastCard";
+import OtherOfferBroadcastCard from "../EventCards/OtherOfferBroadcastCard";
+import SelfBroadcastCard from "../EventCards/SelfBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
 
@@ -22,9 +22,9 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
                 // Check if user created this broadcast or accepted it
                 const selfCreated = item.userFromId === userId;
                 if (selfCreated) {
-                    return <BroadcastMeetingCard meeting={item} />;
+                    return <SelfBroadcastCard meeting={item} />;
                 } else {
-                    return <AcceptedBroadcastMeetingCard meeting={item} />;
+                    return <OtherMeetingBroadcastCard meeting={item} />;
                 }
             }
             return <MeetingCard meeting={item} />;
@@ -35,9 +35,9 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         data: offers,
         renderItem: ({ item }: { item: ProcessedOfferType }) => {
             if (item.offerType === 'BROADCAST') {
-                return <OtherBroadcastCard offer={item} refresh={refresh} />;
+                return <OtherOfferBroadcastCard offer={item} />;
             }
-            return <OfferCard offer={item} refresh={refresh} />;
+            return <OfferCard offer={item} />;
         }
     }
 
