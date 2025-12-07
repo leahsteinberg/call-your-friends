@@ -1,6 +1,7 @@
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE, PEACH } from "@/styles/styles";
+import { CustomFonts } from "@/constants/theme";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#999',
         marginTop: 4,
-        fontFamily: 'monospace',
+        fontFamily: CustomFonts.ztnaturelight,
     },
     buttonContainer: {
         flexDirection: 'row',

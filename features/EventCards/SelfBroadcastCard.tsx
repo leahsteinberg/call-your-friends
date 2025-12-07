@@ -2,6 +2,7 @@ import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { CustomFonts } from "@/constants/theme";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#666',
         marginTop: 4,
-        fontFamily: 'monospace',
+        fontFamily: CustomFonts.ztnaturelight,
     },
     deleteButton: {
         backgroundColor: DARK_GREEN,

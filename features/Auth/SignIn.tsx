@@ -1,3 +1,4 @@
+import { CustomFonts } from '@/constants/theme';
 import { usePostSignInMutation } from '@/services/authApi';
 import { BURGUNDY, CREAM } from '@/styles/styles';
 import { useState } from 'react';
@@ -84,7 +85,7 @@ export function SignIn()  {
         textAlign: 'center',
         margin: 20,
         fontWeight: 'bold',
-        fontFamily: Platform.OS === 'web' ? 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' : undefined,
+        fontFamily: CustomFonts.ztnaturebold,
     },
     component: {
         margin: 20,

@@ -1,3 +1,4 @@
+import { CustomFonts } from '@/constants/theme';
 import { useAcceptInviteSignInMutation, useAcceptInviteSignUpMutation, useUserByPhoneMutation } from '@/services/contactsApi';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -76,7 +77,7 @@ export default function InviteAccept() {
     if (!userToExists) {
         return (
             <View style={styles.container}>
-                <Text style={{fontFamily: 'Catamaran', fontSize: 30}}>
+                <Text style={{fontFamily: CustomFonts.ztnaturebold, fontSize: 30}}>
                     Call Your Friends - make a new account
                 </Text>
                 <PhoneNumberInput
@@ -103,7 +104,7 @@ export default function InviteAccept() {
     
     return (
         <View style={styles.container}>
-            <Text style={{fontFamily: 'Catamaran', fontSize: 30}}>
+            <Text style={{fontFamily: CustomFonts.ztnaturebold, fontSize: 30}}>
                 Call Your Friends.
             </Text>
             <PhoneNumberInput

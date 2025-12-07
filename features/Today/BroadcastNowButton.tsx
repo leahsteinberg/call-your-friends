@@ -56,71 +56,60 @@ export default function BroadcastNowButton(): React.JSX.Element {
     const [broadcastNow] = useBroadcastNowMutation();
     const [broadcastEnd] = useBroadcastEndMutation();
 
-    // Animation values for the glow effect
-    const glowOpacity = useSharedValue(0);
-    const glowScale = useSharedValue(1);
-
     // Animation value for color (0 = disabled color, 1 = enabled color)
     const colorProgress = useSharedValue(0);
     const birdScale = useSharedValue(1);
+    const buttonScale = useSharedValue(1);
 
-    // Start/stop glow animation based on isEnabled state
+    // Start/stop animations based on isEnabled state
     useEffect(() => {
         if (isEnabled) {
-            // Pulse animation for glow when enabled
-            glowOpacity.value = withRepeat(
+            // Animate color to enabled state
+            colorProgress.value = withTiming(1, { duration: 300 });
+
+            // Gentle pulse for the bird
+            birdScale.value = withRepeat(
                 withSequence(
-                    withTiming(0.8, { duration: 1000 }),
-                    withTiming(0, { duration: 1000 })
-                ),
-                -1, // Repeat indefinitely
-                false// does not reverse
-            );
-            glowScale.value = withRepeat(
-                withSequence(
-                    withTiming(1.1, { duration: 1000 }),
-                    withTiming(1, { duration: 1000 })
+                    withTiming(1.15, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+                    withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) })
                 ),
                 -1,
                 false
             );
-            // Animate color to enabled state - smooth back and forth
-            colorProgress.value = withRepeat(
-                withTiming(1, { duration: 1000 }),
-                -1,
-                true // reverse = true makes it go back and forth smoothly
-            );
 
-            birdScale.value = withRepeat(
+            // Subtle button pulse
+            buttonScale.value = withRepeat(
                 withSequence(
-                    withTiming(1.4, { duration: 1000 }),
-                    withTiming(1, { duration: 1000 })
+                    withTiming(1.05, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+                    withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) })
                 ),
                 -1,
                 false
             );
         } else {
-            // Reset to no glow when disabled
-            glowOpacity.value = withTiming(0, { duration: 300 });
-            glowScale.value = withTiming(1, { duration: 300 });
-            birdScale.value = withTiming(1, { duration: 300 });
-
+            // Reset to disabled state
             colorProgress.value = withTiming(0, { duration: 300 });
+            birdScale.value = withTiming(1, { duration: 300 });
+            buttonScale.value = withTiming(1, { duration: 300 });
         }
     }, [isEnabled]);
-
-    const animatedGlowStyle = useAnimatedStyle(() => ({
-        opacity: glowOpacity.value,
-        transform: [{ scale: glowScale.value }],
-    }));
 
     const animatedBirdProps = useAnimatedProps(() => ({
         color: interpolateColor(
             colorProgress.value,
             [0, 1],
-            [ORANGE, PEACH] // Smoothly transitions back and forth between ORANGE and PEACH
+            ['#999', ORANGE] // Gray when OFF, ORANGE when ON
         ),
         transform: [{ scale: birdScale.value }],
+    }));
+
+    const animatedButtonStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: buttonScale.value }],
+        backgroundColor: interpolateColor(
+            colorProgress.value,
+            [0, 1],
+            ['#e0e0e0', PEACH] // Gray when OFF, PEACH when ON
+        ),
     }));
 
     const handleToggle = async () => {
@@ -153,18 +142,24 @@ export default function BroadcastNowButton(): React.JSX.Element {
                 activeOpacity={0.7}
                 style={styles.buttonContainer}
             >
-                {/* Animated glow effect behind the button */}
-                <Animated.View style={[styles.glow, animatedGlowStyle]} />
+                {/* Broadcasting ripple waves (only visible when enabled) */}
+                {isEnabled && (
+                    <>
+                        <BroadcastRipple delay={0} />
+                        <BroadcastRipple delay={400} />
+                        <BroadcastRipple delay={800} />
+                    </>
+                )}
 
                 {/* The actual button */}
-                <View style={[styles.button, isEnabled && styles.buttonActive]}>
+                <Animated.View style={[styles.button, animatedButtonStyle]}>
                     <AnimatedBirdSoaring
                         animatedProps={animatedBirdProps}
                     />
                     <Text style={[styles.buttonText, isEnabled && styles.buttonTextActive]}>
                         {isEnabled ? 'ON' : 'OFF'}
                     </Text>
-                </View>
+                </Animated.View>
             </TouchableOpacity>
         </View>
     );
@@ -176,11 +171,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 8,
-        //marginBottom: 16,
         marginTop: 16,
         marginRight: 10,
         marginBottom: 4,
-        // borderWidth: 3,
         borderRadius: 10,
         backgroundColor: PEACH,
     },
@@ -190,10 +183,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         flex: 1,
         fontFamily: CustomFonts.ztnaturebold,
-
-    },
-    loader: {
-        marginRight: 8,
     },
     buttonContainer: {
         position: 'relative',
@@ -201,42 +190,37 @@ const styles = StyleSheet.create({
         height: 36,
         justifyContent: 'center',
         alignItems: 'center',
+        overflow: 'visible', // Allow ripples to extend beyond
     },
-    glow: {
+    ripple: {
         position: 'absolute',
-        width: 70,
-        height: 46,
-        borderRadius: 23,
-        backgroundColor: PEACH,
-        shadowColor: ORANGE,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 1,
-        shadowRadius: 15,
-        elevation: 10,
+        width: 60,
+        height: 36,
+        borderRadius: 18,
+        borderWidth: 2,
+        borderColor: ORANGE,
+        backgroundColor: 'transparent',
     },
     button: {
         width: 60,
         height: 36,
         borderRadius: 18,
-        //backgroundColor: '#e0e0e0',
         justifyContent: 'center',
         alignItems: 'center',
-
-        // borderWidth: 2,
-        // borderColor: '#999',
-    },
-    buttonActive: {
-        // backgroundColor: CREAM,
-        borderColor: PEACH,
+        shadowColor: ORANGE,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 3,
     },
     buttonText: {
         fontSize: 14,
         fontWeight: '700',
         color: '#666',
         fontFamily: CustomFonts.ztnaturelight,
-
     },
     buttonTextActive: {
-        color: '#fff',
+        color: DARK_GREEN,
+        fontWeight: '800',
     },
 });

@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#999',
         marginTop: 4,
-        fontFamily: 'monospace',
+        fontFamily: CustomFonts.ztnaturelight,
     },
     buttonContainer: {
         // flexDirection: 'row',

@@ -2,6 +2,7 @@ import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
+import { CustomFonts } from "@/constants/theme";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         color: '#999',
         marginTop: 4,
-        fontFamily: 'monospace',
+        fontFamily: CustomFonts.ztnaturelight,
     },
     deleteButton: {
         borderWidth: 1,

@@ -36,6 +36,9 @@ export function selectMeetingCard(
 
         if (selfCreated) {
             // Self-created broadcast (all states)
+            if (meeting.meetingState === 'PAST') {
+                return <></>;
+            }
             return <SelfBroadcastCard meeting={meeting} />
         } else {
             // Other's broadcast that user accepted
