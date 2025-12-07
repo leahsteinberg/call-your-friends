@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     },
     nameContainer: {
         flexDirection: 'row',
-        flex: 1,
+        //flex: 1,
 
     },
     flower: {

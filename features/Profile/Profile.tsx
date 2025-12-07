@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE } from "@/styles/styles";
+import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import BroadcastNowButton from '../Today/BroadcastNowButton';
 import TodayList from "../Today/TodayList";
+const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
 export default function Profile(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
@@ -25,8 +26,6 @@ export default function Profile(): React.JSX.Element {
                 </View>
                 <BroadcastNowButton />
             </View>
-
-
             <TodayList />
             {Platform.OS === 'ios' &&
                 <SuggestedWalkBySteps/>
@@ -43,36 +42,37 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '100%',
         justifyContent: 'space-between',
-        // overflow: 'scroll',
+        //overflow: 'scroll',
+        
         flex: 1,
     },
     headerContainer: {
         flexDirection: 'row',
         //alignItems: 'center',
-        marginBottom: 20,
-
+        //marginBottom: 20,
+        zIndex: 99, // Sit above the scrolling TodayList
+        position: 'relative', // Create stacking context
+        backgroundColor: CREAM, // Opaque background to hide content underneath
+        paddingBottom: 8, // Extra padding so background extends
+        // paddingTop: -safePadding,
         justifyContent: 'space-between',
 
     },
-    // flowerStyle: {
-    //     position: 'absolute',
-    //     zIndex: 0,
-    //     marginTop: -10,
-    //     marginLeft: -4,
-    //     transform: [{ rotate: '15deg' }],
-    // },
+
     greetingText: {
         // fontSize: 20,
         // fontWeight: '600',
         color: CORNFLOWER_BLUE,
         //marginLeft: 80,
 
-        marginTop: 37,
+        paddingTop: 37,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
         fontWeight: '600',
-        zIndex: 1,
+        //zIndex: 1,
     },
-    component: {}
+    component: {
+
+    }
 });

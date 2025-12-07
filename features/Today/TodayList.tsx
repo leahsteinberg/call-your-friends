@@ -1,7 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
-import { DARK_GREEN } from "@/styles/styles";
+import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
@@ -146,15 +146,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginHorizontal: 15,
-        marginVertical: 8,
+        //marginVertical: 8,
 
     },
     headerText: {
         fontSize: 24,
         fontWeight: 'bold',
         color: DARK_GREEN,
-        marginBottom: 12,
+        //marginBottom: 12,
         fontFamily: CustomFonts.ztnaturemedium,
+        position: 'relative', // Create stacking context
+        zIndex: 100, // High z-index to sit above FlatList
+        backgroundColor: CREAM, // Opaque background to hide content underneath
+        paddingBottom: 4, // Extra padding so background extends a bit
 
     },
     listContent: {

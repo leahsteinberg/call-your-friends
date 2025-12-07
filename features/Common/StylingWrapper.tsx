@@ -12,6 +12,7 @@ export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({childre
 
     return (
         <View style={styles.container}>
+          <View style={styles.padding}/>
            {children}
         </View>
     )
@@ -21,9 +22,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: CREAM, 
-    paddingTop: safePadding,
-    
+    //alignItems: 'center',
+
+    //paddingTop: safePadding,
+  },
+  padding: {
+    minHeight: safePadding,
+    //paddingVertical: safePadding,
+    zIndex: 100, // Sit above the scrolling TodayList
+    //position: 'relative', // Create stacking context
+    backgroundColor: CREAM, // Opaque background to hide content underneath
+
   },
 });
