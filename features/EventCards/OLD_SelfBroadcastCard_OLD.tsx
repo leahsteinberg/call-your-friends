@@ -1,107 +1,112 @@
 import { DEV_FLAG } from "@/environment";
-import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE, PEACH } from "@/styles/styles";
-import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
+import {
+    useAcceptBroadcastMutation,
+    useRejectBroadcastMutation
+} from "@/services/offersApi";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHARTREUSE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
+import { ProcessedMeetingType } from "../Meetings/types";
 import type { ProcessedOfferType } from "../Offers/types";
 
-interface OfferCardProps {
-    offer: ProcessedOfferType;
+interface MyClaimedBroadcastOfferCardProps {
+    offer?: ProcessedOfferType;
+    meeting?: ProcessedMeetingType;
+    refresh?: () => void;
 }
 
-export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX.Element {
+export default function SelfBroadcastCard_OLD({
+    offer,
+    meeting,
+    refresh
+}: MyClaimedBroadcastOfferCardProps): React.JSX.Element {
+    console.log ("SELF BROADCAST CARD", offer);
     const dispatch = useDispatch();
-    console.log(offer)
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [acceptOffer] = useAcceptOfferMutation();
-    const [rejectOffer] = useRejectOfferMutation();
+
+    const [acceptBroadcast] = useAcceptBroadcastMutation();
+    const [rejectBroadcast] = useRejectBroadcastMutation();
+
+    const [isAccepted, setIsAccepted] = useState(false);
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
 
-
     const offerId = offer.id;
+    const broadcastMetadata = offer.meeting?.broadcastMetadata;
+    const subState = broadcastMetadata?.subState;
 
-    const handleAcceptOffer = async () => {
+    const handleAccept = async () => {
         try {
-            setIsAccepting(true)
-            await acceptOffer({ userId, offerId });
+            setIsAccepting(true);
+            await acceptBroadcast({ userId, offerId }).unwrap();
+            setIsAccepted(true);
             // RTK Query will auto-refresh via cache invalidation
-            setIsRejecting(false)
-
         } catch (error) {
-            console.error("Error accepting offer:", error);
-            alert('Failed to accept offer. Please try again.');
+            console.error("Error accepting broadcast:", error);
+            alert('Failed to accept broadcast. Please try again.');
             setIsAccepting(false);
         }
     };
 
-    const handleRejectOffer = async () => {
+    const handleCancel = async () => {
         try {
             setIsRejecting(true);
-            await rejectOffer({ userId, offerId }).unwrap();
-            dispatch(deleteOfferOptimistic(offerId))
-
+            await rejectBroadcast({ userId, offerId }).unwrap();
+            dispatch(deleteOfferOptimistic(offerId));
             // RTK Query will auto-refresh via cache invalidation
-            setIsAccepting(false)
-
         } catch (error) {
-            console.error("Error rejecting offer:", error);
-            alert('Failed to reject offer. Please try again.');
+            console.error("Error canceling broadcast claim:", error);
+            alert('Failed to cancel claim. Please try again.');
             setIsRejecting(false);
         }
     };
 
-    // Get the name from the offer
     const getFromName = () => {
-        return offer.meeting?.userFrom?.name || 'Unknown';
-    };
-
-    const getStatusText = () => {
-        switch (offer.offerState) {
-            case OPEN_OFFER_STATE:
-                return 'Open';
-            case ACCEPTED_OFFER_STATE:
-                return 'Accepted';
-            case REJECTED_OFFER_STATE:
-                return 'Rejected';
-            default:
-                return offer.offerState;
-        }
+        return offer.meeting?.userFromId || 'Unknown';
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>Offer</Text>
+                    <Text style={styles.typeText}>SELF BROADCAST CARD</Text>
                 </View>
-                {offer.offerState === OPEN_OFFER_STATE && (
+
+                {subState === 'PENDING_CLAIMED' && !isAccepted && (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
-                            onPress={handleAcceptOffer}
+                            onPress={handleAccept}
                             style={styles.acceptButton}
+                            disabled={isAccepting}
                         >
-                        {isAccepting ? (
-                            <ActivityIndicator size="small" color="green" />
+                            {isAccepting ? (
+                                <ActivityIndicator size="small" color="green" />
                             ) : (
-                                <Text style={styles.acceptButtonText}>Accept</Text>
-                        )}
+                                <Text style={styles.acceptButtonText}>ACCEPT</Text>
+                            )}
                         </TouchableOpacity>
+
                         <TouchableOpacity
-                            onPress={handleRejectOffer}
+                            onPress={handleCancel}
                             style={styles.rejectButton}
+                            disabled={isRejecting}
                         >
-                        {isRejecting ? (
-                            <ActivityIndicator size="small" color="red" />
+                            {isRejecting ? (
+                                <ActivityIndicator size="small" color="red" />
                             ) : (
-                                <Text style={styles.rejectButtonText}>Reject</Text>
-                        )}
+                                <Text style={styles.rejectButtonText}>CANCEL</Text>
+                            )}
                         </TouchableOpacity>
+                    </View>
+                )}
+
+                {(subState === 'CLAIMED' || isAccepted) && (
+                    <View style={styles.acceptedLabel}>
+                        <Text style={styles.acceptedText}>Accepted</Text>
                     </View>
                 )}
             </View>
@@ -110,7 +115,10 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
             <Text style={styles.nameText}>from: {getFromName()}</Text>
 
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
+            <Text style={styles.statusText}>
+                {subState === 'PENDING_CLAIMED' ? 'Pending your acceptance' : 'You claimed this broadcast'}
+            </Text>
+
             <Text>Expires in: {offer.displayExpiresAt}</Text>
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
@@ -121,12 +129,13 @@ export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: PEACH,
+        backgroundColor: CHARTREUSE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         borderWidth: 2,
         borderColor: DARK_BEIGE,
+
     },
     header: {
         flexDirection: 'row',
@@ -160,6 +169,7 @@ const styles = StyleSheet.create({
     statusText: {
         fontSize: 14,
         color: '#666',
+        marginBottom: 4,
     },
     debugText: {
         fontSize: 10,
@@ -192,6 +202,17 @@ const styles = StyleSheet.create({
     },
     rejectButtonText: {
         color: 'red',
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    acceptedLabel: {
+        backgroundColor: BRIGHT_GREEN,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 4,
+    },
+    acceptedText: {
+        color: CREAM,
         fontSize: 12,
         fontWeight: '600',
     },

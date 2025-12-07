@@ -15,15 +15,12 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSeq
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
-import OtherClaimedBroadcastOfferCard from "./OtherClaimedBroadcastOfferCard";
-import SelfBroadcastCard from "./SelfBroadcastCard";
 
-interface BroadcastOfferCardProps {
+interface OtherOfferBroadcastCardProps {
     offer: ProcessedOfferType;
-    refresh: () => void;
 }
 
-export default function OtherBroadcastCard({ offer, refresh }: BroadcastOfferCardProps): React.JSX.Element {
+export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const flowerRotation = useSharedValue(240);
@@ -176,14 +173,14 @@ export default function OtherBroadcastCard({ offer, refresh }: BroadcastOfferCar
         </TouchableOpacity>
     );
 
-    // Render child components based on claim state
-    if (isPendingClaimedBySelf || isClaimedBySelf) {
-        return <SelfBroadcastCard offer={offer} refresh={refresh} />;
-    }
+    // // Render child components based on claim state
+    // if (isPendingClaimedBySelf || isClaimedBySelf) {
+    //     return <SelfBroadcastCard offer={offer} refresh={refresh} />;
+    // }
 
-    if (isPendingClaimedByOther || isClaimedByOther) {
-        return <OtherClaimedBroadcastOfferCard offer={offer} />;
-    }
+    // if (isPendingClaimedByOther || isClaimedByOther) {
+    //     return <OtherClaimedBroadcastOfferCard offer={offer} />;
+    // }
 
     // Default: UNCLAIMED state - render original TRY-ACCEPT flow
     return (

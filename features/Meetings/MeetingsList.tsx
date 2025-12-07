@@ -2,11 +2,11 @@ import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import AcceptedBroadcastMeetingCard from "../EventCards/AcceptedBroadcastMeetingCard";
-import BroadcastMeetingCard from "../EventCards/BroadcastMeetingCard";
 import MeetingCard from "../EventCards/MeetingCard";
 import OfferCard from "../EventCards/OfferCard";
-import OtherBroadcastCard from "../EventCards/OtherBroadcastCard";
+import AcceptedBroadcastMeetingCard from "../EventCards/OtherMeetingBroadcastCard";
+import OtherBroadcastCard from "../EventCards/OtherOfferBroadcastCard";
+import BroadcastMeetingCard from "../EventCards/SelfBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
 

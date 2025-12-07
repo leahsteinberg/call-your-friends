@@ -6,10 +6,7 @@ import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import MeetingCard from "../EventCards/MeetingCard";
-import OfferCard from "../EventCards/OfferCard";
-import OtherBroadcastCard from "../EventCards/OtherBroadcastCard";
-import SelfBroadcastCard from "../EventCards/SelfBroadcastCard";
+import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
@@ -82,30 +79,13 @@ export default function TodayList(): React.JSX.Element {
         setRefreshing(false);
     };
 
-    //const loading = meetingsLoading || offersLoading;
-
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
-            if (meeting.meetingType === 'BROADCAST') {
-                if (meeting.userFromId === userId) {
-                    return <SelfBroadcastCard offer={item.data as ProcessedOfferType} refresh={handleRefresh}/>
-                } else {
-                    return <>ACCEPTED OTHER BROADCAST</>;
-
-                    // accepted broadcast card
-                }
-            
-            }
-            //item.data.
-            
-            return <MeetingCard meeting={item.data as ProcessedMeetingType} />;
+            return selectMeetingCard(meeting, {userId, refresh: handleRefresh})
         } else {
             const offer = item.data as ProcessedOfferType;
-            if (offer.offerType === 'BROADCAST') {
-                return <OtherBroadcastCard offer={offer} refresh={handleRefresh} />;
-            }
-            return <OfferCard offer={offer} refresh={handleRefresh} />;
+            return selectOfferCard(offer, {refresh: handleRefresh});
         }
     };
 

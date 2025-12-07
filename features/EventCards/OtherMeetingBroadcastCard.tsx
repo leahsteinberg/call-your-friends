@@ -1,54 +1,45 @@
+// TO BE DELETED (but ask before you delete it)
+
+
 import { DEV_FLAG } from "@/environment";
-import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
+import { BRIGHT_BLUE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
+import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
-interface BroadcastMeetingCardProps {
+interface OtherMeetingBroadcastCardProps {
     meeting: ProcessedMeetingType;
 }
 
-// Card for self-created broadcast meetings
-export default function BroadcastMeetingCard({ meeting }: BroadcastMeetingCardProps): React.JSX.Element {
+// Card for broadcast meetings that the user accepted (not created)
+export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [deleteMeeting] = useDeleteMeetingMutation();
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
+    const [isCanceling, setIsCanceling] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
 
-    // Get the name to display
-    const getNameDisplay = () => {
-        if (meeting.acceptedUser) {
-            const name = meeting.acceptedUser?.name;
-            return name ? `Matched with: ${name}` : 'Matched!';
-        }
-        return 'Searching for someone to talk...';
-    };
-
-    const handleDeleteMeeting = async () => {
+    const handleCancelBroadcastAcceptance = async () => {
         try {
-            setIsDeleting(true);
-            await deleteMeeting({
+            setIsCanceling(true);
+            await cancelBroadcastAcceptance({
                 meetingId: meeting.id,
                 userId
             }).unwrap();
 
-            // Remove from Redux after successful deletion
+            // Remove from Redux after successful cancellation
             dispatch(deleteMeetingOptimistic(meeting.id));
-
-            // Turn off the broadcast toggle
-            dispatch(endBroadcast());
         } catch (error) {
-            console.error("Error deleting broadcast meeting:", error);
-            alert('Failed to delete broadcast. Please try again.');
-            setIsDeleting(false);
+            console.error("Error canceling broadcast acceptance:", error);
+            alert('Failed to cancel acceptance. Please try again.');
+            setIsCanceling(false);
         }
     };
 
@@ -67,29 +58,32 @@ export default function BroadcastMeetingCard({ meeting }: BroadcastMeetingCardPr
         }
     };
 
-    const nameDisplay = getNameDisplay();
+    const getFromName = () => {
+        return meeting.userFrom?.name || 'Unknown';
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>📡 YOUR BROADCAST</Text>
+                    <Text style={styles.typeText}>📡 ACCEPTED BROADCAST-- TO BE DEPRECATED!!!!</Text>
                 </View>
 
                 <TouchableOpacity
-                    onPress={handleDeleteMeeting}
-                    style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                    disabled={isDeleting}
+                    onPress={handleCancelBroadcastAcceptance}
+                    style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
+                    disabled={isCanceling}
                 >
-                    {isDeleting ? (
-                        <ActivityIndicator size="small" color="#fff" />
+                    {isCanceling ? (
+                        <ActivityIndicator size="small" color="orange" />
                     ) : (
-                        <Text style={styles.deleteButtonText}>End</Text>
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.nameText}>{nameDisplay}</Text>
+            <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
+            <Text style={styles.nameText}>with: {getFromName()}</Text>
             <Text style={styles.statusText}>Status: {getStatusText()}</Text>
 
             {DEV_FLAG && (
@@ -101,12 +95,12 @@ export default function BroadcastMeetingCard({ meeting }: BroadcastMeetingCardPr
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CORNFLOWER_BLUE,
+        backgroundColor: ORANGE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         borderWidth: 2,
-        borderColor: DARK_GREEN,
+        borderColor: DARK_BEIGE,
     },
     header: {
         flexDirection: 'row',
@@ -115,7 +109,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     typeIndicator: {
-        backgroundColor: DARK_GREEN,
+        backgroundColor: '#5a7d9a',
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
@@ -125,35 +119,42 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
     },
-    nameText: {
+    timeText: {
         fontSize: 16,
         fontWeight: '600',
-        color: DARK_GREEN,
+        color: BRIGHT_BLUE,
+        marginBottom: 4,
+    },
+    nameText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: ORANGE,
         marginBottom: 4,
     },
     statusText: {
         fontSize: 14,
-        color: DARK_GREEN,
+        color: '#666',
     },
     debugText: {
         fontSize: 10,
-        color: '#666',
+        color: '#999',
         marginTop: 4,
         fontFamily: 'monospace',
     },
-    deleteButton: {
-        backgroundColor: DARK_GREEN,
+    cancelButton: {
+        borderWidth: 1,
+        borderColor: ORANGE,
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
         minWidth: 50,
-        alignItems: 'center',
+        alignItems: 'center'
     },
-    deleteButtonDisabled: {
+    cancelButtonDisabled: {
         opacity: 0.6,
     },
-    deleteButtonText: {
-        color: CREAM,
+    cancelButtonText: {
+        color: ORANGE,
         fontSize: 12,
         fontWeight: '600',
     },

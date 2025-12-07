@@ -1,3 +1,6 @@
+// TO BE DELETED (but ask before you delete it)
+
+
 import { DEV_FLAG } from "@/environment";
 import { BRIGHT_BLUE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -5,13 +8,13 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { ProcessedOfferType } from "../Offers/types";
 
-interface OtherClaimedBroadcastOfferCardProps {
+interface OtherMeetingBroadcastCardProps {
     offer: ProcessedOfferType;
 }
 
-export default function OtherClaimedBroadcastOfferCard({
+export default function OLD_OtherMeetingBroadcastCard({
     offer
-}: OtherClaimedBroadcastOfferCardProps): React.JSX.Element {
+}: OtherMeetingBroadcastCardProps): React.JSX.Element {
     const broadcastMetadata = offer.meeting?.broadcastMetadata;
     const subState = broadcastMetadata?.subState;
 

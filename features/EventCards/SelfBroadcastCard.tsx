@@ -1,124 +1,99 @@
 import { DEV_FLAG } from "@/environment";
-import {
-    useAcceptBroadcastMutation,
-    useRejectBroadcastMutation
-} from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CHARTREUSE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
+import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
+import { useDeleteMeetingMutation } from "@/services/meetingApi";
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
-import type { ProcessedOfferType } from "../Offers/types";
+import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
-interface MyClaimedBroadcastOfferCardProps {
-    offer: ProcessedOfferType;
-    refresh: () => void;
+interface SelfBroadcastCardProps {
+    meeting: ProcessedMeetingType;
 }
 
-export default function SelfBroadcastCard({
-    offer,
-    refresh
-}: MyClaimedBroadcastOfferCardProps): React.JSX.Element {
-    console.log ("SELF BROADCAST CARD", offer);
+// Card for self-created broadcast meetings
+export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const [deleteMeeting] = useDeleteMeetingMutation();
+    const [isDeleting, setIsDeleting] = useState(false);
 
-    const [acceptBroadcast] = useAcceptBroadcastMutation();
-    const [rejectBroadcast] = useRejectBroadcastMutation();
+    const meetingState: MeetingState = meeting.meetingState;
 
-    const [isAccepted, setIsAccepted] = useState(false);
-    const [isAccepting, setIsAccepting] = useState(false);
-    const [isRejecting, setIsRejecting] = useState(false);
+    // Get the name to display
+    const getNameDisplay = () => {
+        if (meeting.acceptedUser) {
+            const name = meeting.acceptedUser?.name;
+            return name ? `Matched with: ${name}` : 'Matched!';
+        }
+        return 'Searching for someone to talk...';
+    };
 
-    const offerId = offer.id;
-    const broadcastMetadata = offer.meeting?.broadcastMetadata;
-    const subState = broadcastMetadata?.subState;
-
-    const handleAccept = async () => {
+    const handleDeleteMeeting = async () => {
         try {
-            setIsAccepting(true);
-            await acceptBroadcast({ userId, offerId }).unwrap();
-            setIsAccepted(true);
-            // RTK Query will auto-refresh via cache invalidation
+            setIsDeleting(true);
+            await deleteMeeting({
+                meetingId: meeting.id,
+                userId
+            }).unwrap();
+
+            // Remove from Redux after successful deletion
+            dispatch(deleteMeetingOptimistic(meeting.id));
+
+            // Turn off the broadcast toggle
+            dispatch(endBroadcast());
         } catch (error) {
-            console.error("Error accepting broadcast:", error);
-            alert('Failed to accept broadcast. Please try again.');
-            setIsAccepting(false);
+            console.error("Error deleting broadcast meeting:", error);
+            alert('Failed to delete broadcast. Please try again.');
+            setIsDeleting(false);
         }
     };
 
-    const handleCancel = async () => {
-        try {
-            setIsRejecting(true);
-            await rejectBroadcast({ userId, offerId }).unwrap();
-            dispatch(deleteOfferOptimistic(offerId));
-            // RTK Query will auto-refresh via cache invalidation
-        } catch (error) {
-            console.error("Error canceling broadcast claim:", error);
-            alert('Failed to cancel claim. Please try again.');
-            setIsRejecting(false);
+    const getStatusText = () => {
+        switch (meetingState) {
+            case SEARCHING_MEETING_STATE:
+                return 'Searching';
+            case ACCEPTED_MEETING_STATE:
+                return 'Confirmed';
+            case REJECTED_MEETING_STATE:
+                return 'Rejected';
+            case PAST_MEETING_STATE:
+                return 'Past';
+            default:
+                return meetingState;
         }
     };
 
-    const getFromName = () => {
-        return offer.meeting?.userFromId || 'Unknown';
-    };
+    const nameDisplay = getNameDisplay();
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>SELF BROADCAST CARD</Text>
+                    <Text style={styles.typeText}>📡 YOUR BROADCAST</Text>
                 </View>
 
-                {subState === 'PENDING_CLAIMED' && !isAccepted && (
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={handleAccept}
-                            style={styles.acceptButton}
-                            disabled={isAccepting}
-                        >
-                            {isAccepting ? (
-                                <ActivityIndicator size="small" color="green" />
-                            ) : (
-                                <Text style={styles.acceptButtonText}>ACCEPT</Text>
-                            )}
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={handleCancel}
-                            style={styles.rejectButton}
-                            disabled={isRejecting}
-                        >
-                            {isRejecting ? (
-                                <ActivityIndicator size="small" color="red" />
-                            ) : (
-                                <Text style={styles.rejectButtonText}>CANCEL</Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                )}
-
-                {(subState === 'CLAIMED' || isAccepted) && (
-                    <View style={styles.acceptedLabel}>
-                        <Text style={styles.acceptedText}>Accepted</Text>
-                    </View>
-                )}
+                <TouchableOpacity
+                    onPress={handleDeleteMeeting}
+                    style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
+                    disabled={isDeleting}
+                >
+                    {isDeleting ? (
+                        <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                        <Text style={styles.deleteButtonText}>End</Text>
+                    )}
+                </TouchableOpacity>
             </View>
 
-            <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
+            <Text style={styles.nameText}>{nameDisplay}</Text>
+            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
 
-            <Text style={styles.nameText}>from: {getFromName()}</Text>
-
-            <Text style={styles.statusText}>
-                {subState === 'PENDING_CLAIMED' ? 'Pending your acceptance' : 'You claimed this broadcast'}
-            </Text>
-
-            <Text>Expires in: {offer.displayExpiresAt}</Text>
             {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
+                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
             )}
         </View>
     );
@@ -126,13 +101,12 @@ export default function SelfBroadcastCard({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CHARTREUSE,
+        backgroundColor: CORNFLOWER_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         borderWidth: 2,
-        borderColor: DARK_BEIGE,
-
+        borderColor: DARK_GREEN,
     },
     header: {
         flexDirection: 'row',
@@ -141,7 +115,7 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     typeIndicator: {
-        backgroundColor: '#5a7d9a',
+        backgroundColor: DARK_GREEN,
         paddingHorizontal: 8,
         paddingVertical: 4,
         borderRadius: 4,
@@ -151,64 +125,34 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
     },
-    timeText: {
+    nameText: {
         fontSize: 16,
         fontWeight: '600',
-        color: BRIGHT_BLUE,
-        marginBottom: 4,
-    },
-    nameText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: ORANGE,
+        color: DARK_GREEN,
         marginBottom: 4,
     },
     statusText: {
         fontSize: 14,
-        color: '#666',
-        marginBottom: 4,
+        color: DARK_GREEN,
     },
     debugText: {
         fontSize: 10,
-        color: '#999',
+        color: '#666',
         marginTop: 4,
         fontFamily: 'monospace',
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        gap: 8,
-    },
-    acceptButton: {
-        borderWidth: 1,
-        borderColor: BRIGHT_GREEN,
+    deleteButton: {
+        backgroundColor: DARK_GREEN,
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
+        minWidth: 50,
+        alignItems: 'center',
     },
-    acceptButtonText: {
-        color: BRIGHT_GREEN,
-        fontSize: 12,
-        fontWeight: '600',
+    deleteButtonDisabled: {
+        opacity: 0.6,
     },
-    rejectButton: {
-        borderWidth: 1,
-        borderColor: 'red',
-        borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-    },
-    rejectButtonText: {
-        color: 'red',
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    acceptedLabel: {
-        backgroundColor: BRIGHT_GREEN,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 4,
-    },
-    acceptedText: {
+    deleteButtonText: {
         color: CREAM,
         fontSize: 12,
         fontWeight: '600',
