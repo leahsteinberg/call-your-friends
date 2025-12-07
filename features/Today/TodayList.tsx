@@ -4,7 +4,7 @@ import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import MeetingCard from "../EventCards/MeetingCard";
 import OfferCard from "../EventCards/OfferCard";
@@ -124,7 +124,7 @@ export default function TodayList(): React.JSX.Element {
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
                 <FlatList
-                    style={{ overflow: 'visible' }}
+                    style={Platform.OS !== 'web' ? { overflow: 'visible' } : undefined}
                     data={todayItems}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
@@ -135,7 +135,10 @@ export default function TodayList(): React.JSX.Element {
                             onRefresh={handleRefresh}
                         />
                     }
-                    contentContainerStyle={styles.listContent}
+                    contentContainerStyle={[
+                        styles.listContent,
+                        Platform.OS === 'web' && { paddingLeft: 11 }
+                    ]}
                 />
             )}
         </View>
