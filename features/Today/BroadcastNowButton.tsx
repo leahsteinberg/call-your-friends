@@ -5,12 +5,49 @@ import { DARK_GREEN, ORANGE, PEACH } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, { interpolateColor, useAnimatedProps, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Animated, { Easing, interpolateColor, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
 
 // Create an animated version of the SVG component
 const AnimatedBirdSoaring = Animated.createAnimatedComponent(BirdSoaring);
+
+// Broadcasting ripple component
+const BroadcastRipple = ({ delay = 0 }: { delay?: number }) => {
+    const scale = useSharedValue(0);
+    const opacity = useSharedValue(0);
+
+    useEffect(() => {
+        scale.value = withDelay(
+            delay,
+            withRepeat(
+                withTiming(2.5, { duration: 2000, easing: Easing.out(Easing.quad) }),
+                -1,
+                false
+            )
+        );
+        opacity.value = withDelay(
+            delay,
+            withRepeat(
+                withSequence(
+                    withTiming(0.6, { duration: 200 }),
+                    withTiming(0, { duration: 1800, easing: Easing.out(Easing.quad) })
+                ),
+                -1,
+                false
+            )
+        );
+    }, []);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+        opacity: opacity.value,
+    }));
+
+    return (
+        <Animated.View style={[styles.ripple, animatedStyle]} />
+    );
+};
 
 export default function BroadcastNowButton(): React.JSX.Element {
     const dispatch = useDispatch();
