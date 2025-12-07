@@ -14,7 +14,7 @@ interface OfferCardProps {
     offer: ProcessedOfferType;
 }
 
-export default function OfferCard({ offer, refresh }: OfferCardProps): React.JSX.Element {
+export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     console.log(offer)
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
