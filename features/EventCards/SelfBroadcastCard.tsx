@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -73,9 +73,9 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={styles.typeIndicator}>
+                {/* <View style={styles.typeIndicator}>
                     <Text style={styles.typeText}>YOUR BROADCAST</Text>
-                </View>
+                </View> */}
 
                 <TouchableOpacity
                     onPress={handleDeleteMeeting}
@@ -91,7 +91,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </View>
 
             <Text style={styles.nameText}>{nameDisplay}</Text>
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -102,39 +101,32 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CORNFLOWER_BLUE,
+        backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        borderWidth: 2,
-        borderColor: DARK_GREEN,
+        //borderWidth: 2,
+        //borderColor: DARK_GREEN,
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         marginBottom: 8,
-    },
-    typeIndicator: {
-        backgroundColor: DARK_GREEN,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturebold,
     },
     nameText: {
         fontSize: 16,
         fontWeight: '600',
         color: DARK_GREEN,
         marginBottom: 4,
+        fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
         fontSize: 14,
         color: DARK_GREEN,
+        fontFamily: CustomFonts.ztnaturelight,
+
     },
     debugText: {
         fontSize: 10,
@@ -149,6 +141,7 @@ const styles = StyleSheet.create({
         paddingVertical: 4,
         minWidth: 50,
         alignItems: 'center',
+
     },
     deleteButtonDisabled: {
         opacity: 0.6,
@@ -157,5 +150,7 @@ const styles = StyleSheet.create({
         color: CREAM,
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
+
     },
 });
