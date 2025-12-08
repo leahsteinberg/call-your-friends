@@ -1,8 +1,8 @@
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
 import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
-import { CustomFonts } from "@/constants/theme";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -74,7 +74,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>📡 YOUR BROADCAST</Text>
+                    <Text style={styles.typeText}>YOUR BROADCAST</Text>
                 </View>
 
                 <TouchableOpacity

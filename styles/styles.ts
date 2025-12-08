@@ -8,7 +8,7 @@ export const BURGUNDY = "#390617"
 export const CHOCOLATE_COLOR = "#500F0A"
 
 //// BLUES
-export const PALE_BLUE = "#b8d1ec";
+export const PALE_BLUE = "#c8e1f5";
 export const CLOUDY_SKY_COLOR = "#A9C1C9"
 export const MID_BLUE = "#4070c2";
 export const CORNFLOWER_BLUE = "#2d76f7";
@@ -22,7 +22,7 @@ export const BRIGHT_GREEN = "#afaf29";
 export const DARK_GREEN = "#646225";
 
 //// WARM TONES
-export const ORANGE = "#ea5831";
+export const ORANGE = "#ff8c78";
 export const PEACH = "#efadad";
 
 
