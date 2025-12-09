@@ -4,8 +4,8 @@ import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
+import BroadcastNowButton from '../Broadcast/BroadcastNowButton';
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
-import BroadcastNowButton from '../Today/BroadcastNowButton';
 import TodayList from "../Today/TodayList";
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
 

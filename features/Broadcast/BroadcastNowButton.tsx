@@ -7,7 +7,8 @@ import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Easing, interpolateColor, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
-import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
+import { endBroadcast, startBroadcast } from "./broadcastSlice";
+import BroadcastToggle from './BroadcastToggle';
 
 // Create an animated version of the SVG component
 const AnimatedBirdSoaring = Animated.createAnimatedComponent(BirdSoaring);
@@ -136,6 +137,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
+            <BroadcastToggle/>
             <Text style={styles.label}>Share you're open for calls</Text>
             <TouchableOpacity
                 onPress={handleToggle}
