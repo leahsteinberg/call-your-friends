@@ -1,16 +1,16 @@
 import { CORNFLOWER_BLUE, PALE_BLUE } from '@/styles/styles';
 import React from 'react';
 import {
-    Pressable,
-    SafeAreaView,
-    StyleSheet
+  Pressable,
+  SafeAreaView,
+  StyleSheet
 } from 'react-native';
 import Animated, {
-    interpolate,
-    interpolateColor,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming
 } from 'react-native-reanimated';
 
 const Switch = ({
@@ -22,6 +22,7 @@ const Switch = ({
 }) => {
   const height = useSharedValue(0);
   const width = useSharedValue(0);
+
 
   const trackAnimatedStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
@@ -37,6 +38,20 @@ const Switch = ({
     };
   });
 
+  const sizeAnimatedStyle = useAnimatedStyle(() => {
+    const size = interpolate(
+        Number(value.value), 
+        [0, 1],
+        [30, width.value - height.value]
+    );
+    const sizeValue = withTiming(size, {duration})
+
+    return {
+        width: sizeValue,
+        height: sizeValue,
+    }
+  })
+
   const thumbAnimatedStyle = useAnimatedStyle(() => {
     const moveValue = interpolate(
       Number(value.value),
@@ -47,7 +62,7 @@ const Switch = ({
 
     return {
       transform: [{ translateX: translateValue }],
-      borderRadius: height.value / 3,
+      borderRadius: height.value / 2,
     };
   });
 
@@ -60,7 +75,7 @@ const Switch = ({
         }}
         style={[switchStyles.track, style, trackAnimatedStyle]}>
         <Animated.View
-          style={[switchStyles.thumb, thumbAnimatedStyle]}/>
+          style={[switchStyles.thumb, thumbAnimatedStyle, sizeAnimatedStyle]}/>
       </Animated.View>
     </Pressable>
   );
