@@ -119,14 +119,15 @@ const switchStyles = StyleSheet.create({
   },
 });
 
-export default function BroadcastDot(): React.JSX.Element {
-    const isOn = useSharedValue(0);
+export default function BroadcastDot({onPress, isEnabled}): React.JSX.Element {
+    const isOn = useSharedValue(isEnabled ? 1 : 0);
 
   const handlePress = () => {
     isOn.value = withTiming(
         isOn.value === 0 ? 1 : 0,
         { duration: 800, easing: Easing.in(Easing.elastic(1.5))}
     );
+    onPress();
   };
 
   return (

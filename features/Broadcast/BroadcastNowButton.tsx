@@ -4,7 +4,7 @@ import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/mee
 import { DARK_GREEN, ORANGE, PEACH } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, { Easing, interpolateColor, useAnimatedProps, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import BroadcastDot from './BroadcastDot';
@@ -137,32 +137,29 @@ export default function BroadcastNowButton(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <BroadcastDot/>
+            <BroadcastDot
+                onPress={handleToggle}
+                isEnabled={isEnabled}
+            />
             <Text style={styles.label}>Share you're open for calls</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 onPress={handleToggle}
                 activeOpacity={0.7}
                 style={styles.buttonContainer}
-            >
+            > */}
                 {/* Broadcasting ripple waves (only visible when enabled) */}
-                {isEnabled && (
-                    <>
-                        <BroadcastRipple delay={0} />
-                        <BroadcastRipple delay={400} />
-                        <BroadcastRipple delay={800} />
-                    </>
-                )}
+
 
                 {/* The actual button */}
-                <Animated.View style={[styles.button, animatedButtonStyle]}>
+                {/* <Animated.View style={[styles.button, animatedButtonStyle]}>
                     <AnimatedBirdSoaring
                         animatedProps={animatedBirdProps}
                     />
                     <Text style={[styles.buttonText, isEnabled && styles.buttonTextActive]}>
                         {isEnabled ? 'ON' : 'OFF'}
                     </Text>
-                </Animated.View>
-            </TouchableOpacity>
+                </Animated.View> */}
+            {/* </TouchableOpacity> */}
         </View>
     );
 }
