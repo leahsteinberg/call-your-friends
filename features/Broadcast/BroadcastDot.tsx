@@ -1,5 +1,5 @@
 import { CORNFLOWER_BLUE, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -9,8 +9,11 @@ import Animated, {
     Easing,
     interpolate,
     interpolateColor,
+    useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
+    withRepeat,
+    withSequence,
     withTiming
 } from 'react-native-reanimated';
 
@@ -18,9 +21,28 @@ const Switch = ({
   value,
   onPress,
 }) => {
-  const height = useSharedValue(100);
-  const width = useSharedValue(40);
+  const pulseScale = useSharedValue(1);
 
+  // Watch the value and start/stop pulse animation
+  useAnimatedReaction(
+    () => value.value,
+    (current) => {
+      if (current === 1) {
+        // Start pulsing when ON
+        pulseScale.value = withRepeat(
+          withSequence(
+            withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+            withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+          ),
+          -1, // Repeat indefinitely
+          false
+        );
+      } else {
+        // Stop pulsing when OFF
+        pulseScale.value = withTiming(1, { duration: 300 });
+      }
+    }
+  );
 
 const colorAnimatedStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
@@ -36,21 +58,25 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
 
 
   const sizeAnimatedStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
+    // Base scale from toggle (0.3 to 1)
+    const baseScale = interpolate(
         value.value,
         [0, 1],
-        [0.3, 1]  // Scale from 30% to 100%
+        [0.3, 1]
     );
-    //const scaleValue = withTiming(scale, {easing: Easing.in(Easing.bounce)})
+
+    // Combine base scale with pulse (multiply them)
+    const finalScale = baseScale * pulseScale.value;
+
     const color = interpolateColor(
         value.value,
         [0, 1],
         [PALE_BLUE, CORNFLOWER_BLUE]
-      );
-    return {
-        transform: [{ scale }],
-        backgroundColor: color,
+    );
 
+    return {
+        transform: [{ scale: finalScale }],
+        backgroundColor: color,
     };
   });
 
@@ -79,7 +105,7 @@ export default function BroadcastDot(): React.JSX.Element {
   const handlePress = () => {
     isOn.value = withTiming(
         isOn.value === 0 ? 1 : 0,
-        { duration: 800, easing: Easing.in(Easing.elastic(1))}
+        { duration: 800, easing: Easing.in(Easing.elastic(1.5))}
     );
   };
 

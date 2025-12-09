@@ -23,6 +23,8 @@ const Switch = ({
   const height = useSharedValue(0);
   const width = useSharedValue(0);
 
+  
+
 
   const trackAnimatedStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
