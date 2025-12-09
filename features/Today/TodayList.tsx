@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     },
     listContent: {
         paddingBottom: 16,
+        paddingTop: 9,
     },
     emptyText: {
         fontSize: 16,
