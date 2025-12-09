@@ -1,5 +1,5 @@
-import { CORNFLOWER_BLUE, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
-import React, { useEffect } from 'react';
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
+import React from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -12,6 +12,7 @@ import Animated, {
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
+    withDelay,
     withRepeat,
     withSequence,
     withTiming
@@ -22,6 +23,7 @@ const Switch = ({
   onPress,
 }) => {
   const pulseScale = useSharedValue(1);
+  const pulseColor = useSharedValue(1);
 
   // Watch the value and start/stop pulse animation
   useAnimatedReaction(
@@ -37,9 +39,19 @@ const Switch = ({
           -1, // Repeat indefinitely
           false
         );
+        pulseColor.value = withDelay(1000, withRepeat(
+          withSequence(
+            withTiming(0, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+            withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
+          ),
+          -1, // Repeat indefinitely
+          false
+        ));
+
       } else {
         // Stop pulsing when OFF
         pulseScale.value = withTiming(1, { duration: 300 });
+        pulseColor.value = withTiming(1, { duration: 300 });
       }
     }
   );
@@ -48,7 +60,7 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
     const color = interpolateColor(
         value.value,
         [0, 1],
-        [PALE_BLUE, CORNFLOWER_BLUE]
+        [CREAM, CORNFLOWER_BLUE]
       );
     const colorValue = withTiming(color, {duration: 100, });
     return {
@@ -68,11 +80,19 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
     // Combine base scale with pulse (multiply them)
     const finalScale = baseScale * pulseScale.value;
 
-    const color = interpolateColor(
-        value.value,
-        [0, 1],
-        [PALE_BLUE, CORNFLOWER_BLUE]
-    );
+    // Color transitions smoothly, then pulses when fully ON
+    // Only use pulse color after it has started animating (moved away from initial value of 1)
+    const color = value.value > 0.99 && pulseColor.value < 0.95
+      ? interpolateColor(
+          pulseColor.value,
+          [0, 1],
+          [PALE_BLUE, CORNFLOWER_BLUE]
+        )
+      : interpolateColor(
+          value.value,
+          [0, 1],
+          [PALE_BLUE, CORNFLOWER_BLUE]
+        );
 
     return {
         transform: [{ scale: finalScale }],

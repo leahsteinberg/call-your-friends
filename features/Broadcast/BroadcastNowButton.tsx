@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginBottom: 4,
         borderRadius: 10,
-        backgroundColor: PEACH,
+        // backgroundColor: PEACH,
     },
     label: {
         color: DARK_GREEN,
