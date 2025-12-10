@@ -1,8 +1,10 @@
-import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
+import { CustomFonts } from '@/constants/theme';
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE, PEACH } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import {
     Pressable,
     StyleSheet,
+    Text,
     View
 } from 'react-native';
 import Animated, {
@@ -110,28 +112,35 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
   return (
     <View style={styles.container}>
         <Pressable onPress={onPress}>
-            <Animated.View
-          style={[styles.thumb, sizeAnimatedStyle]}/>
-        {isEnabled ?
-            <View
-            
-            /> 
-            : 
-                <View
-                />
-        }
-      {/* <Switch isEnabled={isEnabled} onPress={onPress}  /> */}
-      </Pressable>
-
+            <View style={styles.dotContainer}>
+                <Animated.View
+                    style={[styles.thumb, sizeAnimatedStyle]}/>
+            </View>
+            <View >
+                {isEnabled ?
+                    <View>
+                        <Text style={styles.label}>OPEN FOR CALLS.</Text>
+                    </View>
+                    : 
+                    <View>
+                        <Text style={styles.label}>TAP TO BE OPEN FOR CALLS.</Text>
+                    </View>
+                }
+            </View>
+        </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: LIGHT_BEIGE,
+  },
+    dotContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: PEACH,
   },
   thumb: {
     minHeight: 60,
@@ -140,5 +149,10 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     backgroundColor: DARK_GREEN,
     borderRadius: 50,
+  },
+  label: {
+    fontFamily: CustomFonts.ztnaturebold,
+    maxWidth: 100,
+    
   },
 });

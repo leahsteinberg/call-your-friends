@@ -15,7 +15,6 @@ export default function BroadcastNowButton(): React.JSX.Element {
     const isEnabled: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
     const [broadcastNow] = useBroadcastNowMutation();
     const [broadcastEnd] = useBroadcastEndMutation();
-    console.log("is Enabled----", isEnabled);
     const handleToggle = async () => {
         const newValue = !isEnabled;
         if (newValue) {
