@@ -1,11 +1,12 @@
 import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { meetingApi } from "./meetingApi";
 
 export const offerApi = createApi({
     reducerPath: 'offerApi',
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
     // Register 'Offer' as a tag type for this API
-    tagTypes: ['Offer'],
+    tagTypes: ['Offer', 'Meeting'],
     endpoints: (builder) => ({
         // Convert to query so it can cache and provide tags
         getOffers: builder.query({
@@ -50,6 +51,16 @@ export const offerApi = createApi({
                 body: { userId, offerId },
             }),
             invalidatesTags: ['Offer'],
+            // Manually invalidate the Meeting tag in the separate meetingApi
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    // After successful mutation, invalidate Meeting tag in meetingApi
+                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
+                } catch (error) {
+                    // Handle error if needed
+                }
+            },
         }),
         rejectBroadcast: builder.mutation({
             query: ({ userId, offerId }) => ({
@@ -73,11 +84,8 @@ const {
 } = offerApi;
 
 export {
-    useAcceptOfferMutation,
-    useGetOffersQuery,
-    useRejectOfferMutation,
-    useTryAcceptBroadcastMutation,
-    useAcceptBroadcastMutation,
-    useRejectBroadcastMutation
+    useAcceptBroadcastMutation, useAcceptOfferMutation,
+    useGetOffersQuery, useRejectBroadcastMutation, useRejectOfferMutation,
+    useTryAcceptBroadcastMutation
 };
 
