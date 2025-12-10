@@ -40,12 +40,9 @@ export default function BroadcastNowButton(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <BroadcastDot
-                style={styles.dot}
                 onPress={handleToggle}
                 isEnabled={isEnabled}
             />
-            {/* <Text style={styles.label}>OPEN FOR CALLS</Text> */}
-
         </View>
     );
 }
@@ -71,10 +68,4 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         fontFamily: CustomFonts.ztnaturebold,
     },
-    dot: {
-        position: 'absolute',
-        zIndex: -1,
-
-
-    }
 });
