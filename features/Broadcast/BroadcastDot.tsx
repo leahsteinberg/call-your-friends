@@ -1,5 +1,5 @@
 import { CustomFonts } from '@/constants/theme';
-import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE, PEACH } from '@/styles/styles';
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import {
     Pressable,
@@ -110,37 +110,40 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
   });
 
   return (
-    <View style={styles.container}>
-        <Pressable onPress={onPress}>
-            <View style={styles.dotContainer}>
-                <Animated.View
-                    style={[styles.thumb, sizeAnimatedStyle]}/>
-            </View>
-            <View >
-                {isEnabled ?
-                    <View>
-                        <Text style={styles.label}>OPEN FOR CALLS.</Text>
-                    </View>
-                    : 
-                    <View>
-                        <Text style={styles.label}>TAP TO BE OPEN FOR CALLS.</Text>
-                    </View>
-                }
-            </View>
-        </Pressable>
-    </View>
+    <Pressable style={styles.container} onPress={onPress}>
+        <View style={styles.labelContainer}>
+            {isEnabled ?
+                <View>
+                    <Text style={styles.label}>Open for calls.</Text>
+                </View>
+                : 
+                <View>
+                    <Text style={styles.label}>Tap to invite calls.</Text>
+                </View>
+            }
+        </View>
+        <View style={styles.dotContainer}>
+            <Animated.View
+                style={[styles.thumb, sizeAnimatedStyle]}/>
+        </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: LIGHT_BEIGE,
+    flex: 1,
+    flexDirection: 'row',
   },
     dotContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: PEACH,
+  },
+  labelContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end'
   },
   thumb: {
     minHeight: 60,
