@@ -1,5 +1,5 @@
 import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Pressable,
     StyleSheet,
@@ -18,12 +18,19 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-const Switch = ({
-  value,
-  onPress,
-}) => {
+
+export default function BroadcastDot({onPress, isEnabled}: {onPress: ()=> void, isEnabled: boolean}): React.JSX.Element {
+    const value = useSharedValue(isEnabled === false ? 0 : 1);
   const pulseScale = useSharedValue(1);
   const pulseColor = useSharedValue(1);
+
+  // Update value when isEnabled prop changes
+  useEffect(() => {
+    value.value = withTiming(
+      isEnabled ? 1 : 0,
+      { duration: 800, easing: Easing.in(Easing.elastic(1.5)) }
+    );
+  }, [isEnabled]);
 
   // Watch the value and start/stop pulse animation
   useAnimatedReaction(
@@ -101,38 +108,21 @@ const colorAnimatedStyle = useAnimatedStyle(() => {
   });
 
   return (
-    <Pressable onPress={onPress}>
-        <Animated.View
-          style={[switchStyles.thumb, sizeAnimatedStyle]}/>
-    </Pressable>
-  );
-};
-
-const switchStyles = StyleSheet.create({
-  thumb: {
-    minHeight: 60,
-    minWidth: 60,
-    padding: 5,
-    aspectRatio: 1,
-    backgroundColor: DARK_GREEN,
-    borderRadius: 50,
-  },
-});
-
-export default function BroadcastDot({onPress, isEnabled}): React.JSX.Element {
-    const isOn = useSharedValue(isEnabled ? 1 : 0);
-
-  const handlePress = () => {
-    isOn.value = withTiming(
-        isOn.value === 0 ? 1 : 0,
-        { duration: 800, easing: Easing.in(Easing.elastic(1.5))}
-    );
-    onPress();
-  };
-
-  return (
     <View style={styles.container}>
-      <Switch value={isOn} onPress={handlePress}  />
+        <Pressable onPress={onPress}>
+            <Animated.View
+          style={[styles.thumb, sizeAnimatedStyle]}/>
+        {isEnabled ?
+            <View
+            
+            /> 
+            : 
+                <View
+                />
+        }
+      {/* <Switch isEnabled={isEnabled} onPress={onPress}  /> */}
+      </Pressable>
+
     </View>
   );
 }
@@ -142,5 +132,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  thumb: {
+    minHeight: 60,
+    minWidth: 60,
+    padding: 5,
+    aspectRatio: 1,
+    backgroundColor: DARK_GREEN,
+    borderRadius: 50,
   },
 });

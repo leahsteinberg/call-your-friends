@@ -1,9 +1,9 @@
 import { CustomFonts } from '@/constants/theme';
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
-import { DARK_GREEN } from "@/styles/styles";
+import { CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import BroadcastDot from './BroadcastDot';
 import { endBroadcast, startBroadcast } from "./broadcastSlice";
@@ -15,7 +15,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
     const isEnabled: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
     const [broadcastNow] = useBroadcastNowMutation();
     const [broadcastEnd] = useBroadcastEndMutation();
-
+    console.log("is Enabled----", isEnabled);
     const handleToggle = async () => {
         const newValue = !isEnabled;
         if (newValue) {
@@ -41,19 +41,21 @@ export default function BroadcastNowButton(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <BroadcastDot
+                style={styles.dot}
                 onPress={handleToggle}
                 isEnabled={isEnabled}
             />
-            <Text style={styles.label}>Share you're open for calls</Text>
+            {/* <Text style={styles.label}>OPEN FOR CALLS</Text> */}
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        //flexDirection: 'row',
+        //alignItems: 'center',
+        //justifyContent: 'space-around',
         paddingHorizontal: 8,
         marginTop: 16,
         marginRight: 10,
@@ -61,10 +63,19 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     label: {
-        color: DARK_GREEN,
+        position: 'absolute',
+        color: CREAM,
         fontSize: 14,
         fontWeight: '600',
-        flex: 1,
+        //flex: 1,
+        marginTop: 10,
+        marginLeft: 10,
         fontFamily: CustomFonts.ztnaturebold,
     },
+    dot: {
+        position: 'absolute',
+        zIndex: -1,
+
+
+    }
 });
