@@ -186,22 +186,12 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-            <View style={styles.header}>
-                {/* Show "Accepted" label after successful acceptance */}
-                {isAccepted && (
-                    <View style={styles.acceptedLabel}>
-                        <Text style={styles.acceptedText}>Accepted</Text>
-                    </View>
-                )}
-            </View>
-            {/* <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text> */}
             <View style={styles.nameContainer}>
                 <Animated.View style={[styles.flower, animatedFlowerStyle]}>
                     <FlowerBlob
                         fill={ORANGE}
                     />
                 </Animated.View>
-
                 {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
                 <Text style={styles.nameText}>{getFromName()}</Text>
             </View>
