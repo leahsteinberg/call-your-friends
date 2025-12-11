@@ -1,8 +1,9 @@
+import AnimatedText from "@/components/AnimatedText";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
+import { CHOCOLATE_COLOR, CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -72,11 +73,17 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                {/* <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>YOUR BROADCAST</Text>
-                </View> */}
+            <View style={styles.nameContainer}>
+                <Text style={styles.nameText}>{nameDisplay}</Text>
+                <AnimatedText
+                    text="..."
+                    style={{ fontSize: 16, fontFamily: CustomFonts.ztnaturebold, color: DARK_GREEN }}
+                    duration={300}
+                    staggerDelay={500}
+                />
+            </View>
 
+            <View style={styles.header}>
                 <TouchableOpacity
                     onPress={handleDeleteMeeting}
                     style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
@@ -85,12 +92,11 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     {isDeleting ? (
                         <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                        <Text style={styles.deleteButtonText}>End</Text>
+                        <Text style={styles.deleteButtonText}>End Broadcast</Text>
                     )}
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.nameText}>{nameDisplay}</Text>
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -105,8 +111,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
         //borderWidth: 2,
         //borderColor: DARK_GREEN,
+    },
+    nameContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
     },
     header: {
         flexDirection: 'row',
@@ -119,7 +132,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: DARK_GREEN,
-        marginBottom: 4,
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
@@ -135,7 +147,7 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturelight,
     },
     deleteButton: {
-        backgroundColor: DARK_GREEN,
+        backgroundColor: CREAM,
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     deleteButtonText: {
-        color: CREAM,
+        color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,

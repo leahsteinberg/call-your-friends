@@ -22,7 +22,7 @@ export const BRIGHT_GREEN = "#afaf29";
 export const DARK_GREEN = "#646225";
 
 //// WARM TONES
-export const ORANGE = "#ff8c78";
+export const ORANGE = "#ea5831";
 export const PEACH = "#efadad";
 
 

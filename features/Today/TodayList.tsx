@@ -99,7 +99,7 @@ export default function TodayList(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.headerText}>Today</Text>
+            {/* <Text style={styles.headerText}>Today</Text> */}
             {todayItems.length === 0 ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
@@ -129,8 +129,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginHorizontal: 15,
-        //marginVertical: 8,
-
+        // marginVertical: 8,
     },
     headerText: {
         fontSize: 24,
