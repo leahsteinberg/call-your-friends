@@ -26,6 +26,15 @@ export const offerApi = createApi({
             }),
             // Accepting changes the offer, so invalidate the cache
             invalidatesTags: ['Offer'],
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    // After successful mutation, invalidate Meeting tag in meetingApi
+                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
+                } catch (error) {
+                    // Handle error if needed
+                }
+            },
         }),
         rejectOffer: builder.mutation({
             query: ({ userId, offerId }) => ({

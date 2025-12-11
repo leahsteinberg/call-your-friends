@@ -9,7 +9,7 @@ export const eventCardText = {
         title: (displayTime: string) => `Finding someone for a call`,
     },
     meeting_self_accepted: {
-        title: (userName: string) => `${userName} accepted your meeting.`,
+        title: (userName: string) => `Talk with ${userName} in `,
     },
     meeting_self_rejected: {
         title: () => `We couldn't find someone to accept your meeting.`,
@@ -62,4 +62,4 @@ export const eventCardText = {
     broadcast_other_expired: {
         title: (userName: string) => `The broadcast created by ${userName} was expired by you.`,
     },
-} as Record<string, { title: (userName: string) => string }>;
+} as Record<string, { title: (any) => string }>;

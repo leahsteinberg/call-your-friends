@@ -67,13 +67,25 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             </Text>
         );
     };
+
+    const getClaimedSelfMeetingTitle = () => {
+        console.log("hii getCLaimedddd")
+        const name = meeting.acceptedUser?.name;
+        return (
+        <View style={styles.searchingText}>
+            <Text style={styles.searchingText}>
+                {eventCardText.meeting_self_accepted.title(name)}{displayTimeUntil(meeting.scheduledFor)}
+            </Text>
+        </View>
+    );
+};
     
     
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
             if (meeting.acceptedUser) {
                 const name = meeting.acceptedUser?.name;
-                return name ? `with: ${name}` : null;
+                return getClaimedSelfMeetingTitle()
             } else {
                 return getOpenMeetingTitle();
             }
@@ -174,7 +186,7 @@ const styles = StyleSheet.create({
     searchingText: {
         fontSize: 20,
         fontWeight: '600',
-        maxWidth: 100,
+        //maxWidth: 100,
         color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
         //flexShrink: 1, // Allow text to wrap
