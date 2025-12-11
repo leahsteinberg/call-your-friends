@@ -24,7 +24,7 @@ export const processOffers = async (offers: any[]): Promise<any[]> => {
                 ...offer,
                 scheduledFor: offer.meeting.scheduledFor,
                 displayScheduledFor: await displayDateTime(offer.meeting.scheduledFor),
-                displayExpiresAt: await displayTimeUntil(offer.expiresAt),
+                displayExpiresAt: displayTimeUntil(offer.expiresAt),
             })
         )
         const offersWithDisplayTime = await Promise.all(offersWithDislayTimePromises);
@@ -59,7 +59,7 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
     return displayTimeString;
 };
 
-export const displayTimeUntil = async (dateTime: string): Promise<string> => {
+export const displayTimeUntil = (dateTime: string): Promise<string> => {
     /// if less than 12 hours, return "x hours" or "x minutes"
     // if 12 hours or more, count calendar day differences and return "x days"
     const targetDate = new Date(dateTime);

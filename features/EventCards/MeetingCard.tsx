@@ -1,15 +1,15 @@
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, CREAM, DARK_BEIGE, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
-import { CustomFonts } from "@/constants/theme";
-import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
+import { BRIGHT_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import { displayTimeUntil } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface MeetingCardProps {
@@ -37,17 +37,17 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
     // Get the name to display based on who created the meeting
-    const getNameDisplay = () => {
+    const getMainDisplay = () => {
         if (selfCreatedMeeting) {
             if (meeting.acceptedUser) {
                 const name = meeting.acceptedUser?.name;
                 return name ? `with: ${name}` : null;
             } else {
-                return 'from: me!'
+                return `Finding someone for a call in ${displayTimeUntil(meeting.scheduledFor)}.`
             }
         }
         const name = meeting.userFrom?.name;
-        return name ? `from: ${name}` : null;
+        return name ? `Accepted a meeting created by ${name}` : null;
     };
 
     const handleDeleteMeeting = async () => {
@@ -89,46 +89,15 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         }
     };
 
-    const getStatusText = () => {
-        switch (meetingState) {
-            case SEARCHING_MEETING_STATE:
-                return 'Searching';
-            case ACCEPTED_MEETING_STATE:
-                return 'Confirmed';
-            case REJECTED_MEETING_STATE:
-                return 'Rejected';
-            case PAST_MEETING_STATE:
-                return 'Past';
-            default:
-                return meetingState;
-        }
-    };
-
-    const nameDisplay = getNameDisplay();
+    const mainDisplayText = getMainDisplay();
 
     return (
         <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
             <View style={styles.header}>
-                <View style={styles.typeIndicatorContainer}>
-                    <View style={styles.typeIndicator}>
-                        <Text style={styles.typeText}>Meeting</Text>
-                    </View>
-                </View>
-
-                {/* Show "Cancel Acceptance" for broadcast meetings not created by user */}
-                {meeting.meetingType === 'BROADCAST' && !selfCreatedMeeting ? (
-                    <TouchableOpacity
-                        onPress={handleCancelBroadcastAcceptance}
-                        style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
-                        disabled={isCanceling}
-                    >
-                        {isCanceling ? (
-                            <ActivityIndicator size="small" color="orange" />
-                        ) : (
-                            <Text style={styles.cancelButtonText}>Cancel</Text>
-                        )}
-                    </TouchableOpacity>
-                ) : (
+            {mainDisplayText && (
+                <Text style={styles.mainText}>{mainDisplayText}</Text>
+            )}
+                <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         onPress={handleDeleteMeeting}
                         style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
@@ -140,16 +109,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                             <Text style={styles.deleteButtonText}>Delete</Text>
                         )}
                     </TouchableOpacity>
-                )}
+                </View>
+            
             </View>
 
             <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
-
-            {nameDisplay && (
-                <Text style={styles.nameText}>{nameDisplay}</Text>
-            )}
-
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
             )}
@@ -159,12 +123,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: LIGHT_BEIGE,
+        backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        borderWidth: 2,
-        borderColor: DARK_BEIGE,
     },
     oldPastContainer: {
         backgroundColor: '#E8E8E8',
@@ -176,48 +138,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
     },
-    typeIndicatorContainer: {
-        flexDirection: 'row',
-        gap: 6,
-        alignItems: 'center',
-    },
-    typeIndicator: {
-        backgroundColor: DARK_GREEN,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    broadcastIndicator: {
-        backgroundColor: '#5a7d9a',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    broadcastText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-    },
+    buttonContainer: {},
     timeText: {
         fontSize: 16,
         fontWeight: '600',
         color: BRIGHT_BLUE,
         marginBottom: 4,
     },
-    nameText: {
-        fontSize: 14,
+    mainText: {
+        fontSize: 20,
         fontWeight: '600',
         color: ORANGE,
         marginBottom: 4,
-    },
-    statusText: {
-        fontSize: 14,
-        color: '#666',
     },
     debugText: {
         fontSize: 10,
@@ -242,21 +174,5 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
     },
-   cancelButton: {
-        borderWidth: 1,
-        borderColor: ORANGE,
-        borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        minWidth: 50,
-        alignItems: 'center'
-    },
-    cancelButtonDisabled: {
-        opacity: 0.
-    },
-    cancelButtonText: {
-        color: ORANGE,
-        fontSize: 12,
-         fontWeight: '600',
-    },
-         });
+
+});
