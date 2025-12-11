@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, TextStyle, View } from 'react-native';
+import { StyleSheet, TextStyle, View } from 'react-native';
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -107,5 +107,6 @@ function AnimatedCharacter({
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
+        paddingLeft: 2,
     }
 });

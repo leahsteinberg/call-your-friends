@@ -30,7 +30,7 @@ export const eventCardText = {
         title: (userName: string) => `Your meeting created by ${userName} was cancelled by you.`,
     },
     broadcast_self_open: {
-        title: () => `Your broadcast is open.`,
+        title: () => `Broadcasting to friends`,
     },
     broadcast_self_pending: {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,

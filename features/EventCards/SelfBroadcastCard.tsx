@@ -1,9 +1,10 @@
 import AnimatedText from "@/components/AnimatedText";
+import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
+import { CHOCOLATE_COLOR, CREAM, DARK_GREEN, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -31,7 +32,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             const name = meeting.acceptedUser?.name;
             return name ? `Matched with: ${name}` : 'Matched!';
         }
-        return 'Searching for someone to talk...';
+        return 'Searching for someone to talk';
     };
 
     const handleDeleteMeeting = async () => {
@@ -73,11 +74,11 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
     return (
         <View style={styles.container}>
-            <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>{nameDisplay}</Text>
+            <View style={styles.searchingContainer}>
+                <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
                 <AnimatedText
                     text="..."
-                    style={{ fontSize: 16, fontFamily: CustomFonts.ztnaturebold, color: DARK_GREEN }}
+                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
                     duration={300}
                     staggerDelay={500}
                 />
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
         //borderWidth: 2,
         //borderColor: DARK_GREEN,
     },
-    nameContainer: {
+    searchingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 4,
@@ -128,10 +129,10 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         fontFamily: CustomFonts.ztnaturebold,
     },
-    nameText: {
-        fontSize: 16,
+    searchingText: {
+        fontSize: 20,
         fontWeight: '600',
-        color: DARK_GREEN,
+        color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
