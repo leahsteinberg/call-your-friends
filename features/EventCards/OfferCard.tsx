@@ -1,7 +1,7 @@
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CREAM, DARK_BEIGE, ORANGE, PEACH } from "@/styles/styles";
-import { CustomFonts } from "@/constants/theme";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -16,6 +16,7 @@ interface OfferCardProps {
 }
 
 export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element {
+    console.log("offer card!!!!!");
     const dispatch = useDispatch();
     console.log(offer)
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -78,9 +79,8 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>Offer</Text>
-                </View>
+                <Text style={styles.nameText}>{getFromName()}</Text>
+
                 {offer.offerState === OPEN_OFFER_STATE && (
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity
@@ -106,13 +106,12 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                     </View>
                 )}
             </View>
+            <Text style={styles.mainText}>This is the main text</Text>
+
 
             <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
 
-            <Text style={styles.nameText}>from: {getFromName()}</Text>
-
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
-            <Text>Expires in: {offer.displayExpiresAt}</Text>
+            <Text style={styles.expiresText}>Expires in: {offer.displayExpiresAt}</Text>
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
             )}
@@ -122,12 +121,10 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: PEACH,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        borderWidth: 2,
-        borderColor: DARK_BEIGE,
+        backgroundColor: PALE_BLUE,
     },
     header: {
         flexDirection: 'row',
@@ -135,32 +132,27 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 8,
     },
-    typeIndicator: {
-        backgroundColor: '#5a7d9a',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
+    nameText: {
+        fontSize: 20,
         fontWeight: '600',
+        color: ORANGE,
+        marginBottom: 4,
+        fontFamily: CustomFonts.ztnaturebold,
+    },
+    mainText: {
+        fontFamily: CustomFonts.ztnaturemedium,
+        color: CORNFLOWER_BLUE,
     },
     timeText: {
         fontSize: 16,
         fontWeight: '600',
         color: BRIGHT_BLUE,
         marginBottom: 4,
+        fontFamily: CustomFonts.ztnaturelight,
     },
-    nameText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
-    },
-    statusText: {
-        fontSize: 14,
-        color: '#666',
+    expiresText: {
+        fontFamily: CustomFonts.ztnaturemedium,
+
     },
     debugText: {
         fontSize: 10,
@@ -173,27 +165,25 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     acceptButton: {
-        borderWidth: 1,
-        borderColor: BRIGHT_GREEN,
         borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+        // paddingHorizontal: 10,
+        // paddingVertical: 4,
     },
     acceptButtonText: {
         color: BRIGHT_GREEN,
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
     },
     rejectButton: {
-        borderWidth: 1,
-        borderColor: 'red',
         borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+        // paddingHorizontal: 10,
+        // paddingVertical: 4,
     },
     rejectButtonText: {
-        color: 'red',
         fontSize: 12,
+        color: CHOCOLATE_COLOR,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
     },
 });
