@@ -4,8 +4,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, DARK_GREEN, ORANGE, PALE_BLUE } from "@/styles/styles";
-import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
+import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -25,15 +24,14 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const [isDeleting, setIsDeleting] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
-
+    console.log("self - broadcast meeting, ", meeting);
     // Get the name to display
-    const getNameDisplay = () => {
+    const getOtherUserName = () => {
         if (meeting.acceptedUser) {
             const name = meeting.acceptedUser?.name;
-            return name ? `Matched with: ${name}` : 'Matched!';
+            return name ? `${name} has claimed the broadcast.` : 'Broadcast claimed.'; 
         }
-        return 'Searching for someone to talk';
-    };
+    }
 
     const handleDeleteMeeting = async () => {
         try {
@@ -55,47 +53,35 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         }
     };
 
-    const getStatusText = () => {
-        switch (meetingState) {
-            case SEARCHING_MEETING_STATE:
-                return 'Searching';
-            case ACCEPTED_MEETING_STATE:
-                return 'Confirmed';
-            case REJECTED_MEETING_STATE:
-                return 'Rejected';
-            case PAST_MEETING_STATE:
-                return 'Past';
-            default:
-                return meetingState;
-        }
-    };
-
-    const nameDisplay = getNameDisplay();
 
     return (
         <View style={styles.container}>
-            <View style={styles.searchingContainer}>
-                <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
-                <AnimatedText
-                    text="..."
-                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
-                    duration={300}
-                    staggerDelay={500}
-                />
-            </View>
-
             <View style={styles.header}>
-                <TouchableOpacity
-                    onPress={handleDeleteMeeting}
-                    style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                    disabled={isDeleting}
-                >
-                    {isDeleting ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                    ) : (
-                        <Text style={styles.deleteButtonText}>End broadcast</Text>
-                    )}
-                </TouchableOpacity>
+                <View style={styles.searchingContainer}>
+                    <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
+                    <AnimatedText
+                        text="..."
+                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
+                        duration={300}
+                        staggerDelay={500}
+                    />
+                </View>
+                <View>
+                    <TouchableOpacity
+                        onPress={handleDeleteMeeting}
+                        style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? (
+                            <ActivityIndicator size="small" color="#fff" />
+                        ) : (
+                            <Text style={styles.deleteButtonText}>End broadcast</Text>
+                        )}
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View>
+                <Text style={styles.statusText}>{getOtherUserName()}</Text>
             </View>
 
 
@@ -111,21 +97,15 @@ const styles = StyleSheet.create({
         backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
-        marginBottom: 8,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-        //borderWidth: 2,
-        //borderColor: DARK_GREEN,
+        marginBottom: 10,
     },
     searchingContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
+        //alignItems: 'center',
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 8,
         fontFamily: CustomFonts.ztnaturebold,
     },
@@ -137,8 +117,8 @@ const styles = StyleSheet.create({
     },
     statusText: {
         fontSize: 14,
-        color: DARK_GREEN,
-        fontFamily: CustomFonts.ztnaturelight,
+        color: CORNFLOWER_BLUE,
+        fontFamily: CustomFonts.ztnatureregular,
 
     },
     debugText: {

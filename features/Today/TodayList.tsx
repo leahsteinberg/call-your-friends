@@ -6,6 +6,7 @@ import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
+import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
@@ -24,6 +25,7 @@ function isToday(dateString: string): boolean {
 
 export default function TodayList(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const isBroadcasting: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
 
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -32,6 +34,15 @@ export default function TodayList(): React.JSX.Element {
     // Use custom hooks for data fetching and processing
     const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
     const { offers, refetch: refetchOffers } = useProcessedOffers(forceReprocess);
+
+    // Check if there's an active self-created broadcast meeting
+    const hasSelfBroadcastMeeting = todayItems.some(item => {
+        if (item.type === 'meeting') {
+            const meeting = item.data as ProcessedMeetingType;
+            return meeting.meetingType === 'BROADCAST' && meeting.userFromId === userId;
+        }
+        return false;
+    });
 
     // Process and filter data when it changes
     useEffect(() => {
@@ -96,11 +107,19 @@ export default function TodayList(): React.JSX.Element {
         index,
     });
 
+    // Render header: BroadcastNowCard when not broadcasting
+    const renderListHeader = () => {
+        // Only show BroadcastNowCard if not currently broadcasting
+        if (!isBroadcasting && !hasSelfBroadcastMeeting) {
+            return <BroadcastNowCard />;
+        }
+        return null;
+    };
 
     return (
         <View style={styles.container}>
             {/* <Text style={styles.headerText}>Today</Text> */}
-            {todayItems.length === 0 ? (
+            {todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting ? (
                 <Text style={styles.emptyText}>No meetings or offers for today</Text>
             ) : (
                 <FlatList
@@ -109,6 +128,7 @@ export default function TodayList(): React.JSX.Element {
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                     getItemLayout={getItemLayout}
+                    ListHeaderComponent={renderListHeader}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
