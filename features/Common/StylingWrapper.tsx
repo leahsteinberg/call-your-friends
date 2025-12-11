@@ -1,7 +1,7 @@
 import { CREAM } from '@/styles/styles';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-const safePadding = Platform.OS === 'ios' ? 60 : 10;
+const safePadding = Platform.OS === 'ios' ? 45 : 10;
 
 interface StylingWrapperProps {
   children: React.ReactElement; // Or JSX.Element
