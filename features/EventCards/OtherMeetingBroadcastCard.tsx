@@ -4,10 +4,9 @@
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, CORNFLOWER_BLUE, CREAM, ORANGE } from "@/styles/styles";
+import { CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,10 +65,10 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={styles.typeIndicator}>
-                    <Text style={styles.typeText}>📡 ACCEPTED BROADCAST-- TO BE DEPRECATED!!!!</Text>
+                <View style={styles.nameContainer}>
+                    <Text style={styles.nameText}>{getFromName()}</Text>
                 </View>
-
+                <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     onPress={handleCancelBroadcastAcceptance}
                     style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
@@ -78,14 +77,21 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                     {isCanceling ? (
                         <ActivityIndicator size="small" color="orange" />
                     ) : (
-                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                        <Text style={styles.cancelButtonText}>Unclaim Call</Text>
                     )}
                 </TouchableOpacity>
             </View>
+            
 
-            <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
+            </View>
+            <View style={styles.content}>
+                <Text style={styles.contentText}>You're on a call right now</Text>
+
+            </View>
+            
+            {/* <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
             <Text style={styles.nameText}>with: {getFromName()}</Text>
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text>
+            <Text style={styles.statusText}>Status: {getStatusText()}</Text> */}
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -96,7 +102,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: CORNFLOWER_BLUE,
+        backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
@@ -104,48 +110,19 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
     },
-    typeIndicator: {
-        backgroundColor: '#5a7d9a',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-    },
-    timeText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: BRIGHT_BLUE,
-        marginBottom: 4,
+    nameContainer: {
+        flexDirection: 'row',
     },
     nameText: {
-        fontSize: 14,
+        fontSize: 30,
         fontWeight: '600',
         color: ORANGE,
         marginBottom: 4,
+        fontFamily: CustomFonts.ztnaturebold,
     },
-    statusText: {
-        fontSize: 14,
-        color: '#666',
-    },
-    debugText: {
-        fontSize: 10,
-        color: '#999',
-        marginTop: 4,
-        fontFamily: CustomFonts.ztnaturelight,
-    },
+    buttonContainer: {},
     cancelButton: {
-        borderWidth: 1,
-        borderColor: ORANGE,
-        borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
         minWidth: 50,
         alignItems: 'center'
     },
@@ -153,8 +130,21 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     cancelButtonText: {
-        color: ORANGE,
+        color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#999',
+        marginTop: 4,
+        fontFamily: CustomFonts.ztnaturelight,
+    },
+    content: {
+
+    },
+    contentText: {
+        fontFamily: CustomFonts.ztnaturelightitalic,
     },
 });
