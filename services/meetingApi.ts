@@ -1,5 +1,6 @@
 import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { offerApi } from "./offersApi";
 
 export const meetingApi = createApi({
     reducerPath: 'meetingApi',
@@ -79,6 +80,16 @@ export const meetingApi = createApi({
             }),
             // Invalidate meetings cache to trigger refetch after canceling
             invalidatesTags: ['Meeting'],
+            // Manually invalidate the Offer tag in the separate offerApi
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    // After successful mutation, invalidate Offer tag in offerApi
+                    dispatch(offerApi.util.invalidateTags(['Offer']));
+                } catch (error) {
+                    // Handle error if needed
+                }
+            },
         }),
     })
 });
@@ -86,5 +97,5 @@ export const meetingApi = createApi({
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
 const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation } = meetingApi;
 
-export { useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation };
+export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
 

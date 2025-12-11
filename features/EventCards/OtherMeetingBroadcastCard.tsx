@@ -4,7 +4,7 @@
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -86,12 +86,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
             </View>
             <View style={styles.content}>
                 <Text style={styles.contentText}>You're on a call right now</Text>
-
             </View>
-            
-            {/* <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
-            <Text style={styles.nameText}>with: {getFromName()}</Text>
-            <Text style={styles.statusText}>Status: {getStatusText()}</Text> */}
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -145,6 +140,7 @@ const styles = StyleSheet.create({
 
     },
     contentText: {
-        fontFamily: CustomFonts.ztnaturelightitalic,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: CORNFLOWER_BLUE,
     },
 });
