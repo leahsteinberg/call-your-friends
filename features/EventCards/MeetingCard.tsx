@@ -1,8 +1,10 @@
+import AnimatedText from "@/components/AnimatedText";
+import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
@@ -37,13 +39,29 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
     // Get the name to display based on who created the meeting
+    const getOpenMeetingTitle = () => {
+        return (
+            <Text style={styles.searchingText}>
+                {eventCardText.meeting_self_open.title(displayTimeUntil(meeting.scheduledFor))}
+                <AnimatedText
+                    text="..."
+                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
+                    duration={300}
+                    staggerDelay={500}
+                    inline={true}
+                />
+            </Text>
+        );
+    };
+    
+    
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
             if (meeting.acceptedUser) {
                 const name = meeting.acceptedUser?.name;
                 return name ? `with: ${name}` : null;
             } else {
-                return `Finding someone for a call in ${displayTimeUntil(meeting.scheduledFor)}.`
+                return getOpenMeetingTitle();
             }
         }
         const name = meeting.userFrom?.name;
@@ -139,17 +157,27 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     buttonContainer: {},
+    searchingText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: ORANGE,
+        fontFamily: CustomFonts.ztnaturebold,
+        flexShrink: 1, // Allow text to wrap
+    },
     timeText: {
         fontSize: 16,
         fontWeight: '600',
         color: BRIGHT_BLUE,
         marginBottom: 4,
+        fontFamily: CustomFonts.ztnatureregular,
+
     },
     mainText: {
         fontSize: 20,
         fontWeight: '600',
         color: ORANGE,
         marginBottom: 4,
+        fontFamily: CustomFonts.ztnaturebold
     },
     debugText: {
         fontSize: 10,
@@ -158,8 +186,6 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturelight,
     },
     deleteButton: {
-        borderWidth: 1,
-        borderColor: 'red',
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
@@ -170,9 +196,10 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     deleteButtonText: {
-        color: 'red',
+        color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
-    },
+        fontFamily: CustomFonts.ztnaturebold
 
+    },
 });

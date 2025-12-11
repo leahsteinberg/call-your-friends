@@ -15,15 +15,36 @@ interface AnimatedTextProps {
     style?: TextStyle;
     duration?: number; // Duration for each character's bounce (default 400ms)
     staggerDelay?: number; // Delay between each character starting (default 150ms)
+    inline?: boolean; // Render as Text instead of View for inline nesting
 }
 
 export default function AnimatedText({
     text,
     style,
     duration = 400,
-    staggerDelay = 150
+    staggerDelay = 150,
+    inline = false
 }: AnimatedTextProps): React.JSX.Element {
     const characters = text.split('');
+
+    // For inline mode, wrap in Text instead of View so it can be nested inside other Text components
+    if (inline) {
+        return (
+            <Animated.Text style={[styles.inlineContainer, style]}>
+                {characters.map((char, index) => (
+                    <AnimatedCharacter
+                        key={index}
+                        character={char}
+                        index={index}
+                        totalCharacters={characters.length}
+                        style={style}
+                        duration={duration}
+                        staggerDelay={staggerDelay}
+                    />
+                ))}
+            </Animated.Text>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -107,6 +128,9 @@ function AnimatedCharacter({
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
+        paddingLeft: 2,
+    },
+    inlineContainer: {
         paddingLeft: 2,
     }
 });

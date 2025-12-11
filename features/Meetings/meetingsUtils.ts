@@ -59,7 +59,7 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
     return displayTimeString;
 };
 
-export const displayTimeUntil = (dateTime: string): Promise<string> => {
+export const displayTimeUntil = (dateTime: string): string => {
     /// if less than 12 hours, return "x hours" or "x minutes"
     // if 12 hours or more, count calendar day differences and return "x days"
     const targetDate = new Date(dateTime);
@@ -93,16 +93,6 @@ export const displayTimeUntil = (dateTime: string): Promise<string> => {
     return calendarDaysDiff === 1 ? '1 day' : `${calendarDaysDiff} days`;
 };
 
-export const displayDate = async (dateTime: string): Promise<string> => {
-    const dateObj = new Date(dateTime);
-    const formatter = new Intl.DateTimeFormat('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-    });
-    const displayTimeString = formatter.format(dateObj);
-    return displayTimeString;
-};
 
 
 export const dateObjToMinutesString = (dateObj: Date): string => {
