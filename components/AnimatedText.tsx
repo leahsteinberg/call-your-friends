@@ -15,6 +15,7 @@ interface AnimatedTextProps {
     style?: TextStyle;
     duration?: number; // Duration for each character's bounce (default 400ms)
     staggerDelay?: number; // Delay between each character starting (default 150ms)
+    inline?: boolean; // Render as inline text for baseline alignment
 }
 
 export default function AnimatedText({
@@ -22,9 +23,28 @@ export default function AnimatedText({
     style,
     duration = 400,
     staggerDelay = 150,
+    inline = false,
 }: AnimatedTextProps): React.JSX.Element {
     const characters = text.split('');
 
+    // For inline mode, return characters as fragment for proper baseline alignment
+    if (inline) {
+        return (
+            <>
+                {characters.map((char, index) => (
+                    <AnimatedCharacter
+                        key={index}
+                        character={char}
+                        index={index}
+                        totalCharacters={characters.length}
+                        style={style}
+                        duration={duration}
+                        staggerDelay={staggerDelay}
+                    />
+                ))}
+            </>
+        );
+    }
 
     return (
         <View style={styles.container}>

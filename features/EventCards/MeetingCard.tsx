@@ -38,17 +38,32 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         return scheduledTime < thirtyMinutesAgo;
     };
 
+
+
+    // <View style={styles.searchingContainer}>
+    //                 <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
+    //                 <AnimatedText
+    //                     text="..."
+    //                     style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
+    //                     duration={300}
+    //                     staggerDelay={500}
+    //                 />
+    //             </View>
     // Get the name to display based on who created the meeting
     const getOpenMeetingTitle = () => {
         return (
             <Text style={styles.searchingText}>
-                {eventCardText.meeting_self_open.title(displayTimeUntil(meeting.scheduledFor))}
-                <AnimatedText
-                    text="..."
-                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
-                    duration={300}
-                    staggerDelay={500}
-                />
+                <Text>{eventCardText.meeting_self_open.title()}{'\n'}</Text>
+                <View style={styles.displayTimeContainer}>
+                    <Text style={styles.searchingText}>in {displayTimeUntil(meeting.scheduledFor)}</Text>
+                    <AnimatedText
+                        text="..."
+                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
+                        duration={300}
+                        staggerDelay={500}
+                        inline={false}
+                    />
+                </View>
             </Text>
         );
     };
@@ -162,7 +177,7 @@ const styles = StyleSheet.create({
         maxWidth: 100,
         color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
-        flexShrink: 1, // Allow text to wrap
+        //flexShrink: 1, // Allow text to wrap
     },
     timeText: {
         fontSize: 16,
@@ -190,6 +205,9 @@ const styles = StyleSheet.create({
         //minWidth: 50,
         //marginLeft: 10,
         //alignItems: 'flex-end',
+    },
+    displayTimeContainer: {
+        flexDirection: 'row',
     },
     deleteButtonDisabled: {
         opacity: 0.6,
