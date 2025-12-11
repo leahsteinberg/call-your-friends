@@ -48,7 +48,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
                     duration={300}
                     staggerDelay={500}
-                    inline={true}
                 />
             </Text>
         );
