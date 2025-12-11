@@ -7,7 +7,7 @@ import {
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
 import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
-import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
+import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -117,19 +117,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    const getStatusText = () => {
-        switch (offer.offerState) {
-            case OPEN_OFFER_STATE:
-                return 'Open';
-            case ACCEPTED_OFFER_STATE:
-                return 'Accepted';
-            case REJECTED_OFFER_STATE:
-                return 'Rejected';
-            default:
-                return offer.offerState;
-        }
-    };
-
     // Button render functions
     const renderTryAcceptButton = () => (
         <TouchableOpacity
@@ -173,16 +160,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         </TouchableOpacity>
     );
 
-    // // Render child components based on claim state
-    // if (isPendingClaimedBySelf || isClaimedBySelf) {
-    //     return <SelfBroadcastCard offer={offer} refresh={refresh} />;
-    // }
-
-    // if (isPendingClaimedByOther || isClaimedByOther) {
-    //     return <OtherClaimedBroadcastOfferCard offer={offer} />;
-    // }
-
-    // Default: UNCLAIMED state - render original TRY-ACCEPT flow
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -196,7 +173,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                 </View>
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
             </View>
-                {/* <BridgeProgress stage={1}/> */}
 
                 {/* Show buttons if offer is open and not yet accepted */}
             {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
