@@ -109,8 +109,9 @@ export default function TodayList(): React.JSX.Element {
 
     // Render header: BroadcastNowCard when not broadcasting
     const renderListHeader = () => {
-        // Only show BroadcastNowCard if not currently broadcasting
-        if (!isBroadcasting && !hasSelfBroadcastMeeting) {
+        // Only hide BroadcastNowCard when SelfBroadcastCard actually exists in data
+        // This prevents visual gaps during the transition
+        if (!hasSelfBroadcastMeeting) {
             return <BroadcastNowCard />;
         }
         return null;
