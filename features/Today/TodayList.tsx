@@ -35,11 +35,13 @@ export default function TodayList(): React.JSX.Element {
     const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
     const { offers, refetch: refetchOffers } = useProcessedOffers(forceReprocess);
 
-    // Check if there's an active self-created broadcast meeting
+    // Check if there's an active self-created broadcast meeting (excluding PAST meetings)
     const hasSelfBroadcastMeeting = todayItems.some(item => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
-            return meeting.meetingType === 'BROADCAST' && meeting.userFromId === userId;
+            return meeting.meetingType === 'BROADCAST' &&
+                   meeting.userFromId === userId &&
+                   meeting.meetingState !== 'PAST';
         }
         return false;
     });

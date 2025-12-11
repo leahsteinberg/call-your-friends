@@ -115,6 +115,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 <Text style={styles.mainText}>{mainDisplayText}</Text>
             )}
                 <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
                     <TouchableOpacity
                         onPress={handleDeleteMeeting}
                         style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
@@ -126,8 +127,8 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                             <Text style={styles.deleteButtonText}>Delete</Text>
                         )}
                     </TouchableOpacity>
+                    </View>
                 </View>
-            
             </View>
 
             <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
@@ -152,10 +153,16 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        //alignItems: 'center',
         marginBottom: 8,
     },
-    buttonContainer: {},
+    buttonContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignContent: 'flex-start',
+        minWidth: 50,
+    },
     searchingText: {
         fontSize: 20,
         fontWeight: '600',
@@ -176,7 +183,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: ORANGE,
         marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturebold
+        fontFamily: CustomFonts.ztnaturebold,
     },
     debugText: {
         fontSize: 10,
@@ -184,12 +191,12 @@ const styles = StyleSheet.create({
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },
+    button: {
+    },
     deleteButton: {
-        borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
         minWidth: 50,
-        alignItems: 'center',
+        marginLeft: 10,
+        alignItems: 'flex-end',
     },
     deleteButtonDisabled: {
         opacity: 0.6,
