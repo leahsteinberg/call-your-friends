@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         color: CORNFLOWER_BLUE,
         //marginLeft: 80,
 
-        paddingTop: 37,
+        //paddingTop: 37,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
