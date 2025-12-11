@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -192,10 +192,8 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                         fill={ORANGE}
                     />
                 </Animated.View>
-                {/* <Text>Expires in: {offer.displayExpiresAt}</Text> */}
                 <Text style={styles.nameText}>{getFromName()}</Text>
             </View>
-
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
                 </View>
                 {/* Show buttons if offer is open and not yet accepted */}
@@ -226,7 +224,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        backgroundColor: PALE_BLUE,
+        // backgroundColor: PALE_BLUE,
         overflow: 'visible',
         flexDirection: 'row',
         justifyContent: 'space-between',

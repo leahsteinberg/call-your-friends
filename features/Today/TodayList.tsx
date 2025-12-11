@@ -141,12 +141,12 @@ const styles = StyleSheet.create({
         position: 'relative', // Create stacking context
         zIndex: 100, // High z-index to sit above FlatList
         backgroundColor: CREAM, // Opaque background to hide content underneath
-        paddingBottom: 4, // Extra padding so background extends a bit
+        // paddingBottom: 4, // Extra padding so background extends a bit
 
     },
     listContent: {
         paddingBottom: 16,
-        paddingTop: 9,
+        paddingTop: 15,
     },
     emptyText: {
         fontSize: 16,
