@@ -2,6 +2,18 @@ import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { meetingApi } from "./meetingApi";
 
+// Helper function to invalidate Meeting tags after successful mutation
+// This ensures Meeting data is refetched when offers change
+const invalidateMeetingsOnSuccess = async (_arg: any, { dispatch, queryFulfilled }: any) => {
+    try {
+        await queryFulfilled;
+        // After successful mutation, invalidate Meeting tag in meetingApi
+        dispatch(meetingApi.util.invalidateTags(['Meeting']));
+    } catch (error) {
+        // Handle error if needed
+    }
+};
+
 export const offerApi = createApi({
     reducerPath: 'offerApi',
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
@@ -26,15 +38,7 @@ export const offerApi = createApi({
             }),
             // Accepting changes the offer, so invalidate the cache
             invalidatesTags: ['Offer'],
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    // After successful mutation, invalidate Meeting tag in meetingApi
-                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
-                } catch (error) {
-                    // Handle error if needed
-                }
-            },
+            onQueryStarted: invalidateMeetingsOnSuccess,
         }),
         rejectOffer: builder.mutation({
             query: ({ userId, offerId }) => ({
@@ -60,16 +64,7 @@ export const offerApi = createApi({
                 body: { userId, offerId },
             }),
             invalidatesTags: ['Offer'],
-            // Manually invalidate the Meeting tag in the separate meetingApi
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    // After successful mutation, invalidate Meeting tag in meetingApi
-                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
-                } catch (error) {
-                    // Handle error if needed
-                }
-            },
+            onQueryStarted: invalidateMeetingsOnSuccess,
         }),
         rejectBroadcast: builder.mutation({
             query: ({ userId, offerId }) => ({
