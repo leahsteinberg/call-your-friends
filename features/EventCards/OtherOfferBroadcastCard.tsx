@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -203,15 +203,13 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                 <View style={styles.buttonContainer}>
                     {!hasTried ? (
                         <>
-                            {/* Initial state: TRY-ACCEPT + REJECT */}
                             {renderTryAcceptButton()}
-                            {/* {renderRejectButton('Ca')} */}
                         </>
                     ) : (
                         <>
                             {/* After successful try: ACCEPT + CANCEL */}
                             {renderAcceptButton()}
-                            {renderRejectButton('CANCEL')}
+                            {renderRejectButton('Cancel call')}
                         </>
                     )}
                     </View>
@@ -237,17 +235,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 8,
-    },
-    typeIndicator: {
-        backgroundColor: '#5a7d9a',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 4,
-    },
-    typeText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
     },
     content: {
         // backgroundColor: PEACH,
@@ -311,31 +298,34 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     acceptButtonText: {
-        color: BRIGHT_GREEN,
-        fontSize: 12,
+        color: ORANGE,
+        fontSize: 15,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturebold,
+
     },
     rejectButton: {
-        borderWidth: 1,
-        borderColor: 'red',
         borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
     },
     rejectButtonText: {
-        color: 'red',
+        color: BURGUNDY,
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
     },
     acceptedLabel: {
         backgroundColor: BRIGHT_GREEN,
         paddingHorizontal: 12,
         paddingVertical: 6,
         borderRadius: 4,
+
     },
     acceptedText: {
-        color: CREAM,
+        color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
+
     },
 });

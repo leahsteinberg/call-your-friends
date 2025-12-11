@@ -4,7 +4,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useDeleteMeetingMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, CREAM, DARK_GREEN, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { CHOCOLATE_COLOR, DARK_GREEN, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -93,7 +93,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     {isDeleting ? (
                         <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                        <Text style={styles.deleteButtonText}>End Broadcast</Text>
+                        <Text style={styles.deleteButtonText}>End broadcast</Text>
                     )}
                 </TouchableOpacity>
             </View>
@@ -148,8 +148,8 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturelight,
     },
     deleteButton: {
-        backgroundColor: CREAM,
-        borderRadius: 4,
+        // backgroundColor: CREAM,
+        // borderRadius: 4,
         paddingHorizontal: 10,
         paddingVertical: 4,
         minWidth: 50,

@@ -1,10 +1,10 @@
 // TO BE DELETED (but ask before you delete it)
 
 
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, CREAM, DARK_BEIGE, ORANGE } from "@/styles/styles";
-import { CustomFonts } from "@/constants/theme";
+import { BRIGHT_BLUE, CORNFLOWER_BLUE, CREAM, ORANGE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -96,12 +96,10 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: ORANGE,
+        backgroundColor: CORNFLOWER_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-        borderWidth: 2,
-        borderColor: DARK_BEIGE,
     },
     header: {
         flexDirection: 'row',
