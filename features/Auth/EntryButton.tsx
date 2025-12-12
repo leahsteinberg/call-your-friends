@@ -1,38 +1,53 @@
-import { BRIGHT_BLUE, CLOUDY_SKY_COLOR, CREAM } from "@/styles/styles";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { CustomFonts } from "@/constants/theme";
+import { CORNFLOWER_BLUE, CREAM, ORANGE } from "@/styles/styles";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 export default function EntryButton({title, onPressQuery, isDisabled}) {
 
     return (
-        <View style={{...styles.button, backgroundColor: isDisabled ? CLOUDY_SKY_COLOR : BRIGHT_BLUE}}>
-            <TouchableOpacity
-                onPress={onPressQuery}
-            >
-                <Text style={styles.text}>{title}</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+            onPress={onPressQuery}
+            disabled={isDisabled}
+            style={[
+                styles.button,
+                isDisabled && styles.buttonDisabled
+            ]}
+            activeOpacity={0.8}
+        >
+            <Text style={[styles.text, isDisabled && styles.textDisabled]}>
+                {title}
+            </Text>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: BRIGHT_BLUE,
-        // paddingTop: 15,
-        // paddingBottom: 15,
-        // paddingLeft: 10,
-        // paddingRight: 10,
-        padding: 10,
-        margin: 10,
-        borderRadius: 3,
+        backgroundColor: ORANGE,
+        paddingVertical: 16,
+        paddingHorizontal: 32,
+        borderRadius: 8,
+        alignItems: 'center',
         justifyContent: 'center',
+        shadowColor: ORANGE,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    buttonDisabled: {
+        backgroundColor: '#d0d0d0',
+        shadowOpacity: 0.1,
     },
     text: {
-        // color: 'white',
         color: CREAM,
-        fontWeight: 900,
+        fontSize: 18,
+        fontWeight: '700',
         textAlign: 'center',
-
+        fontFamily: CustomFonts.ztnaturebold,
     },
-    buttonContainer: {
+    textDisabled: {
+        color: CORNFLOWER_BLUE,
+        opacity: 0.5,
     },
 });

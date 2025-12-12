@@ -1,11 +1,14 @@
+import BirdSoaring from '@/assets/images/bird-soaring.svg';
 import { CustomFonts } from '@/constants/theme';
 import { usePostSignInMutation } from '@/services/authApi';
-import { BURGUNDY, CREAM } from '@/styles/styles';
+import { CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from '@/styles/styles';
+import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { setLogInCredentials } from './authSlice';
 import EntryButton from './EntryButton';
+import MessageDisplay from './MessageDisplay';
 import UserEmailPasswordInput from './UserEmailPasswordInput';
 
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
@@ -15,79 +18,166 @@ export function SignIn()  {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const [signInUser] = usePostSignInMutation();
-    
+
     const handleAuthQuery = async (e: any, authQuery: any) => {
         try {
+            setIsLoading(true);
+            setErrorMessage('');
             const result = await authQuery({email, password}).unwrap();
             if (result) {
                 dispatch(setLogInCredentials({ token: result.token, user: result.user }))
             } else {
-                console.log("error logging in / signing in")
+                setErrorMessage("Unable to sign in. Please try again.");
             }
         } catch (error: any) {
             console.error("Sign in error:", error);
-            console.error("Error status:", error.status);
-            console.error("Error data:", error.data);
-            alert(`Sign in failed: ${error.status || 'Unknown error'}. Check console for details.`);
+
+            // Provide user-friendly error messages
+            if (error.status === 401) {
+                setErrorMessage("Invalid email or password. Please try again.");
+            } else if (error.status === 404) {
+                setErrorMessage("Account not found. Please check your email or sign up.");
+            } else if (error.status === 'FETCH_ERROR') {
+                setErrorMessage("Network error. Please check your connection and try again.");
+            } else {
+                setErrorMessage(error.data?.message || "Sign in failed. Please try again.");
+            }
+        } finally {
+            setIsLoading(false);
         }
     }
-    const isSigninButtonDisabled = () => !(email.length > 0 && password.length > 0);
+    const isSigninButtonDisabled = () => !(email.length > 0 && password.length > 0) || isLoading;
 
     return (
-        <View style={[styles.container,]}>
-            <Text style={[styles.title]}>
-                Call Your Friends
-            </Text>
-            
-            <View style={styles.component}>
-                <UserEmailPasswordInput
-                    onChangeEmail={(text: string)=> setEmail(text)}
-                    onChangePassword={(text: string) => setPassword(text)}
-                />
-            </View>
-            <View style={[styles.component,{paddingBottom: 60}]}>
-                <EntryButton
-                    title="Sign In"
-                    onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
-                    isDisabled={isSigninButtonDisabled()}
-                />
-                {/* TO DO: link to sign up page! */}
-            </View>
-    </View>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.keyboardView}
+        >
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                keyboardShouldPersistTaps="handled"
+            >
+                <View style={styles.container}>
+                    {/* Header with bird decoration */}
+                    <View style={styles.header}>
+                        <View style={styles.birdContainer}>
+                            <BirdSoaring fill={ORANGE} width={50} height={50} />
+                        </View>
+                        <Text style={styles.title}>Call Your Friends</Text>
+                        <Text style={styles.subtitle}>Sign in to connect</Text>
+                    </View>
+
+                    {/* Error message display */}
+                    {errorMessage && (
+                        <MessageDisplay message={errorMessage} type="error" />
+                    )}
+
+                    {/* Input form card */}
+                    <View style={styles.formCard}>
+                        <UserEmailPasswordInput
+                            onChangeEmail={(text: string) => {
+                                setEmail(text);
+                                setErrorMessage('');
+                            }}
+                            onChangePassword={(text: string) => {
+                                setPassword(text);
+                                setErrorMessage('');
+                            }}
+                        />
+                    </View>
+
+                    {/* Button container */}
+                    <View style={styles.buttonContainer}>
+                        <EntryButton
+                            title={isLoading ? "Signing in..." : "Sign In"}
+                            onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
+                            isDisabled={isSigninButtonDisabled()}
+                        />
+                    </View>
+
+                    {/* Sign up link */}
+                    <View style={styles.linkContainer}>
+                        <Text style={styles.linkText}>Don't have an account? </Text>
+                        <Link href="/signup" style={styles.link}>
+                            <Text style={styles.linkTextBold}>Sign up</Text>
+                        </Link>
+                    </View>
+                </View>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 
  const styles = StyleSheet.create({
-    container: {
-        minHeight: 400,
-        minWidth: 300,
-
-        maxHeight: '100%',
-        maxWidth: '100%',
-        width: '100%',
-        
-        justifyContent: 'space-between',
-        overflow: 'scroll',
+    keyboardView: {
         flex: 1,
+        backgroundColor: CREAM,
+    },
+    scrollContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
         paddingBottom: safePadding,
     },
-    wrapper: {
+    container: {
+        flex: 1,
         justifyContent: 'center',
-        backgroundColor: CREAM,
-        minHeight: 500,
+        paddingHorizontal: 20,
+        paddingVertical: 40,
+    },
+    header: {
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    birdContainer: {
+        marginBottom: 16,
     },
     title: {
-        fontSize: 40,
-        color: BURGUNDY,
+        fontSize: 36,
+        color: CORNFLOWER_BLUE,
         textAlign: 'center',
-        margin: 20,
         fontWeight: 'bold',
         fontFamily: CustomFonts.ztnaturebold,
+        marginBottom: 8,
     },
-    component: {
-        margin: 20,
-    }
+    subtitle: {
+        fontSize: 16,
+        color: CORNFLOWER_BLUE,
+        textAlign: 'center',
+        fontFamily: CustomFonts.ztnatureregular,
+        opacity: 0.7,
+    },
+    formCard: {
+        backgroundColor: PALE_BLUE,
+        borderRadius: 12,
+        padding: 20,
+        marginBottom: 24,
+    },
+    buttonContainer: {
+        marginTop: 8,
+    },
+    linkContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 24,
+    },
+    linkText: {
+        fontSize: 14,
+        color: CORNFLOWER_BLUE,
+        fontFamily: CustomFonts.ztnatureregular,
+    },
+    link: {
+        // Link component doesn't need additional styling
+    },
+    linkTextBold: {
+        fontSize: 14,
+        color: ORANGE,
+        fontFamily: CustomFonts.ztnaturebold,
+        textDecorationLine: 'underline',
+    },
 });
