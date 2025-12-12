@@ -1,6 +1,6 @@
 export const eventCardText = {
     open_offer: {
-        title: (userName: string) => `Open Offer from ${userName}`,
+        title: (userName: string) => `Talk to ${userName} in `,
     },
     expired_offer: {
         title: (userName: string) => `Expired Offer from ${userName}`,

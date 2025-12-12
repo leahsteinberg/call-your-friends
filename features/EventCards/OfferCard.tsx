@@ -1,14 +1,16 @@
+import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
-import { ACCEPTED_OFFER_STATE, OPEN_OFFER_STATE, REJECTED_OFFER_STATE } from "@/types/meetings-offers";
+import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
+import { displayTimeUntil } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OfferCardProps {
@@ -63,17 +65,8 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    const getStatusText = () => {
-        switch (offer.offerState) {
-            case OPEN_OFFER_STATE:
-                return 'Open';
-            case ACCEPTED_OFFER_STATE:
-                return 'Accepted';
-            case REJECTED_OFFER_STATE:
-                return 'Rejected';
-            default:
-                return offer.offerState;
-        }
+    const getMainText = () => {
+        return `${eventCardText.open_offer.title(getFromName())}${displayTimeUntil(offer.scheduledFor)}`
     };
 
     return (
@@ -83,35 +76,37 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
                 {offer.offerState === OPEN_OFFER_STATE && (
                     <View style={styles.buttonContainer}>
+                        {/* <View style={styles.buttonContent}> */}
+
                         <TouchableOpacity
                             onPress={handleAcceptOffer}
                             style={styles.acceptButton}
                         >
-                        {isAccepting ? (
-                            <ActivityIndicator size="small" color="green" />
-                            ) : (
-                                <Text style={styles.acceptButtonText}>Accept</Text>
-                        )}
+                            {isAccepting? (
+                                <ActivityIndicator size="small" color="green" />
+                                ) : (
+                                    <Text style={styles.acceptButtonText}>Accept</Text>
+                            )}
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleRejectOffer}
                             style={styles.rejectButton}
                         >
-                        {isRejecting ? (
-                            <ActivityIndicator size="small" color="red" />
-                            ) : (
-                                <Text style={styles.rejectButtonText}>Reject</Text>
-                        )}
+                            {isRejecting ? (
+                                <ActivityIndicator size="small" color="red" />
+                                ) : (
+                                    <Text style={styles.rejectButtonText}>Reject</Text>
+                            )}
                         </TouchableOpacity>
+                        {/* </View> */}
                     </View>
                 )}
             </View>
-            <Text style={styles.mainText}>This is the main text</Text>
+            <Text style={styles.mainText}>{getMainText()}</Text>
 
 
             <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
 
-            <Text style={styles.expiresText}>Expires in: {offer.displayExpiresAt}</Text>
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
             )}
@@ -129,8 +124,6 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
     },
     nameText: {
         fontSize: 20,
@@ -140,8 +133,11 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
     },
     mainText: {
-        fontFamily: CustomFonts.ztnaturemedium,
+        fontSize: 14,
+        fontWeight: '600',
         color: CORNFLOWER_BLUE,
+        marginBottom: 4,
+        fontFamily: CustomFonts.ztnatureregular,
     },
     timeText: {
         fontSize: 16,
@@ -163,6 +159,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         gap: 8,
+
     },
     acceptButton: {
         borderRadius: 4,

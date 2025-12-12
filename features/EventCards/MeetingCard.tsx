@@ -39,17 +39,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
 
-
-    // <View style={styles.searchingContainer}>
-    //                 <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
-    //                 <AnimatedText
-    //                     text="..."
-    //                     style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
-    //                     duration={300}
-    //                     staggerDelay={500}
-    //                 />
-    //             </View>
-    // Get the name to display based on who created the meeting
     const getOpenMeetingTitle = () => {
         return (
             <Text style={styles.searchingText}>
