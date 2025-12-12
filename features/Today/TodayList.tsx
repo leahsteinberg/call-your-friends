@@ -119,31 +119,36 @@ export default function TodayList(): React.JSX.Element {
         return null;
     };
 
+    // Render empty state inside the list
+    const renderEmptyComponent = () => {
+        if (todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting) {
+            return <Text style={styles.emptyText}>No meetings or offers for today</Text>;
+        }
+        return null;
+    };
+
     return (
         <View style={styles.container}>
             {/* <Text style={styles.headerText}>Today</Text> */}
-            {todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting ? (
-                <Text style={styles.emptyText}>No meetings or offers for today</Text>
-            ) : (
-                <FlatList
-                    style={Platform.OS !== 'web' ? { overflow: 'visible' } : undefined}
-                    data={todayItems}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    getItemLayout={getItemLayout}
-                    ListHeaderComponent={renderListHeader}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={handleRefresh}
-                        />
-                    }
-                    contentContainerStyle={[
-                        styles.listContent,
-                        Platform.OS === 'web' && { paddingLeft: 11 }
-                    ]}
-                />
-            )}
+            <FlatList
+                style={Platform.OS !== 'web' ? { overflow: 'visible' } : undefined}
+                data={todayItems}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                getItemLayout={getItemLayout}
+                ListHeaderComponent={renderListHeader}
+                ListEmptyComponent={renderEmptyComponent}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={handleRefresh}
+                    />
+                }
+                contentContainerStyle={[
+                    styles.listContent,
+                    Platform.OS === 'web' && { paddingLeft: 11 }
+                ]}
+            />
         </View>
     );
 }

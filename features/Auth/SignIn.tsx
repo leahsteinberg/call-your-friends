@@ -1,4 +1,4 @@
-import BirdSoaring from '@/assets/images/bird-soaring.svg';
+import FlowerBlob from '@/assets/images/flower-blob.svg';
 import { CustomFonts } from '@/constants/theme';
 import { usePostSignInMutation } from '@/services/authApi';
 import { CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from '@/styles/styles';
@@ -64,10 +64,10 @@ export function SignIn()  {
                 <View style={styles.container}>
                     {/* Header with bird decoration */}
                     <View style={styles.header}>
-                        <View style={styles.birdContainer}>
-                            <BirdSoaring fill={ORANGE} width={50} height={50} />
+                    <View style={styles.flowerContainer}>
+                            <FlowerBlob fill={ORANGE} width={60} height={60} />
                         </View>
-                        <Text style={styles.title}>Call Your Friends</Text>
+                        <Text style={styles.title}>Loyal</Text>
                         <Text style={styles.subtitle}>Sign in to connect</Text>
                     </View>
 
@@ -133,7 +133,7 @@ export function SignIn()  {
         alignItems: 'center',
         marginBottom: 32,
     },
-    birdContainer: {
+    flowerContainer: {
         marginBottom: 16,
     },
     title: {

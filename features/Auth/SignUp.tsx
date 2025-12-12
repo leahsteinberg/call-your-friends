@@ -76,7 +76,7 @@ export function SignUp()  {
                         <View style={styles.flowerContainer}>
                             <FlowerBlob fill={ORANGE} width={60} height={60} />
                         </View>
-                        <Text style={styles.title}>Call Your Friends</Text>
+                        <Text style={styles.title}>Loyal</Text>
                         <Text style={styles.subtitle}>Create your account</Text>
                     </View>
 
