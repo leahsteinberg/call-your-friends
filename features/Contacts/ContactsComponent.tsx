@@ -2,7 +2,7 @@ import { DEV_FLAG } from "@/environment";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import React, { useEffect, useState } from "react";
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -10,6 +10,11 @@ import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, FriendRequest, ProcessedSentInvite } from "./types";
+import { usePostSignOutMutation } from "@/services/authApi";
+import { clearAuth } from "@/features/Auth/authSlice";
+import { router } from "expo-router";
+import { CustomFonts } from "@/constants/theme";
+import { CORNFLOWER_BLUE } from "@/styles/styles";
 
 
 export default function ContactsComponent(): React.JSX.Element {
@@ -26,12 +31,26 @@ export default function ContactsComponent(): React.JSX.Element {
     const [getFriendInvites] = useGetFriendInvitesMutation();
 
     const [refreshing, setRefreshing] = useState(false);
+    const [signOut] = usePostSignOutMutation();
 
-    const DismissKeyboard = ({ children }) => (
+    const DismissKeyboard = ({ children }: { children: React.ReactNode }) => (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
           {children}
         </TouchableWithoutFeedback>
       );
+
+    const handleSignOut = async () => {
+        try {
+            await signOut({}).unwrap();
+            dispatch(clearAuth());
+            router.replace('/login');
+        } catch (error) {
+            console.error("Sign out error:", error);
+            // Even if the API call fails, clear local auth state
+            dispatch(clearAuth());
+            router.replace('/login');
+        }
+    };
 
     const fetchSentInvites = async () => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
@@ -69,6 +88,11 @@ export default function ContactsComponent(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
+                    <Text style={styles.signOutText}>Sign Out</Text>
+                </TouchableOpacity>
+            </View>
             <DismissKeyboard>
                 <View  style={styles.selectorComponent}>
                     <ContactsSelector />
@@ -105,6 +129,23 @@ const styles = StyleSheet.create({
 
 
         flex: 1,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingHorizontal: 20,
+        paddingVertical: 12,
+        flexShrink: 0,
+    },
+    signOutButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+    },
+    signOutText: {
+        fontSize: 16,
+        color: CORNFLOWER_BLUE,
+        fontFamily: CustomFonts.ztnaturebold,
+        textDecorationLine: 'underline',
     },
     listComponent: {
         flex: 1,
