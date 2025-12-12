@@ -1,7 +1,7 @@
 import ClapBurst from '@/assets/images/clap-burst.svg';
 import HighFiveLeft from '@/assets/images/high-five-left.svg';
 import HighFiveRight from '@/assets/images/high-five-right.svg';
-import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
+import { ORANGE } from "@/styles/styles";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from "react-native-reanimated";
@@ -118,7 +118,7 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
 
             {/* Clap burst - only visible when complete */}
             <Animated.View style={[styles.burst, burstStyle]}>
-                <ClapBurst fill={CORNFLOWER_BLUE} width={50} height={50} />
+                <ClapBurst fill={ORANGE} width={50} height={50} />
             </Animated.View>
         </View>
     );

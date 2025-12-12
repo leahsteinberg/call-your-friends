@@ -1,6 +1,7 @@
 // TO BE DELETED (but ask before you delete it)
 
 
+import HighFiveAnimation from "@/components/HighFiveAnimation";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
@@ -81,12 +82,16 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                     )}
                 </TouchableOpacity>
             </View>
-            
 
             </View>
             <View style={styles.content}>
                 <Text style={styles.contentText}>You're on a call right now</Text>
             </View>
+                        
+                {/* High Five Animation */}
+                <View style={styles.animationContainer}>
+                    <HighFiveAnimation stage={'complete'} />
+                </View>
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -142,5 +147,10 @@ const styles = StyleSheet.create({
     contentText: {
         fontFamily: CustomFonts.ztnatureregular,
         color: CORNFLOWER_BLUE,
+    },
+    animationContainer: {
+        marginTop: 8,
+        alignItems: 'flex-end',
+        // backgroundColor: 'red',
     },
 });

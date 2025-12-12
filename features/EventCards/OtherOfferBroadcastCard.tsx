@@ -6,7 +6,7 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, LIGHT_BEIGE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -178,7 +178,9 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
     return (
         <View style={styles.container}>
+ 
             <View style={styles.header}>
+ 
                 <View style={styles.nameContainer}>
                     <Animated.View style={[styles.flower, animatedFlowerStyle]}>
                         <FlowerBlob
@@ -200,8 +202,9 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                                 {renderRejectButton('Cancel call')}
                             </>
                         )}
-            </View>
+                </View>
                     )}
+
                         </View>
                 <View style={styles.content}> 
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
@@ -238,13 +241,13 @@ const styles = StyleSheet.create({
     content: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: LIGHT_BEIGE,
+        // backgroundColor: LIGHT_BEIGE,
 
     },
     animationContainer: {
         marginTop: 8,
         alignItems: 'flex-end',
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
     },
     timeText: {
         fontSize: 16,
@@ -278,6 +281,8 @@ const styles = StyleSheet.create({
         color: CORNFLOWER_BLUE,
         marginBottom: 4,
         marginLeft: 20,
+        // backgroundColor: PEACH,
+
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
