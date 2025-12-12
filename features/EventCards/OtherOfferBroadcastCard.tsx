@@ -15,6 +15,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSeq
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
+import HighFiveAnimation from "./HighFiveAnimation";
 
 interface OtherOfferBroadcastCardProps {
     offer: ProcessedOfferType;
@@ -160,6 +161,17 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         </TouchableOpacity>
     );
 
+    // Determine animation stage based on state
+    const getAnimationStage = (): 'initial' | 'moving' | 'complete' => {
+        if (isClaimedBySelf || isAccepted) {
+            return 'complete';
+        } else if (isPendingClaimedBySelf || hasTried) {
+            return 'moving';
+        } else {
+            return 'initial';
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.content}>
@@ -172,6 +184,11 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                     <Text style={styles.nameText}>{getFromName()}</Text>
                 </View>
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
+
+                {/* High Five Animation */}
+                <View style={styles.animationContainer}>
+                    <HighFiveAnimation stage={getAnimationStage()} />
+                </View>
             </View>
 
                 {/* Show buttons if offer is open and not yet accepted */}
@@ -215,6 +232,10 @@ const styles = StyleSheet.create({
     content: {
         // backgroundColor: PEACH,
         // flexDirection: 'row',
+    },
+    animationContainer: {
+        marginTop: 8,
+        alignItems: 'center',
     },
     timeText: {
         fontSize: 16,
