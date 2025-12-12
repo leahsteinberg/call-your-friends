@@ -1,4 +1,4 @@
-import FlowerBlob from "@/assets/images/flower-blob.svg";
+import HighFiveAnimation from "@/components/HighFiveAnimation";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import {
@@ -11,9 +11,8 @@ import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
-import HighFiveAnimation from "../../components/HighFiveAnimation";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 
@@ -165,6 +164,30 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         </TouchableOpacity>
     );
 
+    const renderButtons = () => {
+        return ( 
+            <View>
+            {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
+            <View style={styles.buttonContainer}>
+
+                {!hasTried ? (
+                    <>
+                        {renderTryAcceptButton()}
+                    </>
+                ) : (
+                    <>
+                        {/* After successful try: ACCEPT + CANCEL */}
+                        {renderAcceptButton()}
+                        {renderRejectButton('Cancel call')}
+                    </>
+                )}
+        </View>
+            )}
+            </View>
+            )
+
+    }
+
     // Determine animation stage based on state
     const getAnimationStage = (): 'initial' | 'moving' | 'complete' => {
         if (isClaimedBySelf || isAccepted) {
@@ -178,44 +201,24 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
     return (
         <View style={styles.container}>
- 
             <View style={styles.header}>
- 
                 <View style={styles.nameContainer}>
-                    <Animated.View style={[styles.flower, animatedFlowerStyle]}>
-                        <FlowerBlob
-                            fill={ORANGE}
-                        />
-                    </Animated.View>
                     <Text style={styles.nameText}>{getFromName()}</Text>
                 </View>
-                {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
-                    <View style={styles.buttonContainer}>
-                        {!hasTried ? (
-                            <>
-                                {renderTryAcceptButton()}
-                            </>
-                        ) : (
-                            <>
-                                {/* After successful try: ACCEPT + CANCEL */}
-                                {renderAcceptButton()}
-                                {renderRejectButton('Cancel call')}
-                            </>
-                        )}
+                <View style={styles.topRightContainer}>
+                    {renderButtons()}
+                    <View style={styles.animationContainer}>
+                        <HighFiveAnimation
+                            stage={getAnimationStage()}
+                            isAnimated={true}
+                            fill={ORANGE}
+                        />
+                    </View>
                 </View>
-                    )}
-
-                        </View>
-                <View style={styles.content}> 
+            </View>
+            <View style={styles.content}> 
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
-
-                {/* High Five Animation */}
-                <View style={styles.animationContainer}>
-                    <HighFiveAnimation stage={getAnimationStage()} />
-                </View>
-                </View>
-
-
+            </View>
         </View>
     );
 }
@@ -235,20 +238,21 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: 8,
     },
     content: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // backgroundColor: LIGHT_BEIGE,
+    },
+    nameContainer: {
+        flexDirection: 'row',
 
     },
-    animationContainer: {
-        marginTop: 8,
-        alignItems: 'flex-end',
-        // backgroundColor: 'red',
+    topRightContainer: {
+        flexDirection: 'column',
+        
     },
+
     timeText: {
         fontSize: 16,
         fontWeight: '600',
@@ -262,27 +266,19 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         fontFamily: CustomFonts.ztnatureregular,
     },
-    nameContainer: {
-        flexDirection: 'row',
-        //flex: 1,
-    },
+
     flower: {
         height:65,
         width: 65,
-        marginTop: -35,
+        marginTop: -30,
         marginLeft: -25,
         position: 'absolute',
-        //transform: [{ rotate: '240deg' }],
 
     },
     nameText: {
         fontSize: 30,
         fontWeight: '600',
         color: CORNFLOWER_BLUE,
-        marginBottom: 4,
-        marginLeft: 20,
-        // backgroundColor: PEACH,
-
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
@@ -296,16 +292,22 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturelight,
     },
     buttonContainer: {
-        // flexDirection: 'row',
+        flexDirection: 'row',
+        // alignItems: 'flex-end',
+        justifyContent: 'flex-end',
         gap: 8,
+    },
+    animationContainer: {
+        // position: 'absolute',
+        // marginLeft: -100,
+        marginTop: 10,
+
     },
     acceptButton: {
         //borderWidth: 1,
-        borderColor: BRIGHT_GREEN,
         borderRadius: 4,
-        backgroundColor: CREAM,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
+        //backgroundColor: CREAM,
+
     },
     acceptButtonText: {
         color: ORANGE,
@@ -316,8 +318,7 @@ const styles = StyleSheet.create({
     },
     rejectButton: {
         borderRadius: 4,
-        paddingHorizontal: 10,
-        paddingVertical: 4,
+
     },
     rejectButtonText: {
         color: BURGUNDY,
@@ -327,8 +328,7 @@ const styles = StyleSheet.create({
     },
     acceptedLabel: {
         backgroundColor: BRIGHT_GREEN,
-        paddingHorizontal: 12,
-        paddingVertical: 6,
+
         borderRadius: 4,
 
     },

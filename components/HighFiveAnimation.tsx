@@ -8,20 +8,30 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequ
 
 interface HighFiveAnimationProps {
     stage: 'initial' | 'moving' | 'complete';
+    isAnimated: boolean;
+    fill: string;
 }
 
-export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): React.JSX.Element {
+const scale = 1;
+
+export default function HighFiveAnimation({ stage, isAnimated, fill }: HighFiveAnimationProps): React.JSX.Element {
     // Animation values
-    const leftHandX = useSharedValue(-60);
-    const rightHandX = useSharedValue(60);
-    const leftHandRotation = useSharedValue(0);
-    const rightHandRotation = useSharedValue(0);
-    const burstOpacity = useSharedValue(0);
-    const burstScale = useSharedValue(10);
+    const leftHandX = useSharedValue(isAnimated ? -60 : -10);
+    const rightHandX = useSharedValue(isAnimated ? 60 : 10);
+    const leftHandRotation = useSharedValue(isAnimated ? 0 : -5);
+    const rightHandRotation = useSharedValue(isAnimated ? 0 : 5);
+    const burstOpacity = useSharedValue(isAnimated ? 0 : 1);
+    const burstScale = useSharedValue(isAnimated ? 10 : 1);
     const lineOpacity = useSharedValue(1);
     const lineDistance = useSharedValue(120);
 
+
     useEffect(() => {
+        if (!isAnimated) {
+            burstOpacity.value = withDelay(250, withTiming(1, { duration: 300 }));
+            burstScale.value = withDelay(250, withSpring(1, { damping: 8, stiffness: 100 }));
+            return;
+        }
         if (stage === 'initial') {
             // Stage 1: Hands apart with dotted line
             leftHandX.value = withTiming(-60, { duration: 300 });
@@ -43,11 +53,11 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
             // Swing and clap motion
             leftHandX.value = withSequence(
                 withTiming(-35, { duration: 150, easing: Easing.out(Easing.quad) }),
-                withTiming(-25, { duration: 100, easing: Easing.in(Easing.quad) })
+                withTiming(-10, { duration: 100, easing: Easing.in(Easing.quad) })
             );
             rightHandX.value = withSequence(
                 withTiming(35, { duration: 150, easing: Easing.out(Easing.quad) }),
-                withTiming(25, { duration: 100, easing: Easing.in(Easing.quad) })
+                withTiming(10, { duration: 100, easing: Easing.in(Easing.quad) })
             );
 
             // Rotation for swing effect
@@ -93,7 +103,7 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
         <View style={styles.container}>
             {/* Left hand */}
             <Animated.View style={[styles.hand, leftHandStyle]}>
-                <HighFiveLeft fill={ORANGE} width={40} height={40} />
+                <HighFiveLeft fill={fill || ORANGE} width={40} height={40} />
             </Animated.View>
 
             {/* Dotted line connecting them */}
@@ -113,12 +123,12 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
 
             {/* Right hand */}
             <Animated.View style={[styles.hand, rightHandStyle]}>
-                <HighFiveRight fill={ORANGE} width={40} height={40} />
+                <HighFiveRight fill={fill || ORANGE} width={40} height={40} />
             </Animated.View>
 
             {/* Clap burst - only visible when complete */}
             <Animated.View style={[styles.burst, burstStyle]}>
-                <ClapBurst fill={ORANGE} width={50} height={50} />
+                <ClapBurst fill={fill || ORANGE} width={50} height={50} />
             </Animated.View>
         </View>
     );
@@ -126,16 +136,16 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
 
 const styles = StyleSheet.create({
     container: {
-        width: 200,
-        height: 60,
+        width: 150,
+        // height: 40,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
     },
     hand: {
         position: 'absolute',
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
     },
     lineContainer: {
         position: 'absolute',
@@ -152,7 +162,7 @@ const styles = StyleSheet.create({
         opacity: 1,
         width: 25,
         height: 25,
-        marginTop: -25,
-        marginLeft: -25,
+        marginTop: -30,
+        marginLeft: -5,
     },
 });

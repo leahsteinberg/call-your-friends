@@ -1,7 +1,5 @@
 // TO BE DELETED (but ask before you delete it)
-
-
-import HighFiveAnimation from "@/components/HighFiveAnimation";
+import HighFiveStar from "@/assets/images/high-five-star.svg";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
@@ -89,9 +87,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
             </View>
                         
                 {/* High Five Animation */}
-                <View style={styles.animationContainer}>
-                    <HighFiveAnimation stage={'complete'} />
-                </View>
+                <HighFiveStar fill={ORANGE} height={20} width={20}/>
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -151,6 +147,5 @@ const styles = StyleSheet.create({
     animationContainer: {
         marginTop: 8,
         alignItems: 'flex-end',
-        // backgroundColor: 'red',
     },
 });
