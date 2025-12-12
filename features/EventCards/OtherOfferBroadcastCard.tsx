@@ -6,16 +6,16 @@ import {
     useRejectBroadcastMutation,
     useTryAcceptBroadcastMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, LIGHT_BEIGE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
+import HighFiveAnimation from "../../components/HighFiveAnimation";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
-import HighFiveAnimation from "./HighFiveAnimation";
 
 interface OtherOfferBroadcastCardProps {
     offer: ProcessedOfferType;
@@ -90,6 +90,10 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const handleAccept = async () => {
         try {
             setIsAccepting(true);
+            // Wait for high-five animation to complete before accepting
+            setIsAccepted(true);
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
             await acceptBroadcast({ userId, offerId }).unwrap();
             setIsAccepted(true);
             // RTK Query will auto-refresh via cache invalidation
@@ -174,7 +178,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
     return (
         <View style={styles.container}>
-            <View style={styles.content}>
+            <View style={styles.header}>
                 <View style={styles.nameContainer}>
                     <Animated.View style={[styles.flower, animatedFlowerStyle]}>
                         <FlowerBlob
@@ -183,30 +187,32 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                     </Animated.View>
                     <Text style={styles.nameText}>{getFromName()}</Text>
                 </View>
+                {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
+                    <View style={styles.buttonContainer}>
+                        {!hasTried ? (
+                            <>
+                                {renderTryAcceptButton()}
+                            </>
+                        ) : (
+                            <>
+                                {/* After successful try: ACCEPT + CANCEL */}
+                                {renderAcceptButton()}
+                                {renderRejectButton('Cancel call')}
+                            </>
+                        )}
+            </View>
+                    )}
+                        </View>
+                <View style={styles.content}> 
                 <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
 
                 {/* High Five Animation */}
                 <View style={styles.animationContainer}>
                     <HighFiveAnimation stage={getAnimationStage()} />
                 </View>
-            </View>
+                </View>
 
-                {/* Show buttons if offer is open and not yet accepted */}
-            {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
-                <View style={styles.buttonContainer}>
-                    {!hasTried ? (
-                        <>
-                            {renderTryAcceptButton()}
-                        </>
-                    ) : (
-                        <>
-                            {/* After successful try: ACCEPT + CANCEL */}
-                            {renderAcceptButton()}
-                            {renderRejectButton('Cancel call')}
-                        </>
-                    )}
-                    </View>
-                )}
+
         </View>
     );
 }
@@ -219,8 +225,8 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
         overflow: 'visible',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
 
     },
     header: {
@@ -230,12 +236,15 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     content: {
-        // backgroundColor: PEACH,
-        // flexDirection: 'row',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        backgroundColor: LIGHT_BEIGE,
+
     },
     animationContainer: {
         marginTop: 8,
-        alignItems: 'center',
+        alignItems: 'flex-end',
+        backgroundColor: 'red',
     },
     timeText: {
         fontSize: 16,
@@ -253,7 +262,6 @@ const styles = StyleSheet.create({
     nameContainer: {
         flexDirection: 'row',
         //flex: 1,
-
     },
     flower: {
         height:65,

@@ -1,11 +1,10 @@
+import ClapBurst from '@/assets/images/clap-burst.svg';
 import HighFiveLeft from '@/assets/images/high-five-left.svg';
 import HighFiveRight from '@/assets/images/high-five-right.svg';
-import ClapBurst from '@/assets/images/clap-burst.svg';
-import { ORANGE } from "@/styles/styles";
+import { CORNFLOWER_BLUE, ORANGE } from "@/styles/styles";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from "react-native-reanimated";
-import Svg, { Line } from 'react-native-svg';
 
 interface HighFiveAnimationProps {
     stage: 'initial' | 'moving' | 'complete';
@@ -18,8 +17,9 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
     const leftHandRotation = useSharedValue(0);
     const rightHandRotation = useSharedValue(0);
     const burstOpacity = useSharedValue(0);
-    const burstScale = useSharedValue(0);
+    const burstScale = useSharedValue(10);
     const lineOpacity = useSharedValue(1);
+    const lineDistance = useSharedValue(120);
 
     useEffect(() => {
         if (stage === 'initial') {
@@ -29,12 +29,12 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
             leftHandRotation.value = withTiming(0, { duration: 300 });
             rightHandRotation.value = withTiming(0, { duration: 300 });
             burstOpacity.value = withTiming(0, { duration: 200 });
-            burstScale.value = withTiming(0, { duration: 200 });
+            burstScale.value = withTiming(1, { duration: 200 });
             lineOpacity.value = withTiming(1, { duration: 300 });
         } else if (stage === 'moving') {
             // Stage 2: Hands move closer together
-            leftHandX.value = withTiming(-25, { duration: 600, easing: Easing.inOut(Easing.ease) });
-            rightHandX.value = withTiming(25, { duration: 600, easing: Easing.inOut(Easing.ease) });
+            leftHandX.value = withTiming(-50, { duration: 600, easing: Easing.inOut(Easing.ease) });
+            rightHandX.value = withTiming(50, { duration: 600, easing: Easing.inOut(Easing.ease) });
             lineOpacity.value = withTiming(0.3, { duration: 600 });
         } else if (stage === 'complete') {
             // Stage 3: Clap animation with swing
@@ -42,12 +42,12 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
 
             // Swing and clap motion
             leftHandX.value = withSequence(
-                withTiming(-15, { duration: 150, easing: Easing.out(Easing.quad) }),
-                withTiming(-5, { duration: 100, easing: Easing.in(Easing.quad) })
+                withTiming(-35, { duration: 150, easing: Easing.out(Easing.quad) }),
+                withTiming(-25, { duration: 100, easing: Easing.in(Easing.quad) })
             );
             rightHandX.value = withSequence(
-                withTiming(15, { duration: 150, easing: Easing.out(Easing.quad) }),
-                withTiming(5, { duration: 100, easing: Easing.in(Easing.quad) })
+                withTiming(35, { duration: 150, easing: Easing.out(Easing.quad) }),
+                withTiming(25, { duration: 100, easing: Easing.in(Easing.quad) })
             );
 
             // Rotation for swing effect
@@ -97,8 +97,8 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
             </Animated.View>
 
             {/* Dotted line connecting them */}
-            <Animated.View style={[styles.lineContainer, lineStyle]}>
-                <Svg height="2" width="100" style={styles.line}>
+            {/* <Animated.View style={[styles.lineContainer, lineStyle]}>
+                <Svg height="2" width="80" style={styles.line}>
                     <Line
                         x1="0"
                         y1="1"
@@ -109,7 +109,7 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
                         strokeDasharray="5,5"
                     />
                 </Svg>
-            </Animated.View>
+            </Animated.View> */}
 
             {/* Right hand */}
             <Animated.View style={[styles.hand, rightHandStyle]}>
@@ -118,7 +118,7 @@ export default function HighFiveAnimation({ stage }: HighFiveAnimationProps): Re
 
             {/* Clap burst - only visible when complete */}
             <Animated.View style={[styles.burst, burstStyle]}>
-                <ClapBurst fill={ORANGE} width={50} height={50} />
+                <ClapBurst fill={CORNFLOWER_BLUE} width={50} height={50} />
             </Animated.View>
         </View>
     );
@@ -139,6 +139,8 @@ const styles = StyleSheet.create({
     },
     lineContainer: {
         position: 'absolute',
+        marginTop: 35,
+        marginLeft: 22,
         width: 100,
         height: 2,
     },
@@ -147,7 +149,10 @@ const styles = StyleSheet.create({
     },
     burst: {
         position: 'absolute',
-        width: 50,
-        height: 50,
+        opacity: 1,
+        width: 25,
+        height: 25,
+        marginTop: -25,
+        marginLeft: -25,
     },
 });
