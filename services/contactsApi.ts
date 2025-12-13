@@ -1,5 +1,6 @@
 import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { meetingApi } from "./meetingApi";
 
 export const contactsApi = createApi({
     reducerPath: 'contactsApi',
@@ -60,6 +61,45 @@ export const contactsApi = createApi({
                 method: 'POST',
                 body: { userId, friendRequestId, token },
             })
+        }),
+        callIntent: builder.mutation({
+            query: ({userId, userToId}) => ({
+                url: '/api/call-intent',
+                method: 'POST',
+                body: { userId, userToId },
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    // Invalidate Meeting tag to refresh meetings
+                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
+                } catch (error) {
+                    // Handle error if needed
+                }
+            },
+        }),
+        undoCallIntent: builder.mutation({
+            query: ({userId, userToId}) => ({
+                url: '/api/undo-call-intent',
+                method: 'POST',
+                body: { userId, userToId },
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    // Invalidate Meeting tag to refresh meetings
+                    dispatch(meetingApi.util.invalidateTags(['Meeting']));
+                } catch (error) {
+                    // Handle error if needed
+                }
+            },
+        }),
+        userCalled: builder.mutation({
+            query: ({userId, userToId}) => ({
+                url: '/api/user-called',
+                method: 'POST',
+                body: { userId, userToId },
+            })
         })
     })
 });
@@ -73,12 +113,15 @@ const {
     useGetSentInvitesMutation,
     useGetFriendInvitesMutation,
     useAcceptFriendRequestMutation,
+    useCallIntentMutation,
+    useUndoCallIntentMutation,
+    useUserCalledMutation,
     } = contactsApi;
 
 export {
     useAcceptFriendRequestMutation, useAcceptInviteSignInMutation,
     useAcceptInviteSignUpMutation,
-    useCreateInviteMutation, useGetFriendInvitesMutation, useGetFriendsMutation,
-    useGetSentInvitesMutation, useUserByPhoneMutation
+    useCallIntentMutation, useCreateInviteMutation, useGetFriendInvitesMutation, useGetFriendsMutation,
+    useGetSentInvitesMutation, useUndoCallIntentMutation, useUserByPhoneMutation, useUserCalledMutation
 };
 

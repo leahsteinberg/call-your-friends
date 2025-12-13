@@ -94,6 +94,7 @@ export interface FriendProps {
   item: {
     name: string;
     phoneNumber: string;
+    id: string;
     index?: number;
   };
 }
