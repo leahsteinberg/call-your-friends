@@ -105,6 +105,7 @@ export interface FriendRequestProps {
       phoneNumber: string;
     };
     index?: number;
+    token: string;
   };
 }
 
