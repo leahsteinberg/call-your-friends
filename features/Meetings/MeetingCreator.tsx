@@ -7,6 +7,7 @@ import { Animated, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimens
 import { useSelector } from "react-redux";
 import UnifiedDateTimePicker from "./UnifiedDateTimePicker";
 import { displayDateTime } from "./meetingsUtils";
+import { FUTURE_TIME_TYPE, OPEN_TARGET_TYPE, USER_INTENT_SOURCE_TYPE } from "./types";
 
 // refreshMeetings is now optional - cache tags auto-refetch when createMeeting invalidates 'Meeting' tag
 export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () => void}) {
@@ -48,6 +49,9 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                 userFromId: userId,
                 scheduledFor,
                 scheduledEnd: scheduledEnd.toISOString(),
+                targetType: OPEN_TARGET_TYPE,
+                timeType: FUTURE_TIME_TYPE,
+                sourceType: USER_INTENT_SOURCE_TYPE,
             }).unwrap();
         } catch (error) {
             console.error("Error creating meeting:", error);

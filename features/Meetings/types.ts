@@ -6,6 +6,18 @@ export type TimeType = 'IMMEDIATE' | 'FUTURE' | 'UNKNOWN';
 export type TargetType = 'OPEN' | 'FRIEND_SPECIFIC' | 'GROUP';
 export type SourceType = 'USER_INTENT' | 'SYSTEM_PATTERN' | 'SYSTEM_REAL_TIME';
 
+export const IMMEDIATE_TIME_TYPE = 'IMMEDIATE';
+export const FUTURE_TIME_TYPE = 'FUTURE';
+export const UNKNOWN_TIME_TYPE = 'UNKNOWN';
+
+export const OPEN_TARGET_TYPE = 'OPEN';
+export const FRIEND_SPECIFIC_TARGET_TYPE = 'FRIEND_SPECIFIC';
+export const GROUP_TARGET_TYPE = 'GROUP';
+
+export const USER_INTENT_SOURCE_TYPE = 'USER_INTENT';
+export const SYSTEM_PATTERN_SOURCE_TYPE = 'SYSTEM_PATTERN';
+export const SYSTEM_REAL_TIME_SOURCE_TYPE = 'SYSTEM_REAL_TIME';
+
 export type BroadcastSubState = 'CLAIMED' | 'UNCLAIMED' | 'PENDING_CLAIMED';
 
 export interface BroadcastMetadata {

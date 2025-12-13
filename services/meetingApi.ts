@@ -26,11 +26,23 @@ export const meetingApi = createApi({
                 userFromId,
                 scheduledFor,
                 scheduledEnd,
-                title
+                title,
+                targetType,
+                timeType,
+                sourceType,
             }) => ({
                 url: '/api/create-meeting',
                 method: 'POST',
-                body: { userFromId, scheduledFor, scheduledEnd, title},
+                body: {
+                    userFromId,
+                    scheduledFor,
+                    scheduledEnd,
+                    sourceType,
+                    targetType,
+                    title,
+                    timeType,
+
+                },
             }),
             // Step 3: invalidatesTags tells RTK Query:
             // "After this mutation succeeds, any cached data tagged 'Meeting' is stale"

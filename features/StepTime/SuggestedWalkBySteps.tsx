@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
+import { FUTURE_TIME_TYPE, OPEN_TARGET_TYPE, SYSTEM_PATTERN_SOURCE_TYPE } from "../Meetings/types";
 import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
@@ -108,7 +109,10 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
                 userFromId: userId,
                 scheduledFor,
                 scheduledEnd: scheduledEnd.toISOString(),
-                title: '',
+                title: 'Meeting based on past walk schedule',
+                timeType: FUTURE_TIME_TYPE,
+                targetType: OPEN_TARGET_TYPE,
+                sourceType: SYSTEM_PATTERN_SOURCE_TYPE,
             }).unwrap();
 
             // Mark as created and disable the button
