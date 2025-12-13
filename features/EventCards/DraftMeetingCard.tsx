@@ -11,7 +11,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeUntil } from "../Meetings/meetingsUtils";
+import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface DraftMeetingCardProps {
@@ -43,7 +43,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
             <Text style={styles.searchingText}>
                 <Text>{eventCardText.meeting_self_open.title()}{'\n'}</Text>
                 <View style={styles.displayTimeContainer}>
-                    <Text style={styles.searchingText}>in {displayTimeUntil(meeting.scheduledFor)}</Text>
+                    <Text style={styles.searchingText}>in {displayTimeDifference(meeting.scheduledFor)}</Text>
                     <AnimatedText
                         text="..."
                         style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
@@ -61,7 +61,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         return (
         <View style={styles.searchingText}>
             <Text style={styles.searchingText}>
-                {eventCardText.meeting_self_accepted.title(name)}{displayTimeUntil(meeting.scheduledFor)}
+                {eventCardText.meeting_self_accepted.title(name)}{displayTimeDifference(meeting.scheduledFor)}
             </Text>
         </View>
     );

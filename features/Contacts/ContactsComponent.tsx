@@ -1,6 +1,11 @@
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
+import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
+import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
+import { CORNFLOWER_BLUE } from "@/styles/styles";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,11 +15,6 @@ import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, FriendRequest, ProcessedSentInvite } from "./types";
-import { usePostSignOutMutation } from "@/services/authApi";
-import { clearAuth } from "@/features/Auth/authSlice";
-import { router } from "expo-router";
-import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE } from "@/styles/styles";
 
 
 export default function ContactsComponent(): React.JSX.Element {
@@ -48,7 +48,9 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchSentInvites = async () => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
+        console.log("SENT INVITES", sentInvitesResult)
         if (sentInvitesResult && sentInvitesResult.data) {
+            
             dispatch(setSentInvites(sentInvitesResult.data));
             const processed = await processSentInvites(sentInvitesResult.data);
             setProcessedSentInvites(processed);

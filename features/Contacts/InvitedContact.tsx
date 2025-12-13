@@ -2,6 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { BRIGHT_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import { InvitedContactProps } from "./types";
 
 export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
@@ -11,7 +12,7 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
       <View style={styles.header}>
         <Text style={styles.mainText}>Waiting for friend</Text>
       </View>
-      <Text style={styles.subtitle}>Invited {contact.item.displayCreatedAt}</Text>
+      <Text style={styles.subtitle}>Invited {displayTimeDifference(contact.item.createdAt)}</Text>
     </View>
   );
 }

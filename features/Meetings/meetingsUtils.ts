@@ -24,7 +24,7 @@ export const processOffers = async (offers: any[]): Promise<any[]> => {
                 ...offer,
                 scheduledFor: offer.meeting.scheduledFor,
                 displayScheduledFor: await displayDateTime(offer.meeting.scheduledFor),
-                displayExpiresAt: displayTimeUntil(offer.expiresAt),
+                displayExpiresAt: displayTimeDifference(offer.expiresAt),
             })
         )
         const offersWithDisplayTime = await Promise.all(offersWithDislayTimePromises);
@@ -37,7 +37,7 @@ export const processSentInvites = async (sentInvites: SentInvite[]): Promise<Pro
         .map(async (invite): Promise<ProcessedSentInvite> =>
             ({
                 ...invite,
-                displayCreatedAt: await displayDate(invite.createdAt)
+                displayCreatedAt: await displayDateTime(invite.createdAt)
             })
         );
     const invitesWithDisplayTime = await Promise.all(invitesWithDisplayTimePromises);
@@ -59,27 +59,27 @@ export const displayDateTime = async (dateTime: string): Promise<string> => {
     return displayTimeString;
 };
 
-export const displayTimeUntil = (dateTime: string): string => {
-    /// if less than 12 hours, return "x hours" or "x minutes"
-    // if 12 hours or more, count calendar day differences and return "x days"
+export const displayTimeDifference = (dateTime: string): string => {
+    // Handles both past and future times
+    // For future: "x minutes", "x hours", "x days"
+    // For past: "x minutes ago", "x hours ago", "x days ago"
     const targetDate = new Date(dateTime);
     const now = new Date();
     const diffMs = targetDate.getTime() - now.getTime();
+    const isPast = diffMs < 0;
+    const absDiffMs = Math.abs(diffMs);
 
-    // If already expired
-    if (diffMs <= 0) {
-        return 'expired';
-    }
-
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffHours = Math.floor(absDiffMs / (1000 * 60 * 60));
 
     // For durations less than 12 hours, use time-based calculation
     if (diffHours < 12) {
         if (diffHours < 1) {
-            const diffMinutes = Math.floor(diffMs / (1000 * 60));
-            return diffMinutes <= 1 ? '1 minute' : `${diffMinutes} minutes`;
+            const diffMinutes = Math.floor(absDiffMs / (1000 * 60));
+            const timeStr = diffMinutes <= 1 ? '1 minute' : `${diffMinutes} minutes`;
+            return isPast ? `${timeStr} ago` : timeStr;
         }
-        return diffHours === 1 ? '1 hour' : `${diffHours} hours`;
+        const timeStr = diffHours === 1 ? '1 hour' : `${diffHours} hours`;
+        return isPast ? `${timeStr} ago` : timeStr;
     }
 
     // For durations 12 hours or more, count calendar day differences
@@ -88,9 +88,10 @@ export const displayTimeUntil = (dateTime: string): string => {
     const targetDateOnly = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
 
     // Calculate calendar day difference
-    const calendarDaysDiff = Math.round((targetDateOnly.getTime() - nowDateOnly.getTime()) / (1000 * 60 * 60 * 24));
+    const calendarDaysDiff = Math.abs(Math.round((targetDateOnly.getTime() - nowDateOnly.getTime()) / (1000 * 60 * 60 * 24)));
 
-    return calendarDaysDiff === 1 ? '1 day' : `${calendarDaysDiff} days`;
+    const timeStr = calendarDaysDiff === 1 ? '1 day' : `${calendarDaysDiff} days`;
+    return isPast ? `${timeStr} ago` : timeStr;
 };
 
 

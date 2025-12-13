@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeUntil } from "../Meetings/meetingsUtils";
+import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OfferCardProps {
@@ -66,7 +66,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     };
 
     const getMainText = () => {
-        return `${eventCardText.open_offer.title(getFromName())}${displayTimeUntil(offer.scheduledFor)}`
+        return `${eventCardText.open_offer.title(getFromName())}${displayTimeDifference(offer.scheduledFor)}`
     };
 
     return (
