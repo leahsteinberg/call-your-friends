@@ -10,7 +10,7 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
   return (
     <View style={styles.container} key={contact.index}>
       <View style={styles.header}>
-        <Text style={styles.mainText}>Waiting for friend</Text>
+        <Text style={styles.mainText}>Waiting for friend ({contact.item.userToPhoneNumber})</Text>
       </View>
       <Text style={styles.subtitle}>Invited {displayTimeDifference(contact.item.createdAt)}</Text>
     </View>
