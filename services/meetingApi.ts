@@ -2,6 +2,17 @@ import { HOST_WITH_PORT } from "@/environment";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { offerApi } from "./offersApi";
 
+
+const invalidateOffersOnSuccess = async (_arg: any, { dispatch, queryFulfilled }: any) => {
+    try {
+        await queryFulfilled;
+        // After successful mutation, invalidate offer tag in meetingApi
+        dispatch(offerApi.util.invalidateTags(['Offer']));
+    } catch (error) {
+        // Handle error if needed
+    }
+};
+
 export const meetingApi = createApi({
     reducerPath: 'meetingApi',
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
@@ -46,6 +57,7 @@ export const meetingApi = createApi({
             }),
             // Same pattern: deleting a meeting invalidates the cached meetings list
             invalidatesTags: ['Meeting'],
+            onQueryStarted: invalidateOffersOnSuccess,
         }),
         broadcastNow: builder.mutation({
             query: ({ userId }) => ({
