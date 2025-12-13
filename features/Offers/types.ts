@@ -1,13 +1,11 @@
 import { OfferState } from "@/types/meetings-offers";
 import { BroadcastMetadata, MeetingEvent, MeetingType } from "../Meetings/types";
 
-export type OfferTypeValue = 'ADVANCE' | 'BROADCAST';
-
+// Offer type is now determined by the meeting it references
 export interface OfferType extends MeetingEvent {
     meetingId: string;
     offerState: OfferState;
-    offerType: OfferTypeValue;
-    //scheduledFor: string;
+    // offerType removed - use meeting.timeType and meeting.targetType instead
 }
 
 export interface ProcessedOfferType extends OfferType {
