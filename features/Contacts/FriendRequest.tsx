@@ -1,10 +1,10 @@
+import { CustomFonts } from "@/constants/theme";
 import { useAcceptFriendRequestMutation } from "@/services/contactsApi";
-import { BRIGHT_GREEN, BURGUNDY, CREAM, ORANGE, PEACH } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
-import PhoneNumberDisplay from "../Common/PhoneNumberDisplay";
 import { FriendRequestProps } from "./types";
 
 export default function FriendRequest({ item }: FriendRequestProps): React.JSX.Element {
@@ -28,88 +28,83 @@ export default function FriendRequest({ item }: FriendRequestProps): React.JSX.E
   };
 
   return (
-    <View style={[styles.container, isAccepted && styles.acceptedContainer]} key={item.index}>
-      <View style={styles.infoContainer}>
+    <View style={styles.container} key={item.index}>
+      <View style={styles.header}>
         <Text style={styles.name}>{item.userFrom.name}</Text>
-        <PhoneNumberDisplay digits={item.userFrom.phoneNumber}/>
+        <View style={styles.buttonContainer}>
+          {!isAccepted ? (
+            <TouchableOpacity
+              onPress={handleAccept}
+              style={styles.acceptButton}
+              disabled={isAccepting}
+            >
+              {isAccepting ? (
+                <ActivityIndicator size="small" color={CHOCOLATE_COLOR} />
+              ) : (
+                <Text style={styles.acceptButtonText}>Accept</Text>
+              )}
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.acceptedLabel}>
+              <Text style={styles.acceptedText}>Accepted</Text>
+            </View>
+          )}
+        </View>
       </View>
 
-      {!isAccepted ? (
-        <TouchableOpacity
-          onPress={handleAccept}
-          style={styles.acceptButton}
-          disabled={isAccepting}
-        >
-          {isAccepting ? (
-            <ActivityIndicator size="small" color={BRIGHT_GREEN} />
-          ) : (
-            <Text style={styles.acceptButtonText}>Accept</Text>
-          )}
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.acceptedLabel}>
-          <Text style={styles.acceptedText}>Accepted</Text>
-        </View>
-      )}
+      <Text style={styles.subtitle}>Friend Request</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
     container: {
+      backgroundColor: PALE_BLUE,
+      borderRadius: 8,
+      padding: 12,
+      marginBottom: 8,
+      marginHorizontal: 10,
+    },
+    header: {
       flexDirection: 'row',
-      backgroundColor: PEACH,
-      borderWidth: 2,
-      borderColor: ORANGE,
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginVertical: 3,
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      marginHorizontal: 10,
-      borderRadius: 15,
-      flex: 1,
-    },
-    acceptedContainer: {
-      backgroundColor: CREAM,
-      borderColor: BRIGHT_GREEN,
-    },
-    infoContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      flex: 1,
+      marginBottom: 4,
     },
     name: {
-      color: BURGUNDY,
-      fontWeight: 900,
-      flexGrow: 1,
-      paddingVertical: 10,
-      borderRadius: 18,
-      paddingLeft: 5,
+      fontSize: 20,
+      fontWeight: '600',
+      color: ORANGE,
+      fontFamily: CustomFonts.ztnaturebold,
+      flexShrink: 1,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
     },
     acceptButton: {
-      backgroundColor: BRIGHT_GREEN,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 8,
-      minWidth: 80,
-      alignItems: 'center',
-      justifyContent: 'center',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
     },
     acceptButtonText: {
-      color: CREAM,
-      fontSize: 14,
+      color: CHOCOLATE_COLOR,
+      fontSize: 12,
       fontWeight: '600',
+      fontFamily: CustomFonts.ztnaturebold,
     },
     acceptedLabel: {
-      backgroundColor: BRIGHT_GREEN,
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
     },
     acceptedText: {
-      color: CREAM,
-      fontSize: 14,
+      color: BRIGHT_GREEN,
+      fontSize: 12,
       fontWeight: '600',
+      fontFamily: CustomFonts.ztnaturebold,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: BRIGHT_BLUE,
+      fontFamily: CustomFonts.ztnatureregular,
     },
 });

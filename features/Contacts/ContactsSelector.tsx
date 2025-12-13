@@ -2,7 +2,7 @@ import { useCreateInviteMutation, useUserByPhoneMutation } from "@/services/cont
 import { CREAM, ORANGE } from "@/styles/styles";
 import * as Contacts from "expo-contacts";
 import React, { useEffect, useState } from "react";
-import { Alert, Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import { addSentInvite } from "./contactsSlice";
@@ -83,33 +83,37 @@ export default function ContactsSelector() {
     };
 
     return (
-        <View style={styles.container} >
-            <TouchableOpacity style={styles.button} onPress={openContactsPicker}>
-                <Text style={styles.text}>Add a friend from your phone contacts.</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.fab} onPress={openContactsPicker}>
+            <Text style={styles.fabText}>+</Text>
+        </TouchableOpacity>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-         alignItems: 'center',
-    },
-    button: {
+    fab: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
         backgroundColor: ORANGE,
-        margin: 5,
-        padding: 10,
-        borderRadius: 20,
+        width: 56,
+        height: 56,
+        borderRadius: 28,
         justifyContent: 'center',
         alignItems: 'center',
-        width: '60%',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        zIndex: 1000,
     },
-    text: {
-        textAlign: 'center',
+    fabText: {
+        fontSize: 32,
         color: CREAM,
-        fontWeight: 600,
-        //backgroundColor: 'white',
-    },
-    buttonContainer: {
+        fontWeight: '300',
+        lineHeight: 32,
     },
 })

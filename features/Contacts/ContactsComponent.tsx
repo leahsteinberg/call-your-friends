@@ -2,7 +2,7 @@ import { DEV_FLAG } from "@/environment";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import React, { useEffect, useState } from "react";
-import { Keyboard, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -32,12 +32,6 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
-
-    const DismissKeyboard = ({ children }: { children: React.ReactNode }) => (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
-          {children}
-        </TouchableWithoutFeedback>
-      );
 
     const handleSignOut = async () => {
         try {
@@ -93,25 +87,21 @@ export default function ContactsComponent(): React.JSX.Element {
                     <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
-            <DismissKeyboard>
-                <View  style={styles.selectorComponent}>
-                    <ContactsSelector />
-                </View>
-            </DismissKeyboard>
             { DEV_FLAG &&
                 <View style={styles.inviteComponent}>
                     <InvitePhoneNumber />
                 </View>
             }
-                <View style={styles.listComponent}>
-                    <ContactsList
-                        friends={friends}
-                        friendRequests={friendRequests}
-                        sentInvites={processedSentInvites}
-                        onRefresh={handleRefresh}
-                        refreshing={refreshing}
-                    />
-                </View>
+            <View style={styles.listComponent}>
+                <ContactsList
+                    friends={friends}
+                    friendRequests={friendRequests}
+                    sentInvites={processedSentInvites}
+                    onRefresh={handleRefresh}
+                    refreshing={refreshing}
+                />
+            </View>
+            <ContactsSelector />
         </View>
     );
 }
@@ -156,10 +146,6 @@ const styles = StyleSheet.create({
         flexShrink: 0,
         //flex: 1,
     },
-    selectorComponent: {
-        flexShrink: 0,
-        //flex: 1,
-    }
 });
 
 

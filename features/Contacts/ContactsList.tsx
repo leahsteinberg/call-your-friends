@@ -1,4 +1,5 @@
-import { CREAM, PALE_BLUE } from "@/styles/styles";
+import { CustomFonts } from "@/constants/theme";
+import { CREAM, DARK_GREEN } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
@@ -85,17 +86,17 @@ const styles = StyleSheet.create({
     },
     sectionList: {
         removeClippedSubviews: false,
-
     },
     sectionHeaderContainer: {
         backgroundColor: CREAM,
-        marginHorizontal: 10,
-        borderBottomLeftRadius: 5,
+        paddingHorizontal: 10,
+        paddingTop: 12,
+        paddingBottom: 8,
     },
     sectionHeader: {
-        paddingVertical:10,
-        backgroundColor: PALE_BLUE,
-        fontWeight: 'bold',
-        borderRadius: 5,
+        fontSize: 16,
+        fontWeight: '600',
+        color: DARK_GREEN,
+        fontFamily: CustomFonts.ztnaturemedium,
     }
 });
