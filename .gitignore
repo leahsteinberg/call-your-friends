@@ -2,9 +2,11 @@
 
 TODO
 new_schema_for_reference_12_12.prisma
+MIGRATION_PLAN.md
 constants/FONTS_USAGE_EXAMPLE.md
 # dependencies
 node_modules/
+.gitignore
 
 # Expo
 .expo/
