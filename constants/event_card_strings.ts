@@ -1,6 +1,6 @@
 export const eventCardText = {
     open_offer: {
-        title: (userName: string) => `Talk to ${userName} in `,
+        title: (userName: string) => `Talk to ${userName} `,
     },
     expired_offer: {
         title: (userName: string) => `Expired Offer from ${userName}`,
@@ -9,7 +9,7 @@ export const eventCardText = {
         title: (displayTime: string) => `Finding someone for a call`,
     },
     meeting_self_accepted: {
-        title: (userName: string) => `Talk with ${userName} in `,
+        title: (userName: string) => `Talk with ${userName} `,
     },
     meeting_self_rejected: {
         title: () => `We couldn't find someone to accept your meeting.`,

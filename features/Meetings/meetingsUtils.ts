@@ -76,10 +76,10 @@ export const displayTimeDifference = (dateTime: string): string => {
         if (diffHours < 1) {
             const diffMinutes = Math.floor(absDiffMs / (1000 * 60));
             const timeStr = diffMinutes <= 1 ? '1 minute' : `${diffMinutes} minutes`;
-            return isPast ? `${timeStr} ago` : timeStr;
+            return isPast ? `${timeStr} ago` : `in ${timeStr}`;
         }
         const timeStr = diffHours === 1 ? '1 hour' : `${diffHours} hours`;
-        return isPast ? `${timeStr} ago` : timeStr;
+        return isPast ? `${timeStr} ago` : `in ${timeStr}`;
     }
 
     // For durations 12 hours or more, count calendar day differences
@@ -91,7 +91,7 @@ export const displayTimeDifference = (dateTime: string): string => {
     const calendarDaysDiff = Math.abs(Math.round((targetDateOnly.getTime() - nowDateOnly.getTime()) / (1000 * 60 * 60 * 24)));
 
     const timeStr = calendarDaysDiff === 1 ? '1 day' : `${calendarDaysDiff} days`;
-    return isPast ? `${timeStr} ago` : timeStr;
+    return isPast ? `${timeStr} ago` : `in ${timeStr}`;
 };
 
 
