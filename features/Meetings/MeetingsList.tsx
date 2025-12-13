@@ -8,6 +8,7 @@ import OtherMeetingBroadcastCard from "../EventCards/OtherMeetingBroadcastCard";
 import OtherOfferBroadcastCard from "../EventCards/OtherOfferBroadcastCard";
 import SelfBroadcastCard from "../EventCards/SelfBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
+import { isBroadcastOffer } from "../Offers/offerHelpers";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
 import { isBroadcastMeeting } from "./meetingHelpers";
 
@@ -35,7 +36,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         title: "Offers:",
         data: offers,
         renderItem: ({ item }: { item: ProcessedOfferType }) => {
-            if (item.offerType === 'BROADCAST') {
+            if (isBroadcastOffer(item)) {
                 return <OtherOfferBroadcastCard offer={item} />;
             }
             return <OfferCard offer={item} />;
