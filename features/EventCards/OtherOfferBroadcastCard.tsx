@@ -1,4 +1,4 @@
-import HighFiveAnimation from "@/components/HighFiveAnimation";
+import FlowerBlob from '@/assets/images/flower-blob.svg';
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import {
@@ -11,7 +11,7 @@ import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
@@ -203,17 +203,16 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
+                    <Animated.View style={[styles.flower, animatedFlowerStyle]}>
+                        <FlowerBlob
+                            fill={ORANGE}
+                        />
+                    </Animated.View>
                     <Text style={styles.nameText}>{getFromName()}</Text>
                 </View>
                 <View style={styles.topRightContainer}>
                     {renderButtons()}
-                    <View style={styles.animationContainer}>
-                        <HighFiveAnimation
-                            stage={getAnimationStage()}
-                            isAnimated={true}
-                            fill={ORANGE}
-                        />
-                    </View>
+
                 </View>
             </View>
             <View style={styles.content}> 
