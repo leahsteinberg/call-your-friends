@@ -8,6 +8,8 @@
 import React from "react";
 import type { ProcessedMeetingType } from "../Meetings/types";
 import type { ProcessedOfferType } from "../Offers/types";
+import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
+import { isBroadcastOffer } from "../Offers/offerHelpers";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
 import OtherMeetingBroadcastCard from "./OtherMeetingBroadcastCard";
@@ -31,7 +33,7 @@ export function selectMeetingCard(
     meeting: ProcessedMeetingType,
     { userId, refresh }: CardSelectorProps
 ): React.JSX.Element {
-    if (meeting.meetingType === 'BROADCAST') {
+    if (isBroadcastMeeting(meeting)) {
         const selfCreated = meeting.userFromId === userId;
 
         if (selfCreated) {
@@ -60,7 +62,7 @@ export function selectOfferCard(
     offer: ProcessedOfferType,
     { refresh }: Pick<CardSelectorProps, 'refresh'>
 ): React.JSX.Element {
-    if (offer.offerType === 'BROADCAST') {
+    if (isBroadcastOffer(offer)) {
         // Other's broadcast in offer state
         return <OtherBroadcastCard offer={offer} />;
     }

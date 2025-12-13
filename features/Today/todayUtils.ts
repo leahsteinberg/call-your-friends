@@ -1,5 +1,7 @@
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
+import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
+import { isBroadcastOffer } from "../Offers/offerHelpers";
 
 export type TodayItem = {
     id: string;
@@ -28,14 +30,14 @@ export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: 
     items.forEach(item => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
-            if (meeting.meetingType === 'BROADCAST' && meeting.userFromId === userId) {
+            if (isBroadcastMeeting(meeting) && meeting.userFromId === userId) {
                 selfCreatedBroadcastMeetings.push(item);
             } else {
                 otherItems.push(item);
             }
         } else if (item.type === 'offer') {
             const offer = item.data as ProcessedOfferType;
-            if (offer.offerType === 'BROADCAST') {
+            if (isBroadcastOffer(offer)) {
                 broadcastOffers.push(item);
             } else {
                 otherItems.push(item);
