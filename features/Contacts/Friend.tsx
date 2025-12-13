@@ -28,7 +28,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleNeverMind = async () => {
     try {
-      await undoCallIntent({ userId, userToId: item.userId }).unwrap();
+      await undoCallIntent({ userId, userToId: item.id }).unwrap();
       setShowCallIntentActions(false);
     } catch (error) {
       console.error("Error undoing call intent:", error);
@@ -38,7 +38,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleCalled = async () => {
     try {
-      await userCalled({ userId, userToId: item.userId }).unwrap();
+      await userCalled({ userId, userToId: item.id }).unwrap();
       setShowCallIntentActions(false);
     } catch (error) {
       console.error("Error marking as called:", error);
