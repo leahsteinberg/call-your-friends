@@ -62,5 +62,5 @@ export interface MeetingDisplayProps {
     refreshMeetings?: () => void;
 }
 
-export type MeetingState = 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST';
+export type MeetingState = 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST' | 'DRAFT' | 'EXPIRED';
 
