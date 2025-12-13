@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeUntil } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 
 interface MeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -95,7 +96,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             dispatch(deleteMeetingOptimistic(meeting.id));
 
             // If this is a self-created broadcast meeting, turn off the broadcast toggle
-            if (selfCreatedMeeting && meeting.meetingType === 'BROADCAST') {
+            if (selfCreatedMeeting && isBroadcastMeeting(meeting)) {
                 dispatch(endBroadcast());
             }
         } catch (error) {

@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { ProcessedMeetingType } from "../Meetings/types";
+import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { ProcessedOfferType } from "../Offers/types";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
@@ -39,7 +40,7 @@ export default function TodayList(): React.JSX.Element {
     const hasSelfBroadcastMeeting = todayItems.some(item => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
-            return meeting.meetingType === 'BROADCAST' &&
+            return isBroadcastMeeting(meeting) &&
                    meeting.userFromId === userId &&
                    meeting.meetingState !== 'PAST';
         }

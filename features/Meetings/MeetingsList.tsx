@@ -9,6 +9,7 @@ import OtherOfferBroadcastCard from "../EventCards/OtherOfferBroadcastCard";
 import SelfBroadcastCard from "../EventCards/SelfBroadcastCard";
 import { ProcessedOfferType } from "../Offers/types";
 import { MeetingsListProps, ProcessedMeetingType } from "./types";
+import { isBroadcastMeeting } from "./meetingHelpers";
 
 
 export default function MeetingsList({ meetings, offers, refresh, refreshing }: MeetingsListProps) {
@@ -18,7 +19,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         title: "Chats Planned:",
         data: meetings,
         renderItem: ({ item }: { item: ProcessedMeetingType }) => {
-            if (item.meetingType === 'BROADCAST') {
+            if (isBroadcastMeeting(item)) {
                 // Check if user created this broadcast or accepted it
                 const selfCreated = item.userFromId === userId;
                 if (selfCreated) {
