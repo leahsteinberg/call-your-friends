@@ -5,7 +5,7 @@ import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-nativ
 import Friend from "./Friend";
 import FriendRequest from "./FriendRequest";
 import InvitedContact from "./InvitedContact";
-import { ContactsListProps, Friend as FriendType, FriendRequest as FriendRequestType, SentInvite } from "./types";
+import { ContactsListProps, Friend as FriendType } from "./types";
 
 interface ContactsListPropsExtended extends ContactsListProps {
     onRefresh?: () => void;
@@ -28,7 +28,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
     {
         title: "Friend Requests",
         data: friendRequests,
-        renderItem: ({ item, index }: { item: FriendRequestType; index: number }) =>
+        renderItem: ({ item, index }: { item: any; index: number }) =>
             (<FriendRequest item={{ ...item, index }} />)
     };
 
@@ -36,7 +36,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
     {
         title: "Waiting for these friends to join the fun:",
         data: sentInvites,
-        renderItem: ({ item, index }: { item: SentInvite; index: number }) =>
+        renderItem: ({ item, index }: { item: any; index: number }) =>
             (<InvitedContact contact={{ item, index }} />)
     };
 
@@ -57,16 +57,16 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
     return (
         <View style={styles.container}>
             <SectionList
-            style={styles.sectionList}
+                style={styles.sectionList}
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
                 renderSectionHeader={({section: {title}}) =>
                     <View style={styles.sectionHeaderContainer}>
                         <Text style={styles.sectionHeader}>{title}</Text>
                     </View>
-                    // <Text style={[{fontWeight: 'bold'}, styles.sectionHeader]}>{title}</Text>
                 }
-                stickySectionHeadersEnabled={true} // Enable sticky headers
+                stickySectionHeadersEnabled={true}
+                removeClippedSubviews={false}
                 refreshControl={
                     onRefresh ? (
                         <RefreshControl
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     sectionList: {
-        removeClippedSubviews: false,
+        flex: 1,
     },
     sectionHeaderContainer: {
         backgroundColor: CREAM,
