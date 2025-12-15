@@ -61,16 +61,6 @@ export const meetingApi = createApi({
             // When ANY mutation invalidates 'Meeting', this query will refetch
             providesTags: ['Meeting'],
         }),
-        deleteMeeting: builder.mutation({
-            query: ({ meetingId, userId }) => ({
-                url: '/api/delete-meeting',
-                method: 'POST',
-                body: { meetingId, userId },
-            }),
-            // Same pattern: deleting a meeting invalidates the cached meetings list
-            invalidatesTags: ['Meeting'],
-            onQueryStarted: invalidateOffersOnSuccess,
-        }),
         cancelMeeting: builder.mutation({
             query: ({ meetingId, userId }) => ({
                 url: '/api/cancel-meeting',
