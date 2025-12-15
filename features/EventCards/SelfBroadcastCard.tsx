@@ -2,13 +2,13 @@ import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { useCancelMeetingMutation } from "@/services/meetingApi";
+import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
@@ -20,11 +20,10 @@ interface SelfBroadcastCardProps {
 export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [cancelMeeting] = useCancelMeetingMutation();
-    const [isCanceling, setIsCanceling] = useState(false);
+    const [endBroadcastRequest] = useBroadcastEndMutation();
+    const [isEnding, setIsEnding] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
-    console.log("self - broadcast meeting, ", meeting);
     // Get the name to display
     const getOtherUserName = () => {
         if (meeting.acceptedUser) {
@@ -35,8 +34,8 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
     const handleCancelMeeting = async () => {
         try {
-            setIsCanceling(true);
-            await cancelMeeting({
+            setIsEnding(true);
+            await endBroadcastRequest({
                 meetingId: meeting.id,
                 userId
             }).unwrap();
@@ -47,9 +46,9 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             // Turn off the broadcast toggle
             dispatch(endBroadcast());
         } catch (error) {
-            console.error("Error canceling broadcast meeting:", error);
+            console.error("Error ending broadcast meeting:", error);
             alert('Failed to cancel broadcast. Please try again.');
-            setIsCanceling(false);
+            setIsEnding(false);
         }
     };
 
@@ -69,13 +68,13 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 <View>
                     <TouchableOpacity
                         onPress={handleCancelMeeting}
-                        style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
-                        disabled={isCanceling}
+                        style={[styles.endBroadcastButton, isEnding && styles.endBroadcastButtonDisabled]}
+                        disabled={isEnding}
                     >
-                        {isCanceling ? (
+                        {isEnding ? (
                             <ActivityIndicator size="small" color="#fff" />
                         ) : (
-                            <Text style={styles.cancelButtonText}>End broadcast</Text>
+                            <Text style={styles.endBroadcastButtonText}>End broadcast</Text>
                         )}
                     </TouchableOpacity>
                 </View>
@@ -127,17 +126,13 @@ const styles = StyleSheet.create({
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },
-    cancelButton: {
-        // backgroundColor: CREAM,
-        // borderRadius: 4,
+    endBroadcastButton: {
         minWidth: 50,
-
-
     },
-    cancelButtonDisabled: {
+    endBroadcastButtonDisabled: {
         opacity: 0.6,
     },
-    cancelButtonText: {
+    endBroadcastButtonText: {
         color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',

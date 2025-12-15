@@ -23,7 +23,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
     const [cancelMeeting] = useCancelMeetingMutation();
     const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
-    const [isDeleting, setIsDeleting] = useState(false);
     const [isCanceling, setIsCanceling] = useState(false);
 
     const meetingState: MeetingState  = meeting.meetingState;
@@ -83,7 +82,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const handleCancelMeeting = async () => {
         try {
-            setIsDeleting(true);
+            setIsCanceling(true);
             await cancelMeeting({
                 meetingId: meeting.id,
                 userId
@@ -95,7 +94,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. Please try again.');
-            setIsDeleting(false);
+            setIsCanceling(false);
         }
     };
 
@@ -127,10 +126,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 <View style={styles.buttonContainer}>
                         <TouchableOpacity
                             onPress={handleCancelMeeting}
-                            style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                            disabled={isDeleting}
+                            style={[styles.deleteButton, isCanceling && styles.deleteButtonDisabled]}
+                            disabled={isCanceling}
                         >
-                            {isDeleting ? (
+                            {isCanceling ? (
                                 <ActivityIndicator size="small" color="red" />
                             ) : (
                                 <Text style={styles.deleteButtonText}>Cancel</Text>
