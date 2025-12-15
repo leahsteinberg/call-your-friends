@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { useDeleteMeetingMutation } from "@/services/meetingApi";
+import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -20,8 +20,8 @@ interface SelfBroadcastCardProps {
 export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [deleteMeeting] = useDeleteMeetingMutation();
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [cancelMeeting] = useCancelMeetingMutation();
+    const [isCanceling, setIsCanceling] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
     console.log("self - broadcast meeting, ", meeting);
@@ -33,10 +33,10 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         }
     }
 
-    const handleDeleteMeeting = async () => {
+    const handleCancelMeeting = async () => {
         try {
-            setIsDeleting(true);
-            await deleteMeeting({
+            setIsCanceling(true);
+            await cancelMeeting({
                 meetingId: meeting.id,
                 userId
             }).unwrap();
@@ -47,9 +47,9 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             // Turn off the broadcast toggle
             dispatch(endBroadcast());
         } catch (error) {
-            console.error("Error deleting broadcast meeting:", error);
-            alert('Failed to delete broadcast. Please try again.');
-            setIsDeleting(false);
+            console.error("Error canceling broadcast meeting:", error);
+            alert('Failed to cancel broadcast. Please try again.');
+            setIsCanceling(false);
         }
     };
 
@@ -68,14 +68,14 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 </View>
                 <View>
                     <TouchableOpacity
-                        onPress={handleDeleteMeeting}
-                        style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                        disabled={isDeleting}
+                        onPress={handleCancelMeeting}
+                        style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
+                        disabled={isCanceling}
                     >
-                        {isDeleting ? (
+                        {isCanceling ? (
                             <ActivityIndicator size="small" color="#fff" />
                         ) : (
-                            <Text style={styles.deleteButtonText}>End broadcast</Text>
+                            <Text style={styles.cancelButtonText}>End broadcast</Text>
                         )}
                     </TouchableOpacity>
                 </View>
@@ -127,17 +127,17 @@ const styles = StyleSheet.create({
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },
-    deleteButton: {
+    cancelButton: {
         // backgroundColor: CREAM,
         // borderRadius: 4,
         minWidth: 50,
 
 
     },
-    deleteButtonDisabled: {
+    cancelButtonDisabled: {
         opacity: 0.6,
     },
-    deleteButtonText: {
+    cancelButtonText: {
         color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',

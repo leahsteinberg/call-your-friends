@@ -2,8 +2,7 @@ import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { useCancelBroadcastAcceptanceMutation, useDeleteMeetingMutation } from "@/services/meetingApi";
+import { useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -13,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 
 interface MeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -23,7 +21,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
-    const [deleteMeeting] = useDeleteMeetingMutation();
+    const [cancelMeeting] = useCancelMeetingMutation();
     const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
     const [isDeleting, setIsDeleting] = useState(false);
     const [isCanceling, setIsCanceling] = useState(false);
@@ -70,7 +68,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     );
 };
     
-    
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
             if (meeting.acceptedUser) {
@@ -84,10 +81,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         return name ? `Accepted a meeting created by ${name}` : null;
     };
 
-    const handleDeleteMeeting = async () => {
+    const handleCancelMeeting = async () => {
         try {
             setIsDeleting(true);
-            await deleteMeeting({
+            await cancelMeeting({
                 meetingId: meeting.id,
                 userId
             }).unwrap();
@@ -95,10 +92,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             // Remove from Redux after successful deletion
             dispatch(deleteMeetingOptimistic(meeting.id));
 
-            // If this is a self-created broadcast meeting, turn off the broadcast toggle
-            if (selfCreatedMeeting && isBroadcastMeeting(meeting)) {
-                dispatch(endBroadcast());
-            }
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. Please try again.');
@@ -133,14 +126,14 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             )}
                 <View style={styles.buttonContainer}>
                         <TouchableOpacity
-                            onPress={handleDeleteMeeting}
+                            onPress={handleCancelMeeting}
                             style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
                             disabled={isDeleting}
                         >
                             {isDeleting ? (
                                 <ActivityIndicator size="small" color="red" />
                             ) : (
-                                <Text style={styles.deleteButtonText}>Delete</Text>
+                                <Text style={styles.deleteButtonText}>Cancel</Text>
                             )}
                         </TouchableOpacity>
                 </View>

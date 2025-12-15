@@ -71,6 +71,16 @@ export const meetingApi = createApi({
             invalidatesTags: ['Meeting'],
             onQueryStarted: invalidateOffersOnSuccess,
         }),
+        cancelMeeting: builder.mutation({
+            query: ({ meetingId, userId }) => ({
+                url: '/api/cancel-meeting',
+                method: 'POST',
+                body: { meetingId, userId },
+            }),
+            // Same pattern: deleting a meeting invalidates the cached meetings list
+            invalidatesTags: ['Meeting'],
+            onQueryStarted: invalidateOffersOnSuccess,
+        }),
         broadcastNow: builder.mutation({
             query: ({ userId }) => ({
                 url: '/api/broadcast-now',
@@ -119,7 +129,7 @@ export const meetingApi = createApi({
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useDeleteMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation } = meetingApi;
 
-export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCreateMeetingMutation, useDeleteMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
+export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation, useCreateMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
 
