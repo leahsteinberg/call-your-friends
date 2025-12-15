@@ -2,9 +2,8 @@ import FlowerBlob from '@/assets/images/flower-blob.svg';
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import {
-    useAcceptBroadcastMutation,
-    useRejectBroadcastMutation,
-    useTryAcceptBroadcastMutation
+    useAcceptOfferMutation,
+    useRejectOfferMutation
 } from "@/services/offersApi";
 import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
@@ -24,32 +23,12 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const flowerRotation = useSharedValue(240);
-
-    // Broadcast-specific mutations
-    const [tryAcceptBroadcast] = useTryAcceptBroadcastMutation();
-    const [acceptBroadcast] = useAcceptBroadcastMutation();
-    const [rejectBroadcast] = useRejectBroadcastMutation();
-
-    // State management
-    const [hasTried, setHasTried] = useState(false);
-    const [isAccepted, setIsAccepted] = useState(false);
-    const [isTryingAccept, setIsTryingAccept] = useState(false);
+    const [acceptOffer] = useAcceptOfferMutation();
+    const [rejectOffer] = useRejectOfferMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
 
     const offerId = offer.id;
-
-    // Broadcast metadata
-    const broadcastMetadata = offer.meeting?.broadcastMetadata;
-    const subState = broadcastMetadata?.subState;
-    const offerClaimedId = broadcastMetadata?.offerClaimedId;
-
-    // Logical flags for different broadcast states
-    const isUnclaimed = subState === 'UNCLAIMED';
-    const isPendingClaimedBySelf = subState === 'PENDING_CLAIMED' && offerClaimedId === offerId;
-    const isPendingClaimedByOther = subState === 'PENDING_CLAIMED' && offerClaimedId !== offerId;
-    const isClaimedBySelf = subState === 'CLAIMED' && offerClaimedId === offerId;
-    const isClaimedByOther = subState === 'CLAIMED' && offerClaimedId !== offerId;
 
 
     const animatedFlowerStyle = useAnimatedStyle(() => ({
@@ -68,37 +47,14 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     },
     []);
 
-    const handleTryAccept = async () => {
-        try {
-            setIsTryingAccept(true);
-            const response = await tryAcceptBroadcast({ userId, offerId }).unwrap();
-
-            if (response.success) {
-                setHasTried(true);
-            } else {
-                alert(response.message || 'Could not claim broadcast');
-            }
-        } catch (error) {
-            console.error("Error trying to accept broadcast:", error);
-            alert('Failed to claim broadcast. Please try again.');
-        } finally {
-            setIsTryingAccept(false);
-        }
-    };
-
     const handleAccept = async () => {
         try {
             setIsAccepting(true);
-            // Wait for high-five animation to complete before accepting
-            setIsAccepted(true);
-
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            await acceptBroadcast({ userId, offerId }).unwrap();
-            setIsAccepted(true);
-            // RTK Query will auto-refresh via cache invalidation
+            await acceptOffer({ userId, offerId });
+            setIsRejecting(false);
         } catch (error) {
-            console.error("Error accepting broadcast:", error);
-            alert('Failed to accept broadcast. Please try again.');
+            console.error("Error accepting offer:", error);
+            alert('Failed to accept offer. Please try again.');
             setIsAccepting(false);
         }
     };
@@ -106,97 +62,51 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const handleReject = async () => {
         try {
             setIsRejecting(true);
-            await rejectBroadcast({ userId, offerId }).unwrap();
+            await rejectOffer({ userId, offerId }).unwrap();
             dispatch(deleteOfferOptimistic(offerId));
-            // RTK Query will auto-refresh via cache invalidation
+            setIsAccepting(false);
         } catch (error) {
-            console.error("Error rejecting broadcast:", error);
-            alert('Failed to reject broadcast. Please try again.');
+            console.error("Error rejecting offer:", error);
+            alert('Failed to reject offer. Please try again.');
             setIsRejecting(false);
         }
     };
 
-    // Get the name from the offer
     const getFromName = () => {
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    // Button render functions
-    const renderTryAcceptButton = () => (
-        <TouchableOpacity
-            onPress={handleTryAccept}
-            style={styles.acceptButton}
-            disabled={isTryingAccept}
-        >
-            {isTryingAccept ? (
-                <ActivityIndicator size="small" color="green" />
-            ) : (
-                <Text style={styles.acceptButtonText}>Claim call</Text>
-            )}
-        </TouchableOpacity>
-    );
-
-    const renderAcceptButton = () => (
-        <TouchableOpacity
-            onPress={handleAccept}
-            style={styles.acceptButton}
-            disabled={isAccepting}
-        >
-            {isAccepting ? (
-                <ActivityIndicator size="small" color="green" />
-            ) : (
-                <Text style={styles.acceptButtonText}>Call</Text>
-            )}
-        </TouchableOpacity>
-    );
-
-    const renderRejectButton = (label: string) => (
-        <TouchableOpacity
-            onPress={handleReject}
-            style={styles.rejectButton}
-            disabled={isRejecting}
-        >
-            {isRejecting ? (
-                <ActivityIndicator size="small" color="red" />
-            ) : (
-                <Text style={styles.rejectButtonText}>{label}</Text>
-            )}
-        </TouchableOpacity>
-    );
-
     const renderButtons = () => {
-        return ( 
-            <View>
-            {offer.offerState === OPEN_OFFER_STATE && !isAccepted && (
-            <View style={styles.buttonContainer}>
-
-                {!hasTried ? (
-                    <>
-                        {renderTryAcceptButton()}
-                    </>
-                ) : (
-                    <>
-                        {/* After successful try: ACCEPT + CANCEL */}
-                        {renderAcceptButton()}
-                        {renderRejectButton('Cancel call')}
-                    </>
-                )}
-        </View>
-            )}
-            </View>
-            )
-
-    }
-
-    // Determine animation stage based on state
-    const getAnimationStage = (): 'initial' | 'moving' | 'complete' => {
-        if (isClaimedBySelf || isAccepted) {
-            return 'complete';
-        } else if (isPendingClaimedBySelf || hasTried) {
-            return 'moving';
-        } else {
-            return 'initial';
+        if (offer.offerState !== OPEN_OFFER_STATE) {
+            return null;
         }
+
+        return (
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={handleAccept}
+                    style={styles.acceptButton}
+                    disabled={isAccepting}
+                >
+                    {isAccepting ? (
+                        <ActivityIndicator size="small" color="green" />
+                    ) : (
+                        <Text style={styles.acceptButtonText}>Accept</Text>
+                    )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={handleReject}
+                    style={styles.rejectButton}
+                    disabled={isRejecting}
+                >
+                    {isRejecting ? (
+                        <ActivityIndicator size="small" color="red" />
+                    ) : (
+                        <Text style={styles.rejectButtonText}>Reject</Text>
+                    )}
+                </TouchableOpacity>
+            </View>
+        );
     };
 
     return (
@@ -224,15 +134,11 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: CORNFLOWER_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
         overflow: 'visible',
-        // flexDirection: 'row',
-        // justifyContent: 'space-between',
-
     },
     header: {
         flexDirection: 'row',
@@ -292,21 +198,15 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        // alignItems: 'flex-end',
         justifyContent: 'flex-end',
         gap: 8,
     },
     animationContainer: {
-        // position: 'absolute',
-        // marginLeft: -100,
         marginTop: 10,
 
     },
     acceptButton: {
-        //borderWidth: 1,
         borderRadius: 4,
-        //backgroundColor: CREAM,
-
     },
     acceptButtonText: {
         color: ORANGE,
