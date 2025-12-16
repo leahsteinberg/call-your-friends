@@ -10,6 +10,7 @@ import type { ProcessedMeetingType } from "../Meetings/types";
 import type { ProcessedOfferType } from "../Offers/types";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { isBroadcastOffer } from "../Offers/offerHelpers";
+import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
 import OtherMeetingBroadcastCard from "./OtherMeetingBroadcastCard";
@@ -38,7 +39,7 @@ export function selectMeetingCard(
 
         if (selfCreated) {
             // Self-created broadcast (all states)
-            if (meeting.meetingState === 'PAST') {
+            if (meeting.meetingState === PAST_MEETING_STATE) {
                 return <></>;
             }
             return <SelfBroadcastCard meeting={meeting} />

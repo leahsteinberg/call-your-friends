@@ -2,6 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
@@ -42,7 +43,7 @@ export default function TodayList(): React.JSX.Element {
             const meeting = item.data as ProcessedMeetingType;
             return isBroadcastMeeting(meeting) &&
                    meeting.userFromId === userId &&
-                   meeting.meetingState !== 'PAST';
+                   meeting.meetingState !== PAST_MEETING_STATE;
         }
         return false;
     });

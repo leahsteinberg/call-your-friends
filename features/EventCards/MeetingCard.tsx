@@ -4,6 +4,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
@@ -30,7 +31,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     // Check if meeting is PAST and started more than 30 minutes ago
     const isOldPastMeeting = () => {
-        if (meetingState !== 'PAST') return false;
+        if (meetingState !== PAST_MEETING_STATE) return false;
         const scheduledTime = new Date(meeting.scheduledFor).getTime();
         const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
         return scheduledTime < thirtyMinutesAgo;

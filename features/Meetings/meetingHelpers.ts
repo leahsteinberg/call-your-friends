@@ -1,11 +1,20 @@
-import { MeetingType, ProcessedMeetingType } from './types';
+import {
+  MeetingType,
+  ProcessedMeetingType,
+  IMMEDIATE_TIME_TYPE,
+  FUTURE_TIME_TYPE,
+  OPEN_TARGET_TYPE,
+  FRIEND_SPECIFIC_TARGET_TYPE,
+  SYSTEM_PATTERN_SOURCE_TYPE,
+  SYSTEM_REAL_TIME_SOURCE_TYPE
+} from './types';
 
 /**
  * Check if meeting is a broadcast (immediate + open)
  * Replaces: meeting.meetingType === 'BROADCAST'
  */
 export function isBroadcastMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === 'IMMEDIATE' && meeting.targetType === 'OPEN';
+  return meeting.timeType === IMMEDIATE_TIME_TYPE && meeting.targetType === OPEN_TARGET_TYPE;
 }
 
 /**
@@ -13,42 +22,42 @@ export function isBroadcastMeeting(meeting: MeetingType | ProcessedMeetingType):
  * Replaces: meeting.meetingType === 'ADVANCE'
  */
 export function isAdvanceMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === 'FUTURE' && meeting.targetType === 'OPEN';
+  return meeting.timeType === FUTURE_TIME_TYPE && meeting.targetType === OPEN_TARGET_TYPE;
 }
 
 /**
  * Check if meeting is immediate (regardless of target)
  */
 export function isImmediateMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === 'IMMEDIATE';
+  return meeting.timeType === IMMEDIATE_TIME_TYPE;
 }
 
 /**
  * Check if meeting is happening in the future
  */
 export function isFutureMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === 'FUTURE';
+  return meeting.timeType === FUTURE_TIME_TYPE;
 }
 
 /**
  * Check if meeting is open to multiple friends
  */
 export function isOpenTargetMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.targetType === 'OPEN';
+  return meeting.targetType === OPEN_TARGET_TYPE;
 }
 
 /**
  * Check if meeting is friend-specific (NEW CAPABILITY)
  */
 export function isFriendSpecificMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.targetType === 'FRIEND_SPECIFIC';
+  return meeting.targetType === FRIEND_SPECIFIC_TARGET_TYPE;
 }
 
 /**
  * Check if meeting is a system suggestion
  */
 export function isSystemSuggested(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.sourceType === 'SYSTEM_PATTERN' || meeting.sourceType === 'SYSTEM_REAL_TIME';
+  return meeting.sourceType === SYSTEM_PATTERN_SOURCE_TYPE || meeting.sourceType === SYSTEM_REAL_TIME_SOURCE_TYPE;
 }
 
 /**
