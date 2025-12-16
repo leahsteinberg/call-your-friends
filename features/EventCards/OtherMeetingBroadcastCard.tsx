@@ -1,4 +1,3 @@
-// TO BE DELETED (but ask before you delete it)
 import HighFiveStar from "@/assets/images/high-five-star.svg";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";

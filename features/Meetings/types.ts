@@ -2,23 +2,26 @@ import { BaseEntity } from "@/types/common";
 import { ProcessedOfferType } from "../Offers/types";
 
 // NEW: Multi-dimensional meeting classification
-export type TimeType = 'IMMEDIATE' | 'FUTURE' | 'UNKNOWN';
-export type TargetType = 'OPEN' | 'FRIEND_SPECIFIC' | 'GROUP';
-export type SourceType = 'USER_INTENT' | 'SYSTEM_PATTERN' | 'SYSTEM_REAL_TIME';
+export type TimeType = "IMMEDIATE" | "FUTURE" | "UNKNOWN";
+export type TargetType = "OPEN" | "FRIEND_SPECIFIC" | "GROUP";
+export type SourceType = "USER_INTENT" | "SYSTEM_PATTERN" | "SYSTEM_REAL_TIME";
 
-export const IMMEDIATE_TIME_TYPE = 'IMMEDIATE';
-export const FUTURE_TIME_TYPE = 'FUTURE';
-export const UNKNOWN_TIME_TYPE = 'UNKNOWN';
+export type BroadcastSubState = "PENDING_CLAIMED" | "UNCLAIMED" | "CLAIMED";
 
-export const OPEN_TARGET_TYPE = 'OPEN';
-export const FRIEND_SPECIFIC_TARGET_TYPE = 'FRIEND_SPECIFIC';
-export const GROUP_TARGET_TYPE = 'GROUP';
+// Time Type Constants (type-safe with assertions)
+export const IMMEDIATE_TIME_TYPE: TimeType = 'IMMEDIATE' as const;
+export const FUTURE_TIME_TYPE: TimeType = 'FUTURE' as const;
+export const UNKNOWN_TIME_TYPE: TimeType = 'UNKNOWN' as const;
 
-export const USER_INTENT_SOURCE_TYPE = 'USER_INTENT';
-export const SYSTEM_PATTERN_SOURCE_TYPE = 'SYSTEM_PATTERN';
-export const SYSTEM_REAL_TIME_SOURCE_TYPE = 'SYSTEM_REAL_TIME';
+// Target Type Constants (type-safe with assertions)
+export const OPEN_TARGET_TYPE: TargetType = 'OPEN' as const;
+export const FRIEND_SPECIFIC_TARGET_TYPE: TargetType = 'FRIEND_SPECIFIC' as const;
+export const GROUP_TARGET_TYPE: TargetType = 'GROUP' as const;
 
-export type BroadcastSubState = 'CLAIMED' | 'UNCLAIMED' | 'PENDING_CLAIMED';
+// Source Type Constants (type-safe with assertions)
+export const USER_INTENT_SOURCE_TYPE: SourceType = 'USER_INTENT' as const;
+export const SYSTEM_PATTERN_SOURCE_TYPE: SourceType = 'SYSTEM_PATTERN' as const;
+export const SYSTEM_REAL_TIME_SOURCE_TYPE: SourceType = 'SYSTEM_REAL_TIME' as const;
 
 export interface BroadcastMetadata {
     subState: BroadcastSubState;
@@ -33,8 +36,10 @@ export interface MeetingEvent extends BaseEntity {
     userFromId: string;
 }
 
+export type MeetingState = "DRAFT" | "SEARCHING" | "ACCEPTED" | "REJECTED" | "PAST" | "EXPIRED" | "DISMISSED_DRAFT" | "CANCELED";
+
 export interface MeetingType extends MeetingEvent {
-    meetingState: 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST' | 'DRAFT' | 'EXPIRED';
+    meetingState: MeetingState;
 
     // NEW: Multi-dimensional fields replace meetingType
     timeType: TimeType;
@@ -73,6 +78,4 @@ export interface MeetingDisplayProps {
     };
     refreshMeetings?: () => void;
 }
-
-export type MeetingState = 'SEARCHING' | 'REJECTED' | 'ACCEPTED' | 'PAST' | 'DRAFT' | 'EXPIRED';
 
