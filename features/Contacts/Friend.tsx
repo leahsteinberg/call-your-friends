@@ -1,7 +1,10 @@
 import { CustomFonts } from "@/constants/theme";
-import { useCallIntentMutation, useUndoCallIntentMutation, useUserCalledMutation } from "@/services/contactsApi";
+import { useUserSignals } from "@/hooks/useUserSignals";
+import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
+import { useUserCalledMutation } from "@/services/contactsApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -9,11 +12,12 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
+  const { userSignals } = useUserSignals();
 
   const [showCallIntentActions, setShowCallIntentActions] = useState(item.isContactIntended);
 
-  const [callIntent, { isLoading: isCallingIntent }] = useCallIntentMutation();
-  const [undoCallIntent, { isLoading: isUndoing }] = useUndoCallIntentMutation();
+  const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
+  const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
   const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
 
 
@@ -23,7 +27,12 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleCallIntent = async () => {
     try {
-      await callIntent({ userId, userToId: item.id }).unwrap();
+      const payload: CallIntentPayload = { targetUserId: item.id };
+      await addUserSignal({
+        userId,
+        type: CALL_INTENT_SIGNAL_TYPE,
+        payload
+      }).unwrap();
       setShowCallIntentActions(true);
     } catch (error) {
       console.error("Error setting call intent:", error);
@@ -33,7 +42,13 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleNeverMind = async () => {
     try {
-      await undoCallIntent({ userId, userToId: item.id }).unwrap();
+      const signal = userSignals.find(
+        s => s.type === CALL_INTENT_SIGNAL_TYPE &&
+        (s.payload as CallIntentPayload).targetUserId === item.id
+      );
+      if (signal) {
+        await removeUserSignal({ userId, signalId: signal.id }).unwrap();
+      }
       setShowCallIntentActions(false);
     } catch (error) {
       console.error("Error undoing call intent:", error);
@@ -43,6 +58,13 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleCalled = async () => {
     try {
+      const signal = userSignals.find(
+        s => s.type === CALL_INTENT_SIGNAL_TYPE &&
+        (s.payload as CallIntentPayload).targetUserId === item.id
+      );
+      if (signal) {
+        await removeUserSignal({ userId, signalId: signal.id }).unwrap();
+      }
       await userCalled({ userId, userToId: item.id }).unwrap();
       setShowCallIntentActions(false);
     } catch (error) {

@@ -5,7 +5,7 @@ import { SignalType, UserSignal } from "@/types/userSignalsTypes";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export function useProcessedUserSignals() {
+export function useUserSignals() {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 

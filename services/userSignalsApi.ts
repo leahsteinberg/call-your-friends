@@ -6,6 +6,22 @@ export const userSignalsApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: HOST_WITH_PORT }),
     tagTypes: ['UserSignals'],
     endpoints: (builder) => ({
+        addUserSignal: builder.mutation({
+            query: ({ userId, type, payload }) => ({
+                url: '/api/add-user-signal',
+                method: 'POST',
+                body: { userId, type, payload },
+            }),
+            invalidatesTags: ['UserSignals'],
+        }),
+        removeUserSignal: builder.mutation({
+            query: ({ userId, signalId }) => ({
+                url: '/api/remove-user-signal',
+                method: 'POST',
+                body: { userId, signalId },
+            }),
+            invalidatesTags: ['UserSignals'],
+        }),
         updateSignals: builder.mutation({
             query: ({ userId, signals }) => ({
                 url: '/api/update-signals',
@@ -25,6 +41,6 @@ export const userSignalsApi = createApi({
     })
 });
 
-const { useUpdateSignalsMutation, useGetSignalsQuery } = userSignalsApi;
+const { useAddUserSignalMutation, useRemoveUserSignalMutation, useUpdateSignalsMutation, useGetSignalsQuery } = userSignalsApi;
 
-export { useUpdateSignalsMutation, useGetSignalsQuery };
+export { useAddUserSignalMutation, useRemoveUserSignalMutation, useUpdateSignalsMutation, useGetSignalsQuery };

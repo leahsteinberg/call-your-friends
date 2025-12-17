@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { useGetSignalsQuery } from "@/services/userSignalsApi";
+import { useUserSignals } from "@/hooks/useUserSignals";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
 import React, { useEffect } from "react";
@@ -10,12 +10,8 @@ import AddMeetingsButton from "./AddMeetingsButton";
 
 export default function Settings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    
-    const {
-        data: userSignals = [],
-        isLoading,
-        refetch
-    } = useGetSignalsQuery({ userId });
+
+    const { userSignals, isLoading } = useUserSignals();
 
     useEffect(() => {}, []);
 

@@ -2,18 +2,16 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
+import { useUserSignals } from "@/hooks/useUserSignals";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
-import { useGetSignalsQuery } from "@/services/userSignalsApi";
 import { CORNFLOWER_BLUE } from "@/styles/styles";
-import { DRAFT_MEETING_STATE } from "@/types/meetings-offers";
-import { SignalType, UserSignal } from "@/types/userSignalsTypes";
+import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
-import { FRIEND_SPECIFIC_TARGET_TYPE, UNKNOWN_TIME_TYPE } from "../Meetings/types";
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
@@ -34,17 +32,11 @@ export default function ContactsComponent(): React.JSX.Element {
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [getFriendInvites] = useGetFriendInvitesMutation();
 
-    const [userSignals, setUserSignals] = useState<UserSignal<SignalType>[]>([]);
-    const {
-        data: rawUserSignals = [],
-        isLoading,
-        refetch
-    } = useGetSignalsQuery({userId: userFromId});
-    
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
 
     const [processedContactIntended, setProcessedContactIntended] = useState<string[]>();
+    const { userSignals, isLoading } = useUserSignals();
 
 
     const handleSignOut = async () => {
@@ -62,7 +54,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchSentInvites = async () => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
-        console.log("SENT INVITES", sentInvitesResult)
+        console.log("SENT INVITES", sentInvitesResult);
         if (sentInvitesResult && sentInvitesResult.data) {
             
             dispatch(setSentInvites(sentInvitesResult.data));
@@ -74,24 +66,17 @@ export default function ContactsComponent(): React.JSX.Element {
     const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
 
-        const contactIntendedFriends = meetings.filter(m => 
-            m.meetingState === DRAFT_MEETING_STATE
-            && m.timeType === UNKNOWN_TIME_TYPE
-            && m.targetType === FRIEND_SPECIFIC_TARGET_TYPE)
-            .map(m => m.targetUserId);
+        const contactIntendedFriends = userSignals
+            .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE)
+            .map(signal => (signal.payload as CallIntentPayload).targetUserId);
 
-            const processedFriends = friendsResult.data
-            .map(f => {
-                console.log("this friend", f.id, "is in list --", contactIntendedFriends.includes(f.id))
-                return {...f, isContactIntended: contactIntendedFriends.includes(f.id)}
-            })
+        const processedFriends = friendsResult.data
+            .map(f => ({
+                ...f,
+                isContactIntended: contactIntendedFriends.includes(f.id)
+            }));
 
-        console.log("processed friends ", processedFriends);
         setFriends(processedFriends);
-
-
-        //setFriends(friendsResult.data);
-        //console.log("contact intended friends", contactIntendedFriends);
     };
 
     const fetchFriendInvites = async () => {
@@ -108,14 +93,10 @@ export default function ContactsComponent(): React.JSX.Element {
     };
 
     useEffect(()=> {
-        
         fetchFriends();
         fetchFriendInvites();
         fetchSentInvites();
-
-
-
-    }, [meetings])
+    }, [userSignals])
 
 
     return (
