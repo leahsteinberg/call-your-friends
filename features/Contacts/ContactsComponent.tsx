@@ -6,7 +6,7 @@ import { useUserSignals } from "@/hooks/useUserSignals";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { CORNFLOWER_BLUE } from "@/styles/styles";
-import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
+import { CALL_INTENT_SIGNAL_TYPE } from "@/types/userSignalsTypes";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -64,20 +64,29 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
+        console.log("user signals fetch", userSignals)
+        // const callIntentSignalsMap = new Map();
+        const filteredUserSignals = userSignals
+            .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE);
+        const callIntentSignalsMap = filteredUserSignals.reduce((obj, item) => {
+            obj[item.payload.targetUserId] = item; // Use the id as the key for the entire object
+            return obj;
+            }, {})
 
-        const callIntentSignalsMap = new Map();
-        userSignals
-            .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE)
-            .forEach(signal => {
-                const targetUserId = (signal.payload as CallIntentPayload).targetUserId;
-                callIntentSignalsMap.set(targetUserId, signal);
-            });
+        console.log("call intentttt ", callIntentSignalsMap);
+        
+            // .forEach(signal => {
+            //     const targetUserId = (signal.payload as CallIntentPayload).targetUserId;
+            //     callIntentSignalsMap.set(targetUserId, signal);
+            // });
+        
+            console.log("filterddd user sigals", filteredUserSignals);
 
         const processedFriends = friendsResult.data
             .map(f => ({
                 ...f,
-                callIntentSignal: callIntentSignalsMap.get(f.id) || null,
-                isContactIntended: callIntentSignalsMap.has(f.id)
+                callIntentSignal: callIntentSignalsMap[f.id] || null,
+                isContactIntended: !!callIntentSignalsMap[f.id]
             }));
 
         setFriends(processedFriends);
@@ -97,6 +106,7 @@ export default function ContactsComponent(): React.JSX.Element {
     };
 
     useEffect(()=> {
+        console.log("contacts component in effect ", userSignals)
         if (!isLoading) {
             fetchFriends();
             fetchFriendInvites();

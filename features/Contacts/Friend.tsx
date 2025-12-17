@@ -11,7 +11,7 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
-
+  console.log("friend item", item);
   const [showCallIntentActions, setShowCallIntentActions] = useState(item.isContactIntended);
 
   const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();

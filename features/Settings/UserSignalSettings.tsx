@@ -1,20 +1,27 @@
 import { CustomFonts } from "@/constants/theme";
+import { useUserSignals } from "@/hooks/useUserSignals";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from "react";
+import { Platform, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
-import AddMeetingsButton from "./AddMeetingsButton";
-import UserSignalSettings from "./UserSignalSettings";
+import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 
-export default function Settings(): React.JSX.Element {
+export default function UserSignalSettings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+
+    const { userSignals, isLoading } = useUserSignals();
+    
+    useEffect(() => {
+        console.log("in use effect settings -", userSignals);
+
+    }, [userSignals]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Settings</Text>
-            <UserSignalSettings/>
-            <AddMeetingsButton/>
+            {Platform.OS === 'ios' &&
+                <SuggestedWalkBySteps/>
+            }
         </View>
     );
 }
@@ -23,7 +30,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: CREAM,
-        padding: 20,
+        // padding: 20,
     },
     title: {
         fontSize: 24,

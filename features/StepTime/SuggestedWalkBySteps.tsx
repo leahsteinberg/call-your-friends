@@ -1,12 +1,10 @@
-import { useCreateMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
-import { FUTURE_TIME_TYPE, OPEN_TARGET_TYPE, SYSTEM_PATTERN_SOURCE_TYPE } from "../Meetings/types";
 import { processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
@@ -28,18 +26,15 @@ const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
 }
 
 interface SuggestedWalkByStepsProps {
-    refreshMeetings?: () => void;
 }
 
-export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: SuggestedWalkByStepsProps) {
+export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');
     const [suggestedWalkDateTime, setSuggestedWalkDateTime] = useState<Date | null>(null);
-    const [meetingCreated, setMeetingCreated] = useState<boolean>(false);
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
-    const [createMeeting] = useCreateMeetingMutation();
     const userId = useSelector((state: RootState) => state.auth.user.id);
 
 
@@ -92,59 +87,64 @@ export default function SuggestedWalkBySteps({ refreshMeetings = () => {} }: Sug
         fetchHealthKitDataAndGenerateSuggestion();
     }, [isAuthorized]);
 
-    const handleCreateMeetingWithSuggestedTime = async () => {
-        if (!suggestedWalkDateTime || meetingCreated) {
-            return;
-        }
 
-        try {
-            const scheduledFor = suggestedWalkDateTime.toISOString();
-            //const scheduledFor = suggestedWalkDateTime;
-            console.log("STEPS scheduled FOr", scheduledFor)
+    const handleAddWalkSignal = async () => {
 
-            const scheduledEnd = new Date(suggestedWalkDateTime);
-            scheduledEnd.setHours(scheduledEnd.getHours() + 1);
-
-            await createMeeting({
-                userFromId: userId,
-                scheduledFor,
-                scheduledEnd: scheduledEnd.toISOString(),
-                title: 'Meeting based on past walk schedule',
-                timeType: FUTURE_TIME_TYPE,
-                targetType: OPEN_TARGET_TYPE,
-                sourceType: SYSTEM_PATTERN_SOURCE_TYPE,
-            }).unwrap();
-
-            // Mark as created and disable the button
-            setMeetingCreated(true);
-            refreshMeetings();
-        } catch (error) {
-            console.error("Error creating meeting:", error);
-            alert('Failed to create meeting. Please try again.');
-        }
     };
+
+    // const handleCreateMeetingWithSuggestedTime = async () => {
+    //     if (!suggestedWalkDateTime || meetingCreated) {
+    //         return;
+    //     }
+
+    //     try {
+    //         const scheduledFor = suggestedWalkDateTime.toISOString();
+    //         //const scheduledFor = suggestedWalkDateTime;
+    //         console.log("STEPS scheduled FOr", scheduledFor)
+
+    //         const scheduledEnd = new Date(suggestedWalkDateTime);
+    //         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
+
+    //         await createMeeting({
+    //             userFromId: userId,
+    //             scheduledFor,
+    //             scheduledEnd: scheduledEnd.toISOString(),
+    //             title: 'Meeting based on past walk schedule',
+    //             timeType: FUTURE_TIME_TYPE,
+    //             targetType: OPEN_TARGET_TYPE,
+    //             sourceType: SYSTEM_PATTERN_SOURCE_TYPE,
+    //         }).unwrap();
+
+    //         // Mark as created and disable the button
+    //         setMeetingCreated(true);
+    //         refreshMeetings();
+    //     } catch (error) {
+    //         console.error("Error creating meeting:", error);
+    //         alert('Failed to create meeting. Please try again.');
+    //     }
+    // };
 
     const isDisabled = !suggestedWalkDateTime || loading;
 
     // Show confirmation view after meeting is created
-    if (meetingCreated) {
-        return (
-            <View style={styles.confirmationContainer}>
-                <Text style={styles.confirmationTitle}>
-                    We'll find someone for you to chat with on your next walk:
-                </Text>
-                <Text style={styles.confirmationTime}>
-                    {suggestedWalkTime}
-                </Text>
-            </View>
-        );
-    }
+    // if (meetingCreated) {
+    //     return (
+    //         <View style={styles.confirmationContainer}>
+    //             <Text style={styles.confirmationTitle}>
+    //                 We'll find someone for you to chat with on your next walk:
+    //             </Text>
+    //             <Text style={styles.confirmationTime}>
+    //                 {suggestedWalkTime}
+    //             </Text>
+    //         </View>
+    //     );
+    // }
 
     // Show the button to create meeting
     return (
         <TouchableOpacity
             style={[styles.container, isDisabled && styles.disabledContainer]}
-            onPress={handleCreateMeetingWithSuggestedTime}
+            onPress={handleAddWalkSignal}
             disabled={isDisabled}
         >
             <Text style={styles.title}>
