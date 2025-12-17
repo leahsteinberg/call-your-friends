@@ -40,7 +40,7 @@ export const processStepsData = (data) => {
     const weekdayHour: string = [dayOfWeek, utcHours].toString();
 
     if (hoursObj[weekdayHour] === undefined) {
-      hoursObj[weekdayHour] = 0
+      hoursObj[weekdayHour] = stepCount.quantity;
     } else {
       hoursObj[weekdayHour] = hoursObj[weekdayHour] + stepCount.quantity
     }
@@ -68,6 +68,6 @@ const upcomingDateHourWalk = ({dayNumber, hour}) => {
   const currentDay = today.getDay();
   const additionalDays = ((7 + dayNumber - currentDay) % 7) || 7;
   const futureDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + additionalDays);
-  futureDay.setUTCHours(23);
+  futureDay.setUTCHours(hour);
   return futureDay
 }
