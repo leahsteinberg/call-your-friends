@@ -50,15 +50,6 @@ const Layout = () => {
           }}
         >
             <Tabs.Screen
-                name="index"
-                options={{
-                    headerShown: false,
-                    title: "Chats",
-                    tabBarIcon: ({ color }) => <HighFiveStar fill={color}/>,
-                    tabBarHideOnKeyboard: true,
-                }}
-            />
-            <Tabs.Screen
                 name="friends"
                 options={{
                     title: 'Friends',
@@ -69,6 +60,15 @@ const Layout = () => {
                         fill={color}
                     />,
                     headerShown: false,
+                    tabBarHideOnKeyboard: true,
+                }}
+            />
+            <Tabs.Screen
+                name="index"
+                options={{
+                    headerShown: false,
+                    title: "Chats",
+                    tabBarIcon: ({ color }) => <HighFiveStar fill={color}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />
