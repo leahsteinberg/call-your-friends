@@ -10,7 +10,7 @@ import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
+import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
@@ -89,10 +89,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             dispatch(deleteMeetingOptimistic(meeting.id));
 
             try {
-                await cancelMeeting({
+                const response = await cancelMeeting({
                     meetingId: meeting.id,
                     userId
                 }).unwrap();
+                console.log("response", response);
                 // Success - optimistic update already applied
                 setIsCanceling(false);
             } catch (apiError) {

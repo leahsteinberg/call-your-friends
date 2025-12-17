@@ -1,4 +1,5 @@
 import { useGetMeetingsQuery } from "@/services/meetingApi";
+import { CANCELED_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +30,10 @@ export function useProcessedMeetings() {
             dispatch(setMeetings(rawMeetings));
 
             if (rawMeetings && rawMeetings.length > 0) {
-                const processed = await processMeetings(rawMeetings);
+                console.log("rawMeetings", rawMeetings);
+                const rawMeetingsWithoutCancelled = rawMeetings.filter(m => m.meetingState !== CANCELED_MEETING_STATE)
+                console.log("raw w o canceld", rawMeetingsWithoutCancelled)
+                const processed = await processMeetings(rawMeetingsWithoutCancelled);
                 setProcessedMeetings(processed);
             } else {
                 setProcessedMeetings([]);
