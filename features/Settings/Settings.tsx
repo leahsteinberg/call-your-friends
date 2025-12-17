@@ -1,8 +1,9 @@
 import { CustomFonts } from "@/constants/theme";
 import { CREAM, DARK_GREEN, ORANGE } from "@/styles/styles";
 import React, { useRef, useState } from "react";
-import { Animated, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Dimensions, PanResponder, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MeetingCreator from "../Meetings/MeetingCreator";
+import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const DRAWER_HEIGHT = SCREEN_HEIGHT * 0.5; // 50% of screen height
@@ -97,6 +98,10 @@ export default function Settings(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Settings</Text>
+
+            {Platform.OS === 'ios' &&
+                <SuggestedWalkBySteps/>
+            }
 
             {/* FAB Button */}
             <Animated.View
