@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { useCallIntentMutation, useUndoCallIntentMutation, useUserCalledMutation } from "@/services/contactsApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { FriendProps } from "./types";
@@ -15,6 +15,11 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
   const [callIntent, { isLoading: isCallingIntent }] = useCallIntentMutation();
   const [undoCallIntent, { isLoading: isUndoing }] = useUndoCallIntentMutation();
   const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
+
+
+  useEffect(() => {
+    setShowCallIntentActions(item.isContactIntended)
+  }, [item])
 
   const handleCallIntent = async () => {
     try {
