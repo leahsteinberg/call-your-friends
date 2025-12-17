@@ -65,14 +65,19 @@ export default function ContactsComponent(): React.JSX.Element {
     const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
 
-        const contactIntendedFriends = userSignals
+        const callIntentSignalsMap = new Map();
+        userSignals
             .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE)
-            .map(signal => (signal.payload as CallIntentPayload).targetUserId);
+            .forEach(signal => {
+                const targetUserId = (signal.payload as CallIntentPayload).targetUserId;
+                callIntentSignalsMap.set(targetUserId, signal);
+            });
 
         const processedFriends = friendsResult.data
             .map(f => ({
                 ...f,
-                isContactIntended: contactIntendedFriends.includes(f.id)
+                callIntentSignal: callIntentSignalsMap.get(f.id) || null,
+                isContactIntended: callIntentSignalsMap.has(f.id)
             }));
 
         setFriends(processedFriends);

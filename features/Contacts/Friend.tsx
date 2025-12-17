@@ -1,5 +1,4 @@
 import { CustomFonts } from "@/constants/theme";
-import { useUserSignals } from "@/hooks/useUserSignals";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -12,7 +11,6 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
-  const { userSignals } = useUserSignals();
 
   const [showCallIntentActions, setShowCallIntentActions] = useState(item.isContactIntended);
 
@@ -41,12 +39,8 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleNeverMind = async () => {
     try {
-      const signal = userSignals.find(
-        s => s.type === CALL_INTENT_SIGNAL_TYPE &&
-        (s.payload as CallIntentPayload).targetUserId === item.id
-      );
-      if (signal) {
-        await removeUserSignal({ userId, signalId: signal.id }).unwrap();
+      if (item.callIntentSignal) {
+        await removeUserSignal({ userId, signalId: item.callIntentSignal.id }).unwrap();
       }
     } catch (error) {
       console.error("Error undoing call intent:", error);
@@ -56,12 +50,8 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleCalled = async () => {
     try {
-      const signal = userSignals.find(
-        s => s.type === CALL_INTENT_SIGNAL_TYPE &&
-        (s.payload as CallIntentPayload).targetUserId === item.id
-      );
-      if (signal) {
-        await removeUserSignal({ userId, signalId: signal.id }).unwrap();
+      if (item.callIntentSignal) {
+        await removeUserSignal({ userId, signalId: item.callIntentSignal.id }).unwrap();
       }
       await userCalled({ userId, userToId: item.id }).unwrap();
     } catch (error) {

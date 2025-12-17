@@ -99,6 +99,7 @@ export interface FriendProps {
     index?: number;
     isContactIntended?: boolean;
     isBroadcasting?: boolean;
+    callIntentSignal?: any;
   };
 }
 
