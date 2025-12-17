@@ -27,6 +27,13 @@ function hoursBetween(date1, date2): number {
 }
 
 export const processStepsData = (data) => {  
+
+  const {dayNumber, hour} = getDayAndTime(data);
+  const upcomingWalkTime = upcomingDateHourWalk({dayNumber, hour})
+  return upcomingWalkTime.toString();
+}
+
+const getDayAndTime = (data): {dayNumber: number, hour: number} => {
   const mostRecentTime = data[0].endDate;
   const mostPastTime = data[data.length - 1].startDate;
   const mostPastHour = getStartOfHour(mostPastTime);
@@ -56,11 +63,9 @@ export const processStepsData = (data) => {
   
   const dayHour = maxDayHour[0]
   const [dayNumber, hour] = dayHour.split(',')
-
-  const upcomingWalkTime = upcomingDateHourWalk({dayNumber, hour})
-
-  return upcomingWalkTime.toString();
+    return {dayNumber, hour};
 }
+
 
 const upcomingDateHourWalk = ({dayNumber, hour}) => {
   const aimDay = dayNumberToDayName[dayNumber]

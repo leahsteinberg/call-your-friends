@@ -88,6 +88,13 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
         fetchHealthKitDataAndGenerateSuggestion();
     }, [isAuthorized]);
 
+    useEffect(() => 
+        {
+            console.log("suggested walk date time updatedd", suggestedWalkDateTime?.toString());
+
+        },
+        [suggestedWalkDateTime])
+
 
     const handleAddWalkSignal = async () => {
         try {
