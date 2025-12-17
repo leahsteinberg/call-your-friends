@@ -1,8 +1,37 @@
-export const eventCardText = {
+interface EventCardStrings {
+    nameText?: (...args: any[]) => string;
+    mainText?: (...args: any[]) => string;
+    subtext?: (...args: any[]) => string | undefined;
+    timeText?: (...args: any[]) => string;
+    acceptButtonText?: () => string;
+    rejectButtonText?: () => string;
+    // Legacy support - will be migrated to mainText
+    title?: (...args: any[]) => string;
+}
+
+export const eventCardText: Record<string, EventCardStrings> = {
+    // DRAFT SUGGESTIONS
+    draft_suggestion: {
+        nameText: (userName: string) => userName || 'someone',
+        mainText: (userName: string, timeDiff: string) =>
+            `Just a suggestion: Talk with ${userName} ${timeDiff}? We'll see if they're free.`,
+        acceptButtonText: () => 'Accept',
+        rejectButtonText: () => 'Dismiss',
+    },
+
+    // OFFERS
     open_offer: {
+        nameText: (userName: string) => userName || 'Unknown',
+        mainText: (userName: string, timeDiff: string) => `Talk to ${userName} ${timeDiff}`,
+        acceptButtonText: () => 'Accept',
+        rejectButtonText: () => 'Reject',
+        // Legacy support
         title: (userName: string) => `Talk to ${userName} `,
     },
     expired_offer: {
+        nameText: (userName: string) => userName || 'Unknown',
+        mainText: (userName: string) => `Expired offer from ${userName}`,
+        // Legacy support
         title: (userName: string) => `Expired Offer from ${userName}`,
     },
     meeting_self_open: {
@@ -30,6 +59,11 @@ export const eventCardText = {
         title: (userName: string) => `Your meeting created by ${userName} was cancelled by you.`,
     },
     broadcast_self_open: {
+        nameText: () => '',
+        mainText: () => `Broadcasting to friends`,
+        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
+        acceptButtonText: () => 'End broadcast',
+        // Legacy support
         title: () => `Broadcasting to friends`,
     },
     broadcast_self_pending: {
@@ -45,6 +79,11 @@ export const eventCardText = {
         title: () => `Your broadcast created by you expired.`,
     },
     broadcast_other_open: {
+        nameText: (userName: string) => userName,
+        mainText: (userName: string) => `${userName} is free for calls now.`,
+        acceptButtonText: () => 'Accept',
+        rejectButtonText: () => 'Reject',
+        // Legacy support
         title: (userName: string) => `Free for calls now.`,
     },
     broadcast_other_accepted: {
@@ -62,4 +101,9 @@ export const eventCardText = {
     broadcast_other_expired: {
         title: (userName: string) => `The broadcast created by ${userName} was expired by you.`,
     },
-} as Record<string, { title: (any) => string }>;
+    broadcast_other_claimed: {
+        nameText: (userName: string) => userName,
+        mainText: () => "You're on a call right now",
+        acceptButtonText: () => 'Unclaim Call',
+    },
+};

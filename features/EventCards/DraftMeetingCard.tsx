@@ -1,5 +1,5 @@
-import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
+import { eventCardText } from "@/constants/event_card_strings";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
@@ -8,7 +8,7 @@ import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
+import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
 
@@ -23,7 +23,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
-
+    console.log("IN DRAFT MEETING ---", meeting);
     const handleAcceptSuggestion = async () => {
         try {
             setIsAccepting(true);
@@ -83,14 +83,12 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         return meeting.userFrom?.name || 'someone';
     };
 
-    const getMainText = () => {
-        return `Just a suggestion: Talk with ${getFromName()} ${displayTimeDifference(meeting.scheduledFor)}? We'll see if they're free.`;
-    };
+    const strings = eventCardText.draft_suggestion;
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.nameText}>{getFromName()}</Text>
+                <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
 
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
@@ -101,7 +99,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                         {isAccepting ? (
                             <ActivityIndicator size="small" color="green" />
                         ) : (
-                            <Text style={styles.acceptButtonText}>Accept</Text>
+                            <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
                         )}
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -112,12 +110,12 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                         {isDismissing ? (
                             <ActivityIndicator size="small" color="red" />
                         ) : (
-                            <Text style={styles.dismissButtonText}>Dismiss</Text>
+                            <Text style={styles.dismissButtonText}>{strings.rejectButtonText!()}</Text>
                         )}
                     </TouchableOpacity>
                 </View>
             </View>
-            <Text style={styles.mainText}>{getMainText()}</Text>
+            <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(meeting.scheduledFor))}</Text>
 
             <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
 

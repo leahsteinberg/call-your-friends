@@ -24,11 +24,12 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const [isEnding, setIsEnding] = useState(false);
 
     const meetingState: MeetingState = meeting.meetingState;
+    const strings = eventCardText.broadcast_self_open;
+
     // Get the name to display
     const getOtherUserName = () => {
         if (meeting.acceptedUser) {
-            const name = meeting.acceptedUser?.name;
-            return name ? `${name} has claimed the broadcast.` : 'Broadcast claimed.'; 
+            return meeting.acceptedUser?.name;
         }
     }
 
@@ -67,7 +68,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.searchingContainer}>
-                    <Text style={styles.searchingText}>{eventCardText.broadcast_self_open.title()}</Text>
+                    <Text style={styles.searchingText}>{strings.mainText!()}</Text>
                     <AnimatedText
                         text="..."
                         style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
@@ -84,13 +85,13 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                         {isEnding ? (
                             <ActivityIndicator size="small" color="#fff" />
                         ) : (
-                            <Text style={styles.endBroadcastButtonText}>End broadcast</Text>
+                            <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
                         )}
                     </TouchableOpacity>
                 </View>
             </View>
             <View>
-                <Text style={styles.statusText}>{getOtherUserName()}</Text>
+                <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
             </View>
 
 

@@ -87,6 +87,8 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
+    const strings = eventCardText.broadcast_other_open;
+
     const renderButtons = () => {
         if (offer.offerState !== OPEN_OFFER_STATE) {
             return null;
@@ -102,7 +104,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                     {isAccepting ? (
                         <ActivityIndicator size="small" color="green" />
                     ) : (
-                        <Text style={styles.acceptButtonText}>Accept</Text>
+                        <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
                     )}
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -113,7 +115,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                     {isRejecting ? (
                         <ActivityIndicator size="small" color="red" />
                     ) : (
-                        <Text style={styles.rejectButtonText}>Reject</Text>
+                        <Text style={styles.rejectButtonText}>{strings.rejectButtonText!()}</Text>
                     )}
                 </TouchableOpacity>
             </View>
@@ -129,15 +131,15 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                             fill={ORANGE}
                         />
                     </Animated.View>
-                    <Text style={styles.nameText}>{getFromName()}</Text>
+                    <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
                 </View>
                 <View style={styles.topRightContainer}>
                     {renderButtons()}
 
                 </View>
             </View>
-            <View style={styles.content}> 
-                <Text style={styles.titleText}>{eventCardText.broadcast_other_open.title(getFromName())}</Text>
+            <View style={styles.content}>
+                <Text style={styles.titleText}>{strings.mainText!(getFromName())}</Text>
             </View>
         </View>
     );

@@ -73,14 +73,12 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    const getMainText = () => {
-        return `${eventCardText.open_offer.title(getFromName())}${displayTimeDifference(offer.scheduledFor)}`
-    };
+    const strings = eventCardText.open_offer;
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.nameText}>{getFromName()}</Text>
+                <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
 
                 {offer.offerState === OPEN_OFFER_STATE && (
                     <View style={styles.buttonContainer}>
@@ -93,7 +91,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                             {isAccepting? (
                                 <ActivityIndicator size="small" color="green" />
                                 ) : (
-                                    <Text style={styles.acceptButtonText}>Accept</Text>
+                                    <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
                             )}
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -103,14 +101,14 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                             {isRejecting ? (
                                 <ActivityIndicator size="small" color="red" />
                                 ) : (
-                                    <Text style={styles.rejectButtonText}>Reject</Text>
+                                    <Text style={styles.rejectButtonText}>{strings.rejectButtonText!()}</Text>
                             )}
                         </TouchableOpacity>
                         {/* </View> */}
                     </View>
                 )}
             </View>
-            <Text style={styles.mainText}>{getMainText()}</Text>
+            <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}</Text>
 
 
             <Text style={styles.timeText}>{getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}</Text>
