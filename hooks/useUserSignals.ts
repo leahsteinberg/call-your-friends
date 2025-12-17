@@ -20,6 +20,7 @@ export function useUserSignals() {
     // Process meetings when raw data changes
     useEffect(() => {
         const processAsync = async () => {
+            console.log("in hook -", rawUserSignals);
             dispatch(setUserSignals(rawUserSignals));
             setProcessedUserSignals(rawUserSignals);
         };

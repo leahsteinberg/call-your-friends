@@ -54,7 +54,6 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchSentInvites = async () => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
-        console.log("SENT INVITES", sentInvitesResult);
         if (sentInvitesResult && sentInvitesResult.data) {
             
             dispatch(setSentInvites(sentInvitesResult.data));
@@ -93,10 +92,12 @@ export default function ContactsComponent(): React.JSX.Element {
     };
 
     useEffect(()=> {
-        fetchFriends();
-        fetchFriendInvites();
-        fetchSentInvites();
-    }, [userSignals])
+        if (!isLoading) {
+            fetchFriends();
+            fetchFriendInvites();
+            fetchSentInvites();
+        }
+    }, [userSignals, isLoading])
 
 
     return (

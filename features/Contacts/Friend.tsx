@@ -1,7 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import { useUserSignals } from "@/hooks/useUserSignals";
-import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
 import { useUserCalledMutation } from "@/services/contactsApi";
+import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
@@ -23,7 +23,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   useEffect(() => {
     setShowCallIntentActions(item.isContactIntended)
-  }, [item])
+  }, [item.isContactIntended])
 
   const handleCallIntent = async () => {
     try {
@@ -33,7 +33,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
         type: CALL_INTENT_SIGNAL_TYPE,
         payload
       }).unwrap();
-      setShowCallIntentActions(true);
     } catch (error) {
       console.error("Error setting call intent:", error);
       alert('Failed to set call intent. Please try again.');
@@ -49,7 +48,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
       if (signal) {
         await removeUserSignal({ userId, signalId: signal.id }).unwrap();
       }
-      setShowCallIntentActions(false);
     } catch (error) {
       console.error("Error undoing call intent:", error);
       alert('Failed to undo call intent. Please try again.');
@@ -66,7 +64,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
         await removeUserSignal({ userId, signalId: signal.id }).unwrap();
       }
       await userCalled({ userId, userToId: item.id }).unwrap();
-      setShowCallIntentActions(false);
     } catch (error) {
       console.error("Error marking as called:", error);
       alert('Failed to mark as called. Please try again.');

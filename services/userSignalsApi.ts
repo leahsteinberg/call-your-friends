@@ -32,8 +32,8 @@ export const userSignalsApi = createApi({
         }),
         getSignals: builder.query({
             query: ({ userId }) => ({
-                url: '/api/get-user-signals',
-                method: 'GET',
+                url: `/api/get-user-signals`,
+                method: 'POST',
                 body: { userId },
             }),
             providesTags: ['UserSignals'],
