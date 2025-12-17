@@ -1,22 +1,23 @@
 import { CustomFonts } from "@/constants/theme";
 import { useGetSignalsQuery } from "@/services/userSignalsApi";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { RootState } from "@/types";
 import React, { useEffect } from "react";
-import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import AddMeetingsButton from "./AddMeetingsButton";
 
-const SCREEN_HEIGHT = Dimensions.get('window').height;
-const DRAWER_HEIGHT = SCREEN_HEIGHT * 0.5; // 50% of screen height
-const SWIPE_THRESHOLD = 50; // pixels to swipe down before closing
-
 export default function Settings(): React.JSX.Element {
-    const getUserSignals = useGetSignalsQuery();
+    const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    
+    const {
+        data: userSignals = [],
+        isLoading,
+        refetch
+    } = useGetSignalsQuery({ userId });
 
-    useEffect(() => {
-
-
-    }, []);
+    useEffect(() => {}, []);
 
     return (
         <View style={styles.container}>
