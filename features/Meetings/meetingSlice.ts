@@ -33,9 +33,31 @@ export const meetingSlice = createSlice({
         addOffer: (state, action: PayloadAction<ProcessedOfferType>) => {
             state.offers.push(action.payload);
         },
+        addOfferRollback: (state, action: PayloadAction<ProcessedOfferType>) => {
+            const newOffer = action.payload;
+            const insertIndex = state.offers.findIndex(
+                o => new Date(o.scheduledFor).getTime() > new Date(newOffer.scheduledFor).getTime()
+            );
+            if (insertIndex === -1) {
+                state.offers.push(newOffer);
+            } else {
+                state.offers.splice(insertIndex, 0, newOffer);
+            }
+        },
+        addMeetingRollback: (state, action: PayloadAction<ProcessedMeetingType>) => {
+            const newMeeting = action.payload;
+            const insertIndex = state.meetings.findIndex(
+                m => new Date(m.scheduledFor).getTime() > new Date(newMeeting.scheduledFor).getTime()
+            );
+            if (insertIndex === -1) {
+                state.meetings.push(newMeeting);
+            } else {
+                state.meetings.splice(insertIndex, 0, newMeeting);
+            }
+        },
     }
 });
 
-export const { setMeetings, deleteMeetingOptimistic, addMeeting, deleteOfferOptimistic } = meetingSlice.actions;
+export const { setMeetings, deleteMeetingOptimistic, addMeeting, deleteOfferOptimistic, addOffer, addOfferRollback, addMeetingRollback } = meetingSlice.actions;
 
 export default meetingSlice.reducer;

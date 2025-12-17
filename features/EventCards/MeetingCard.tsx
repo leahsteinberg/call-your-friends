@@ -10,7 +10,7 @@ import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
@@ -43,7 +43,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             <Text style={styles.searchingText}>
                 <Text>{eventCardText.meeting_self_open.title()}{'\n'}</Text>
                 <View style={styles.displayTimeContainer}>
-                    <Text style={styles.searchingText}>in {displayTimeDifference(meeting.scheduledFor)}</Text>
+                    <Text style={styles.searchingText}>{displayTimeDifference(meeting.scheduledFor)}</Text>
                     <AnimatedText
                         text="..."
                         style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
@@ -84,17 +84,26 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const handleCancelMeeting = async () => {
         try {
             setIsCanceling(true);
-            await cancelMeeting({
-                meetingId: meeting.id,
-                userId
-            }).unwrap();
 
-            // Remove from Redux after successful deletion
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
+
+            try {
+                await cancelMeeting({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+                // Success - optimistic update already applied
+                setIsCanceling(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                throw apiError;
+            }
 
         } catch (error) {
             console.error("Error deleting meeting:", error);
-            alert('Failed to delete meeting. Please try again.');
+            alert('Failed to delete meeting. The item has been restored.');
             setIsCanceling(false);
         }
     };
@@ -102,16 +111,26 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const handleCancelBroadcastAcceptance = async () => {
         try {
             setIsCanceling(true);
-            await cancelBroadcastAcceptance({
-                meetingId: meeting.id,
-                userId
-            }).unwrap();
 
-            // Remove from Redux after successful cancellation
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
+
+            try {
+                await cancelBroadcastAcceptance({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+                // Success - optimistic update already applied
+                setIsCanceling(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                throw apiError;
+            }
+
         } catch (error) {
             console.error("Error canceling broadcast acceptance:", error);
-            alert('Failed to cancel acceptance. Please try again.');
+            alert('Failed to cancel acceptance. The item has been restored.');
             setIsCanceling(false);
         }
     };

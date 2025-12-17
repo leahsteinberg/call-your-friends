@@ -9,7 +9,7 @@ import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
+import { deleteOfferOptimistic, addOfferRollback } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
 
@@ -33,7 +33,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const handleAcceptOffer = async () => {
         try {
             setIsAccepting(true)
-            await acceptOffer({ userId, offerId });
+            await acceptOffer({ userId, offerId }).unwrap();
             // RTK Query will auto-refresh via cache invalidation
             setIsRejecting(false)
 
@@ -47,15 +47,23 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const handleRejectOffer = async () => {
         try {
             setIsRejecting(true);
-            await rejectOffer({ userId, offerId }).unwrap();
-            dispatch(deleteOfferOptimistic(offerId))
 
-            // RTK Query will auto-refresh via cache invalidation
-            setIsAccepting(false)
+            // Optimistic update FIRST - remove from UI immediately
+            dispatch(deleteOfferOptimistic(offerId));
+
+            try {
+                await rejectOffer({ userId, offerId }).unwrap();
+                // Success - optimistic update already applied
+                setIsRejecting(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the offer to UI
+                dispatch(addOfferRollback(offer));
+                throw apiError;
+            }
 
         } catch (error) {
             console.error("Error rejecting offer:", error);
-            alert('Failed to reject offer. Please try again.');
+            alert('Failed to reject offer. The item has been restored.');
             setIsRejecting(false);
         }
     };

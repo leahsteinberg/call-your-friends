@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOfferOptimistic } from "../Meetings/meetingSlice";
+import { deleteOfferOptimistic, addOfferRollback } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OtherOfferBroadcastCardProps {
@@ -50,7 +50,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const handleAccept = async () => {
         try {
             setIsAccepting(true);
-            await acceptOffer({ userId, offerId });
+            await acceptOffer({ userId, offerId }).unwrap();
             setIsRejecting(false);
         } catch (error) {
             console.error("Error accepting offer:", error);
@@ -62,12 +62,23 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const handleReject = async () => {
         try {
             setIsRejecting(true);
-            await rejectOffer({ userId, offerId }).unwrap();
+
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteOfferOptimistic(offerId));
-            setIsAccepting(false);
+
+            try {
+                await rejectOffer({ userId, offerId }).unwrap();
+                // Success - optimistic update already applied
+                setIsRejecting(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the offer to UI
+                dispatch(addOfferRollback(offer));
+                throw apiError;
+            }
+
         } catch (error) {
             console.error("Error rejecting offer:", error);
-            alert('Failed to reject offer. Please try again.');
+            alert('Failed to reject offer. The item has been restored.');
             setIsRejecting(false);
         }
     };

@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
-import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface SelfBroadcastCardProps {
@@ -35,19 +35,29 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const handleCancelMeeting = async () => {
         try {
             setIsEnding(true);
-            await endBroadcastRequest({
-                meetingId: meeting.id,
-                userId
-            }).unwrap();
 
-            // Remove from Redux after successful deletion
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
 
-            // Turn off the broadcast toggle
-            dispatch(endBroadcast());
+            try {
+                await endBroadcastRequest({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+
+                // Success - turn off the broadcast toggle
+                dispatch(endBroadcast());
+                setIsEnding(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                // DO NOT call endBroadcast() - broadcast is still active
+                throw apiError;
+            }
+
         } catch (error) {
             console.error("Error ending broadcast meeting:", error);
-            alert('Failed to cancel broadcast. Please try again.');
+            alert('Failed to cancel broadcast. The item has been restored.');
             setIsEnding(false);
         }
     };
