@@ -33,7 +33,7 @@ export function useProcessedMeetings() {
                 const now = Date.now();
                 const filteredMeetings = rawMeetings.filter(m => {
                     if (m.meetingState === CANCELED_MEETING_STATE || m.meetingState === PAST_MEETING_STATE) return false;
-                    if (m.meetingState === SEARCHING_MEETING_STATE && new Date(m.scheduledFor).getTime() < now) return false;
+                    if (m.meetingState === SEARCHING_MEETING_STATE && new Date(m.scheduledEnd).getTime() < now) return false;
                     return true;
                 });
                 const processed = await processMeetings(filteredMeetings);

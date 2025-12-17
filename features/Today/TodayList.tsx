@@ -28,7 +28,6 @@ function isToday(dateString: string): boolean {
 export default function TodayList(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const isBroadcasting: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
-
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [forceReprocess, setForceReprocess] = useState(0);
