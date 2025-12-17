@@ -1,5 +1,7 @@
+import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
 import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE, WalkPatternPayload } from "@/types/userSignalsTypes";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
@@ -15,9 +17,6 @@ interface GetPastDateParams {
     daysAgo: number;
 }
 
-/**
- * Get a date in the past, set to midnight
- */
 const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
     const pastDate = new Date();
     pastDate.setHours(0, 0, 0, 0);
@@ -26,6 +25,7 @@ const getPastDate = ({ daysAgo }: GetPastDateParams): Date => {
 }
 
 interface SuggestedWalkByStepsProps {
+    userSignal?: UserSignal<SignalType> | null;
 }
 
 export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
@@ -36,7 +36,8 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
     const userId = useSelector((state: RootState) => state.auth.user.id);
-
+    const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
+    const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
 
     const pastDate = getPastDate({ daysAgo: DAYS_OF_HISTORY });
     const today = new Date();
@@ -89,58 +90,21 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
 
 
     const handleAddWalkSignal = async () => {
-
+        try {
+            const payload: WalkPatternPayload = { };
+            await addUserSignal({
+              userId,
+              type: WALK_PATTERN_SIGNAL_TYPE,
+              payload
+            }).unwrap();
+          } catch (error) {
+            console.error("Error setting call intent:", error);
+            alert('Failed to set call intent. Please try again.');
+          }
     };
-
-    // const handleCreateMeetingWithSuggestedTime = async () => {
-    //     if (!suggestedWalkDateTime || meetingCreated) {
-    //         return;
-    //     }
-
-    //     try {
-    //         const scheduledFor = suggestedWalkDateTime.toISOString();
-    //         //const scheduledFor = suggestedWalkDateTime;
-    //         console.log("STEPS scheduled FOr", scheduledFor)
-
-    //         const scheduledEnd = new Date(suggestedWalkDateTime);
-    //         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
-
-    //         await createMeeting({
-    //             userFromId: userId,
-    //             scheduledFor,
-    //             scheduledEnd: scheduledEnd.toISOString(),
-    //             title: 'Meeting based on past walk schedule',
-    //             timeType: FUTURE_TIME_TYPE,
-    //             targetType: OPEN_TARGET_TYPE,
-    //             sourceType: SYSTEM_PATTERN_SOURCE_TYPE,
-    //         }).unwrap();
-
-    //         // Mark as created and disable the button
-    //         setMeetingCreated(true);
-    //         refreshMeetings();
-    //     } catch (error) {
-    //         console.error("Error creating meeting:", error);
-    //         alert('Failed to create meeting. Please try again.');
-    //     }
-    // };
 
     const isDisabled = !suggestedWalkDateTime || loading;
 
-    // Show confirmation view after meeting is created
-    // if (meetingCreated) {
-    //     return (
-    //         <View style={styles.confirmationContainer}>
-    //             <Text style={styles.confirmationTitle}>
-    //                 We'll find someone for you to chat with on your next walk:
-    //             </Text>
-    //             <Text style={styles.confirmationTime}>
-    //                 {suggestedWalkTime}
-    //             </Text>
-    //         </View>
-    //     );
-    // }
-
-    // Show the button to create meeting
     return (
         <TouchableOpacity
             style={[styles.container, isDisabled && styles.disabledContainer]}
@@ -162,8 +126,6 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
         </TouchableOpacity>
     );
 }
-
-
 
 
 const styles = StyleSheet.create({

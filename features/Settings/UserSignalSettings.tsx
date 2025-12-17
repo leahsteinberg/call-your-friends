@@ -2,25 +2,31 @@ import { CustomFonts } from "@/constants/theme";
 import { useUserSignals } from "@/hooks/useUserSignals";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
-import React, { useEffect } from "react";
+import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE } from "@/types/userSignalsTypes";
+import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 
 export default function UserSignalSettings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-
+    const [walkSignal, setWalkSignal] = useState<UserSignal<SignalType> | null>();
     const { userSignals, isLoading } = useUserSignals();
     
     useEffect(() => {
         console.log("in use effect settings -", userSignals);
-
+        const walkUserSignals = userSignals
+            .filter(signal => signal.type === WALK_PATTERN_SIGNAL_TYPE);
+        if (walkUserSignals && walkUserSignals.length > 0) {
+            console.log("got walk signal", walkUserSignals[0]);
+            setWalkSignal(walkUserSignals[0]);
+        }
     }, [userSignals]);
 
     return (
         <View style={styles.container}>
             {Platform.OS === 'ios' &&
-                <SuggestedWalkBySteps/>
+                <SuggestedWalkBySteps userSignal={walkSignal}/>
             }
         </View>
     );
