@@ -4,7 +4,7 @@ import HighFiveStar from "@/assets/images/high-five-star.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BRIGHT_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
 import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
 const ICON_SIZE = 33;
@@ -21,12 +21,28 @@ const Layout = () => {
             tabBarInactiveTintColor: DARK_GREEN,
             tabBarStyle: {
               backgroundColor: CREAM,
-              borderTopColor: PALE_BLUE,
-              borderTopWidth: 5,
-              height: 90,
+              borderTopColor: 'transparent',
+              borderTopWidth: 0,
+              height: 80,
+              position: 'absolute',
+              marginHorizontal: 15,
+              bottom: 20,
+              left: 20,
+              right: 20,
+              borderRadius: 40,
+              paddingBottom: 10,
+              paddingTop: 10,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 10,
             },
             tabBarLabelStyle: {
-                paddingTop: 10,
+                paddingTop: 5,
                 fontSize: 15,
                 fontFamily: CustomFonts.ztnatureregular,
             },

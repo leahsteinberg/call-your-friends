@@ -4,7 +4,6 @@ import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
-import SuggestedWalkBySteps from "../StepTime/SuggestedWalkBySteps";
 import TodayList from "../Today/TodayList";
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
@@ -26,9 +25,6 @@ export default function Profile(): React.JSX.Element {
                 {/* <BroadcastNowButton /> */}
             </View>
             <TodayList />
-            {Platform.OS === 'ios' &&
-                <SuggestedWalkBySteps/>
-            }
         </View>
     );
 }
