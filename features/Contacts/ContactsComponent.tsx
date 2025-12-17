@@ -7,7 +7,7 @@ import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMu
 import { CORNFLOWER_BLUE } from "@/styles/styles";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
@@ -103,7 +103,11 @@ export default function ContactsComponent(): React.JSX.Element {
                     refreshing={refreshing}
                 />
             </View>
-            <ContactsSelector />
+            {
+                Platform.OS !== 'web' ?
+                <ContactsSelector /> :
+                <></>
+            }
         </View>
     );
 }
