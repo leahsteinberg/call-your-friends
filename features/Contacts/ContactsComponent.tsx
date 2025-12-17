@@ -2,14 +2,17 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
+import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { CORNFLOWER_BLUE } from "@/styles/styles";
+import { DRAFT_MEETING_STATE } from "@/types/meetings-offers";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
+import { FRIEND_SPECIFIC_TARGET_TYPE, UNKNOWN_TIME_TYPE } from "../Meetings/types";
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
@@ -32,6 +35,10 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
+
+    const [processedContactIntended, setProcessedContactIntended] = useState<string[]>();
+    const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
+
 
     const handleSignOut = async () => {
         try {
@@ -59,7 +66,25 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
-        setFriends(friendsResult.data);
+
+        const contactIntendedFriends = meetings.filter(m => 
+            m.meetingState === DRAFT_MEETING_STATE
+            && m.timeType === UNKNOWN_TIME_TYPE
+            && m.targetType === FRIEND_SPECIFIC_TARGET_TYPE)
+            .map(m => m.targetUserId);
+
+            const processedFriends = friendsResult.data
+            .map(f => {
+                console.log("this friend", f.id, "is in list --", contactIntendedFriends.includes(f.id))
+                return {...f, isContactIntended: contactIntendedFriends.includes(f.id)}
+            })
+
+        console.log("processed friends ", processedFriends);
+        setFriends(processedFriends);
+
+
+        //setFriends(friendsResult.data);
+        //console.log("contact intended friends", contactIntendedFriends);
     };
 
     const fetchFriendInvites = async () => {
@@ -76,10 +101,14 @@ export default function ContactsComponent(): React.JSX.Element {
     };
 
     useEffect(()=> {
+        
         fetchFriends();
         fetchFriendInvites();
         fetchSentInvites();
-    }, [])
+
+
+
+    }, [meetings])
 
 
     return (
@@ -117,13 +146,9 @@ const styles = StyleSheet.create({
         minHeight: 400,
         minWidth: 300,
         maxHeight: '100%',
-
         width: '100%',
-
         justifyContent: 'space-between',
         overflow: 'scroll',
-
-
         flex: 1,
     },
     headerContainer: {

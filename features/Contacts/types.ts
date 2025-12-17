@@ -14,6 +14,7 @@ export interface Friend extends BaseEntity {
   phoneNumber: string;
   email?: string;
   userId: string;
+  contactIntended: boolean;
 }
 
 export interface FriendRequest extends BaseEntity {
@@ -96,6 +97,8 @@ export interface FriendProps {
     phoneNumber: string;
     id: string;
     index?: number;
+    isContactIntended?: boolean;
+    isBroadcasting?: boolean;
   };
 }
 

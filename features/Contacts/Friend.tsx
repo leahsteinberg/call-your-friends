@@ -55,6 +55,8 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
     <View style={styles.container} key={item.index}>
       <View style={styles.header}>
         <Text style={styles.name}>{item.name}</Text>
+        <Text>Intend-{item.isContactIntended.toString()}</Text>
+        <Text>broadcast-{item.isBroadcasting.toString()}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleCallNow} style={styles.callNowButton}>
             <Text style={styles.callNowText}>Call Now</Text>
