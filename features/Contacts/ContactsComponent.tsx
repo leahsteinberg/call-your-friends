@@ -4,8 +4,10 @@ import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
+import { useGetSignalsQuery } from "@/services/userSignalsApi";
 import { CORNFLOWER_BLUE } from "@/styles/styles";
 import { DRAFT_MEETING_STATE } from "@/types/meetings-offers";
+import { SignalType, UserSignal } from "@/types/userSignalsTypes";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -32,14 +34,17 @@ export default function ContactsComponent(): React.JSX.Element {
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [getFriendInvites] = useGetFriendInvitesMutation();
 
-    // const [userSignals, setUserSignals] = useState<FriendRequest[]>([]);
-    // const [getFriendInvites] = useGetFriendInvitesMutation();
-
+    const [userSignals, setUserSignals] = useState<UserSignal<SignalType>[]>([]);
+    const {
+        data: rawUserSignals = [],
+        isLoading,
+        refetch
+    } = useGetSignalsQuery({userId: userFromId});
+    
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
 
     const [processedContactIntended, setProcessedContactIntended] = useState<string[]>();
-    //const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
 
 
     const handleSignOut = async () => {
