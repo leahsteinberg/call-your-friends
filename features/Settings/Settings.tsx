@@ -1,16 +1,16 @@
 import { CustomFonts } from "@/constants/theme";
 import { CREAM, DARK_GREEN, ORANGE } from "@/styles/styles";
 import React, { useRef, useState } from "react";
-import { Animated, Dimensions, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MeetingCreator from "../Meetings/MeetingCreator";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
-const DRAWER_HEIGHT = SCREEN_HEIGHT * 0.7; // 70% of screen height
+const DRAWER_HEIGHT = SCREEN_HEIGHT * 0.5; // 50% of screen height
+const SWIPE_THRESHOLD = 50; // pixels to swipe down before closing
 
 export default function Settings(): React.JSX.Element {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const drawerTranslateY = useRef(new Animated.Value(DRAWER_HEIGHT)).current;
-    const backdropOpacity = useRef(new Animated.Value(0)).current;
     const fabRotation = useRef(new Animated.Value(0)).current;
 
     const openDrawer = () => {
@@ -21,11 +21,6 @@ export default function Settings(): React.JSX.Element {
                 useNativeDriver: true,
                 tension: 65,
                 friction: 11,
-            }),
-            Animated.timing(backdropOpacity, {
-                toValue: 1,
-                duration: 300,
-                useNativeDriver: true,
             }),
             Animated.spring(fabRotation, {
                 toValue: 1,
@@ -43,11 +38,6 @@ export default function Settings(): React.JSX.Element {
                 useNativeDriver: true,
                 tension: 65,
                 friction: 11,
-            }),
-            Animated.timing(backdropOpacity, {
-                toValue: 0,
-                duration: 250,
-                useNativeDriver: true,
             }),
             Animated.spring(fabRotation, {
                 toValue: 0,
@@ -67,6 +57,37 @@ export default function Settings(): React.JSX.Element {
             openDrawer();
         }
     };
+
+    // Pan responder for swipe-down gesture
+    const panResponder = useRef(
+        PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: (_, gestureState) => {
+                // Only respond to downward swipes
+                return gestureState.dy > 5;
+            },
+            onPanResponderMove: (_, gestureState) => {
+                // Only allow downward dragging
+                if (gestureState.dy > 0) {
+                    drawerTranslateY.setValue(gestureState.dy);
+                }
+            },
+            onPanResponderRelease: (_, gestureState) => {
+                // If swiped down more than threshold, close drawer
+                if (gestureState.dy > SWIPE_THRESHOLD) {
+                    closeDrawer();
+                } else {
+                    // Otherwise, snap back to open position
+                    Animated.spring(drawerTranslateY, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                        tension: 65,
+                        friction: 11,
+                    }).start();
+                }
+            },
+        })
+    ).current;
 
     const rotation = fabRotation.interpolate({
         inputRange: [0, 1],
@@ -95,21 +116,6 @@ export default function Settings(): React.JSX.Element {
                 </TouchableOpacity>
             </Animated.View>
 
-            {/* Backdrop */}
-            {isDrawerOpen && (
-                <Pressable
-                    style={StyleSheet.absoluteFill}
-                    onPress={closeDrawer}
-                >
-                    <Animated.View
-                        style={[
-                            styles.backdrop,
-                            { opacity: backdropOpacity }
-                        ]}
-                    />
-                </Pressable>
-            )}
-
             {/* Drawer */}
             {isDrawerOpen && (
                 <Animated.View
@@ -120,12 +126,17 @@ export default function Settings(): React.JSX.Element {
                         }
                     ]}
                 >
-                    <Pressable onPress={(e) => e.stopPropagation()} style={styles.drawerContent}>
-                        {/* Drag Handle */}
-                        <View style={styles.dragHandle} />
+                    <View style={styles.drawerContent}>
+                        {/* Drag Handle - with pan responder */}
+                        <View
+                            {...panResponder.panHandlers}
+                            style={styles.dragHandleContainer}
+                        >
+                            <View style={styles.dragHandle} />
+                        </View>
 
                         <MeetingCreator onSuccess={closeDrawer} />
-                    </Pressable>
+                    </View>
                 </Animated.View>
             )}
         </View>
@@ -175,11 +186,6 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         lineHeight: 32,
     },
-    backdrop: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        zIndex: 999,
-    },
     drawer: {
         position: 'absolute',
         bottom: 0,
@@ -203,12 +209,15 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 8,
     },
+    dragHandleContainer: {
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        alignItems: 'center',
+    },
     dragHandle: {
         width: 40,
         height: 4,
         backgroundColor: '#ccc',
         borderRadius: 2,
-        alignSelf: 'center',
-        marginBottom: 8,
     },
 });
