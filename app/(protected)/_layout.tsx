@@ -1,6 +1,5 @@
 import FlowerBlob from "@/assets/images/flower-blob.svg";
 import HighFiveStar from "@/assets/images/high-five-star.svg";
-import StarPerson from "@/assets/images/star-person.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
@@ -33,7 +32,7 @@ const Layout = () => {
             headerShown: false,
           }}
         >
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="friendchats"
                 options={{
                     headerShown: false,
@@ -45,7 +44,7 @@ const Layout = () => {
                     />,
                     tabBarHideOnKeyboard: true,
                 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="profile"
                 options={{
