@@ -9,13 +9,13 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
-  const [showCallIntentActions, setShowCallIntentActions] = useState(false);
+
+  const [showCallIntentActions, setShowCallIntentActions] = useState(!item.isContactIntended);
 
   const [callIntent, { isLoading: isCallingIntent }] = useCallIntentMutation();
   const [undoCallIntent, { isLoading: isUndoing }] = useUndoCallIntentMutation();
   const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
 
-    console.log("friend user Id", item, item.id);
   const handleCallIntent = async () => {
     try {
       await callIntent({ userId, userToId: item.id }).unwrap();
