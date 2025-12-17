@@ -9,6 +9,7 @@ import authReducer from '../features/Auth/authSlice';
 import broadcastReducer from '../features/Broadcast/broadcastSlice';
 import contactsReducer from '../features/Contacts/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
+import userSignalReducer from '../features/Settings/userSignalsSlice';
 
 // APIs
 import { authApi } from '@/services/authApi';
@@ -36,6 +37,7 @@ const rootReducer = combineReducers({
   broadcast: broadcastReducer,
   contacts: contactsReducer,
   meeting: meetingReducer,
+  userSignal: userSignalReducer,
   })
 
   const persistedReducer = persistReducer(persistConfig, rootReducer);
