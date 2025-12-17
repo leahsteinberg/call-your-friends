@@ -1,23 +1,26 @@
 import { useCreateMeetingMutation } from "@/services/meetingApi";
-import { CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { ChevronDown, ChevronUp } from "lucide-react-native";
+import { Check, ChevronDown, ChevronUp } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ActivityIndicator, Animated, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
 import UnifiedDateTimePicker from "./UnifiedDateTimePicker";
 import { displayDateTime } from "./meetingsUtils";
 import { FUTURE_TIME_TYPE, OPEN_TARGET_TYPE, USER_INTENT_SOURCE_TYPE } from "./types";
 
 // refreshMeetings is now optional - cache tags auto-refetch when createMeeting invalidates 'Meeting' tag
-export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () => void}) {
+export default function MeetingCreator({refreshMeetings, onSuccess}: {refreshMeetings?: () => void; onSuccess?: () => void}) {
     const { height, width } = useWindowDimensions();
     const [createMeeting] = useCreateMeetingMutation();
     const userId = useSelector((state: RootState) => state.auth.user.id);
     const [selectedDateTime, setSelectedDateTime] = useState<Date | null>(null);
     const [displayDateString, setDisplayDateString] = useState('');
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isCreating, setIsCreating] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const animatedHeight = useRef(new Animated.Value(0)).current;
+    const successOpacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         Animated.spring(animatedHeight, {
@@ -44,6 +47,8 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
         const scheduledEnd = new Date(selectedDateTime);
         scheduledEnd.setHours(scheduledEnd.getHours() + 1);
         console.log("REGULAR create -", scheduledFor);
+
+        setIsCreating(true);
         try {
             await createMeeting({
                 userFromId: userId,
@@ -53,10 +58,35 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                 timeType: FUTURE_TIME_TYPE,
                 sourceType: USER_INTENT_SOURCE_TYPE,
             }).unwrap();
+
+            // Success! Show success feedback
+            setIsCreating(false);
+            setShowSuccess(true);
+
+            // Animate success message
+            Animated.timing(successOpacity, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+
+            // Auto-hide after 1.5 seconds and call onSuccess
+            setTimeout(() => {
+                Animated.timing(successOpacity, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start(() => {
+                    setShowSuccess(false);
+                    setSelectedDateTime(null);
+                    setDisplayDateString('');
+                    onSuccess?.();
+                });
+            }, 1500);
         } catch (error) {
             console.error("Error creating meeting:", error);
+            setIsCreating(false);
             alert('Failed to create meeting. Please try again.');
-
         }
     };
     
@@ -75,6 +105,19 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
 
     return (
         <View style={[styles.container]}>
+            {/* Success Overlay */}
+            {showSuccess && (
+                <Animated.View
+                    style={[
+                        styles.successOverlay,
+                        { opacity: successOpacity }
+                    ]}
+                >
+                    <Check color={BRIGHT_GREEN} size={48} strokeWidth={3} />
+                    <Text style={styles.successText}>Meeting Created!</Text>
+                </Animated.View>
+            )}
+
             <TouchableOpacity
                 style={styles.titleContainer}
                 onPress={() => shouldUseCollapsible && setIsExpanded(!isExpanded)}
@@ -102,16 +145,22 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                     />
                     { selectedDateTime && (
                         <TouchableOpacity
-                            style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
+                            style={[styles.createButton, (!selectedDateTime || isCreating) && styles.disabledButton]}
                             onPress={handleCreateMeeting}
-                            disabled={!selectedDateTime}
+                            disabled={!selectedDateTime || isCreating}
                         >
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                                Find a friend to talk on:
-                            </Text>
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                                {displayDateString && `${displayDateString}`}
-                            </Text>
+                            {isCreating ? (
+                                <ActivityIndicator size="small" color={CREAM} />
+                            ) : (
+                                <>
+                                    <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                                        Find a friend to talk on:
+                                    </Text>
+                                    <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                                        {displayDateString && `${displayDateString}`}
+                                    </Text>
+                                </>
+                            )}
                         </TouchableOpacity>
                         )
                     }
@@ -124,16 +173,22 @@ export default function MeetingCreator({refreshMeetings}: {refreshMeetings?: () 
                     />
                     { selectedDateTime && (
                         <TouchableOpacity
-                            style={[styles.createButton, !selectedDateTime && styles.disabledButton]}
+                            style={[styles.createButton, (!selectedDateTime || isCreating) && styles.disabledButton]}
                             onPress={handleCreateMeeting}
-                            disabled={!selectedDateTime}
+                            disabled={!selectedDateTime || isCreating}
                         >
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                                Find a friend to talk on:
-                            </Text>
-                            <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
-                                {displayDateString && `${displayDateString}`}
-                            </Text>
+                            {isCreating ? (
+                                <ActivityIndicator size="small" color={CREAM} />
+                            ) : (
+                                <>
+                                    <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                                        Find a friend to talk on:
+                                    </Text>
+                                    <Text style={[styles.buttonText, !selectedDateTime && styles.disabledButtonText]}>
+                                        {displayDateString && `${displayDateString}`}
+                                    </Text>
+                                </>
+                            )}
                         </TouchableOpacity>
                         )
                     }
@@ -158,6 +213,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
+        position: 'relative',
     },
     titleContainer: {
         flexDirection: 'row',
@@ -178,6 +234,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         marginTop: 16,
+        minHeight: 48,
+        justifyContent: 'center',
     },
     disabledButton: {
         backgroundColor: '#ccc',
@@ -190,6 +248,24 @@ const styles = StyleSheet.create({
     },
     disabledButtonText: {
         color: '#666',
+    },
+    successOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: CREAM,
+        borderRadius: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10,
+        gap: 12,
+    },
+    successText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: DARK_GREEN,
     },
 });
 
