@@ -92,7 +92,7 @@ export default function ContactsSelector() {
 const styles = StyleSheet.create({
     fab: {
         position: 'absolute',
-        bottom: 20,
+        bottom: 110,
         right: 20,
         backgroundColor: ORANGE,
         width: 56,
