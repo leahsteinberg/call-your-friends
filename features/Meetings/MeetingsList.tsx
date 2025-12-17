@@ -1,5 +1,6 @@
 import { DARK_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import MeetingCard from "../EventCards/MeetingCard";
@@ -20,8 +21,7 @@ export default function MeetingsList({ meetings, offers, refresh, refreshing }: 
         title: "Chats Planned:",
         data: meetings,
         renderItem: ({ item }: { item: ProcessedMeetingType }) => {
-            if (isBroadcastMeeting(item)) {
-                // Check if user created this broadcast or accepted it
+            if (isBroadcastMeeting(item) && item.meetingState !== PAST_MEETING_STATE) {
                 const selfCreated = item.userFromId === userId;
                 if (selfCreated) {
                     return <SelfBroadcastCard meeting={item} />;

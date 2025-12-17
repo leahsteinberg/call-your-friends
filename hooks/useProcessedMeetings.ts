@@ -1,5 +1,5 @@
 import { useGetMeetingsQuery } from "@/services/meetingApi";
-import { CANCELED_MEETING_STATE } from "@/types/meetings-offers";
+import { CANCELED_MEETING_STATE, PAST_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,10 +28,17 @@ export function useProcessedMeetings() {
         const processAsync = async () => {
             // Update Redux store with raw meetings
             dispatch(setMeetings(rawMeetings));
-
+            console.log("raw meetings --", rawMeetings);
             if (rawMeetings && rawMeetings.length > 0) {
-                const rawMeetingsWithoutCancelled = rawMeetings.filter(m => m.meetingState !== CANCELED_MEETING_STATE)
-                const processed = await processMeetings(rawMeetingsWithoutCancelled);
+                const now = Date.now();
+                const filteredMeetings = rawMeetings.filter(m => {
+                    if (m.meetingState === CANCELED_MEETING_STATE || m.meetingState === PAST_MEETING_STATE) return false;
+                    if (m.meetingState === SEARCHING_MEETING_STATE && new Date(m.scheduledFor).getTime() < now) return false;
+                    return true;
+                });
+                const processed = await processMeetings(filteredMeetings);
+
+                console.log("processed ---", processed);
                 setProcessedMeetings(processed);
             } else {
                 setProcessedMeetings([]);
