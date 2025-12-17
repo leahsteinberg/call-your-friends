@@ -9,6 +9,7 @@ export const CHOCOLATE_COLOR = "#500F0A"
 
 //// BLUES
 export const PALE_BLUE = "#c8e1f5";
+export const LAVENDER = "#e6d9f5";
 export const CLOUDY_SKY_COLOR = "#A9C1C9"
 export const MID_BLUE = "#4070c2";
 export const CORNFLOWER_BLUE = "#2d76f7";

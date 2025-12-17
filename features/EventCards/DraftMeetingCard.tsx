@@ -1,19 +1,16 @@
-import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { endBroadcast } from "@/features/Broadcast/broadcastSlice";
-import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
-import { PAST_MEETING_STATE } from "@/types/meetings-offers";
+import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
-import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
-import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import type { ProcessedMeetingType } from "../Meetings/types";
 
 interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -22,115 +19,110 @@ interface DraftMeetingCardProps {
 export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
+    const [acceptSuggestion] = useAcceptSuggestionMutation();
+    const [dismissSuggestion] = useDismissSuggestionMutation();
+    const [isAccepting, setIsAccepting] = useState(false);
+    const [isDismissing, setIsDismissing] = useState(false);
 
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isCanceling, setIsCanceling] = useState(false);
-
-    const meetingState: MeetingState  = meeting.meetingState;
-    const selfCreatedMeeting = meeting.userFromId === userId;
-
-    // Check if meeting is PAST and started more than 30 minutes ago
-    const isOldPastMeeting = () => {
-        if (meetingState !== PAST_MEETING_STATE) return false;
-        const scheduledTime = new Date(meeting.scheduledFor).getTime();
-        const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
-        return scheduledTime < thirtyMinutesAgo;
-    };
-
-
-    const getOpenMeetingTitle = () => {
-        return (
-            <Text style={styles.searchingText}>
-                <Text>{eventCardText.meeting_self_open.title()}{'\n'}</Text>
-                <View style={styles.displayTimeContainer}>
-                    <Text style={styles.searchingText}>in {displayTimeDifference(meeting.scheduledFor)}</Text>
-                    <AnimatedText
-                        text="..."
-                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
-                        duration={300}
-                        staggerDelay={500}
-                        inline={false}
-                    />
-                </View>
-            </Text>
-        );
-    };
-
-    const getClaimedSelfMeetingTitle = () => {
-        const name = meeting.acceptedUser?.name;
-        return (
-        <View style={styles.searchingText}>
-            <Text style={styles.searchingText}>
-                {eventCardText.meeting_self_accepted.title(name)}{displayTimeDifference(meeting.scheduledFor)}
-            </Text>
-        </View>
-    );
-};
-    
-    
-    const getMainDisplay = () => {
-        if (selfCreatedMeeting) {
-            if (meeting.acceptedUser) {
-                const name = meeting.acceptedUser?.name;
-                return getClaimedSelfMeetingTitle()
-            } else {
-                return getOpenMeetingTitle();
-            }
-        }
-        const name = meeting.userFrom?.name;
-        return name ? `Accepted a meeting created by ${name}` : null;
-    };
-
-    const handleDeleteMeeting = async () => {
+    const handleAcceptSuggestion = async () => {
         try {
-            setIsDeleting(true);
-            await deleteMeeting({
-                meetingId: meeting.id,
-                userId
-            }).unwrap();
+            setIsAccepting(true);
 
-            // Remove from Redux after successful deletion
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
 
-            // If this is a self-created broadcast meeting, turn off the broadcast toggle
-            if (selfCreatedMeeting && isBroadcastMeeting(meeting)) {
-                dispatch(endBroadcast());
+            try {
+                await acceptSuggestion({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+                // Success - optimistic update already applied
+                setIsAccepting(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                throw apiError;
             }
+
         } catch (error) {
-            console.error("Error deleting meeting:", error);
-            alert('Failed to delete meeting. Please try again.');
-            setIsDeleting(false);
+            console.error("Error accepting suggestion:", error);
+            alert('Failed to accept suggestion. The item has been restored.');
+            setIsAccepting(false);
         }
     };
 
+    const handleDismissSuggestion = async () => {
+        try {
+            setIsDismissing(true);
 
-    const mainDisplayText = getMainDisplay();
+            // Optimistic update FIRST - remove from UI immediately
+            dispatch(deleteMeetingOptimistic(meeting.id));
+
+            try {
+                await dismissSuggestion({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+                // Success - optimistic update already applied
+                setIsDismissing(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                throw apiError;
+            }
+
+        } catch (error) {
+            console.error("Error dismissing suggestion:", error);
+            alert('Failed to dismiss suggestion. The item has been restored.');
+            setIsDismissing(false);
+        }
+    };
+
+    // Get the name from the meeting
+    const getFromName = () => {
+        return meeting.userFrom?.name || 'someone';
+    };
+
+    const getMainText = () => {
+        return `Just a suggestion: Talk with ${getFromName()} ${displayTimeDifference(meeting.scheduledFor)}? We'll see if they're free.`;
+    };
 
     return (
-        <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
+        <View style={styles.container}>
             <View style={styles.header}>
-            {mainDisplayText && (
-                <Text style={styles.mainText}>DRAFT MEETING - {mainDisplayText}</Text>
-            )}
+                <Text style={styles.nameText}>{getFromName()}</Text>
+
                 <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={handleDeleteMeeting}
-                            style={[styles.deleteButton, isDeleting && styles.deleteButtonDisabled]}
-                            disabled={isDeleting}
-                        >
-                            {isDeleting ? (
-                                <ActivityIndicator size="small" color="red" />
-                            ) : (
-                                <Text style={styles.deleteButtonText}>Delete</Text>
-                            )}
-                        </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleAcceptSuggestion}
+                        style={styles.acceptButton}
+                        disabled={isAccepting}
+                    >
+                        {isAccepting ? (
+                            <ActivityIndicator size="small" color="green" />
+                        ) : (
+                            <Text style={styles.acceptButtonText}>Accept</Text>
+                        )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleDismissSuggestion}
+                        style={styles.dismissButton}
+                        disabled={isDismissing}
+                    >
+                        {isDismissing ? (
+                            <ActivityIndicator size="small" color="red" />
+                        ) : (
+                            <Text style={styles.dismissButtonText}>Dismiss</Text>
+                        )}
+                    </TouchableOpacity>
                 </View>
             </View>
+            <Text style={styles.mainText}>{getMainText()}</Text>
 
             <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
+
             {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT)</Text>
             )}
         </View>
     );
@@ -138,44 +130,35 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
-    },
-    oldPastContainer: {
-        backgroundColor: '#E8E8E8',
-        opacity: 0.7,
+        backgroundColor: LAVENDER,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //alignItems: 'center',
-        marginBottom: 8,
     },
-    buttonContainer: {
-    },
-    searchingText: {
+    nameText: {
         fontSize: 20,
         fontWeight: '600',
         color: ORANGE,
+        marginBottom: 4,
         fontFamily: CustomFonts.ztnaturebold,
+    },
+    mainText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: CORNFLOWER_BLUE,
+        marginBottom: 4,
+        fontFamily: CustomFonts.ztnatureregular,
     },
     timeText: {
         fontSize: 16,
         fontWeight: '600',
         color: BRIGHT_BLUE,
         marginBottom: 4,
-        fontFamily: CustomFonts.ztnatureregular,
-
-    },
-    mainText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturebold,
-        flexShrink: 1, // Allow text to wrap/shrink to prevent overflow
+        fontFamily: CustomFonts.ztnaturelight,
     },
     debugText: {
         fontSize: 10,
@@ -183,21 +166,26 @@ const styles = StyleSheet.create({
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },
-    deleteButton: {
-        //minWidth: 50,
-        //marginLeft: 10,
-        //alignItems: 'flex-end',
-    },
-    displayTimeContainer: {
+    buttonContainer: {
         flexDirection: 'row',
+        gap: 8,
     },
-    deleteButtonDisabled: {
-        opacity: 0.6,
+    acceptButton: {
+        borderRadius: 4,
     },
-    deleteButtonText: {
-        color: CHOCOLATE_COLOR,
+    acceptButtonText: {
+        color: BRIGHT_GREEN,
         fontSize: 12,
         fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturebold
+        fontFamily: CustomFonts.ztnaturemedium,
+    },
+    dismissButton: {
+        borderRadius: 4,
+    },
+    dismissButtonText: {
+        fontSize: 12,
+        color: CHOCOLATE_COLOR,
+        fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
     },
 });

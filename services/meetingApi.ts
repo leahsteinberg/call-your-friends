@@ -123,11 +123,27 @@ export const meetingApi = createApi({
                 }
             },
         }),
+        acceptSuggestion: builder.mutation({
+            query: ({ meetingId, userId }) => ({
+                url: '/api/accept-suggestion',
+                method: 'POST',
+                body: { meetingId, userId },
+            }),
+            invalidatesTags: ['Meeting'],
+        }),
+        dismissSuggestion: builder.mutation({
+            query: ({ meetingId, userId }) => ({
+                url: '/api/dismiss-suggestion',
+                method: 'POST',
+                body: { meetingId, userId },
+            }),
+            invalidatesTags: ['Meeting'],
+        }),
     })
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation, useAcceptSuggestionMutation, useDismissSuggestionMutation } = meetingApi;
 
-export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation, useCreateMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
+export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation, useCreateMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation };
 
