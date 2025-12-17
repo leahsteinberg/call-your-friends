@@ -1,3 +1,4 @@
+import { setUserSignals } from "@/features/Settings/userSignalsSlice";
 import { useGetSignalsQuery } from "@/services/userSignalsApi";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal } from "@/types/userSignalsTypes";
@@ -18,22 +19,14 @@ export function useProcessedUserSignals() {
 
     // Process meetings when raw data changes
     useEffect(() => {
-        // const processAsync = async () => {
-        //     // Update Redux store with raw meetings
-        //     dispatch(setMeetings(rawMeetings));
+        const processAsync = async () => {
+            dispatch(setUserSignals(rawUserSignals));
+            setProcessedUserSignals(rawUserSignals);
+        };
 
-        //     if (rawMeetings && rawMeetings.length > 0) {
-        //         const rawMeetingsWithoutCancelled = rawMeetings.filter(m => m.meetingState !== CANCELED_MEETING_STATE)
-        //         const processed = await processMeetings(rawMeetingsWithoutCancelled);
-        //         setProcessedMeetings(processed);
-        //     } else {
-        //         setProcessedMeetings([]);
-        //     }
-        // };
-
-        // if (!isLoading) {
-        //     processAsync();
-        // }
+        if (!isLoading) {
+            processAsync();
+        }
     }, [rawUserSignals, isLoading, dispatch]);
 
     return {
