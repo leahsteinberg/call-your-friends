@@ -12,8 +12,10 @@ export default function Settings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
     const { userSignals, isLoading } = useUserSignals();
+    useEffect(() => {
+        console.log("in use effect settings -", userSignals)
 
-    useEffect(() => {}, []);
+    }, [userSignals]);
 
     return (
         <View style={styles.container}>
