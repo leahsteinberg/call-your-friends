@@ -14,12 +14,12 @@ export default function UserSignalSettings(): React.JSX.Element {
     const { userSignals, isLoading } = useUserSignals();
     
     useEffect(() => {
-        console.log("in use effect settings -", userSignals);
         const walkUserSignals = userSignals
             .filter(signal => signal.type === WALK_PATTERN_SIGNAL_TYPE);
         if (walkUserSignals && walkUserSignals.length > 0) {
-            console.log("got walk signal", walkUserSignals[0]);
             setWalkSignal(walkUserSignals[0]);
+        } else {
+            setWalkSignal(null);
         }
     }, [userSignals]);
 

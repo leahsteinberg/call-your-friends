@@ -33,7 +33,7 @@ export const processStepsData = (data) => {
   return upcomingWalkTime.toString();
 }
 
-const getDayAndTime = (data): {dayNumber: number, hour: number} => {
+export const getDayAndTime = (data): {dayNumber: number, hour: number, dayName: string} => {
   const mostRecentTime = data[0].endDate;
   const mostPastTime = data[data.length - 1].startDate;
   const mostPastHour = getStartOfHour(mostPastTime);
@@ -63,7 +63,7 @@ const getDayAndTime = (data): {dayNumber: number, hour: number} => {
   
   const dayHour = maxDayHour[0]
   const [dayNumber, hour] = dayHour.split(',')
-    return {dayNumber, hour};
+    return {dayNumber, hour, dayName: dayNumberToDayName[dayNumber]};
 }
 
 

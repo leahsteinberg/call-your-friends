@@ -6,7 +6,10 @@ export const WALK_PATTERN_SIGNAL_TYPE: SignalType = "WALK_PATTERN" as const;
 export const CALL_INTENT_SIGNAL_TYPE: SignalType = "CALL_INTENT" as const;
 
 
-export type WalkPatternPayload = {};
+export type WalkPatternPayload = {
+    dayName: string;
+    hour: number;
+};
 
 export type CallIntentPayload = {
     targetUserId: string;

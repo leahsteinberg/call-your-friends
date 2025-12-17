@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
-import { processStepsData } from './useHealthKitData';
+import { getDayAndTime, processStepsData } from './useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
 const DAYS_OF_HISTORY = 200;
@@ -28,7 +28,7 @@ interface SuggestedWalkByStepsProps {
     userSignal?: UserSignal<SignalType> | null;
 }
 
-export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
+export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStepsProps) {
     const [loading, setLoading] = useState<boolean>(true);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');
@@ -36,9 +36,11 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
     const userId = useSelector((state: RootState) => state.auth.user.id);
-    const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
-    const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
-
+    const [addUserSignal, { isLoading: isAdding }] = useAddUserSignalMutation();
+    const [removeUserSignal, { isLoading: isRemoving }] = useRemoveUserSignalMutation();
+    const [dayName, setDayName] = useState<string>('');
+    const [hourNumber, setHourNumber] = useState<number>(0);
+    const [isActive, setIsActive] = useState<boolean>(!!userSignal);
     const pastDate = getPastDate({ daysAgo: DAYS_OF_HISTORY });
     const today = new Date();
 
@@ -72,6 +74,11 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
                     // Process steps data to find the best time for a walk
                     // This analyzes historical step patterns to suggest when the user is most active
                     const suggestedWalkDateTimeStr = processStepsData(stepsSamples);
+                    const {dayName, hour} = getDayAndTime(stepsSamples);
+                    console.log("{dayName, hour}", {dayName, hour});
+                    setDayName(dayName);
+                    setHourNumber(hour);
+
                     const suggestedDateTime = new Date(suggestedWalkDateTimeStr);
 
                     setSuggestedWalkDateTime(suggestedDateTime);
@@ -88,34 +95,53 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
         fetchHealthKitDataAndGenerateSuggestion();
     }, [isAuthorized]);
 
-    useEffect(() => 
-        {
-            console.log("suggested walk date time updatedd", suggestedWalkDateTime?.toString());
-
-        },
-        [suggestedWalkDateTime])
-
+    useEffect(() => {
+        setIsActive(!!userSignal);
+    }, [userSignal]);
 
     const handleAddWalkSignal = async () => {
         try {
-            const payload: WalkPatternPayload = { };
+            const payload: WalkPatternPayload = { dayName, hour: hourNumber };
             await addUserSignal({
-              userId,
-              type: WALK_PATTERN_SIGNAL_TYPE,
-              payload
+                userId,
+                type: WALK_PATTERN_SIGNAL_TYPE,
+                payload
             }).unwrap();
-          } catch (error) {
-            console.error("Error setting call intent:", error);
-            alert('Failed to set call intent. Please try again.');
-          }
+        } catch (error) {
+            console.error("Error setting walk pattern:", error);
+            alert('Failed to set walk pattern. Please try again.');
+        }
     };
 
-    const isDisabled = !suggestedWalkDateTime || loading;
+    const handleRemoveWalkSignal = async () => {
+        try {
+            if (userSignal) {
+                await removeUserSignal({ userId, signalId: userSignal.id }).unwrap();
+            }
+        } catch (error) {
+            console.error("Error removing walk pattern:", error);
+            alert('Failed to remove walk pattern. Please try again.');
+        }
+    };
+
+    const handleToggle = async () => {
+        if (isActive) {
+            await handleRemoveWalkSignal();
+        } else {
+            await handleAddWalkSignal();
+        }
+    };
+
+    const isDisabled = !suggestedWalkDateTime || loading || isAdding || isRemoving;
 
     return (
         <TouchableOpacity
-            style={[styles.container, isDisabled && styles.disabledContainer]}
-            onPress={handleAddWalkSignal}
+            style={[
+                styles.container,
+                isActive && styles.activeContainer,
+                isDisabled && styles.disabledContainer
+            ]}
+            onPress={handleToggle}
             disabled={isDisabled}
         >
             <Text style={styles.title}>
@@ -128,7 +154,10 @@ export default function SuggestedWalkBySteps({ }: SuggestedWalkByStepsProps) {
                 {suggestedWalkTime || 'Loading...'}
             </Text>
             <Text style={styles.actionHint}>
-                Tap to find a friend who's free at that time
+                {isActive
+                    ? 'Tap to remove walk time preference'
+                    : 'Tap to find a friend who\'s free at that time'
+                }
             </Text>
         </TouchableOpacity>
     );
@@ -150,6 +179,11 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+    },
+    activeContainer: {
+        backgroundColor: BRIGHT_GREEN,
+        borderWidth: 2,
+        borderColor: DARK_GREEN,
     },
     disabledContainer: {
         backgroundColor: '#ccc',
