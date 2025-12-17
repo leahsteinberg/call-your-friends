@@ -57,8 +57,8 @@ const Layout = () => {
             />
             <Tabs.Screen
                 options={{
-                    title: 'Home',
-                    tabBarLabel: 'ME',
+                    title: 'Friends',
+                    tabBarLabel: 'Friends',
                     tabBarIcon: ({ color }) => <FlowerBlob
                     width={ICON_SIZE}
                     height={ICON_SIZE}

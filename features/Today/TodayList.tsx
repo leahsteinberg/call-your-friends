@@ -2,15 +2,15 @@ import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
-import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types";
+import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
-import { ProcessedMeetingType } from "../Meetings/types";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
+import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
@@ -54,7 +54,7 @@ export default function TodayList(): React.JSX.Element {
             try {
                 // Filter for today and combine
                 const todayMeetings: TodayItem[] = meetings
-                    .filter((meeting:ProcessedMeetingType )=> isToday(meeting.scheduledFor))
+                    // .filter((meeting:ProcessedMeetingType )=> isToday(meeting.scheduledFor))
                     .map((meeting: ProcessedMeetingType) => ({
                         id: `meeting-${meeting.id}`,
                         type: 'meeting' as const,
@@ -64,7 +64,7 @@ export default function TodayList(): React.JSX.Element {
                     }));
 
                 const todayOffers: TodayItem[] = offers
-                    .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
+                    // .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
                     .map((offer: ProcessedOfferType) => ({
                         id: `offer-${offer.id}`,
                         type: 'offer' as const,

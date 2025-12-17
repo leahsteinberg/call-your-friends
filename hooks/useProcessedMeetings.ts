@@ -30,9 +30,7 @@ export function useProcessedMeetings() {
             dispatch(setMeetings(rawMeetings));
 
             if (rawMeetings && rawMeetings.length > 0) {
-                console.log("rawMeetings", rawMeetings);
                 const rawMeetingsWithoutCancelled = rawMeetings.filter(m => m.meetingState !== CANCELED_MEETING_STATE)
-                console.log("raw w o canceld", rawMeetingsWithoutCancelled)
                 const processed = await processMeetings(rawMeetingsWithoutCancelled);
                 setProcessedMeetings(processed);
             } else {
