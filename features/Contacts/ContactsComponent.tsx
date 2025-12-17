@@ -2,7 +2,6 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
-import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { CORNFLOWER_BLUE } from "@/styles/styles";
@@ -33,11 +32,14 @@ export default function ContactsComponent(): React.JSX.Element {
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [getFriendInvites] = useGetFriendInvitesMutation();
 
+    // const [userSignals, setUserSignals] = useState<FriendRequest[]>([]);
+    // const [getFriendInvites] = useGetFriendInvitesMutation();
+
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
 
     const [processedContactIntended, setProcessedContactIntended] = useState<string[]>();
-    const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
+    //const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
 
 
     const handleSignOut = async () => {
