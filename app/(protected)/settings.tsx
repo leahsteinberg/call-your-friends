@@ -1,12 +1,12 @@
 import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
-import Profile from '@/features/Profile/Profile';
+import Settings from '@/features/Settings/Settings';
 import { StyleSheet, View } from 'react-native';
 
-export default function FriendChats(){
+export default function SettingsPage(){
     return (
         <View style={styles.container}>
           <FullScreenStylingWrapper>
-            <Profile/>
+            <Settings/>
           </FullScreenStylingWrapper>
         </View>
     )

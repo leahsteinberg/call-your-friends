@@ -1,15 +1,14 @@
 import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
-import ContactsComponent from '@/features/Contacts/ContactsComponent';
+import Profile from '@/features/Profile/Profile';
 import { StyleSheet, View } from 'react-native';
 
 export default function Index(){
-
     return (
-      <View style={styles.container}>
-        <FullScreenStylingWrapper>
-          <ContactsComponent/>
-        </FullScreenStylingWrapper>
-      </View>
+        <View style={styles.container}>
+          <FullScreenStylingWrapper>
+            <Profile/>
+          </FullScreenStylingWrapper>
+        </View>
     )
 }
 

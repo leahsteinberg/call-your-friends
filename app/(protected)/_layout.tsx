@@ -1,3 +1,4 @@
+import Butterfly from "@/assets/images/butterfly.svg";
 import FlowerBlob from "@/assets/images/flower-blob.svg";
 import HighFiveStar from "@/assets/images/high-five-star.svg";
 
@@ -32,41 +33,42 @@ const Layout = () => {
             headerShown: false,
           }}
         >
-            {/* <Tabs.Screen
-                name="friendchats"
-                options={{
-                    headerShown: false,
-                    title: "PLAN",
-                    tabBarIcon: ({ color }) => <StarPerson
-                        width={ICON_SIZE}
-                        height={ICON_SIZE}
-                        fill={color}
-                    />,
-                    tabBarHideOnKeyboard: true,
-                }}
-            /> */}
             <Tabs.Screen
-                name="profile"
+                name="index"
                 options={{
                     headerShown: false,
-                    title: "TODAY",
+                    title: "Chats",
                     tabBarIcon: ({ color }) => <HighFiveStar fill={color}/>,
                     tabBarHideOnKeyboard: true,
                 }}
             />
             <Tabs.Screen
+                name="friends"
                 options={{
                     title: 'Friends',
                     tabBarLabel: 'Friends',
                     tabBarIcon: ({ color }) => <FlowerBlob
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    fill={color}
-                />, // Custom icon component
+                        width={ICON_SIZE}
+                        height={ICON_SIZE}
+                        fill={color}
+                    />,
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
-                  }}
-                name="index"
+                }}
+            />
+            <Tabs.Screen
+                name="settings"
+                options={{
+                    title: 'Settings',
+                    tabBarLabel: 'Settings',
+                    tabBarIcon: ({ color }) => <Butterfly
+                        width={ICON_SIZE}
+                        height={ICON_SIZE}
+                        fill={color}
+                    />,
+                    headerShown: false,
+                    tabBarHideOnKeyboard: true,
+                }}
             />
   
 
