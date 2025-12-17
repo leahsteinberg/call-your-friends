@@ -115,7 +115,11 @@ export const meetingApi = createApi({
                     // After successful mutation, invalidate Offer tag in offerApi
                     dispatch(offerApi.util.invalidateTags(['Offer']));
                 } catch (error) {
-                    // Handle error if needed
+                    console.error('Failed to invalidate offers cache:', error);
+                    // Fallback: Force refetch after delay to ensure cache consistency
+                    setTimeout(() => {
+                        dispatch(offerApi.util.invalidateTags(['Offer']));
+                    }, 2000);
                 }
             },
         }),

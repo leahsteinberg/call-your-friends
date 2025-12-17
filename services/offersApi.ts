@@ -10,7 +10,11 @@ const invalidateMeetingsOnSuccess = async (_arg: any, { dispatch, queryFulfilled
         // After successful mutation, invalidate Meeting tag in meetingApi
         dispatch(meetingApi.util.invalidateTags(['Meeting']));
     } catch (error) {
-        // Handle error if needed
+        console.error('Failed to invalidate meetings cache:', error);
+        // Fallback: Force refetch after delay to ensure cache consistency
+        setTimeout(() => {
+            dispatch(meetingApi.util.invalidateTags(['Meeting']));
+        }, 2000);
     }
 };
 
