@@ -24,7 +24,7 @@ export const userSignalsApi = createApi({
         }),
         updateSignals: builder.mutation({
             query: ({ userId, signals }) => ({
-                url: '/api/update-signals',
+                url: '/api/update-user-signals',
                 method: 'POST',
                 body: { userId, signals },
             }),
@@ -32,8 +32,8 @@ export const userSignalsApi = createApi({
         }),
         getSignals: builder.query({
             query: ({ userId }) => ({
-                url: '/api/get-signals',
-                method: 'POST',
+                url: '/api/get-user-signals',
+                method: 'GET',
                 body: { userId },
             }),
             providesTags: ['UserSignals'],
@@ -43,4 +43,5 @@ export const userSignalsApi = createApi({
 
 const { useAddUserSignalMutation, useRemoveUserSignalMutation, useUpdateSignalsMutation, useGetSignalsQuery } = userSignalsApi;
 
-export { useAddUserSignalMutation, useRemoveUserSignalMutation, useUpdateSignalsMutation, useGetSignalsQuery };
+export { useAddUserSignalMutation, useGetSignalsQuery, useRemoveUserSignalMutation, useUpdateSignalsMutation };
+
