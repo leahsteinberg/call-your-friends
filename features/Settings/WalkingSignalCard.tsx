@@ -1,11 +1,14 @@
+import FlowerBlob from '@/assets/images/flower-blob.svg';
 import ToggleSwitch from "@/components/ToggleSwitch";
+
+import { CustomFonts } from '@/constants/theme';
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
+import { CHARTREUSE, CREAM, DARK_GREEN, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE, WalkPatternPayload } from "@/types/userSignalsTypes";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
 import { getDayAndTime, processStepsData } from './useHealthKitData';
@@ -30,13 +33,14 @@ interface SuggestedWalkByStepsProps {
 }
 
 export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStepsProps) {
+    console.log("user signal in suggestion walk --", userSignal);
+    const userId = useSelector((state: RootState) => state.auth.user.id);
     const [loading, setLoading] = useState<boolean>(true);
     const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
     const [suggestedWalkTime, setSuggestedWalkTime] = useState<string>('');
     const [suggestedWalkDateTime, setSuggestedWalkDateTime] = useState<Date | null>(null);
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
-    const userId = useSelector((state: RootState) => state.auth.user.id);
     const [addUserSignal] = useAddUserSignalMutation();
     const [removeUserSignal] = useRemoveUserSignalMutation();
     const [dayName, setDayName] = useState<string>('');
@@ -93,13 +97,15 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
                 console.error("Error fetching steps data:", error);
             }
         };
-
-        fetchHealthKitDataAndGenerateSuggestion();
+        if (Platform.OS !== 'web') {
+            fetchHealthKitDataAndGenerateSuggestion();
+        }
     }, [isAuthorized]);
 
     useEffect(() => {
-        setIsActive(!!userSignal);
-        setOptimisticActive(!!userSignal);
+        const newValue = !!userSignal;
+        setIsActive(prevValue => prevValue !== newValue ? newValue : prevValue);
+        setOptimisticActive(prevValue => prevValue !== newValue ? newValue : prevValue);
     }, [userSignal]);
 
     const handleAddWalkSignal = async () => {
@@ -114,6 +120,7 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
             console.error("Error setting walk pattern:", error);
             alert('Failed to set walk pattern. Please try again.');
         }
+        
     };
 
     const handleRemoveWalkSignal = async () => {
@@ -130,7 +137,9 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
     const handleToggle = async () => {
         const newValue = !optimisticActive;
         setOptimisticActive(newValue); // Optimistic update
-
+        if (Platform.OS === 'web') {
+            return;
+        }
         try {
             if (isActive) {
                 await handleRemoveWalkSignal();
@@ -144,44 +153,35 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
         }
     };
 
-    const isDisabled = !suggestedWalkDateTime || loading;
 
     return (
         <View
             style={[
                 styles.container,
-                optimisticActive && styles.activeContainer,
-                //isDisabled && styles.disabledContainer
             ]}
         >
             <View style={styles.header}>
                 <Text style={styles.title}>
-                    Allow Loyal to suggest walk and talks based on your walking patterns.
+                    Walking patterns to coordinate walk & talks
                 </Text>
 
             </View>
-            {/* <Text style={styles.description}>
-                Suggestion informed by your walking habits.
-            </Text> */}
-            {/* <Text style={[styles.walkTime, isDisabled && styles.disabledText]}>
-                {suggestedWalkTime || 'Loading...'}
-            </Text> */}
-            <View style={styles.toggle}>
-                <ToggleSwitch
+            <View style={styles.toggleContainer}>
+                <View style={styles.toggle}>
+                    <ToggleSwitch
                         value={optimisticActive}
                         onValueChange={handleToggle}
-                        disabled={isDisabled}
-                        activeColor={ORANGE}
+                        //disabled={isDisabled}
+                        activeColor={CHARTREUSE}
                         inactiveColor={CREAM}
                         thumbColor={CREAM}
-                    />
+                    >
+                        <FlowerBlob
+                            fill={ORANGE}
+                        />
+                    </ToggleSwitch>
+                </View>
             </View>
-            {/* <Text style={styles.actionHint}>
-                {isActive
-                    ? 'Walk time preference set'
-                    : 'Toggle to set walk time preference'
-                }
-            </Text> */}
         </View>
     );
 }
@@ -203,19 +203,6 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
-    toggle: {
-
-    },
-    activeContainer: {
-        backgroundColor: BRIGHT_GREEN,
-        borderWidth: 2,
-        borderColor: DARK_GREEN,
-    },
-    disabledContainer: {
-        backgroundColor: '#ccc',
-        opacity: 0.6,
-    },
-
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -228,56 +215,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         flex: 1,
         marginRight: 12,
+        fontFamily: CustomFonts.ztnaturemedium,
     },
-    description: {
-        marginTop: 8,
-        color: CREAM,
-        fontSize: 14,
+    toggle: {
+        flex: 1,
+        //backgroundColor: PEACH,
+        flexDirection: 'row',
+
     },
-    walkTime: {
-        marginTop: 4,
-        fontWeight: '600',
-        color: CREAM,
-        fontSize: 18,
-    },
-    disabledText: {
-        color: '#666',
-    },
-    actionHint: {
-        marginTop: 8,
-        color: CREAM,
-        fontSize: 12,
-        fontStyle: 'italic',
-        textAlign: 'center',
-    },
-    confirmationContainer: {
-        backgroundColor: LIGHT_BEIGE,
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 15,
-        borderRadius: 12,
-        borderWidth: 2,
-        borderColor: BRIGHT_GREEN,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.15,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    confirmationTitle: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: DARK_GREEN,
-        textAlign: 'center',
-        marginBottom: 12,
-    },
-    confirmationTime: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: BRIGHT_GREEN,
-        textAlign: 'center',
-    },
+    toggleContainer: {
+        justifyContent: 'flex-end',
+        alignContent: 'flex-end',
+        alignItems: 'flex-end',
+        paddingBottom: 20,
+
+        //backgroundColor: CORNFLOWER_BLUE,
+    }
 });

@@ -1,7 +1,15 @@
-import FlowerBlob from '@/assets/images/flower-blob.svg';
-import { ORANGE } from '@/styles/styles';
+import { CHARTREUSE, CREAM } from '@/styles/styles';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import Reanimated, {
+    Easing,
+    interpolate,
+    interpolateColor,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withTiming
+} from 'react-native-reanimated';
 
 
 
@@ -13,67 +21,78 @@ interface ToggleSwitchProps {
     inactiveColor?: string;
     thumbColor?: string;
 }
-const WIDTH = 200;
-const HEIGHT = 50;
-const CIRCLE_DIAM = 36;
-
+const WIDTH = 100;
+const HEIGHT = 10;
+const THUMB_DIAM = 40;
+const ROTATION_START = 20;
+const ROTATION_END = 50;
 
 export default function ToggleSwitch({
     value,
     onValueChange,
     disabled = false,
-    activeColor = '#4CD964',
-    inactiveColor = '#E0E0E0',
-    thumbColor = '#FFFFFF',
+    activeColor = CHARTREUSE,
+    inactiveColor = CREAM,
+    children,
 }: ToggleSwitchProps) {
-    const translateX = useRef(new Animated.Value(value ? 1 : 0)).current;
-    const scale = useRef(new Animated.Value(1)).current;
-    const rotation = useRef(new Animated.Value(0)).current;
+    console.log("VALUE in toggle swtich ---", value);
+    console.log("Disabled -", disabled);
+
+    const isFirstRender = useRef(true);
+    const translateX = useSharedValue(value ? 1 : 0);
+    const scale = useSharedValue(1);
+    const rotation = useSharedValue(0);
+    const colorProgress = useSharedValue(value ? 1 : 0);
 
     useEffect(() => {
-        // Bouncy slide animation
-        Animated.spring(translateX, {
-            toValue: value ? 1 : 0,
-            useNativeDriver: true,
-            friction: 5,
-            tension: 100,
-        }).start(() => {
-            // Trigger icon animation when slide completes
-            if (value) {
-                animateIcon();
-            }
+        // Skip animation on initial render
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        colorProgress.value = withTiming(value ? 1 : 0, {
+            duration: 500,
+            easing: Easing.in(Easing.ease),
         });
+        // Bouncy slide animation
+        translateX.value = withTiming(
+            value ? 1 : 0,
+            {
+                duration: 300,
+                easing: Easing.out(Easing.ease),
+            },
+            (finished) => {
+                // Trigger icon animation when slide completes
+                if (finished && value) {
+                    animateIcon();
+                }
+            }
+        );
     }, [value]);
 
     const animateIcon = () => {
-        // Scale up and rotate
-        Animated.sequence([
-            Animated.parallel([
-                Animated.timing(scale, {
-                    toValue: 1.3,
-                    duration: 200,
-                    easing: Easing.out(Easing.back(2)),
-                    useNativeDriver: true,
-                }),
-                Animated.timing(rotation, {
-                    toValue: 1,
-                    duration: 200,
-                    useNativeDriver: true,
-                }),
-            ]),
-            Animated.parallel([
-                Animated.timing(scale, {
-                    toValue: 1,
-                    duration: 150,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(rotation, {
-                    toValue: 0,
-                    duration: 150,
-                    useNativeDriver: true,
-                }),
-            ]),
-        ]).start();
+        'worklet';
+        // Rotate back and forth
+        rotation.value = withSequence(
+            withTiming(1, {
+                duration: 400,
+                easing: Easing.inOut(Easing.back(1)),
+            }),
+            withTiming(0, {
+                duration: 200,
+            })
+        );
+        scale.value = withSequence(
+            withTiming(.8, {
+                duration: 400,
+                easing: Easing.inOut(Easing.back(1)),
+
+            }),
+            withTiming(1, {
+                duration: 200,
+            })
+        );
     };
 
     const handlePress = () => {
@@ -82,16 +101,38 @@ export default function ToggleSwitch({
         }
     };
 
-    const thumbTranslateX = translateX.interpolate({
-        inputRange: [0, 1],
-        outputRange: [2, WIDTH-38],
-        extrapolate: 'clamp',
+    const colorAnimatedStyle = useAnimatedStyle(() => {
+        const backgroundColor = interpolateColor(
+            colorProgress.value,
+            [0, 1],
+            [inactiveColor, activeColor]
+        );
+
+        return {
+            backgroundColor,
+        };
     });
 
-    const rotate = rotation.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['0deg', '15deg'],
-        extrapolate: 'clamp',
+    const thumbAnimatedStyle = useAnimatedStyle(() => {
+        const thumbTranslateX = interpolate(
+            translateX.value,
+            [0, 1],
+            [-THUMB_DIAM+16, WIDTH - THUMB_DIAM],
+        );
+
+        const rotate = interpolate(
+            rotation.value,
+            [0, 1],
+            [ROTATION_START, ROTATION_END]
+        );
+
+        return {
+            transform: [
+                { translateX: thumbTranslateX },
+                { scale: scale.value },
+                { rotate: `${rotate}deg` },
+            ],
+        };
     });
 
     return (
@@ -101,33 +142,19 @@ export default function ToggleSwitch({
             disabled={disabled}
             style={styles.container}
         >
-            <Animated.View
+            <Reanimated.View
                 style={[
                     styles.track,
                     {
-                        backgroundColor: value ? activeColor : inactiveColor,
                         opacity: disabled ? 0.5 : 1,
                     },
+                    colorAnimatedStyle,
                 ]}
             >
-                <Animated.View
-                    style={[
-                        styles.thumb,
-                        {
-                            backgroundColor: thumbColor,
-                            transform: [
-                                { translateX: thumbTranslateX },
-                                { scale },
-                                { rotate },
-                            ],
-                        },
-                    ]}
-                >  
-                <FlowerBlob
-                    fill={ORANGE}
-                />
-                </Animated.View>
-            </Animated.View>
+                <Reanimated.View style={[styles.thumb, thumbAnimatedStyle]}>
+                    {children}
+                </Reanimated.View>
+            </Reanimated.View>
         </TouchableOpacity>
     );
 }
@@ -135,6 +162,7 @@ export default function ToggleSwitch({
 const styles = StyleSheet.create({
     container: {
         justifyContent: 'center',
+        paddingTop: 20,
     },
     track: {
         width: WIDTH,
@@ -143,17 +171,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     thumb: {
-        width: CIRCLE_DIAM,
-        height: CIRCLE_DIAM,
+        width: THUMB_DIAM+30,
+        height: THUMB_DIAM+30,
+        // backgroundColor: CREAM,
         borderRadius: 99,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 3,
+        // shadowColor: '#000',
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 2,
+        // },
+        // shadowOpacity: 0.2,
+        // shadowRadius: 3,
+        //elevation: 3,
         alignItems: 'center',
         justifyContent: 'center',
     },
