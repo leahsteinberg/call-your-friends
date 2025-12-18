@@ -1,10 +1,11 @@
+import ToggleSwitch from "@/components/ToggleSwitch";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
 import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE, WalkPatternPayload } from "@/types/userSignalsTypes";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
 import { getDayAndTime, processStepsData } from './useHealthKitData';
@@ -135,18 +136,26 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
     const isDisabled = !suggestedWalkDateTime || loading || isAdding || isRemoving;
 
     return (
-        <TouchableOpacity
+        <View
             style={[
                 styles.container,
                 isActive && styles.activeContainer,
-                isDisabled && styles.disabledContainer
+                //isDisabled && styles.disabledContainer
             ]}
-            onPress={handleToggle}
-            disabled={isDisabled}
         >
-            <Text style={styles.title}>
-                Chat with a friend on your next walk.
-            </Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>
+                    Chat with a friend on your next walk.
+                </Text>
+                <ToggleSwitch
+                    value={isActive}
+                    onValueChange={handleToggle}
+                    // disabled={isDisabled}
+                    activeColor={BRIGHT_GREEN}
+                    inactiveColor={CREAM}
+                    thumbColor={DARK_GREEN}
+                />
+            </View>
             <Text style={styles.description}>
                 Suggestion informed by your walking habits.
             </Text>
@@ -155,11 +164,11 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
             </Text>
             <Text style={styles.actionHint}>
                 {isActive
-                    ? 'Tap to remove walk time preference'
-                    : 'Tap to find a friend who\'s free at that time'
+                    ? 'Walk time preference set'
+                    : 'Toggle to set walk time preference'
                 }
             </Text>
-        </TouchableOpacity>
+        </View>
     );
 }
 
@@ -189,10 +198,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc',
         opacity: 0.6,
     },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
     title: {
         fontWeight: 'bold',
         color: CREAM,
         fontSize: 16,
+        flex: 1,
+        marginRight: 12,
     },
     description: {
         marginTop: 8,
