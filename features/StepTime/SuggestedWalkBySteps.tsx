@@ -1,6 +1,6 @@
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE } from "@/styles/styles";
+import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE, WalkPatternPayload } from "@/types/userSignalsTypes";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
@@ -145,29 +145,32 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
         >
             <View style={styles.header}>
                 <Text style={styles.title}>
-                    Chat with a friend on your next walk.
+                    Allow Loyal to suggest walk and talks based on your walking patterns.
                 </Text>
-                <ToggleSwitch
-                    value={isActive}
-                    onValueChange={handleToggle}
-                    // disabled={isDisabled}
-                    activeColor={BRIGHT_GREEN}
-                    inactiveColor={CREAM}
-                    thumbColor={DARK_GREEN}
-                />
+                
             </View>
-            <Text style={styles.description}>
+            {/* <Text style={styles.description}>
                 Suggestion informed by your walking habits.
-            </Text>
-            <Text style={[styles.walkTime, isDisabled && styles.disabledText]}>
+            </Text> */}
+            {/* <Text style={[styles.walkTime, isDisabled && styles.disabledText]}>
                 {suggestedWalkTime || 'Loading...'}
-            </Text>
-            <Text style={styles.actionHint}>
+            </Text> */}
+            <View style={styles.toggle}>
+                <ToggleSwitch
+                        value={isActive}
+                        onValueChange={handleToggle}
+                        disabled={isDisabled}
+                        activeColor={ORANGE}
+                        inactiveColor={CREAM}
+                        thumbColor={CORNFLOWER_BLUE}
+                    />
+            </View>
+            {/* <Text style={styles.actionHint}>
                 {isActive
                     ? 'Walk time preference set'
                     : 'Toggle to set walk time preference'
                 }
-            </Text>
+            </Text> */}
         </View>
     );
 }
@@ -189,6 +192,9 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    toggle: {
+
+    },
     activeContainer: {
         backgroundColor: BRIGHT_GREEN,
         borderWidth: 2,
@@ -198,6 +204,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc',
         opacity: 0.6,
     },
+
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
