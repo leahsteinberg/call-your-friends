@@ -1,6 +1,8 @@
+import FlowerBlob from '@/assets/images/flower-blob.svg';
 import React, { useEffect, useRef } from 'react';
-import { Animated, TouchableOpacity, StyleSheet, Easing } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import { Animated, Easing, StyleSheet, TouchableOpacity } from 'react-native';
+
+
 
 interface ToggleSwitchProps {
     value: boolean;
@@ -10,6 +12,7 @@ interface ToggleSwitchProps {
     inactiveColor?: string;
     thumbColor?: string;
 }
+const WIDTH = 200;
 
 export default function ToggleSwitch({
     value,
@@ -77,17 +80,20 @@ export default function ToggleSwitch({
 
     const thumbTranslateX = translateX.interpolate({
         inputRange: [0, 1],
-        outputRange: [2, 32],
+        outputRange: [2, WIDTH-38],
+        extrapolate: 'clamp',
     });
 
     const backgroundColor = translateX.interpolate({
         inputRange: [0, 1],
         outputRange: [inactiveColor, activeColor],
+        extrapolate: 'clamp',
     });
 
     const rotate = rotation.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '15deg'],
+        extrapolate: 'clamp',
     });
 
     return (
@@ -118,35 +124,8 @@ export default function ToggleSwitch({
                             ],
                         },
                     ]}
-                >
-                    <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <Path
-                            d="M7 8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8C17 10.7614 14.7614 13 12 13C9.23858 13 7 10.7614 7 8Z"
-                            fill="#FFD700"
-                        />
-                        <Path
-                            d="M12 15C8.68629 15 6 17.6863 6 21H18C18 17.6863 15.3137 15 12 15Z"
-                            fill="#FFD700"
-                        />
-                        <Path
-                            d="M3 8L6 11"
-                            stroke="#FFD700"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                        <Path
-                            d="M21 8L18 11"
-                            stroke="#FFD700"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                        <Path
-                            d="M12 3V1"
-                            stroke="#FFD700"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                        />
-                    </Svg>
+                >  
+                <FlowerBlob/>
                 </Animated.View>
             </Animated.View>
         </TouchableOpacity>
@@ -158,15 +137,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     track: {
-        width: 60,
-        height: 32,
+        width: 200,
+        height: 50,
         borderRadius: 16,
         justifyContent: 'center',
     },
     thumb: {
-        width: 28,
-        height: 28,
-        borderRadius: 14,
+        width: 36,
+        height: 36,
+        borderRadius: 99,
         shadowColor: '#000',
         shadowOffset: {
             width: 0,
