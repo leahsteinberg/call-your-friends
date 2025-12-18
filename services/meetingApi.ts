@@ -23,7 +23,7 @@ export const meetingApi = createApi({
     // Step 1: Declare the tag types this API uses
     // This registers 'Meeting' as a valid tag that queries can provide
     // and mutations can invalidate
-    tagTypes: ['Meeting'],
+    tagTypes: ['Meeting', 'BroadcastStatus'],
     endpoints: (builder) => ({
         createMeeting: builder.mutation({
             query: ({
@@ -51,7 +51,7 @@ export const meetingApi = createApi({
             // Step 3: invalidatesTags tells RTK Query:
             // "After this mutation succeeds, any cached data tagged 'Meeting' is stale"
             // This triggers automatic refetch of getMeetings
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
         // Step 2: Convert from mutation to query
         // Queries cache their results and can "provide" tags
@@ -72,7 +72,7 @@ export const meetingApi = createApi({
                 body: { meetingId, userId },
             }),
             // Same pattern: deleting a meeting invalidates the cached meetings list
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
             onQueryStarted: invalidateOffersOnSuccess,
         }),
         broadcastNow: builder.mutation({
@@ -82,7 +82,7 @@ export const meetingApi = createApi({
                 body: { userId },
             }),
             // Invalidate meetings cache when starting broadcast
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
         broadcastEnd: builder.mutation({
             query: ({ userId }) => ({
@@ -91,7 +91,7 @@ export const meetingApi = createApi({
                 body: { userId },
             }),
             // Invalidate meetings cache when ending broadcast
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
         isUserBroadcasting: builder.query({
             query: ({ userId }) => ({
@@ -99,6 +99,7 @@ export const meetingApi = createApi({
                 method: 'POST',
                 body: { userId },
             }),
+            providesTags: ['BroadcastStatus'],
         }),
         cancelBroadcastAcceptance: builder.mutation({
             query: ({ meetingId, userId }) => ({
@@ -107,7 +108,7 @@ export const meetingApi = createApi({
                 body: { meetingId, userId },
             }),
             // Invalidate meetings cache to trigger refetch after canceling
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
             // Manually invalidate the Offer tag in the separate offerApi
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
@@ -129,7 +130,7 @@ export const meetingApi = createApi({
                 method: 'POST',
                 body: { meetingId, userId },
             }),
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
         dismissSuggestion: builder.mutation({
             query: ({ meetingId, userId }) => ({
@@ -137,7 +138,7 @@ export const meetingApi = createApi({
                 method: 'POST',
                 body: { meetingId, userId },
             }),
-            invalidatesTags: ['Meeting'],
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
     })
 });
