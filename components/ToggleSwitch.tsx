@@ -22,7 +22,7 @@ interface ToggleSwitchProps {
     thumbColor?: string;
 }
 const WIDTH = 100;
-const HEIGHT = 10;
+const HEIGHT = 20;
 const THUMB_DIAM = 40;
 const ROTATION_START = 20;
 const ROTATION_END = 50;

@@ -6,7 +6,7 @@ import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE } from "@/types/userSi
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import SuggestedWalkBySteps from "../Settings/WalkingSignalCard";
+import SuggestedWalkBySteps from "../SignalCards/WalkingSignalCard";
 
 export default function UserSignalSettings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -26,13 +26,9 @@ export default function UserSignalSettings(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.signalText}>Hello</Text>
+                <Text style={styles.signalText}></Text>
             </View>
             <SuggestedWalkBySteps userSignal={walkSignal}/>
-
-            {/* {Platform.OS === 'ios' &&
-                <SuggestedWalkBySteps userSignal={walkSignal}/>
-            } */}
         </View>
     );
 }

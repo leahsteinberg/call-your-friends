@@ -1,4 +1,5 @@
 import AnimatedText from "@/components/AnimatedText";
+import Pulsing from "@/components/Pulsing";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
@@ -9,7 +10,7 @@ import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
-import { deleteMeetingOptimistic, addMeetingRollback } from "../Meetings/meetingSlice";
+import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface SelfBroadcastCardProps {
@@ -68,6 +69,8 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.searchingContainer}>
+                    <Pulsing onPress={()=>{}} isEnabled={true}>
+                    </Pulsing>
                     <Text style={styles.searchingText}>{strings.mainText!()}</Text>
                     <AnimatedText
                         text="..."

@@ -1,11 +1,11 @@
 import { CustomFonts } from "@/constants/theme";
-import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import UserSignalSettings from "../SignalCards/UserSignalSettings";
 import AddMeetingsButton from "./AddMeetingsButton";
+import UserSignalSettings from "./UserSignalSettings";
 
 export default function Settings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -31,5 +31,10 @@ const styles = StyleSheet.create({
         color: DARK_GREEN,
         fontFamily: CustomFonts.ztnaturemedium,
         marginBottom: 20,
+        color: CORNFLOWER_BLUE,
+        marginHorizontal: 15,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 50,
+        fontWeight: '600',
     },
 });

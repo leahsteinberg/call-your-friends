@@ -55,17 +55,11 @@ const styles = StyleSheet.create({
     },
 
     greetingText: {
-        // fontSize: 20,
-        // fontWeight: '600',
         color: CORNFLOWER_BLUE,
-        //marginLeft: 80,
-
-        //paddingTop: 37,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
         fontWeight: '600',
-        //zIndex: 1,
     },
     component: {
 

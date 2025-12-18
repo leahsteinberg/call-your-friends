@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { displayDateTime } from '../Meetings/meetingsUtils';
-import { getDayAndTime, processStepsData } from './useHealthKitData';
+import { getDayAndTime, processStepsData } from '../Settings/useHealthKitData';
 
 const HK_DATA_TYPE = 'HKQuantityTypeIdentifierStepCount';
 const DAYS_OF_HISTORY = 200;
@@ -185,7 +185,6 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
         </View>
     );
 }
-
 
 const styles = StyleSheet.create({
     container: {
