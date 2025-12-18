@@ -1,4 +1,5 @@
 import FlowerBlob from '@/assets/images/flower-blob.svg';
+import { ORANGE } from '@/styles/styles';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -13,6 +14,9 @@ interface ToggleSwitchProps {
     thumbColor?: string;
 }
 const WIDTH = 200;
+const HEIGHT = 50;
+const CIRCLE_DIAM = 36;
+
 
 export default function ToggleSwitch({
     value,
@@ -84,12 +88,6 @@ export default function ToggleSwitch({
         extrapolate: 'clamp',
     });
 
-    const backgroundColor = translateX.interpolate({
-        inputRange: [0, 1],
-        outputRange: [inactiveColor, activeColor],
-        extrapolate: 'clamp',
-    });
-
     const rotate = rotation.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '15deg'],
@@ -107,7 +105,7 @@ export default function ToggleSwitch({
                 style={[
                     styles.track,
                     {
-                        backgroundColor,
+                        backgroundColor: value ? activeColor : inactiveColor,
                         opacity: disabled ? 0.5 : 1,
                     },
                 ]}
@@ -125,7 +123,9 @@ export default function ToggleSwitch({
                         },
                     ]}
                 >  
-                <FlowerBlob/>
+                <FlowerBlob
+                    fill={ORANGE}
+                />
                 </Animated.View>
             </Animated.View>
         </TouchableOpacity>
@@ -137,14 +137,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     track: {
-        width: 200,
-        height: 50,
-        borderRadius: 16,
+        width: WIDTH,
+        height: HEIGHT,
+        borderRadius: 30,
         justifyContent: 'center',
     },
     thumb: {
-        width: 36,
-        height: 36,
+        width: CIRCLE_DIAM,
+        height: CIRCLE_DIAM,
         borderRadius: 99,
         shadowColor: '#000',
         shadowOffset: {

@@ -1,6 +1,6 @@
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BRIGHT_GREEN, CORNFLOWER_BLUE, CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
+import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal, WALK_PATTERN_SIGNAL_TYPE, WalkPatternPayload } from "@/types/userSignalsTypes";
 import { queryQuantitySamples, useHealthkitAuthorization, type QuantitySample } from '@kingstinct/react-native-healthkit';
@@ -37,11 +37,12 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
     const [authorizationStatus, requestAuthorization] = useHealthkitAuthorization([HK_DATA_TYPE]);
     const [stepsData, setStepsData] = useState<QuantitySample[]>([]);
     const userId = useSelector((state: RootState) => state.auth.user.id);
-    const [addUserSignal, { isLoading: isAdding }] = useAddUserSignalMutation();
-    const [removeUserSignal, { isLoading: isRemoving }] = useRemoveUserSignalMutation();
+    const [addUserSignal] = useAddUserSignalMutation();
+    const [removeUserSignal] = useRemoveUserSignalMutation();
     const [dayName, setDayName] = useState<string>('');
     const [hourNumber, setHourNumber] = useState<number>(0);
     const [isActive, setIsActive] = useState<boolean>(!!userSignal);
+    const [optimisticActive, setOptimisticActive] = useState<boolean>(!!userSignal);
     const pastDate = getPastDate({ daysAgo: DAYS_OF_HISTORY });
     const today = new Date();
 
@@ -98,6 +99,7 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
 
     useEffect(() => {
         setIsActive(!!userSignal);
+        setOptimisticActive(!!userSignal);
     }, [userSignal]);
 
     const handleAddWalkSignal = async () => {
@@ -126,20 +128,29 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
     };
 
     const handleToggle = async () => {
-        if (isActive) {
-            await handleRemoveWalkSignal();
-        } else {
-            await handleAddWalkSignal();
+        const newValue = !optimisticActive;
+        setOptimisticActive(newValue); // Optimistic update
+
+        try {
+            if (isActive) {
+                await handleRemoveWalkSignal();
+            } else {
+                await handleAddWalkSignal();
+            }
+        } catch (error) {
+            // Revert on error
+            setOptimisticActive(!newValue);
+            throw error;
         }
     };
 
-    const isDisabled = !suggestedWalkDateTime || loading || isAdding || isRemoving;
+    const isDisabled = !suggestedWalkDateTime || loading;
 
     return (
         <View
             style={[
                 styles.container,
-                isActive && styles.activeContainer,
+                optimisticActive && styles.activeContainer,
                 //isDisabled && styles.disabledContainer
             ]}
         >
@@ -147,7 +158,7 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
                 <Text style={styles.title}>
                     Allow Loyal to suggest walk and talks based on your walking patterns.
                 </Text>
-                
+
             </View>
             {/* <Text style={styles.description}>
                 Suggestion informed by your walking habits.
@@ -157,12 +168,12 @@ export default function SuggestedWalkBySteps({ userSignal }: SuggestedWalkByStep
             </Text> */}
             <View style={styles.toggle}>
                 <ToggleSwitch
-                        value={isActive}
+                        value={optimisticActive}
                         onValueChange={handleToggle}
                         disabled={isDisabled}
                         activeColor={ORANGE}
                         inactiveColor={CREAM}
-                        thumbColor={CORNFLOWER_BLUE}
+                        thumbColor={CREAM}
                     />
             </View>
             {/* <Text style={styles.actionHint}>
