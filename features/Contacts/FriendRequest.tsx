@@ -1,6 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
 import { useAcceptFriendRequestMutation } from "@/services/contactsApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";

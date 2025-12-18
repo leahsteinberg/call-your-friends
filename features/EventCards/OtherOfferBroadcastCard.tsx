@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOfferOptimistic, addOfferRollback } from "../Meetings/meetingSlice";
+import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 
 interface OtherOfferBroadcastCardProps {

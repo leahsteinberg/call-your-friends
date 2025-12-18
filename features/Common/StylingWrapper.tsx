@@ -1,4 +1,4 @@
-import { CREAM } from '@/styles/styles';
+import { BURGUNDY } from '@/styles/styles';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: CREAM,
+    backgroundColor: BURGUNDY,
     //alignItems: 'center',
 
     //paddingTop: safePadding,
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     //paddingVertical: safePadding,
     zIndex: 100, // Sit above the scrolling TodayList
     //position: 'relative', // Create stacking context
-    backgroundColor: CREAM, // Opaque background to hide content underneath
+    backgroundColor: BURGUNDY, // Opaque background to hide content underneath
 
   },
 });

@@ -2,22 +2,22 @@ import { CustomFonts } from '@/constants/theme';
 import { CORNFLOWER_BLUE, CREAM, DARK_GREEN, PALE_BLUE } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import {
-    Pressable,
-    StyleSheet,
-    Text,
-    View
+  Pressable,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import Animated, {
-    Easing,
-    interpolate,
-    interpolateColor,
-    useAnimatedReaction,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withRepeat,
-    withSequence,
-    withTiming
+  Easing,
+  interpolate,
+  interpolateColor,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming
 } from 'react-native-reanimated';
 
 

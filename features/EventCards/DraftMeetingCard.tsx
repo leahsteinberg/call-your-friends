@@ -1,5 +1,5 @@
-import { CustomFonts } from "@/constants/theme";
 import { eventCardText } from "@/constants/event_card_strings";
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
@@ -80,7 +80,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     // Get the name from the meeting
     const getFromName = () => {
-        return meeting.userFrom?.name || 'someone';
+        return meeting.targetUser.name || 'someone';
     };
 
     const strings = eventCardText.draft_suggestion;

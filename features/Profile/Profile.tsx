@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
+import { BURGUNDY, CORNFLOWER_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '100%',
         justifyContent: 'space-between',
+        backgroundColor: BURGUNDY,
         //overflow: 'scroll',
         
         flex: 1,
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
         //marginBottom: 20,
         zIndex: 99, // Sit above the scrolling TodayList
         position: 'relative', // Create stacking context
-        backgroundColor: CREAM, // Opaque background to hide content underneath
+        backgroundColor: BURGUNDY, // Opaque background to hide content underneath
         paddingBottom: 8, // Extra padding so background extends
         // paddingTop: -safePadding,
         justifyContent: 'space-between',

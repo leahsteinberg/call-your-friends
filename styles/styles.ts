@@ -5,6 +5,7 @@ export const CREAM = "#fefbea";
 export const LIGHT_BEIGE = "#fae2c0"
 export const DARK_BEIGE = "#ae6e17";
 export const BURGUNDY = "#390617"
+export const LIGHT_BURGUNDY = "#82304b";
 export const CHOCOLATE_COLOR = "#500F0A"
 
 //// BLUES

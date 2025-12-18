@@ -18,7 +18,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
 
     const friendListData =
     {
-        title: "Friends",
+        //title: "Friends",
         data: friends,
         renderItem: ({ item, index }: { item: FriendType; index: number }) =>
             (<Friend item={{ ...item, index }} />)

@@ -106,7 +106,6 @@ export default function ContactsComponent(): React.JSX.Element {
     };
 
     useEffect(()=> {
-        console.log("contacts component in effect ", userSignals)
         if (!isLoading) {
             fetchFriends();
             fetchFriendInvites();
@@ -118,6 +117,7 @@ export default function ContactsComponent(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
+                <Text style={styles.title}>Friends</Text>
                 <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
                     <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
@@ -161,6 +161,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 12,
         flexShrink: 0,
+    },
+    title: {
+        
+        color: CORNFLOWER_BLUE,
+        marginHorizontal: 15,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 50,
+        fontWeight: '600',
+
     },
     signOutButton: {
         paddingVertical: 8,
