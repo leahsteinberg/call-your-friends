@@ -1,25 +1,23 @@
-import FlowerBlob from "@/assets/images/flower-blob.svg";
-import { CustomFonts } from '@/constants/theme';
 import { CORNFLOWER_BLUE, CREAM, PALE_BLUE } from '@/styles/styles';
 import React, { useEffect, useState } from 'react';
 
 import {
-    Pressable,
-    StyleSheet,
-    View
+  Pressable,
+  StyleSheet,
+  View
 } from 'react-native';
 import Animated, {
-    Easing,
-    interpolate,
-    interpolateColor,
-    useAnimatedReaction,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue,
-    withDelay,
-    withRepeat,
-    withSequence,
-    withTiming
+  Easing,
+  interpolate,
+  interpolateColor,
+  useAnimatedReaction,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming
 } from 'react-native-reanimated';
 
 
@@ -45,7 +43,7 @@ export default function Pulsing({onPress, isEnabled, children}: {onPress: ()=> v
         // Start pulsing when ON
         pulseScale.value = withRepeat(
           withSequence(
-            withTiming(1.1, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
+            withTiming(1.2, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
             withTiming(1, { duration: 1000, easing: Easing.inOut(Easing.ease) })
           ),
           -1, // Repeat indefinitely
@@ -100,7 +98,7 @@ export default function Pulsing({onPress, isEnabled, children}: {onPress: ()=> v
     const baseScale = interpolate(
         value.value,
         [0, 1],
-        [0.3, 1]
+        [0.7, 1]
     );
     // Combine base scale with pulse (multiply them)
     const finalScale = baseScale * pulseScale.value;
@@ -130,9 +128,7 @@ export default function Pulsing({onPress, isEnabled, children}: {onPress: ()=> v
         <View style={styles.dotContainer}>
             <Animated.View
                 style={[styles.thumb, sizeAnimatedStyle]}>
-                    <FlowerBlob
-                        fill={fillColor}
-                    />
+                    {children}
             </Animated.View>
         </View>
     </Pressable>
@@ -140,31 +136,5 @@ export default function Pulsing({onPress, isEnabled, children}: {onPress: ()=> v
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-    dotContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  labelContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'flex-end'
-  },
-  thumb: {
-    minHeight: 60,
-    minWidth: 60,
-    padding: 5,
-    aspectRatio: 1,
-    //backgroundColor: DARK_GREEN,
-    //borderRadius: 50,
-  },
-  label: {
-    fontFamily: CustomFonts.ztnaturebold,
-    maxWidth: 100,
-    
-  },
+
 });

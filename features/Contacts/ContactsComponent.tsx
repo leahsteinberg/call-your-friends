@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         paddingHorizontal: 20,
-        paddingVertical: 12,
+        //paddingVertical: 12,
         flexShrink: 0,
     },
     title: {

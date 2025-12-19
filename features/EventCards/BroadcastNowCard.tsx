@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, ORANGE, SKY_COLOR } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -15,6 +15,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [broadcastNow] = useBroadcastNowMutation();
     const [isStarting, setIsStarting] = useState(false);
+    const strings = eventCardText.broadcast_now_card;
 
     // Pulse animation for loading state (Option A)
     const pulseOpacity = useSharedValue(1);
@@ -63,7 +64,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     {/* Option B: Change title when loading */}
                     {isStarting ? (
                         <>
-                            <Text style={styles.titleText}>Starting broadcast</Text>
+                            <Text style={styles.titleText}>{strings.title()}</Text>
                             <AnimatedText
                                 text="..."
                                 style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
@@ -73,11 +74,13 @@ export default function BroadcastNowCard(): React.JSX.Element {
                         </>
                     ) : (
                         <Text style={styles.titleText}>
-                            Invite calls now
+                            {strings.mainText()}
                         </Text>
                     )}
                 </View>
                 <View>
+                    <View style={styles.broadcastButton}>
+                    
                     <TouchableOpacity
                         onPress={handleStartBroadcast}
                         style={[styles.startButton, isStarting && styles.startButtonDisabled]}
@@ -86,15 +89,18 @@ export default function BroadcastNowCard(): React.JSX.Element {
                         {isStarting ? (
                             <ActivityIndicator size="small" color={ORANGE} />
                         ) : (
-                            <Text style={styles.startButtonText}>Start broadcast</Text>
+                            <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
+                            // <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
+
                         )}
                     </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             {!isStarting && (
                 <View>
                     <Text style={styles.descriptionText}>
-                        Anyone can claim your call and reach out.
+                        {strings.mainText()}
                     </Text>
                 </View>
             )}
@@ -104,13 +110,22 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: PALE_BLUE,
+        backgroundColor: SKY_COLOR,
         borderRadius: 8,
-        padding: 12,
+        padding: 18,
+        paddingBottom: 18,
         marginBottom: 10,
     },
     titleContainer: {
         flexDirection: 'row',
+    },
+    broadcastButton: {
+        position: 'absolute',
+        marginTop: -50,
+        marginLeft: -38,
+        backgroundColor: SKY_COLOR,
+        paddingVertical: 15,
+        borderRadius: 10,
     },
     header: {
         flexDirection: 'row',
@@ -120,26 +135,29 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
     },
     titleText: {
-        fontSize: 20,
+        fontSize: 28,
         fontWeight: '600',
         color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
     },
     descriptionText: {
-        fontSize: 14,
+        fontSize: 20,
         color: ORANGE,
-        fontFamily: CustomFonts.ztnatureregular,
+        fontFamily: CustomFonts.ztnaturemedium,
         opacity: 0.8,
     },
     startButton: {
         minWidth: 50,
         alignItems: 'center',
+        borderRadius: 10,
     },
     startButtonDisabled: {
         opacity: 0.6,
     },
     startButtonText: {
-        color: CHOCOLATE_COLOR,
+        //color: CHOCOLATE_COLOR,
+        color: BURGUNDY,
+
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,

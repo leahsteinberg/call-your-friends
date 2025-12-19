@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { DARK_GREEN } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import Friend from "./Friend";
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     sectionHeaderContainer: {
-        backgroundColor: CREAM,
+        //backgroundColor: CREAM,
         paddingHorizontal: 10,
         paddingTop: 12,
         paddingBottom: 8,

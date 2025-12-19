@@ -1,10 +1,10 @@
 import AnimatedText from "@/components/AnimatedText";
-import Pulsing from "@/components/Pulsing";
+import ConcentricCircles from "@/components/ConcentricCircles";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -66,11 +66,11 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
 
     return (
+        <View style={styles.outerContainer}>
         <View style={styles.container}>
             <View style={styles.header}>
+
                 <View style={styles.searchingContainer}>
-                    <Pulsing onPress={()=>{}} isEnabled={true}>
-                    </Pulsing>
                     <Text style={styles.searchingText}>{strings.mainText!()}</Text>
                     <AnimatedText
                         text="..."
@@ -79,42 +79,71 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                         staggerDelay={500}
                     />
                 </View>
-                <View>
+                <View style={styles.buttonContainer}>
+
+
                     <TouchableOpacity
                         onPress={handleCancelMeeting}
                         style={[styles.endBroadcastButton, isEnding && styles.endBroadcastButtonDisabled]}
                         disabled={isEnding}
                     >
+
                         {isEnding ? (
                             <ActivityIndicator size="small" color="#fff" />
                         ) : (
+
                             <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
                         )}
                     </TouchableOpacity>
+
                 </View>
+
             </View>
             <View>
                 <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
             </View>
 
+            <View style={styles.circleContainerRelative}>
+                <ConcentricCircles isActive={true} />
+            </View>
 
             {DEV_FLAG && (
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
             )}
+
         </View>
+        </View>
+
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: 10,
+
+    },
     container: {
         backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
-        marginBottom: 10,
+        overflow: 'hidden', // Clip circles that extend beyond card
     },
     searchingContainer: {
         flexDirection: 'row',
         //alignItems: 'center',
+    },
+    circleContainerRelative: {
+        alignSelf: 'flex-start',
+        marginTop: -90,
+        marginLeft: -60,
+        marginBottom: -40,
+        backgroundColor: PALE_BLUE,
+        zIndex: -1,
+    },
+    buttonContainer: {
+        //backgroundColor: PEACH,
+        alignItems: 'flex-end',
+
     },
     header: {
         flexDirection: 'row',
@@ -141,13 +170,17 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturelight,
     },
     endBroadcastButton: {
-        minWidth: 50,
+        minWidth: 40,
+        alignItems: 'center',
+        backgroundColor: BURGUNDY,
+        borderRadius: 10,
+
     },
     endBroadcastButtonDisabled: {
         opacity: 0.6,
     },
     endBroadcastButtonText: {
-        color: CHOCOLATE_COLOR,
+        color: PALE_BLUE,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,

@@ -106,7 +106,6 @@ const Layout = () => {
             <Tabs.Screen
                 name="index"
                 options={{
-                    headerShown: false,
                     title: "Chats",
                     tabBarLabel: ({ focused }) => (
                         <TabLabel label="Chats" focused={focused} />
@@ -118,6 +117,7 @@ const Layout = () => {
                             color={color}
                         />
                     ),
+                    headerShown: false,
                     tabBarHideOnKeyboard: true,
                 }}
             />
@@ -139,10 +139,6 @@ const Layout = () => {
                     tabBarHideOnKeyboard: true,
                 }}
             />
-  
-
-
-
         </Tabs>
     );
 };
@@ -164,7 +160,7 @@ const styles = StyleSheet.create({
     },
     tabLabel: {
         fontFamily: CustomFonts.ztnatureregular,
-        fontSize: 14,
+        fontSize: 18,
         color: DARK_GREEN,
         paddingTop: 5,
     },

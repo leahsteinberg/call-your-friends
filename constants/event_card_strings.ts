@@ -62,9 +62,16 @@ export const eventCardText: Record<string, EventCardStrings> = {
         nameText: () => '',
         mainText: () => `Broadcasting to friends`,
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
-        acceptButtonText: () => 'End broadcast',
+        acceptButtonText: () => 'End',
         // Legacy support
-        title: () => `Broadcasting to friends`,
+        title: () => `Anyone can claim your call and reach out.`,
+    },
+    broadcast_now_card: {
+        mainText: () => `Broadcast to friends`,
+        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
+        acceptButtonText: () => 'Start',
+        // Legacy support
+        title: () => `Invite friends to call`,
     },
     broadcast_self_pending: {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,
