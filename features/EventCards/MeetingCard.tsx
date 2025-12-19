@@ -2,7 +2,7 @@ import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation } from "@/services/meetingApi";
+import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
@@ -23,7 +23,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
     const [cancelMeeting] = useCancelMeetingMutation();
-    const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
     const [isCanceling, setIsCanceling] = useState(false);
 
     const meetingState: MeetingState  = meeting.meetingState;
@@ -105,33 +104,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. The item has been restored.');
-            setIsCanceling(false);
-        }
-    };
-
-    const handleCancelBroadcastAcceptance = async () => {
-        try {
-            setIsCanceling(true);
-
-            // Optimistic update FIRST - remove from UI immediately
-            dispatch(deleteMeetingOptimistic(meeting.id));
-
-            try {
-                await cancelBroadcastAcceptance({
-                    meetingId: meeting.id,
-                    userId
-                }).unwrap();
-                // Success - optimistic update already applied
-                setIsCanceling(false);
-            } catch (apiError) {
-                // ROLLBACK - restore the meeting to UI
-                dispatch(addMeetingRollback(meeting));
-                throw apiError;
-            }
-
-        } catch (error) {
-            console.error("Error canceling broadcast acceptance:", error);
-            alert('Failed to cancel acceptance. The item has been restored.');
             setIsCanceling(false);
         }
     };
