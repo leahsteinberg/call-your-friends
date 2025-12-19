@@ -4,14 +4,27 @@ import HighFiveStar from "@/assets/images/high-five-star.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BRIGHT_BLUE, DARK_GREEN, LIGHT_BURGUNDY } from "@/styles/styles";
+import { BRIGHT_BLUE, DARK_GREEN, LIGHT_BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { Tabs } from "expo-router";
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { StyleSheet, Text, View } from "react-native";
 
 const ICON_SIZE = 33;
 const CIRCLE_SIZE = 70;
+
+// Custom tab label that "pops" when selected
+function TabLabel({ label, focused }: { label: string; focused: boolean }) {
+    return (
+        <Text
+            style={[
+                styles.tabLabel,
+                focused && styles.tabLabelFocused
+            ]}
+        >
+            {label}
+        </Text>
+    );
+}
 
 // Icon wrapper with animated circle background
 function TabIconWithCircle({
@@ -27,22 +40,10 @@ function TabIconWithCircle({
     width?: number;
     height?: number;
 }) {
-    const scale = useSharedValue(0);
 
-    React.useEffect(() => {
-        scale.value = withTiming(focused ? 1 : 0, {
-            duration: 400,
-        });
-    }, [focused, scale]);
-
-    const circleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: scale.value }],
-        opacity: scale.value * 0.3,
-    }));
 
     return (
         <View style={styles.iconWrapper}>
-            <Animated.View style={[styles.circle, circleStyle]} />
             <Icon width={width} height={height} fill={color} />
         </View>
     );
@@ -81,11 +82,6 @@ const Layout = () => {
               elevation: 10,
               overflow: 'visible',
             },
-            tabBarLabelStyle: {
-                paddingTop: 5,
-                fontSize: 15,
-                fontFamily: CustomFonts.ztnatureregular,
-            },
             headerShown: false,
           }}
         >
@@ -93,7 +89,9 @@ const Layout = () => {
                 name="friends"
                 options={{
                     title: 'Friends',
-                    tabBarLabel: 'Friends',
+                    tabBarLabel: ({ focused }) => (
+                        <TabLabel label="Friends" focused={focused} />
+                    ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
                             Icon={FlowerBlob}
@@ -110,6 +108,9 @@ const Layout = () => {
                 options={{
                     headerShown: false,
                     title: "Chats",
+                    tabBarLabel: ({ focused }) => (
+                        <TabLabel label="Chats" focused={focused} />
+                    ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
                             Icon={HighFiveStar}
@@ -124,7 +125,9 @@ const Layout = () => {
                 name="settings"
                 options={{
                     title: 'Settings',
-                    tabBarLabel: 'Settings',
+                    tabBarLabel: ({ focused }) => (
+                        <TabLabel label="Settings" focused={focused} />
+                    ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
                             Icon={Butterfly}
@@ -157,7 +160,22 @@ const styles = StyleSheet.create({
         width: CIRCLE_SIZE,
         height: CIRCLE_SIZE,
         borderRadius: CIRCLE_SIZE / 2,
-        backgroundColor: BRIGHT_BLUE,
+        backgroundColor: PALE_BLUE,
+    },
+    tabLabel: {
+        fontFamily: CustomFonts.ztnatureregular,
+        fontSize: 14,
+        color: DARK_GREEN,
+        paddingTop: 5,
+    },
+    tabLabelFocused: {
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 18,
+        color: BRIGHT_BLUE,
+        transform: [{ translateY: -3 }],
+        textShadowColor: BRIGHT_BLUE,
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
 });
 
