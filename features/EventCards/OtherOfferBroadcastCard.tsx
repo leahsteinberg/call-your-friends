@@ -5,7 +5,7 @@ import {
     useAcceptOfferMutation,
     useRejectOfferMutation
 } from "@/services/offersApi";
-import { BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_ORANGE, BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -107,7 +107,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                         <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
                     )}
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     onPress={handleReject}
                     style={styles.rejectButton}
                     disabled={isRejecting}
@@ -117,7 +117,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                     ) : (
                         <Text style={styles.rejectButtonText}>{strings.rejectButtonText!()}</Text>
                     )}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         );
     };
@@ -130,7 +130,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                 </View>
                 <View style={styles.topRightContainer}>
                     {renderButtons()}
-
                 </View>
             </View>
             <View style={styles.content}>
@@ -192,8 +191,8 @@ const styles = StyleSheet.create({
     },
     flowerContainerRelative: {
         alignSelf: 'flex-start',
-        marginTop: -90,
-        marginLeft: -30,
+        marginTop: -100,
+        marginLeft: -40,
         marginBottom: -30,
         backgroundColor: PALE_BLUE,
         zIndex: -1,
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     nameText: {
         fontSize: 30,
         fontWeight: '600',
-        color: CORNFLOWER_BLUE,
+        color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
@@ -225,9 +224,10 @@ const styles = StyleSheet.create({
     },
     acceptButton: {
         borderRadius: 4,
+        backgroundColor: BOLD_BLUE,
     },
     acceptButtonText: {
-        color: ORANGE,
+        color: BOLD_ORANGE,
         fontSize: 15,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturebold,
