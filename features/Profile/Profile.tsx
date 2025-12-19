@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
+import { BOLD_BROWN, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '100%',
         justifyContent: 'space-between',
-        backgroundColor: CREAM,
+        backgroundColor: BOLD_BROWN,
         //overflow: 'scroll',
         
         flex: 1,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         //marginBottom: 20,
         zIndex: 99, // Sit above the scrolling TodayList
         position: 'relative', // Create stacking context
-        backgroundColor: CREAM, // Opaque background to hide content underneath
+        //backgroundColor: CREAM, // Opaque background to hide content underneath
         paddingBottom: 8, // Extra padding so background extends
         // paddingTop: -safePadding,
         justifyContent: 'space-between',
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
 
     greetingText: {
-        color: CORNFLOWER_BLUE,
+        color: CREAM,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,

@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
-import { BURGUNDY, ORANGE, SKY_COLOR } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, CREAM, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -80,7 +80,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 </View>
                 <View>
                     <View style={styles.broadcastButton}>
-                    
+                    <View style={styles.broadcastButtonContainer}>
                     <TouchableOpacity
                         onPress={handleStartBroadcast}
                         style={[styles.startButton, isStarting && styles.startButtonDisabled]}
@@ -93,7 +93,9 @@ export default function BroadcastNowCard(): React.JSX.Element {
                             // <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
 
                         )}
+                        
                     </TouchableOpacity>
+                    </View>
                     </View>
                 </View>
             </View>
@@ -110,7 +112,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: SKY_COLOR,
+        backgroundColor: BOLD_BLUE,
         borderRadius: 8,
         padding: 18,
         paddingBottom: 18,
@@ -122,10 +124,15 @@ const styles = StyleSheet.create({
     broadcastButton: {
         position: 'absolute',
         marginTop: -50,
-        marginLeft: -38,
-        backgroundColor: SKY_COLOR,
-        paddingVertical: 15,
+        marginLeft: -40,
+        backgroundColor: BOLD_BLUE,
+        paddingBottom: 15,
+        paddingTop: 5,
         borderRadius: 10,
+    },
+    broadcastButtonContainer: {
+        alignSelf: 'flex-start',
+
     },
     header: {
         flexDirection: 'row',
@@ -137,29 +144,33 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 28,
         fontWeight: '600',
-        color: ORANGE,
+        color: CREAM,
         fontFamily: CustomFonts.ztnaturebold,
     },
     descriptionText: {
         fontSize: 20,
-        color: ORANGE,
+        color: BOLD_BROWN,
         fontFamily: CustomFonts.ztnaturemedium,
         opacity: 0.8,
     },
     startButton: {
         minWidth: 50,
         alignItems: 'center',
+        // justifyContent: 'flex-start',
+        //alignContent: 'flex-start',
         borderRadius: 10,
+        //backgroundColor: ORANGE,
     },
     startButtonDisabled: {
         opacity: 0.6,
     },
     startButtonText: {
         //color: CHOCOLATE_COLOR,
-        color: BURGUNDY,
+        //color: BURGUNDY,
 
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
+
 });

@@ -1,4 +1,4 @@
-import { CREAM, PALE_BLUE } from '@/styles/styles';
+import { BOLD_BLUE, CREAM } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
@@ -13,6 +13,8 @@ import Animated, {
 
 interface ConcentricCirclesProps {
   isActive: boolean;
+  primaryColor: string;
+  secondaryColor: string;
 }
 
 const INNERMOST_SIZE = 40;
@@ -22,7 +24,7 @@ const OUTERMOST_SIZE = 100;
 const SCALE_FACTOR = 1.3; // 30% larger
 const ANIM_DURATION = 800;
 
-export default function ConcentricCircles({ isActive }: ConcentricCirclesProps) {
+export default function ConcentricCircles({ isActive, primaryColor, secondaryColor }: ConcentricCirclesProps) {
   // Single progress value that drives all animations - ensures perfect synchronization
   const progress = useSharedValue(0);
 
@@ -187,13 +189,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   innermostCircle: {
-    backgroundColor: PALE_BLUE,
+    backgroundColor: BOLD_BLUE,
   },
   middle1Circle: {
     backgroundColor: CREAM,
   },
   middle2Circle: {
-    backgroundColor: PALE_BLUE,
+    backgroundColor: BOLD_BLUE,
   },
   outermostCircle: {
     backgroundColor: CREAM,

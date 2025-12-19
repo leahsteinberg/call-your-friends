@@ -4,7 +4,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { BURGUNDY, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -104,7 +104,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </View>
 
             <View style={styles.circleContainerRelative}>
-                <ConcentricCircles isActive={true} />
+                <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM}/>
             </View>
 
             {DEV_FLAG && (
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
 
     },
     container: {
-        backgroundColor: PALE_BLUE,
+        backgroundColor: BOLD_BLUE,
         borderRadius: 8,
         padding: 20,
         overflow: 'hidden', // Clip circles that extend beyond card
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         marginTop: -110,
         marginLeft: -80,
         marginBottom: -30,
-        backgroundColor: PALE_BLUE,
+        //backgroundColor: PALE_BLUE,
         zIndex: -1,
     },
     buttonContainer: {

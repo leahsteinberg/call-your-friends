@@ -5,7 +5,7 @@ import {
     useAcceptOfferMutation,
     useRejectOfferMutation
 } from "@/services/offersApi";
-import { BOLD_BLUE, BOLD_ORANGE, BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BROWN, BOLD_GREEN, BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
@@ -154,8 +154,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 16,
         paddingBottom: 60,
-        marginBottom: 8,
-        backgroundColor: PALE_BLUE,
+        marginBottom: 14,
+        backgroundColor: BOLD_GREEN,
         overflow: 'hidden',
     },
     header: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 16,
         fontWeight: '600',
-        color: CREAM,
+        color: PALE_BLUE,
         marginBottom: 4,
     },
     titleText: {
@@ -193,14 +193,14 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         marginTop: -100,
         marginLeft: -40,
-        marginBottom: -30,
-        backgroundColor: PALE_BLUE,
+        marginBottom: -20,
+        //backgroundColor: PALE_BLUE,
         zIndex: -1,
     },
     nameText: {
         fontSize: 30,
         fontWeight: '600',
-        color: ORANGE,
+        color: BOLD_BROWN,
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
     },
     animationContainer: {
         marginTop: 10,
-
     },
     acceptButton: {
-        borderRadius: 4,
-        backgroundColor: BOLD_BLUE,
+        borderRadius: 10,
+        backgroundColor: BURGUNDY,
+        padding: 5,
     },
     acceptButtonText: {
-        color: BOLD_ORANGE,
+        color: CREAM,
         fontSize: 15,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturebold,

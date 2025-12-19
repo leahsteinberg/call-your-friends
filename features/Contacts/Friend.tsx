@@ -1,3 +1,4 @@
+import ConcentricCircles from "@/components/ConcentricCircles";
 import { CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
@@ -16,8 +17,8 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
   const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
   const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
   const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
-
-
+  const isBroadcasting = item.isBroadcasting;
+  const isContactIntended = item.isContactIntended;
   useEffect(() => {
     setShowCallIntentActions(item.isContactIntended)
   }, [item.isContactIntended])
@@ -68,8 +69,8 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
     <View style={styles.container} key={item.index}>
       <View style={styles.header}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text>Intend-{item.isContactIntended.toString()}</Text>
-        <Text>broadcast-{item.isBroadcasting.toString()}</Text>
+        <Text>Intend-{isContactIntended.toString()}</Text>
+        <Text>broadcast-{isBroadcasting.toString()}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleCallNow} style={styles.callNowButton}>
             <Text style={styles.callNowText}>Call Now</Text>
@@ -91,7 +92,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
         </TouchableOpacity>
       ) : (
         <View style={styles.actionButtonsContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={handleCalled}
             style={[styles.actionButton, styles.calledButton]}
             disabled={isCalling}
@@ -101,7 +102,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
             ) : (
               <Text style={styles.actionButtonTextActive}>Called</Text>
             )}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={handleNeverMind}
             style={[styles.actionButton, styles.neverMindButton]}
@@ -115,6 +116,13 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
           </TouchableOpacity>
         </View>
       )}
+      {isBroadcasting ?
+        (
+          <View style={styles.circleContainerRelative}>
+            <ConcentricCircles isActive={true} />
+        </View>
+        ) : <View/>
+      }
     </View>
   );
 }
@@ -126,7 +134,16 @@ const styles = StyleSheet.create({
       padding: 12,
       marginBottom: 8,
       marginHorizontal: 10,
+      overflow: 'hidden',
     },
+    circleContainerRelative: {
+      alignSelf: 'flex-start',
+      marginTop: -110,
+      marginLeft: -80,
+      marginBottom: -30,
+      backgroundColor: PALE_BLUE,
+      zIndex: -1,
+  },
     header: {
       flexDirection: 'row',
       justifyContent: 'space-between',
