@@ -59,15 +59,15 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
     const renderStartingBroadcast = () => {
         return (
-            <>
-                <Text style={styles.titleText}>Starting broadcast</Text>
+            <View style={styles.loadingTextContainer}>
+                <Text style={styles.loadingText}>LOADING</Text>
                 <AnimatedText
                     text="..."
-                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
+                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
                     duration={300}
                     staggerDelay={500}
                 />
-            </>
+            </View>
         );
     };
 
@@ -177,6 +177,16 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
+    },
+    loadingTextContainer: {
+        flexDirection: 'row',
+        //alignItems: 'center',
+    },
+    loadingText: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: ORANGE,
+        fontFamily: CustomFonts.ztnaturebold,
     },
 
 });
