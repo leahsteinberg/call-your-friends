@@ -33,31 +33,23 @@ const styles = StyleSheet.create({
     container: {
         minHeight: 400,
         minWidth: 300,
-        maxHeight: '100%',
-        maxWidth: '100%',
-        width: '100%',
+        // maxHeight: '100%',
+        // maxWidth: '100%',
+        //width: '100%',
         justifyContent: 'space-between',
         backgroundColor: APP_BACKGROUND_COLOR,
-        //overflow: 'scroll',
-        
         flex: 1,
     },
     headerContainer: {
         flexDirection: 'row',
-        //alignItems: 'center',
-        //marginBottom: 20,
         zIndex: 99, // Sit above the scrolling TodayList
-        position: 'relative', // Create stacking context
-        //backgroundColor: CREAM, // Opaque background to hide content underneath
         paddingBottom: 8, // Extra padding so background extends
-        // paddingTop: -safePadding,
         justifyContent: 'space-between',
+        marginHorizontal: 15,
 
     },
-
     greetingText: {
         color: APP_HEADER_TEXT_COLOR,
-        marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
         fontWeight: '600',

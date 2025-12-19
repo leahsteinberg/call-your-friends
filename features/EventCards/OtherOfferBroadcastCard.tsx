@@ -1,4 +1,4 @@
-import FlowerBlob from '@/assets/images/flower-blob.svg';
+import FlowerBlob from "@/assets/images/flower-blob.svg";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import {
@@ -125,6 +125,15 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     return (
         <View style={styles.container}>
             <View style={styles.header}>
+            <View style={styles.flowerContainerRelative}>
+                <Animated.View style={animatedFlowerStyle}>
+                    <FlowerBlob
+                        fill={BOLD_GREEN}
+                        width={80}
+                        height={80}
+                    />
+                </Animated.View>
+            </View> 
                 <View style={styles.nameContainer}>
                     <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
                 </View>
@@ -136,15 +145,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                 <Text style={styles.titleText}>{strings.mainText!(getFromName())}</Text>
             </View>
 
-            <View style={styles.flowerContainerRelative}>
-                <Animated.View style={animatedFlowerStyle}>
-                    <FlowerBlob
-                        fill={CREAM}
-                        width={65}
-                        height={65}
-                    />
-                </Animated.View>
-            </View>
+
         </View>
     );
 }
@@ -153,9 +154,9 @@ const styles = StyleSheet.create({
     container: {
         borderRadius: 8,
         padding: 16,
-        paddingBottom: 60,
-        marginBottom: 14,
-        backgroundColor: BOLD_GREEN,
+        paddingBottom: 10,
+        marginBottom: 20,
+        backgroundColor: PALE_BLUE,
         overflow: 'hidden',
     },
     header: {
@@ -190,12 +191,13 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnatureregular,
     },
     flowerContainerRelative: {
-        alignSelf: 'flex-start',
-        marginTop: -100,
-        marginLeft: -40,
-        marginBottom: -20,
+        //alignSelf: 'flex-start',
+        position: 'absolute',
+        marginTop: -30,
+       marginLeft: -40,
+      marginBottom: 0,
         //backgroundColor: PALE_BLUE,
-        zIndex: -1,
+        //zIndex: -1,
     },
     nameText: {
         fontSize: 30,

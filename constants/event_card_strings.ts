@@ -71,7 +71,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'Start',
         // Legacy support
-        title: () => `Invite friends to call`,
+        title: () => `Tell your people you're free to talk.`,
     },
     broadcast_self_pending: {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,
@@ -88,7 +88,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
     broadcast_other_open: {
         nameText: (userName: string) => userName,
         mainText: (userName: string) => `${userName} is free for calls now.`,
-        acceptButtonText: () => 'Accept',
+        acceptButtonText: () => 'Call',
         rejectButtonText: () => 'Reject',
         // Legacy support
         title: (userName: string) => `Free for calls now.`,

@@ -12,13 +12,14 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
-  const [showCallIntentActions, setShowCallIntentActions] = useState(item.isContactIntended);
+  const isBroadcasting = item.isBroadcasting;
+  const isContactIntended = item.isContactIntended;
+  const [showCallIntentActions, setShowCallIntentActions] = useState(isContactIntended);
 
   const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
   const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
   const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
-  const isBroadcasting = item.isBroadcasting;
-  const isContactIntended = item.isContactIntended;
+
   useEffect(() => {
     setShowCallIntentActions(item.isContactIntended)
   }, [item.isContactIntended])
@@ -88,22 +89,11 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
           {isCallingIntent ? (
             <ActivityIndicator size="small" color={BRIGHT_BLUE} />
           ) : (
-            <Text style={styles.intentButtonText}>Call Intent</Text>
+            <Text style={styles.intentButtonText}>Call Soon</Text>
           )}
         </TouchableOpacity>
       ) : (
         <View style={styles.actionButtonsContainer}>
-          {/* <TouchableOpacity
-            onPress={handleCalled}
-            style={[styles.actionButton, styles.calledButton]}
-            disabled={isCalling}
-          >
-            {isCalling ? (
-              <ActivityIndicator size="small" color={PALE_BLUE} />
-            ) : (
-              <Text style={styles.actionButtonTextActive}>Called</Text>
-            )}
-          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={handleNeverMind}
             style={[styles.actionButton, styles.neverMindButton]}

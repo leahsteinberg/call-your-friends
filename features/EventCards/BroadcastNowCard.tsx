@@ -6,7 +6,7 @@ import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -64,7 +64,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     {/* Option B: Change title when loading */}
                     {isStarting ? (
                         <>
-                            <Text style={styles.titleText}>{strings.title()}</Text>
+                            <Text style={styles.titleText}>Starting broadcast</Text>
                             <AnimatedText
                                 text="..."
                                 style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
@@ -87,7 +87,12 @@ export default function BroadcastNowCard(): React.JSX.Element {
                         disabled={isStarting}
                     >
                         {isStarting ? (
-                            <ActivityIndicator size="small" color={ORANGE} />
+                                                        <AnimatedText
+                                                        text="..."
+                                                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
+                                                        duration={300}
+                                                        staggerDelay={500}
+                                                    />
                         ) : (
                             <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
                             // <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
@@ -102,7 +107,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
             {!isStarting && (
                 <View>
                     <Text style={styles.descriptionText}>
-                        {strings.mainText()}
+                        {strings.title()}
                     </Text>
                 </View>
             )}

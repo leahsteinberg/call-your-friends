@@ -158,8 +158,7 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        //paddingVertical: 12,
+        paddingHorizontal: 15,
         flexShrink: 0,
     },
     title: {
