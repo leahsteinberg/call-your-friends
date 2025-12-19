@@ -1,14 +1,14 @@
 import HighFiveStar from "@/assets/images/high-five-star.svg";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { useCancelBroadcastAcceptanceMutation } from "@/services/meetingApi";
+import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMeetingOptimistic } from "../Meetings/meetingSlice";
+import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
 interface OtherMeetingBroadcastCardProps {
@@ -19,24 +19,35 @@ interface OtherMeetingBroadcastCardProps {
 export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroadcastCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [cancelBroadcastAcceptance] = useCancelBroadcastAcceptanceMutation();
     const [isCanceling, setIsCanceling] = useState(false);
+    const [cancelMeeting] = useCancelMeetingMutation();
 
     const meetingState: MeetingState = meeting.meetingState;
 
-    const handleCancelBroadcastAcceptance = async () => {
+    const handleCancelMeeting = async () => {
         try {
             setIsCanceling(true);
-            await cancelBroadcastAcceptance({
-                meetingId: meeting.id,
-                userId
-            }).unwrap();
 
-            // Remove from Redux after successful cancellation
+            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
+
+            try {
+                const response = await cancelMeeting({
+                    meetingId: meeting.id,
+                    userId
+                }).unwrap();
+                console.log("response", response);
+                // Success - optimistic update already applied
+                setIsCanceling(false);
+            } catch (apiError) {
+                // ROLLBACK - restore the meeting to UI
+                dispatch(addMeetingRollback(meeting));
+                throw apiError;
+            }
+
         } catch (error) {
-            console.error("Error canceling broadcast acceptance:", error);
-            alert('Failed to cancel acceptance. Please try again.');
+            console.error("Error deleting meeting:", error);
+            alert('Failed to delete meeting. The item has been restored.');
             setIsCanceling(false);
         }
     };
@@ -68,7 +79,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                 </View>
                 <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                    onPress={handleCancelBroadcastAcceptance}
+                    onPress={handleCancelMeeting}
                     style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
                     disabled={isCanceling}
                 >
