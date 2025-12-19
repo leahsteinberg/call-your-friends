@@ -101,29 +101,6 @@ export const meetingApi = createApi({
             }),
             providesTags: ['BroadcastStatus'],
         }),
-        cancelBroadcastAcceptance: builder.mutation({
-            query: ({ meetingId, userId }) => ({
-                url: '/api/cancel-broadcast-acceptance',
-                method: 'POST',
-                body: { meetingId, userId },
-            }),
-            // Invalidate meetings cache to trigger refetch after canceling
-            invalidatesTags: ['Meeting', 'BroadcastStatus'],
-            // Manually invalidate the Offer tag in the separate offerApi
-            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                    // After successful mutation, invalidate Offer tag in offerApi
-                    dispatch(offerApi.util.invalidateTags(['Offer']));
-                } catch (error) {
-                    console.error('Failed to invalidate offers cache:', error);
-                    // Fallback: Force refetch after delay to ensure cache consistency
-                    setTimeout(() => {
-                        dispatch(offerApi.util.invalidateTags(['Offer']));
-                    }, 2000);
-                }
-            },
-        }),
         acceptSuggestion: builder.mutation({
             query: ({ meetingId, userId }) => ({
                 url: '/api/accept-suggestion',
@@ -144,7 +121,7 @@ export const meetingApi = createApi({
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useCancelBroadcastAcceptanceMutation, useAcceptSuggestionMutation, useDismissSuggestionMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation } = meetingApi;
 
-export { useBroadcastEndMutation, useBroadcastNowMutation, useCancelBroadcastAcceptanceMutation, useCancelMeetingMutation, useCreateMeetingMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation };
+export { useAcceptSuggestionMutation, useBroadcastEndMutation, useBroadcastNowMutation, useCancelMeetingMutation, useCreateMeetingMutation, useDismissSuggestionMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
 
