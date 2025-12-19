@@ -71,7 +71,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'Start',
         // Legacy support
-        title: () => `Tell your people you're free to talk.`,
+        title: () => `Tap to say you're free to talk.`,
     },
     broadcast_self_pending: {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,

@@ -6,6 +6,7 @@ import { RootState } from "@/types";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
@@ -31,6 +32,7 @@ export default function TodayList(): React.JSX.Element {
     const [todayItems, setTodayItems] = useState<TodayItem[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [forceReprocess, setForceReprocess] = useState(0);
+    const insets = useSafeAreaInsets();
 
     // Use custom hooks for data fetching and processing
     const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
@@ -62,6 +64,8 @@ export default function TodayList(): React.JSX.Element {
                         data: meeting,
                     }));
 
+                    console.log("today meetings", todayMeetings)
+
                 const todayOffers: TodayItem[] = offers
                     // .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
                     .map((offer: ProcessedOfferType) => ({
@@ -71,7 +75,7 @@ export default function TodayList(): React.JSX.Element {
                         scheduledFor: offer.scheduledFor,
                         data: offer,
                     }));
-
+                    console.log("today offers", todayOffers);
                 // Combine and sort by time
                 const combined = sortTodayItemsWithBroadcastPriority([...todayOffers, ...todayMeetings], userId)
                 
@@ -147,7 +151,8 @@ export default function TodayList(): React.JSX.Element {
                 }
                 contentContainerStyle={[
                     styles.listContent,
-                    Platform.OS === 'web' && { paddingLeft: 11 }
+                    Platform.OS === 'web' && { paddingLeft: 11 },
+                    { paddingBottom: insets.bottom + 80 }
                 ]}
             />
         </View>

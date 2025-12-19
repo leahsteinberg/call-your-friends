@@ -57,51 +57,50 @@ export default function BroadcastNowCard(): React.JSX.Element {
         }
     };
 
+    const renderStartingBroadcast = () => {
+        return (
+            <>
+                <Text style={styles.titleText}>Starting broadcast</Text>
+                <AnimatedText
+                    text="..."
+                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
+                    duration={300}
+                    staggerDelay={500}
+                />
+            </>
+        );
+    };
+
     return (
-        <Animated.View style={[styles.container, animatedCardStyle]}>
+        <TouchableOpacity
+            onPress={handleStartBroadcast}
+            disabled={isStarting}
+            style={styles.container}
+        >
+        <Animated.View style={[animatedCardStyle]}>
             <View style={styles.header}>
                 <View style={styles.titleContainer}>
                     {/* Option B: Change title when loading */}
-                    {isStarting ? (
-                        <>
-                            <Text style={styles.titleText}>Starting broadcast</Text>
-                            <AnimatedText
-                                text="..."
-                                style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
-                                duration={300}
-                                staggerDelay={500}
-                            />
-                        </>
-                    ) : (
+                    {isStarting ?  renderStartingBroadcast() : (
                         <Text style={styles.titleText}>
                             {strings.mainText()}
                         </Text>
                     )}
                 </View>
                 <View>
-                    <View style={styles.broadcastButton}>
+                    {/* <View style={styles.broadcastButton}>
                     <View style={styles.broadcastButtonContainer}>
-                    <TouchableOpacity
-                        onPress={handleStartBroadcast}
-                        style={[styles.startButton, isStarting && styles.startButtonDisabled]}
-                        disabled={isStarting}
-                    >
-                        {isStarting ? (
-                                                        <AnimatedText
-                                                        text="..."
-                                                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
-                                                        duration={300}
-                                                        staggerDelay={500}
-                                                    />
-                        ) : (
-                            <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
-                            // <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
-
-                        )}
-                        
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleStartBroadcast}
+                            style={[styles.startButton, isStarting && styles.startButtonDisabled]}
+                            disabled={isStarting}
+                        >
+                            {!isStarting && (
+                                <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
+                            )}
+                        </TouchableOpacity>
                     </View>
-                    </View>
+                    </View> */}
                 </View>
             </View>
             {!isStarting && (
@@ -112,6 +111,8 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 </View>
             )}
         </Animated.View>
+        </TouchableOpacity>
+
     );
 }
 
