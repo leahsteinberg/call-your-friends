@@ -12,7 +12,8 @@ export default function Settings(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Settings</Text>
+            {/* <Text style={styles.title}>Settings</Text> */}
+            <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
             <UserSignalSettings/>
             <AddMeetingsButton/>
         </View>
@@ -31,5 +32,13 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
         fontWeight: '600',
+    },
+    signalsTitle: {
+        color: APP_HEADER_TEXT_COLOR,
+        marginHorizontal: 15,
+        fontFamily: CustomFonts.ztnaturemedium,
+        fontSize: 20,
+        fontWeight: '600',
+
     },
 });
