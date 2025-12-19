@@ -119,13 +119,14 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
 const styles = StyleSheet.create({
     outerContainer: {
-        marginBottom: 10,
+        marginBottom: 20,
+        
 
     },
     container: {
         backgroundColor: PALE_BLUE,
         borderRadius: 8,
-        padding: 12,
+        padding: 20,
         overflow: 'hidden', // Clip circles that extend beyond card
     },
     searchingContainer: {
@@ -134,9 +135,9 @@ const styles = StyleSheet.create({
     },
     circleContainerRelative: {
         alignSelf: 'flex-start',
-        marginTop: -90,
-        marginLeft: -60,
-        marginBottom: -40,
+        marginTop: -110,
+        marginLeft: -80,
+        marginBottom: -30,
         backgroundColor: PALE_BLUE,
         zIndex: -1,
     },
@@ -173,7 +174,8 @@ const styles = StyleSheet.create({
         minWidth: 40,
         alignItems: 'center',
         backgroundColor: BURGUNDY,
-        borderRadius: 10,
+        borderRadius: 15,
+        paddingVertical: 5,
 
     },
     endBroadcastButtonDisabled: {

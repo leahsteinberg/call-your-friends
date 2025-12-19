@@ -126,11 +126,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         <View style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
-                    <Animated.View style={[styles.flower, animatedFlowerStyle]}>
-                        <FlowerBlob
-                            fill={ORANGE}
-                        />
-                    </Animated.View>
                     <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
                 </View>
                 <View style={styles.topRightContainer}>
@@ -141,6 +136,16 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
             <View style={styles.content}>
                 <Text style={styles.titleText}>{strings.mainText!(getFromName())}</Text>
             </View>
+
+            <View style={styles.flowerContainerRelative}>
+                <Animated.View style={animatedFlowerStyle}>
+                    <FlowerBlob
+                        fill={CREAM}
+                        width={65}
+                        height={65}
+                    />
+                </Animated.View>
+            </View>
         </View>
     );
 }
@@ -148,10 +153,11 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 const styles = StyleSheet.create({
     container: {
         borderRadius: 8,
-        padding: 12,
+        padding: 16,
+        paddingBottom: 60,
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
-        overflow: 'visible',
+        overflow: 'hidden',
     },
     header: {
         flexDirection: 'row',
@@ -184,14 +190,13 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         fontFamily: CustomFonts.ztnatureregular,
     },
-
-    flower: {
-        height:65,
-        width: 65,
-        marginTop: -30,
-        marginLeft: -25,
-        position: 'absolute',
-
+    flowerContainerRelative: {
+        alignSelf: 'flex-start',
+        marginTop: -90,
+        marginLeft: -30,
+        marginBottom: -30,
+        backgroundColor: PALE_BLUE,
+        zIndex: -1,
     },
     nameText: {
         fontSize: 30,

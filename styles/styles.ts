@@ -36,3 +36,11 @@ export const BRIGHT_ORANGE = "f94e19";
 export const PINK_BUBBLEGUM = "#ff96b5";
 
 
+
+
+
+export const BOLD_BLUE = "#5da7e6";
+export const BOLD_GREEN = "#d9e811";
+export const BOLD_PINK = "#f585ab";
+export const BOLD_ORANGE = "#e67107";
+export const BOLD_BROWN = "#431515";

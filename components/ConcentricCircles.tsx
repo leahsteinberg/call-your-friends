@@ -1,4 +1,4 @@
-import { BRIGHT_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from '@/styles/styles';
+import { CREAM, PALE_BLUE } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
@@ -187,10 +187,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   innermostCircle: {
-    backgroundColor: BRIGHT_BLUE,
+    backgroundColor: PALE_BLUE,
   },
   middle1Circle: {
-    backgroundColor: CORNFLOWER_BLUE,
+    backgroundColor: CREAM,
   },
   middle2Circle: {
     backgroundColor: PALE_BLUE,
