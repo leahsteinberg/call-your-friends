@@ -4,7 +4,7 @@ import HighFiveStar from "@/assets/images/high-five-star.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BRIGHT_BLUE, DARK_GREEN, LIGHT_BURGUNDY, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_GREEN, LIGHT_BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { Tabs } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -57,8 +57,8 @@ const Layout = () => {
     return (
         <Tabs
         screenOptions={{
-            tabBarActiveTintColor: BRIGHT_BLUE,
-            tabBarInactiveTintColor: DARK_GREEN,
+            tabBarActiveTintColor: BOLD_GREEN,
+            tabBarInactiveTintColor: BOLD_BLUE,
             tabBarStyle: {
               backgroundColor: LIGHT_BURGUNDY,
               borderTopColor: 'transparent',
@@ -159,19 +159,19 @@ const styles = StyleSheet.create({
         backgroundColor: PALE_BLUE,
     },
     tabLabel: {
-        fontFamily: CustomFonts.ztnatureregular,
+        fontFamily: CustomFonts.ztnaturebold,
         fontSize: 18,
-        color: DARK_GREEN,
+        color: BOLD_BLUE,
         paddingTop: 5,
     },
     tabLabelFocused: {
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 18,
-        color: BRIGHT_BLUE,
-        transform: [{ translateY: -3 }],
-        textShadowColor: BRIGHT_BLUE,
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 8,
+        color: BOLD_GREEN,
+        transform: [{ translateY: -8 }],
+        //textShadowColor: ,
+        // textShadowOffset: { width: 0, height: 0 },
+        // textShadowRadius: 8,
     },
 });
 
