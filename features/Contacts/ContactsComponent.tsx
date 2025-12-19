@@ -5,7 +5,7 @@ import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { useUserSignals } from "@/hooks/useUserSignals";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
-import { CORNFLOWER_BLUE } from "@/styles/styles";
+import { APP_HEADER_TEXT_COLOR, CORNFLOWER_BLUE } from "@/styles/styles";
 import { CALL_INTENT_SIGNAL_TYPE } from "@/types/userSignalsTypes";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -157,19 +157,16 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         paddingHorizontal: 20,
         //paddingVertical: 12,
         flexShrink: 0,
     },
     title: {
-        
-        color: CORNFLOWER_BLUE,
-        marginHorizontal: 15,
+        color: APP_HEADER_TEXT_COLOR,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,
         fontWeight: '600',
-
     },
     signOutButton: {
         paddingVertical: 8,
@@ -191,16 +188,3 @@ const styles = StyleSheet.create({
         //flex: 1,
     },
 });
-
-
-// const styles = StyleSheet.create({
-//     container: {
-//         minHeight: 400,
-//         backgroundColor: 'lightgreen',
-//         justifyContent: 'space-between',
-//         overflow: 'scroll'
-//     },
-//     component: {
-//         maxHeight: '100%',
-//     },
-// });

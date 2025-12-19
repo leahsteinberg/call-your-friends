@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     },
     tabLabelFocused: {
         fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 18,
+        fontSize: 22,
         color: BOLD_GREEN,
         transform: [{ translateY: -8 }],
         //textShadowColor: ,

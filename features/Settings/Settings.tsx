@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { APP_BACKGROUND_COLOR, APP_HEADER_TEXT_COLOR } from "@/styles/styles";
 import { RootState } from "@/types";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -22,16 +22,11 @@ export default function Settings(): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: CREAM,
+        backgroundColor: APP_BACKGROUND_COLOR,
         padding: 10,
     },
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: DARK_GREEN,
-        fontFamily: CustomFonts.ztnaturemedium,
-        marginBottom: 20,
-        color: CORNFLOWER_BLUE,
+        color: APP_HEADER_TEXT_COLOR,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,

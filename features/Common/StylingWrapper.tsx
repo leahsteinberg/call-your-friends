@@ -1,4 +1,4 @@
-import { BOLD_BROWN } from '@/styles/styles';
+import { APP_BACKGROUND_COLOR } from '@/styles/styles';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: BOLD_BROWN,
+    backgroundColor: APP_BACKGROUND_COLOR,
     //alignItems: 'center',
 
     //paddingTop: safePadding,

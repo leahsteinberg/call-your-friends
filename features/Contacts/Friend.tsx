@@ -2,7 +2,7 @@ import ConcentricCircles from "@/components/ConcentricCircles";
 import { CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BROWN, BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
@@ -69,8 +69,9 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
     <View style={styles.container} key={item.index}>
       <View style={styles.header}>
         <Text style={styles.name}>{item.name}</Text>
-        <Text>Intend-{isContactIntended.toString()}</Text>
-        <Text>broadcast-{isBroadcasting.toString()}</Text>
+        {isBroadcasting ? <Text style={styles.broadcastingText}>is broadcasting now.</Text> : <></>}
+        
+        <Text>intent-{isContactIntended.toString()}</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={handleCallNow} style={styles.callNowButton}>
             <Text style={styles.callNowText}>Call Now</Text>
@@ -149,6 +150,11 @@ const styles = StyleSheet.create({
       justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: 8,
+    },
+    broadcastingText: {
+      fontFamily: CustomFonts.ztnaturebold,
+      color: BOLD_BROWN,
+
     },
     name: {
       fontSize: 20,

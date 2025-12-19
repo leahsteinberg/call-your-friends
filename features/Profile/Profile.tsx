@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BROWN, CREAM } from "@/styles/styles";
+import { APP_BACKGROUND_COLOR, APP_HEADER_TEXT_COLOR } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '100%',
         justifyContent: 'space-between',
-        backgroundColor: BOLD_BROWN,
+        backgroundColor: APP_BACKGROUND_COLOR,
         //overflow: 'scroll',
         
         flex: 1,
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
 
     greetingText: {
-        color: CREAM,
+        color: APP_HEADER_TEXT_COLOR,
         marginHorizontal: 15,
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 50,

@@ -44,3 +44,6 @@ export const BOLD_GREEN = "#d9e811";
 export const BOLD_PINK = "#f585ab";
 export const BOLD_ORANGE = "#e67107";
 export const BOLD_BROWN = "#431515";
+
+export const APP_BACKGROUND_COLOR = CREAM;
+export const APP_HEADER_TEXT_COLOR = BOLD_BROWN;
