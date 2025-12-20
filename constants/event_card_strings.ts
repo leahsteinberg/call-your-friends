@@ -19,6 +19,22 @@ export const eventCardText: Record<string, EventCardStrings> = {
         rejectButtonText: () => 'Dismiss',
     },
 
+    broadcast_self_open: {
+        nameText: () => '',
+        mainText: () => `You are free to talk`,
+        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
+        acceptButtonText: () => 'End',
+        // Legacy support
+        title: () => `Friends can call you now.`,
+    },
+    broadcast_now_card: {
+        mainText: () => `Broadcast to friends`,
+        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
+        acceptButtonText: () => 'Start',
+        // Legacy support
+        title: () => `Tap to say you're free to talk.`,
+    },
+
     // OFFERS
     open_offer: {
         nameText: (userName: string) => userName || 'Unknown',
@@ -58,21 +74,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
     meeting_other_cancelled: {
         title: (userName: string) => `Your meeting created by ${userName} was cancelled by you.`,
     },
-    broadcast_self_open: {
-        nameText: () => '',
-        mainText: () => `Broadcasting to friends`,
-        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
-        acceptButtonText: () => 'End',
-        // Legacy support
-        title: () => `Anyone can claim your call and reach out.`,
-    },
-    broadcast_now_card: {
-        mainText: () => `Broadcast to friends`,
-        subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
-        acceptButtonText: () => 'Start',
-        // Legacy support
-        title: () => `Tap to say you're free to talk.`,
-    },
+
     broadcast_self_pending: {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,
     },

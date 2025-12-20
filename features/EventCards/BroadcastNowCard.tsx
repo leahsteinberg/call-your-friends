@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, BOLD_BROWN, CREAM, ORANGE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -61,12 +61,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
         return (
             <View style={styles.loadingTextContainer}>
                 <Text style={styles.loadingText}>LOADING</Text>
-                <AnimatedText
-                    text="..."
-                    style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
-                    duration={300}
-                    staggerDelay={500}
-                />
+                
             </View>
         );
     };
@@ -82,11 +77,16 @@ export default function BroadcastNowCard(): React.JSX.Element {
             <View style={styles.header}>
                 <View style={styles.titleContainer}>
                     {/* Option B: Change title when loading */}
-                    {isStarting ?  renderStartingBroadcast() : (
-                        <Text style={styles.titleText}>
+                    <Text style={styles.titleText}>
                             {strings.mainText()}
                         </Text>
-                    )}
+                    {isStarting && 
+                        <AnimatedText
+                        text="..."
+                        style={styles.loadingText}
+                        duration={300}
+                        staggerDelay={500}
+                    />}
                 </View>
                 <View>
                     {/* <View style={styles.broadcastButton}>
@@ -176,9 +176,6 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     startButtonText: {
-        //color: CHOCOLATE_COLOR,
-        //color: BURGUNDY,
-
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
@@ -187,10 +184,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         //alignItems: 'center',
     },
+
     loadingText: {
-        fontSize: 20,
+        fontSize: 28,
         fontWeight: '600',
-        color: ORANGE,
+        color: CREAM,
         fontFamily: CustomFonts.ztnaturebold,
     },
 

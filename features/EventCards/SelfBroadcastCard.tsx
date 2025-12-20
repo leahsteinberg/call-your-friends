@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -82,6 +82,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                                     staggerDelay={500}
                                 />
                         </View>
+
                         <View style={styles.buttonContainer}>
                             {isEnding ? (
                                 <ActivityIndicator size="small" color="#fff" />
@@ -94,6 +95,9 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     </View>
                     <View>
                         <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
+                        <View >
+                            <Text style={styles.descriptionText}>{strings.title!()}</Text>
+                        </View>
                     </View>
                     {/* <View style={styles.circleContainerRelative}>
                         <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM}/>
@@ -119,6 +123,12 @@ const styles = StyleSheet.create({
         overflow: 'hidden', // Clip circles that extend beyond card
         minHeight: CARD_MIN_HEIGHT,
     },
+    descriptionText: {
+        fontSize: 20,
+        color: BOLD_BROWN,
+        fontFamily: CustomFonts.ztnaturemedium,
+        opacity: 0.8,
+    },
     searchingContainer: {
         flexDirection: 'row',
         //alignItems: 'center',
@@ -143,10 +153,6 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
     },
     searchingText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: ORANGE,
-        fontFamily: CustomFonts.ztnaturebold,
         fontSize: 28,
         fontWeight: '600',
         color: CREAM,

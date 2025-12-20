@@ -256,4 +256,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
 
     },
+    loadingText: {
+        fontSize: 28,
+        fontWeight: '600',
+        color: CREAM,
+        fontFamily: CustomFonts.ztnaturebold,
+    },
 });
