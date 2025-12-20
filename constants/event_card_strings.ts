@@ -86,12 +86,13 @@ export const eventCardText: Record<string, EventCardStrings> = {
         title: () => `Your broadcast created by you expired.`,
     },
     broadcast_other_open: {
-        nameText: (userName: string) => userName,
-        mainText: (userName: string) => `${userName} is free for calls now.`,
+        nameText: (userName: string) => `${userName}`,
+        mainText: (userName: string) => `Free to talk.`,
         acceptButtonText: () => 'Call',
         rejectButtonText: () => 'Reject',
+        hint: (userName: string) => `Tap to call ${userName}.`,
         // Legacy support
-        title: (userName: string) => `Free for calls now.`,
+        title: (userName: string) => `Call ${userName}.`,
     },
     broadcast_other_accepted: {
         title: (userName: string) => `The broadcast created by ${userName} was accepted by you.`,

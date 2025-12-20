@@ -1,16 +1,15 @@
-import FlowerBlob from "@/assets/images/flower-blob.svg";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import {
     useAcceptOfferMutation,
     useRejectOfferMutation
 } from "@/services/offersApi";
-import { BOLD_BROWN, BOLD_GREEN, BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BROWN, BOLD_ORANGE, BRIGHT_GREEN, BURGUNDY, CHOCOLATE_COLOR, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
@@ -27,8 +26,10 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const [rejectOffer] = useRejectOfferMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
-
     const offerId = offer.id;
+    const strings = eventCardText.broadcast_other_open;
+    console.log("STRINGS", strings);
+
 
 
     const animatedFlowerStyle = useAnimatedStyle(() => ({
@@ -87,7 +88,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    const strings = eventCardText.broadcast_other_open;
 
     const renderButtons = () => {
         if (offer.offerState !== OPEN_OFFER_STATE) {
@@ -124,28 +124,24 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity
+                    onPress={handleAccept}
+                    disabled={isAccepting}
+                >
             <View style={styles.header}>
-            <View style={styles.flowerContainerRelative}>
-                <Animated.View style={animatedFlowerStyle}>
-                    <FlowerBlob
-                        fill={BOLD_GREEN}
-                        width={80}
-                        height={80}
-                    />
-                </Animated.View>
-            </View> 
                 <View style={styles.nameContainer}>
-                    <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
+                    <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
                 </View>
-                <View style={styles.topRightContainer}>
+                {/* <View style={styles.topRightContainer}>
                     {renderButtons()}
-                </View>
+                </View> */}
             </View>
             <View style={styles.content}>
-                <Text style={styles.titleText}>{strings.mainText!(getFromName())}</Text>
+                <Text style={styles.descriptionText}>{strings.mainText!(getFromName())}</Text>
+                <Text style={styles.subText}>{strings.hint(getFromName())}</Text>
+
             </View>
-
-
+            </TouchableOpacity>
         </View>
     );
 }
@@ -156,7 +152,8 @@ const styles = StyleSheet.create({
         padding: 16,
         paddingBottom: 10,
         marginBottom: 20,
-        backgroundColor: PALE_BLUE,
+        backgroundColor: BOLD_ORANGE,
+        minHeight: CARD_MIN_HEIGHT,
         overflow: 'hidden',
     },
     header: {
@@ -170,11 +167,22 @@ const styles = StyleSheet.create({
     },
     nameContainer: {
         flexDirection: 'row',
-
     },
     topRightContainer: {
         flexDirection: 'column',
         
+    },
+    titleText: {
+        fontSize: 28,
+        fontWeight: '600',
+        color: CREAM,
+        fontFamily: CustomFonts.ztnaturebold,
+    },
+    descriptionText: {
+        fontSize: 20,
+        color: BOLD_BROWN,
+        fontFamily: CustomFonts.ztnaturemedium,
+        opacity: 0.8,
     },
 
     timeText: {
@@ -183,13 +191,13 @@ const styles = StyleSheet.create({
         color: PALE_BLUE,
         marginBottom: 4,
     },
-    titleText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: CORNFLOWER_BLUE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnatureregular,
-    },
+    // titleText: {
+    //     fontSize: 14,
+    //     fontWeight: '600',
+    //     color: CORNFLOWER_BLUE,
+    //     marginBottom: 4,
+    //     fontFamily: CustomFonts.ztnatureregular,
+    // },
     flowerContainerRelative: {
         //alignSelf: 'flex-start',
         position: 'absolute',

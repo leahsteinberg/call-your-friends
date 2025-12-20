@@ -1,6 +1,6 @@
 import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CustomFonts, CARD_MIN_HEIGHT } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM, ORANGE } from "@/styles/styles";
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
         padding: 18,
         paddingBottom: 18,
         marginBottom: 10,
+        minHeight: CARD_MIN_HEIGHT,
     },
     titleContainer: {
         flexDirection: 'row',

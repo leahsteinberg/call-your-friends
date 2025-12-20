@@ -72,3 +72,6 @@ export const CustomFonts = {
 
   perfectbarista: 'perfectbarista',
 } as const;
+
+// Card dimensions
+export const CARD_MIN_HEIGHT = 140;

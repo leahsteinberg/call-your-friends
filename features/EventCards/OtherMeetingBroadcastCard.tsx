@@ -1,5 +1,5 @@
 import HighFiveStar from "@/assets/images/high-five-star.svg";
-import { CustomFonts } from "@/constants/theme";
+import { CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -112,6 +112,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
+        minHeight: CARD_MIN_HEIGHT,
+
     },
     header: {
         flexDirection: 'row',

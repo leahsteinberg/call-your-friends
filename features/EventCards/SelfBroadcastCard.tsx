@@ -1,7 +1,7 @@
 import AnimatedText from "@/components/AnimatedText";
 import ConcentricCircles from "@/components/ConcentricCircles";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CustomFonts, CARD_MIN_HEIGHT } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 20,
         overflow: 'hidden', // Clip circles that extend beyond card
+        minHeight: CARD_MIN_HEIGHT,
     },
     searchingContainer: {
         flexDirection: 'row',

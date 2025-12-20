@@ -6,6 +6,7 @@ import { RootState } from "@/types";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import Animated, { ZoomOut, ZoomIn, Layout } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
@@ -100,7 +101,22 @@ export default function TodayList(): React.JSX.Element {
     const renderItem = ({ item }: { item: TodayItem }) => {
         if (item.type === 'meeting') {
             const meeting = item.data as ProcessedMeetingType;
-            return selectMeetingCard(meeting, {userId, refresh: handleRefresh})
+            const card = selectMeetingCard(meeting, {userId, refresh: handleRefresh});
+
+            // Wrap SelfBroadcastCard with pop-in animation
+            if (isBroadcastMeeting(meeting) && meeting.userFromId === userId && meeting.meetingState !== PAST_MEETING_STATE) {
+                return (
+                    <Animated.View
+                        key={`self-broadcast-${meeting.id}`}
+                        entering={ZoomIn.springify().damping(8).stiffness(100)}
+                        layout={Layout.springify()}
+                    >
+                        {card}
+                    </Animated.View>
+                );
+            }
+
+            return card;
         } else {
             const offer = item.data as ProcessedOfferType;
             return selectOfferCard(offer, {refresh: handleRefresh});
@@ -119,7 +135,15 @@ export default function TodayList(): React.JSX.Element {
         // Only hide BroadcastNowCard when SelfBroadcastCard actually exists in data
         // This prevents visual gaps during the transition
         if (!hasSelfBroadcastMeeting) {
-            return <BroadcastNowCard />;
+            return (
+                <Animated.View
+                    key="broadcast-now-card"
+                    exiting={ZoomOut.duration(300)}
+                    layout={Layout.springify()}
+                >
+                    <BroadcastNowCard />
+                </Animated.View>
+            );
         }
         return null;
     };
