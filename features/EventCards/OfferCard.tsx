@@ -1,5 +1,5 @@
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -9,7 +9,7 @@ import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOfferOptimistic, addOfferRollback } from "../Meetings/meetingSlice";
+import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
 
@@ -76,6 +76,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const strings = eventCardText.open_offer;
 
     return (
+        <View style={styles.outerContainer}>
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
@@ -117,15 +118,21 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
             )}
         </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         borderRadius: 8,
         padding: 12,
         marginBottom: 8,
         backgroundColor: PALE_BLUE,
+        minHeight: CARD_MIN_HEIGHT,
+
     },
     header: {
         flexDirection: 'row',

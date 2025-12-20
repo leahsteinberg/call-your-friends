@@ -1,5 +1,5 @@
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
@@ -86,6 +86,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const strings = eventCardText.draft_suggestion;
 
     return (
+        <View style={styles.outerContainer}>
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
@@ -123,15 +124,19 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT)</Text>
             )}
         </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         borderRadius: 8,
         padding: 12,
-        marginBottom: 8,
         backgroundColor: LAVENDER,
+        minHeight: CARD_MIN_HEIGHT,
     },
     header: {
         flexDirection: 'row',

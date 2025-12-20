@@ -74,4 +74,5 @@ export const CustomFonts = {
 } as const;
 
 // Card dimensions
-export const CARD_MIN_HEIGHT = 140;
+export const CARD_MIN_HEIGHT = 100;
+export const CARD_LOWER_MARGIN = 20;

@@ -1,5 +1,5 @@
 import { eventCardText } from "@/constants/event_card_strings";
-import { CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import {
     useAcceptOfferMutation,
     useRejectOfferMutation
@@ -107,51 +107,42 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
                         <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
                     )}
                 </TouchableOpacity>
-                {/* <TouchableOpacity
-                    onPress={handleReject}
-                    style={styles.rejectButton}
-                    disabled={isRejecting}
-                >
-                    {isRejecting ? (
-                        <ActivityIndicator size="small" color="red" />
-                    ) : (
-                        <Text style={styles.rejectButtonText}>{strings.rejectButtonText!()}</Text>
-                    )}
-                </TouchableOpacity> */}
             </View>
         );
     };
 
     return (
+        <View style={styles.outerContainer}>
+        <TouchableOpacity
+            onPress={handleAccept}
+            disabled={isAccepting}
+        >
         <View style={styles.container}>
-            <TouchableOpacity
-                    onPress={handleAccept}
-                    disabled={isAccepting}
-                >
+
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
                 </View>
-                {/* <View style={styles.topRightContainer}>
-                    {renderButtons()}
-                </View> */}
             </View>
             <View style={styles.content}>
                 <Text style={styles.descriptionText}>{strings.mainText!(getFromName())}</Text>
                 <Text style={styles.subText}>{strings.hint(getFromName())}</Text>
-
             </View>
-            </TouchableOpacity>
         </View>
+        </TouchableOpacity>
+        </View>
+
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         borderRadius: 8,
         padding: 16,
         paddingBottom: 10,
-        marginBottom: 20,
         backgroundColor: BOLD_ORANGE,
         minHeight: CARD_MIN_HEIGHT,
         overflow: 'hidden',

@@ -1,6 +1,6 @@
 import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts, CARD_MIN_HEIGHT } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM, ORANGE } from "@/styles/styles";
@@ -72,6 +72,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     return (
+        <View style={styles.outerContainer}>
         <TouchableOpacity
             onPress={handleStartBroadcast}
             disabled={isStarting}
@@ -112,17 +113,20 @@ export default function BroadcastNowCard(): React.JSX.Element {
             )}
         </Animated.View>
         </TouchableOpacity>
+        </View>
 
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         backgroundColor: BOLD_BLUE,
         borderRadius: 8,
         padding: 18,
         paddingBottom: 18,
-        marginBottom: 10,
         minHeight: CARD_MIN_HEIGHT,
     },
     titleContainer: {

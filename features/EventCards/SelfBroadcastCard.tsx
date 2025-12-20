@@ -1,7 +1,6 @@
 import AnimatedText from "@/components/AnimatedText";
-import ConcentricCircles from "@/components/ConcentricCircles";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts, CARD_MIN_HEIGHT } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -67,60 +66,50 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
     return (
         <View style={styles.outerContainer}>
-        <View style={styles.container}>
-            <View style={styles.header}>
+            <TouchableOpacity
+                onPress={handleCancelMeeting}
+                //style={[styles.endBroadcastButton, isEnding && styles.endBroadcastButtonDisabled]}
+                disabled={isEnding}
+            >
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <View style={styles.searchingContainer}>
+                                <Text style={styles.searchingText}>{strings.mainText!()}</Text>
+                                <AnimatedText
+                                    text="..."
+                                    style={styles.searchingText}
+                                    duration={300}
+                                    staggerDelay={500}
+                                />
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            {isEnding ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
 
-                <View style={styles.searchingContainer}>
-                    <Text style={styles.searchingText}>{strings.mainText!()}</Text>
-                    <AnimatedText
-                        text="..."
-                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color:ORANGE }}
-                        duration={300}
-                        staggerDelay={500}
-                    />
+                                <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
+                            )}
+                        </View>
+
+                    </View>
+                    <View>
+                        <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
+                    </View>
+                    {/* <View style={styles.circleContainerRelative}>
+                        <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM}/>
+                    </View> */}
+                    {DEV_FLAG && (
+                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                    )}
                 </View>
-                <View style={styles.buttonContainer}>
-
-
-                    <TouchableOpacity
-                        onPress={handleCancelMeeting}
-                        style={[styles.endBroadcastButton, isEnding && styles.endBroadcastButtonDisabled]}
-                        disabled={isEnding}
-                    >
-
-                        {isEnding ? (
-                            <ActivityIndicator size="small" color="#fff" />
-                        ) : (
-
-                            <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
-                        )}
-                    </TouchableOpacity>
-
-                </View>
-
-            </View>
-            <View>
-                <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
-            </View>
-
-            <View style={styles.circleContainerRelative}>
-                <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM}/>
-            </View>
-
-            {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-            )}
-
+            </TouchableOpacity>
         </View>
-        </View>
-
     );
 }
 
 const styles = StyleSheet.create({
     outerContainer: {
-        marginBottom: 20,
-        
+        marginBottom: CARD_LOWER_MARGIN,
 
     },
     container: {
@@ -157,6 +146,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '600',
         color: ORANGE,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 28,
+        fontWeight: '600',
+        color: CREAM,
         fontFamily: CustomFonts.ztnaturebold,
     },
     statusText: {

@@ -1,5 +1,5 @@
 import HighFiveStar from "@/assets/images/high-five-star.svg";
-import { CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -72,7 +72,8 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
     };
 
     return (
-        <View style={styles.container}>
+        <View style={styles.outerContainer}>
+        <View >
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.nameText}>{getFromName()}</Text>
@@ -103,17 +104,19 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
             )}
         </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
-        marginBottom: 8,
         minHeight: CARD_MIN_HEIGHT,
-
     },
     header: {
         flexDirection: 'row',

@@ -2,6 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DARK_GREEN } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Friend from "./Friend";
 import FriendRequest from "./FriendRequest";
 import InvitedContact from "./InvitedContact";
@@ -13,8 +14,7 @@ interface ContactsListPropsExtended extends ContactsListProps {
 }
 
 export default function ContactsList({ friends, friendRequests, sentInvites, onRefresh, refreshing = false }: ContactsListPropsExtended): React.JSX.Element {
-
-
+    const insets = useSafeAreaInsets();
 
     const friendListData =
     {
@@ -75,6 +75,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
                         />
                     ) : undefined
                 }
+                contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}
             />
         </View>);
 }

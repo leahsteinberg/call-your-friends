@@ -1,6 +1,6 @@
 import AnimatedText from "@/components/AnimatedText";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CustomFonts } from "@/constants/theme";
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -111,6 +111,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const mainDisplayText = getMainDisplay();
 
     return (
+        <View style={styles.outerContainer}>
         <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
             <View style={styles.header}>
             {mainDisplayText && (
@@ -136,15 +137,19 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
             )}
         </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        marginBottom: CARD_LOWER_MARGIN,
+    },
     container: {
         backgroundColor: PALE_BLUE,
         borderRadius: 8,
         padding: 12,
-        marginBottom: 8,
+        minHeight: CARD_MIN_HEIGHT,
     },
     oldPastContainer: {
         backgroundColor: '#E8E8E8',
