@@ -7,6 +7,8 @@ import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -14,15 +16,20 @@ import type { ProcessedMeetingType } from "../Meetings/types";
 
 interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
+    onSuggestLater?: () => void;
 }
 
-export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): React.JSX.Element {
+const SWIPE_THRESHOLD = 120; // pixels to trigger the action
+
+export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptSuggestion] = useAcceptSuggestionMutation();
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
+    const translateX = useSharedValue(0);
+
     console.log("IN DRAFT MEETING ---", meeting);
     const handleAcceptSuggestion = async () => {
         try {
@@ -85,45 +92,76 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     const strings = eventCardText.draft_suggestion;
 
+    // Gesture handler for swipe-to-suggest-later
+    const panGesture = Gesture.Pan()
+        .onUpdate((e) => {
+            // Only allow right swipe (positive translation)
+            translateX.value = Math.max(0, e.translationX);
+        })
+        .onEnd((e) => {
+            if (e.translationX > SWIPE_THRESHOLD) {
+                // Swipe completed - animate off screen, trigger callback, then bounce back
+                translateX.value = withSpring(400, {}, (finished) => {
+                    if (finished) {
+                        if (onSuggestLater) {
+                            runOnJS(onSuggestLater)();
+                        }
+                        // Bounce back to original position
+                        translateX.value = withSpring(0);
+                    }
+                });
+            } else {
+                // Snap back to original position
+                translateX.value = withSpring(0);
+            }
+        });
+
+    const animatedCardStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: translateX.value }],
+        opacity: 1 - (translateX.value / 400) * 0.5, // Fade slightly as it moves
+    }));
+
     return (
         <View style={styles.outerContainer}>
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
+            <GestureDetector gesture={panGesture}>
+                <Animated.View style={[styles.container, animatedCardStyle]}>
+                    <View style={styles.header}>
+                        <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        onPress={handleAcceptSuggestion}
-                        style={styles.acceptButton}
-                        disabled={isAccepting}
-                    >
-                        {isAccepting ? (
-                            <ActivityIndicator size="small" color="green" />
-                        ) : (
-                            <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
-                        )}
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={handleDismissSuggestion}
-                        style={styles.dismissButton}
-                        disabled={isDismissing}
-                    >
-                        {isDismissing ? (
-                            <ActivityIndicator size="small" color="red" />
-                        ) : (
-                            <Text style={styles.dismissButtonText}>{strings.rejectButtonText!()}</Text>
-                        )}
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(meeting.scheduledFor))}</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                onPress={handleAcceptSuggestion}
+                                style={styles.acceptButton}
+                                disabled={isAccepting}
+                            >
+                                {isAccepting ? (
+                                    <ActivityIndicator size="small" color="green" />
+                                ) : (
+                                    <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
+                                )}
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleDismissSuggestion}
+                                style={styles.dismissButton}
+                                disabled={isDismissing}
+                            >
+                                {isDismissing ? (
+                                    <ActivityIndicator size="small" color="red" />
+                                ) : (
+                                    <Text style={styles.dismissButtonText}>{strings.rejectButtonText!()}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(meeting.scheduledFor))}</Text>
 
-            <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
+                    <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
 
-            {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT)</Text>
-            )}
-        </View>
+                    {DEV_FLAG && (
+                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT)</Text>
+                    )}
+                </Animated.View>
+            </GestureDetector>
         </View>
     );
 }
