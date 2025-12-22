@@ -50,6 +50,7 @@ export interface MeetingType extends MeetingEvent {
 
     title: string;
     broadcastMetadata?: BroadcastMetadata;
+    backupScheduledTimes?: string[]; // Optional list of backup times for DRAFT meetings
 }
 
 export interface ProcessedMeetingType extends MeetingType {

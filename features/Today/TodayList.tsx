@@ -6,7 +6,7 @@ import { RootState } from "@/types";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
-import Animated, { ZoomOut, ZoomIn, Layout } from "react-native-reanimated";
+import Animated, { Layout, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
@@ -108,7 +108,7 @@ export default function TodayList(): React.JSX.Element {
                 return (
                     <Animated.View
                         key={`self-broadcast-${meeting.id}`}
-                        entering={ZoomIn.springify().damping(8).stiffness(100)}
+                        entering={ZoomIn.springify().damping(25).stiffness(90)}
                         layout={Layout.springify()}
                     >
                         {card}

@@ -19,7 +19,8 @@ interface DraftMeetingCardProps {
     onSuggestLater?: () => void;
 }
 
-const SWIPE_THRESHOLD = 120; // pixels to trigger the action
+const SWIPE_THRESHOLD = 50; // pixels to trigger the action
+const MAX_SWIPE_DISTANCE = 70; // maximum swipe distance in pixels
 
 export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
@@ -95,30 +96,32 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
     // Gesture handler for swipe-to-suggest-later
     const panGesture = Gesture.Pan()
         .onUpdate((e) => {
-            // Only allow right swipe (positive translation)
-            translateX.value = Math.max(0, e.translationX);
+            // Only allow right swipe up to MAX_SWIPE_DISTANCE
+            translateX.value = Math.max(0, Math.min(MAX_SWIPE_DISTANCE, e.translationX));
         })
         .onEnd((e) => {
             if (e.translationX > SWIPE_THRESHOLD) {
-                // Swipe completed - animate off screen, trigger callback, then bounce back
-                translateX.value = withSpring(400, {}, (finished) => {
-                    if (finished) {
-                        if (onSuggestLater) {
-                            runOnJS(onSuggestLater)();
-                        }
-                        // Bounce back to original position
-                        translateX.value = withSpring(0);
-                    }
+                // Swipe completed - trigger callback and bounce back quickly
+                if (onSuggestLater) {
+                    runOnJS(onSuggestLater)();
+                }
+                // Bounce back to original position with snappy spring
+                translateX.value = withSpring(0, {
+                    damping: 20,
+                    stiffness: 300
                 });
             } else {
-                // Snap back to original position
-                translateX.value = withSpring(0);
+                // Snap back to original position quickly
+                translateX.value = withSpring(0, {
+                    damping: 20,
+                    stiffness: 300
+                });
             }
         });
 
     const animatedCardStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
-        opacity: 1 - (translateX.value / 400) * 0.5, // Fade slightly as it moves
+        opacity: 1 - (translateX.value / MAX_SWIPE_DISTANCE) * 0.3, // Fade slightly as it moves
     }));
 
     return (
