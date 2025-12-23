@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { APP_BACKGROUND_COLOR, APP_HEADER_TEXT_COLOR } from "@/styles/styles";
 import { RootState } from "@/types";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import AddMeetingsButton from "./AddMeetingsButton";
@@ -13,12 +13,12 @@ export default function Settings(): React.JSX.Element {
     const insets = useSafeAreaInsets();
 
     return (
-        <View style={[styles.container, { paddingBottom: insets.bottom + 80 }]}>
+        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
             {/* <Text style={styles.title}>Settings</Text> */}
             <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
             <UserSignalSettings/>
             <AddMeetingsButton/>
-        </View>
+        </ScrollView>
     );
 }
 
