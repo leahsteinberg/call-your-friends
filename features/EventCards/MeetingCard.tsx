@@ -89,7 +89,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         // Check if there's a target user for accepted meetings
         const targetName = meeting.targetUser?.name;
         if (baseText && targetName && meeting.targetUserId) {
-            return `${baseText} →000 ${targetName}`;
+            return `${baseText} → ${targetName}`;
         }
         return baseText;
     };
