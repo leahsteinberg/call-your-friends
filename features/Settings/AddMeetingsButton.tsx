@@ -144,9 +144,7 @@ export default function AddMeetingsButton(): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: CREAM,
-        padding: 20,
+        // Container only holds absolutely positioned elements
     },
     title: {
         fontSize: 24,

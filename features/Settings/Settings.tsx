@@ -13,12 +13,14 @@ export default function Settings(): React.JSX.Element {
     const insets = useSafeAreaInsets();
 
     return (
-        <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
-            {/* <Text style={styles.title}>Settings</Text> */}
-            <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
-            <UserSignalSettings/>
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
+                {/* <Text style={styles.title}>Settings</Text> */}
+                <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
+                <UserSignalSettings/>
+            </ScrollView>
             <AddMeetingsButton/>
-        </ScrollView>
+        </View>
     );
 }
 
