@@ -19,6 +19,7 @@ interface MeetingCardProps {
 }
 
 export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.Element {
+    console.log("MEETING CARDF -,", meeting)
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
@@ -73,11 +74,24 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 const name = meeting.acceptedUser?.name;
                 return getClaimedSelfMeetingTitle()
             } else {
+                // Check if there's a target user for open meetings
+                const targetName = meeting.targetUser?.name;
+                if (targetName && meeting.targetUserId) {
+                    const baseTitle = getOpenMeetingTitle();
+                    return `sent an offer out to → ${targetName}`;
+                }
                 return getOpenMeetingTitle();
             }
         }
         const name = meeting.userFrom?.name;
-        return name ? `Accepted a meeting created by ${name}` : null;
+        const baseText = name ? `Accepted a meeting created by ${name}` : null;
+
+        // Check if there's a target user for accepted meetings
+        const targetName = meeting.targetUser?.name;
+        if (baseText && targetName && meeting.targetUserId) {
+            return `${baseText} →000 ${targetName}`;
+        }
+        return baseText;
     };
 
     const handleCancelMeeting = async () => {

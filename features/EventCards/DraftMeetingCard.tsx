@@ -7,7 +7,7 @@ import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayDateTime, displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -190,6 +190,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     const animatedPulseStyle = useAnimatedStyle(() => ({
         transform: [{ scale: pulseScale.value }],
+        shadowColor: BRIGHT_BLUE,
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: glowOpacity.value,
+        shadowRadius: 10,
+        elevation: glowOpacity.value * 10, // For Android
     }));
 
     return (

@@ -17,6 +17,10 @@ export interface ProcessedOfferType extends OfferType {
             name?: string;
             id?: string;
         };
+        targetUser?: {
+            name?: string;
+            id?: string;
+        };
         broadcastMetadata?: BroadcastMetadata;
     };
 }

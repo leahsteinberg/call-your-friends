@@ -63,6 +63,10 @@ export interface ProcessedMeetingType extends MeetingType {
         name?: string;
         id?: string;
     };
+    targetUser?: {
+        name?: string;
+        id?: string;
+    };
 }
 
 export interface MeetingsListProps {

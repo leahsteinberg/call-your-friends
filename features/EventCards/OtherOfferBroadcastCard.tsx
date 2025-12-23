@@ -88,6 +88,14 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
+    const getTargetUserName = () => {
+        if (offer.meeting?.targetUserId && offer.meeting?.targetUser?.name) {
+            return offer.meeting.targetUser.name;
+        }
+        return null;
+    };
+
+    const targetUserName = getTargetUserName();
 
     const renderButtons = () => {
         if (offer.offerState !== OPEN_OFFER_STATE) {
@@ -121,7 +129,10 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
-                    <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
+                    <Text style={styles.titleText}>
+                        {strings.nameText!(getFromName())}
+                        {targetUserName && ` → ${targetUserName}`}
+                    </Text>
                 </View>
             </View>
             <View style={styles.content}>

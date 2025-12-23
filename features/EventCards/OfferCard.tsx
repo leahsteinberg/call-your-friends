@@ -73,13 +73,26 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
+    // Get target user name if available
+    const getTargetUserName = () => {
+        // Check if the meeting has targetUserId and a corresponding targetUser name
+        if (offer.meeting?.targetUserId && offer.meeting?.targetUser?.name) {
+            return offer.meeting.targetUser.name;
+        }
+        return null;
+    };
+
     const strings = eventCardText.open_offer;
+    const targetUserName = getTargetUserName();
 
     return (
         <View style={styles.outerContainer}>
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
+                <Text style={styles.nameText}>
+                    {strings.nameText!(getFromName())}
+                    {targetUserName && ` → ${targetUserName}`}
+                </Text>
 
                 {offer.offerState === OPEN_OFFER_STATE && (
                     <View style={styles.buttonContainer}>

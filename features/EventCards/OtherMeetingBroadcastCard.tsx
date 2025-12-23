@@ -71,12 +71,24 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
         return meeting.userFrom?.name || 'Unknown';
     };
 
+    const getTargetUserName = () => {
+        if (meeting.targetUserId && meeting.targetUser?.name) {
+            return meeting.targetUser.name;
+        }
+        return null;
+    };
+
+    const targetUserName = getTargetUserName();
+
     return (
         <View style={styles.outerContainer}>
         <View >
             <View style={styles.header}>
                 <View style={styles.nameContainer}>
-                    <Text style={styles.nameText}>{getFromName()}</Text>
+                    <Text style={styles.nameText}>
+                        {getFromName()}
+                        {targetUserName && ` → ${targetUserName}`}
+                    </Text>
                 </View>
                 <View style={styles.buttonContainer}>
                 <TouchableOpacity
