@@ -4,25 +4,23 @@ import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { getDisplayDate } from "@/utils/timeStringUtils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
+import { displayDateTime, displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
 
 interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
-    onSuggestLater?: () => void;
 }
 
 const SWIPE_THRESHOLD = 50; // pixels to trigger the action
 const MAX_SWIPE_DISTANCE = 70; // maximum swipe distance in pixels
 
-export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeetingCardProps): React.JSX.Element {
+export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptSuggestion] = useAcceptSuggestionMutation();
@@ -31,10 +29,65 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
     const [isDismissing, setIsDismissing] = useState(false);
     const translateX = useSharedValue(0);
 
+    // Track which time is currently selected (index in backupScheduledTimes, or -1 for original)
+    const [selectedTimeIndex, setSelectedTimeIndex] = useState(-1);
+
+    // Track formatted display time for the currently selected time
+    const [currentDisplayTime, setCurrentDisplayTime] = useState(meeting.displayScheduledFor);
+
+    // Pulse and glow animation for time text (triggered on time change)
+    const pulseScale = useSharedValue(1);
+    const glowOpacity = useSharedValue(0);
+
     console.log("IN DRAFT MEETING ---", meeting);
+
+    // Format the display time and trigger animation whenever the selected time changes
+    useEffect(() => {
+        const formatDisplayTime = async () => {
+            const currentTime = getCurrentScheduledTime();
+            if (selectedTimeIndex === -1) {
+                setCurrentDisplayTime(meeting.displayScheduledFor);
+            } else {
+                const formatted = await displayDateTime(currentTime);
+                setCurrentDisplayTime(formatted);
+            }
+        };
+        formatDisplayTime();
+
+        // Trigger pulse and glow animation when time changes (but not on initial mount)
+        if (selectedTimeIndex !== -1 || meeting.backupScheduledTimes) {
+            // Scale pulse
+            pulseScale.value = withSequence(
+                withTiming(1.15, { duration: 200, easing: Easing.out(Easing.ease) }),
+                withTiming(1, { duration: 400, easing: Easing.inOut(Easing.ease) })
+            );
+
+            // Glow effect
+            glowOpacity.value = withSequence(
+                withTiming(0.8, { duration: 200, easing: Easing.out(Easing.ease) }),
+                withTiming(0, { duration: 600, easing: Easing.inOut(Easing.ease) })
+            );
+        }
+    }, [selectedTimeIndex]);
+
+    // Get the currently selected time
+    const getCurrentScheduledTime = () => {
+        if (selectedTimeIndex === -1 || !meeting.backupScheduledTimes || meeting.backupScheduledTimes.length === 0) {
+            return meeting.scheduledFor;
+        }
+        return meeting.backupScheduledTimes[selectedTimeIndex];
+    };
+
+    // Get total number of available times (original + backups)
+    const getTotalTimesCount = () => {
+        return 1 + (meeting.backupScheduledTimes?.length || 0);
+    };
     const handleAcceptSuggestion = async () => {
         try {
             setIsAccepting(true);
+
+            // Get the currently selected time
+            const selectedTime = getCurrentScheduledTime();
 
             // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
@@ -42,7 +95,8 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
             try {
                 await acceptSuggestion({
                     meetingId: meeting.id,
-                    userId
+                    userId,
+                    scheduledFor: selectedTime // Send the selected time
                 }).unwrap();
                 // Success - optimistic update already applied
                 setIsAccepting(false);
@@ -93,7 +147,19 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
 
     const strings = eventCardText.draft_suggestion;
 
-    // Gesture handler for swipe-to-suggest-later
+    // Function to cycle to the next time
+    const cycleToNextTime = () => {
+        setSelectedTimeIndex((prevIndex) => {
+            // Cycle through: -1 (original) -> 0 -> 1 -> ... -> length-1 -> -1 (back to original)
+            const nextIndex = prevIndex + 1;
+            if (nextIndex >= (meeting.backupScheduledTimes?.length || 0)) {
+                return -1; // Back to original
+            }
+            return nextIndex;
+        });
+    };
+
+    // Gesture handler for swipe-to-cycle-times
     const panGesture = Gesture.Pan()
         .onUpdate((e) => {
             // Only allow right swipe up to MAX_SWIPE_DISTANCE
@@ -101,10 +167,8 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
         })
         .onEnd((e) => {
             if (e.translationX > SWIPE_THRESHOLD) {
-                // Swipe completed - trigger callback and bounce back quickly
-                if (onSuggestLater) {
-                    runOnJS(onSuggestLater)();
-                }
+                // Swipe completed - cycle to next time and bounce back quickly
+                runOnJS(cycleToNextTime)();
                 // Bounce back to original position with snappy spring
                 translateX.value = withSpring(0, {
                     damping: 20,
@@ -122,6 +186,10 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
     const animatedCardStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: translateX.value }],
         opacity: 1 - (translateX.value / MAX_SWIPE_DISTANCE) * 0.3, // Fade slightly as it moves
+    }));
+
+    const animatedPulseStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: pulseScale.value }],
     }));
 
     return (
@@ -156,12 +224,14 @@ export default function DraftMeetingCard({ meeting, onSuggestLater }: DraftMeeti
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(meeting.scheduledFor))}</Text>
+                    <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(getCurrentScheduledTime()))}</Text>
 
-                    <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
+                    <Animated.View style={[animatedPulseStyle]}>
+                        <Text style={styles.timeText}>{currentDisplayTime}</Text>
+                    </Animated.View>
 
                     {DEV_FLAG && (
-                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT)</Text>
+                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}</Text>
                     )}
                 </Animated.View>
             </GestureDetector>

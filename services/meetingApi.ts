@@ -102,10 +102,10 @@ export const meetingApi = createApi({
             providesTags: ['BroadcastStatus'],
         }),
         acceptSuggestion: builder.mutation({
-            query: ({ meetingId, userId }) => ({
+            query: ({ meetingId, userId, scheduledFor }) => ({
                 url: '/api/accept-suggestion',
                 method: 'POST',
-                body: { meetingId, userId },
+                body: { meetingId, userId, scheduledFor },
             }),
             invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
