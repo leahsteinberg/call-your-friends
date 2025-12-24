@@ -8,7 +8,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTim
 interface FriendBadgeSelectorProps {
   friends: Friend[];
   onSelectFriend: (friend: Friend) => void;
-  position?: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right';
+  position?: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'below-left';
 }
 
 /**
@@ -29,7 +29,7 @@ interface FriendBadgeSelectorProps {
 export default function FriendBadgeSelector({
   friends,
   onSelectFriend,
-  position = 'bottom-left'
+  position = 'below-left'
 }: FriendBadgeSelectorProps): React.JSX.Element {
   const [showSelector, setShowSelector] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
@@ -61,12 +61,12 @@ export default function FriendBadgeSelector({
   const handleBadgePress = () => {
     badgeRef.current?.measure((x, y, width, height, pageX, pageY) => {
       // Position modal based on badge position
-      const isBottom = position.includes('bottom');
+      const isBottom = position.includes('bottom') || position.includes('below');
       const isLeft = position.includes('left');
 
       setSelectorPosition({
         x: isLeft ? pageX : pageX - 180 + width, // Align left or right edge
-        y: isBottom ? pageY - 220 : pageY + height + 8, // Above or below badge
+        y: isBottom ? pageY + height + 8 : pageY - 220, // Below or above badge
       });
       setShowSelector(true);
     });
@@ -87,6 +87,8 @@ export default function FriendBadgeSelector({
   // Get position styles for badge
   const getBadgePositionStyle = () => {
     switch (position) {
+      case 'below-left':
+        return { marginTop: 8, alignSelf: 'flex-start' as const };
       case 'bottom-left':
         return { bottom: 10, left: 10 };
       case 'bottom-right':
@@ -96,16 +98,21 @@ export default function FriendBadgeSelector({
       case 'top-right':
         return { top: 10, right: 10 };
       default:
-        return { bottom: 10, left: 10 };
+        return { marginTop: 8, alignSelf: 'flex-start' as const };
     }
   };
+
+  const isAbsolutePosition = position !== 'below-left';
 
   return (
     <>
       {/* "friends" Badge */}
       <TouchableOpacity
         ref={badgeRef}
-        style={[styles.friendsBadge, getBadgePositionStyle()]}
+        style={[
+          isAbsolutePosition ? styles.friendsBadge : styles.friendsBadgeRelative,
+          getBadgePositionStyle()
+        ]}
         onPress={handleBadgePress}
         activeOpacity={0.7}
       >
@@ -177,6 +184,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     zIndex: 10,
+  },
+  friendsBadgeRelative: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: CORNFLOWER_BLUE,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   badgeText: {
     fontSize: 13,

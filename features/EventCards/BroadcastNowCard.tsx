@@ -87,7 +87,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
     return (
         <View style={styles.outerContainer}>
-            {/* Friend Badge Selector */}
+            {/* Friend Badge Selector - on the card */}
             <FriendBadgeSelector
                 friends={friends}
                 onSelectFriend={handleFriendSelect}
