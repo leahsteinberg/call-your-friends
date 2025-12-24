@@ -51,11 +51,11 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
     // Trigger animation when tapback popup appears
     useEffect(() => {
         if (showTapback) {
-            // Reset to starting position
+            // Popup animation - reset to starting position
             tapbackTranslateY.value = 30;
             tapbackOpacity.value = 0;
 
-            // Animate in with spring - slides up and fades in
+            // Animate popup in with spring - slides up and fades in
             tapbackTranslateY.value = withSpring(0, {
                 damping: 15,
                 stiffness: 200,
@@ -151,7 +151,7 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
 const styles = StyleSheet.create({
     tapbackOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: 'transparent',
     },
     tapbackContainer: {
         flexDirection: 'row',
