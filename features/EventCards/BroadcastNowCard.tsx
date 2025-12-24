@@ -1,7 +1,10 @@
 import AnimatedText from "@/components/AnimatedText";
+import FriendBadgeSelector from "@/components/FriendBadgeSelector";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
+import type { Friend } from "@/features/Contacts/types";
+import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
@@ -16,6 +19,23 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const [broadcastNow] = useBroadcastNowMutation();
     const [isStarting, setIsStarting] = useState(false);
     const strings = eventCardText.broadcast_now_card;
+
+    // Friends state and API
+    const [friends, setFriends] = useState<Friend[]>([]);
+    const [getFriends] = useGetFriendsMutation();
+
+    // Fetch friends on component mount
+    useEffect(() => {
+        const fetchFriends = async () => {
+            try {
+                const friendsResult = await getFriends({ id: userId }).unwrap();
+                setFriends(friendsResult || []);
+            } catch (error) {
+                console.error("Error fetching friends:", error);
+            }
+        };
+        fetchFriends();
+    }, [userId]);
 
     // Pulse animation for loading state (Option A)
     const pulseOpacity = useSharedValue(1);
@@ -57,64 +77,70 @@ export default function BroadcastNowCard(): React.JSX.Element {
         }
     };
 
-    const renderStartingBroadcast = () => {
-        return (
-            <View style={styles.loadingTextContainer}>
-                <Text style={styles.loadingText}>LOADING</Text>
-                
-            </View>
-        );
+    // Handle friend selection from badge selector
+    const handleFriendSelect = (friend: Friend) => {
+        console.log('Selected friend for broadcast:', friend.name, friend.id);
+        // TODO: Implement broadcast to specific friend
+        // This could trigger a direct broadcast to the selected friend
+        // Or initiate a call/meeting with them
     };
 
     return (
         <View style={styles.outerContainer}>
-        <TouchableOpacity
-            onPress={handleStartBroadcast}
-            disabled={isStarting}
-            style={styles.container}
-        >
-        <Animated.View style={[animatedCardStyle]}>
-            <View style={styles.header}>
-                <View style={styles.titleContainer}>
-                    {/* Option B: Change title when loading */}
-                    <Text style={styles.titleText}>
-                            {strings.mainText()}
-                        </Text>
-                    {isStarting && 
-                        <AnimatedText
-                        text="..."
-                        style={styles.loadingText}
-                        duration={300}
-                        staggerDelay={500}
-                    />}
-                </View>
-                <View>
-                    {/* <View style={styles.broadcastButton}>
-                    <View style={styles.broadcastButtonContainer}>
-                        <TouchableOpacity
-                            onPress={handleStartBroadcast}
-                            style={[styles.startButton, isStarting && styles.startButtonDisabled]}
-                            disabled={isStarting}
-                        >
-                            {!isStarting && (
-                                <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                    </View> */}
-                </View>
-            </View>
-            {!isStarting && (
-                <View>
-                    <Text style={styles.descriptionText}>
-                        {strings.title()}
-                    </Text>
-                </View>
-            )}
-        </Animated.View>
-        </TouchableOpacity>
-        </View>
+            {/* Friend Badge Selector */}
+            <FriendBadgeSelector
+                friends={friends}
+                onSelectFriend={handleFriendSelect}
+                position="bottom-left"
+            />
 
+            <TouchableOpacity
+                onPress={handleStartBroadcast}
+                disabled={isStarting}
+                style={styles.container}
+            >
+                <Animated.View style={[animatedCardStyle]}>
+                    <View style={styles.header}>
+                        <View style={styles.titleContainer}>
+                            {/* Option B: Change title when loading */}
+                            <Text style={styles.titleText}>
+                                {strings.mainText()}
+                            </Text>
+                            {isStarting &&
+                                <AnimatedText
+                                    text="..."
+                                    style={styles.loadingText}
+                                    duration={300}
+                                    staggerDelay={500}
+                                />
+                            }
+                        </View>
+                        <View>
+                            {/* <View style={styles.broadcastButton}>
+                            <View style={styles.broadcastButtonContainer}>
+                                <TouchableOpacity
+                                    onPress={handleStartBroadcast}
+                                    style={[styles.startButton, isStarting && styles.startButtonDisabled]}
+                                    disabled={isStarting}
+                                >
+                                    {!isStarting && (
+                                        <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+                            </View> */}
+                        </View>
+                    </View>
+                    {!isStarting && (
+                        <View>
+                            <Text style={styles.descriptionText}>
+                                {strings.title()}
+                            </Text>
+                        </View>
+                    )}
+                </Animated.View>
+            </TouchableOpacity>
+        </View>
     );
 }
 
