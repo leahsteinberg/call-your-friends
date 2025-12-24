@@ -5,9 +5,10 @@ import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -43,6 +44,10 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const [tapbackPosition, setTapbackPosition] = useState({ x: 0, y: 0 });
     const cardRef = useRef<View>(null);
 
+    // Animation values for tapback popup
+    const tapbackTranslateY = useSharedValue(30); // Start 30px below final position
+    const tapbackOpacity = useSharedValue(0);
+
     const meetingState: MeetingState = meeting.meetingState;
     const strings = eventCardText.broadcast_self_open;
 
@@ -52,6 +57,31 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             return meeting.acceptedUser?.name;
         }
     }
+
+    // Trigger animation when tapback popup appears
+    useEffect(() => {
+        if (showTapback) {
+            // Reset to starting position
+            tapbackTranslateY.value = 30;
+            tapbackOpacity.value = 0;
+
+            // Animate in with spring
+            tapbackTranslateY.value = withSpring(0, {
+                damping: 15,
+                stiffness: 200,
+            });
+            tapbackOpacity.value = withSpring(1, {
+                damping: 20,
+                stiffness: 300,
+            });
+        }
+    }, [showTapback]);
+
+    // Create animated style for popup
+    const animatedPopupStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: tapbackTranslateY.value }],
+        opacity: tapbackOpacity.value,
+    }));
 
     const handleCancelMeeting = async () => {
         try {
@@ -167,19 +197,20 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             <Modal
                 visible={showTapback}
                 transparent={true}
-                animationType="fade"
+                animationType="none"
                 onRequestClose={() => setShowTapback(false)}
             >
                 <TouchableWithoutFeedback onPress={() => setShowTapback(false)}>
                     <View style={styles.tapbackOverlay}>
-                        <View
+                        <Animated.View
                             style={[
                                 styles.tapbackContainer,
                                 {
                                     position: 'absolute',
                                     left: tapbackPosition.x - 150, // Center the popup (300px width / 2)
                                     top: tapbackPosition.y,
-                                }
+                                },
+                                animatedPopupStyle,
                             ]}
                         >
                             {TAPBACK_ICONS.map((icon) => (
@@ -196,7 +227,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                                     />
                                 </TouchableOpacity>
                             ))}
-                        </View>
+                        </Animated.View>
                     </View>
                 </TouchableWithoutFeedback>
             </Modal>
