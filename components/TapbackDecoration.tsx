@@ -32,6 +32,7 @@ interface TapbackDecorationProps {
  *
  * Displays a selected tapback icon in a small circular bubble,
  * positioned to overlap the parent container (like iMessage reactions).
+ * Includes a fun pop animation when it appears.
  *
  * Usage:
  * ```tsx
@@ -48,13 +49,45 @@ export default function TapbackDecoration({
     top = -10,
     right = -10,
 }: TapbackDecorationProps): React.JSX.Element | null {
+    // Animation values
+    const scale = useSharedValue(0);
+    const opacity = useSharedValue(0);
+
+    // Trigger pop animation when tapback appears
+    useEffect(() => {
+        if (selectedTapback) {
+            // Reset to starting values
+            scale.value = 0;
+            opacity.value = 0;
+
+            // Pop animation - bouncy scale with slight overshoot
+            scale.value = withSpring(1, {
+                damping: 10,
+                stiffness: 250,
+                overshootClamping: false, // Allow bounce over 1.0 for fun effect
+            });
+
+            // Fade in
+            opacity.value = withSpring(1, {
+                damping: 15,
+                stiffness: 200,
+            });
+        }
+    }, [selectedTapback]);
+
+    // Create animated style
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }],
+        opacity: opacity.value,
+    }));
+
     if (!selectedTapback) return null;
 
     const TapbackIcon = TAPBACK_ICONS[selectedTapback];
     if (!TapbackIcon) return null;
 
     return (
-        <View
+        <Animated.View
             style={[
                 styles.tapbackBubble,
                 {
@@ -64,10 +97,11 @@ export default function TapbackDecoration({
                     top,
                     right,
                 },
+                animatedStyle,
             ]}
         >
             <TapbackIcon width={iconSize} height={iconSize} fill={BOLD_BLUE} />
-        </View>
+        </Animated.View>
     );
 }
 

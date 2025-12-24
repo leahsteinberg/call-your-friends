@@ -1,6 +1,6 @@
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import React, { useEffect, useRef, useState } from "react";
-import { Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
@@ -22,7 +22,7 @@ const TAPBACK_ICONS = [
 
 interface VibeTapBackProps {
     children: React.ReactNode;
-    onTapbackSelect: (iconId: string, cardData?: any) => void;
+    onTapbackSelect: (iconId: string | null, cardData?: any) => void;
     cardData?: any; // Data to pass back with the callback (e.g., meeting.id)
 }
 
@@ -86,7 +86,7 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
     };
 
     // Handle tapback icon selection
-    const handleTapbackSelect = (iconId: string) => {
+    const handleTapbackSelect = (iconId: string | null) => {
         onTapbackSelect(iconId, cardData);
         setShowTapback(false);
     };
@@ -120,7 +120,7 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
                                 styles.tapbackContainer,
                                 {
                                     position: 'absolute',
-                                    left: tapbackPosition.x - 150, // Center the popup (300px width / 2)
+                                    left: tapbackPosition.x - 175, // Center the popup (wider with None button)
                                     top: tapbackPosition.y,
                                 },
                                 animatedPopupStyle,
@@ -140,6 +140,18 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
                                     />
                                 </TouchableOpacity>
                             ))}
+
+                            {/* Separator */}
+                            <View style={styles.separator} />
+
+                            {/* None button to clear tapback */}
+                            <TouchableOpacity
+                                style={styles.noneButton}
+                                onPress={() => handleTapbackSelect(null)}
+                                activeOpacity={0.7}
+                            >
+                                <Text style={styles.noneButtonText}>None</Text>
+                            </TouchableOpacity>
                         </Animated.View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -176,5 +188,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         backgroundColor: 'transparent',
+    },
+    separator: {
+        width: 1,
+        backgroundColor: BOLD_BLUE,
+        opacity: 0.2,
+        marginHorizontal: 4,
+    },
+    noneButton: {
+        width: 60,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 25,
+        backgroundColor: 'transparent',
+    },
+    noneButtonText: {
+        color: BOLD_BLUE,
+        fontSize: 14,
+        fontWeight: '600',
     },
 });

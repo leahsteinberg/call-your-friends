@@ -37,7 +37,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     }
 
     // Handle tapback selection
-    const handleTapback = (iconId: string, cardData?: any) => {
+    const handleTapback = (iconId: string | null, cardData?: any) => {
         console.log(`Tapback selected: ${iconId} for meeting ${cardData}`);
         setSelectedTapback(iconId);
         // TODO: Send tapback to server
