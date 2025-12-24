@@ -13,6 +13,22 @@ import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
+// Import tapback SVG icons
+import BirdSoaring from "@/assets/images/bird-soaring.svg";
+import ClapBurst from "@/assets/images/clap-burst.svg";
+import HighFiveStar from "@/assets/images/high-five-star.svg";
+import PaperAirplane from "@/assets/images/paper-airplane.svg";
+import StarPerson from "@/assets/images/star-person.svg";
+
+// Tapback icon mapping
+const TAPBACK_ICONS: Record<string, any> = {
+    bird: BirdSoaring,
+    clap: ClapBurst,
+    star: HighFiveStar,
+    airplane: PaperAirplane,
+    person: StarPerson,
+};
+
 interface SelfBroadcastCardProps {
     meeting: ProcessedMeetingType;
 }
@@ -23,6 +39,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [endBroadcastRequest] = useBroadcastEndMutation();
     const [isEnding, setIsEnding] = useState(false);
+    const [selectedTapback, setSelectedTapback] = useState<string | null>(null);
 
     const meetingState: MeetingState = meeting.meetingState;
     const strings = eventCardText.broadcast_self_open;
@@ -37,9 +54,8 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     // Handle tapback selection
     const handleTapback = (iconId: string, cardData?: any) => {
         console.log(`Tapback selected: ${iconId} for meeting ${cardData}`);
-        // TODO: Implement tapback functionality
-        // This is where you'll add the logic to send the tapback to the server
-        // or update the UI with the selected reaction
+        setSelectedTapback(iconId);
+        // TODO: Send tapback to server
     };
 
     const handleCancelMeeting = async () => {
@@ -72,9 +88,18 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         }
     };
 
+    // Get the selected tapback icon component
+    const TapbackIcon = selectedTapback ? TAPBACK_ICONS[selectedTapback] : null;
+
     return (
         <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id}>
             <View style={styles.outerContainer}>
+                        {/* Tapback decoration in top-right corner */}
+                        {TapbackIcon && (
+                            <View style={styles.tapbackBubble}>
+                                <TapbackIcon width={20} height={20} fill={BOLD_BLUE} />
+                            </View>
+                        )}
 
                         <View style={styles.container}>
                             <View style={styles.header}>
@@ -127,7 +152,29 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 const styles = StyleSheet.create({
     outerContainer: {
         marginBottom: CARD_LOWER_MARGIN,
-
+        position: 'relative', // Enable absolute positioning for children
+    },
+    tapbackBubble: {
+        position: 'absolute',
+        top: -10,
+        right: -10,
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: CREAM,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        zIndex: 10,
+        borderWidth: 2,
+        borderColor: BOLD_BLUE,
     },
     container: {
         backgroundColor: BOLD_BLUE,
