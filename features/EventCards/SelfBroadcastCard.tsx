@@ -1,38 +1,21 @@
 import AnimatedText from "@/components/AnimatedText";
+import VibeTapBack from "@/components/VibeTapBack";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
-// Import SVG icons for tapback
-import BirdSoaring from "@/assets/images/bird-soaring.svg";
-import ClapBurst from "@/assets/images/clap-burst.svg";
-import HighFiveStar from "@/assets/images/high-five-star.svg";
-import PaperAirplane from "@/assets/images/paper-airplane.svg";
-import StarPerson from "@/assets/images/star-person.svg";
-
 interface SelfBroadcastCardProps {
     meeting: ProcessedMeetingType;
 }
-
-// Tapback icon options
-const TAPBACK_ICONS = [
-    { id: 'bird', Component: BirdSoaring, label: 'Bird' },
-    { id: 'clap', Component: ClapBurst, label: 'Clap' },
-    { id: 'star', Component: HighFiveStar, label: 'Star' },
-    { id: 'airplane', Component: PaperAirplane, label: 'Airplane' },
-    { id: 'person', Component: StarPerson, label: 'Person' },
-];
 
 // Card for self-created broadcast meetings
 export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): React.JSX.Element {
@@ -40,13 +23,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [endBroadcastRequest] = useBroadcastEndMutation();
     const [isEnding, setIsEnding] = useState(false);
-    const [showTapback, setShowTapback] = useState(false);
-    const [tapbackPosition, setTapbackPosition] = useState({ x: 0, y: 0 });
-    const cardRef = useRef<View>(null);
-
-    // Animation values for tapback popup
-    const tapbackTranslateY = useSharedValue(30); // Start 30px below final position
-    const tapbackOpacity = useSharedValue(0);
 
     const meetingState: MeetingState = meeting.meetingState;
     const strings = eventCardText.broadcast_self_open;
@@ -58,30 +34,13 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         }
     }
 
-    // Trigger animation when tapback popup appears
-    useEffect(() => {
-        if (showTapback) {
-            // Reset to starting position
-            tapbackTranslateY.value = 30;
-            tapbackOpacity.value = 0;
-
-            // Animate in with spring
-            tapbackTranslateY.value = withSpring(0, {
-                damping: 15,
-                stiffness: 200,
-            });
-            tapbackOpacity.value = withSpring(1, {
-                damping: 20,
-                stiffness: 300,
-            });
-        }
-    }, [showTapback]);
-
-    // Create animated style for popup
-    const animatedPopupStyle = useAnimatedStyle(() => ({
-        transform: [{ translateY: tapbackTranslateY.value }],
-        opacity: tapbackOpacity.value,
-    }));
+    // Handle tapback selection
+    const handleTapback = (iconId: string, cardData?: any) => {
+        console.log(`Tapback selected: ${iconId} for meeting ${cardData}`);
+        // TODO: Implement tapback functionality
+        // This is where you'll add the logic to send the tapback to the server
+        // or update the UI with the selected reaction
+    };
 
     const handleCancelMeeting = async () => {
         try {
@@ -113,39 +72,9 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         }
     };
 
-    // Handle long press to show tapback
-    const handleLongPress = () => {
-        cardRef.current?.measure((x, y, width, height, pageX, pageY) => {
-            // Position popup above the card
-            setTapbackPosition({
-                x: pageX + width / 2,
-                y: pageY - 60, // 60px above the card
-            });
-            setShowTapback(true);
-        });
-    };
-
-    // Handle tapback icon selection
-    const handleTapbackSelect = (iconId: string) => {
-        console.log(`Tapback selected: ${iconId} for meeting ${meeting.id}`);
-        // TODO: Implement tapback functionality
-        // This is where you'll add the logic to send the tapback to the server
-        // or update the UI with the selected reaction
-        setShowTapback(false);
-    };
-
-    // Create long press gesture
-    const longPressGesture = Gesture.LongPress()
-        .minDuration(500)
-        .onStart(() => {
-            handleLongPress();
-        });
-
-
     return (
-        <>
-            <GestureDetector gesture={longPressGesture}>
-                <View style={styles.outerContainer} ref={cardRef}>
+        <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id}>
+            <View style={styles.outerContainer}>
 
                         <View style={styles.container}>
                             <View style={styles.header}>
@@ -191,47 +120,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                             )}
                         </View>
                 </View>
-            </GestureDetector>
-
-            {/* Tapback Popup Modal */}
-            <Modal
-                visible={showTapback}
-                transparent={true}
-                animationType="none"
-                onRequestClose={() => setShowTapback(false)}
-            >
-                <TouchableWithoutFeedback onPress={() => setShowTapback(false)}>
-                    <View style={styles.tapbackOverlay}>
-                        <Animated.View
-                            style={[
-                                styles.tapbackContainer,
-                                {
-                                    position: 'absolute',
-                                    left: tapbackPosition.x - 150, // Center the popup (300px width / 2)
-                                    top: tapbackPosition.y,
-                                },
-                                animatedPopupStyle,
-                            ]}
-                        >
-                            {TAPBACK_ICONS.map((icon) => (
-                                <TouchableOpacity
-                                    key={icon.id}
-                                    style={styles.tapbackIcon}
-                                    onPress={() => handleTapbackSelect(icon.id)}
-                                    activeOpacity={0.7}
-                                >
-                                    <icon.Component
-                                        width={40}
-                                        height={40}
-                                        fill={BOLD_BLUE}
-                                    />
-                                </TouchableOpacity>
-                            ))}
-                        </Animated.View>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-        </>
+        </VibeTapBack>
     );
 }
 
@@ -310,34 +199,5 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
-    },
-    // Tapback styles
-    tapbackOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    },
-    tapbackContainer: {
-        flexDirection: 'row',
-        backgroundColor: CREAM,
-        borderRadius: 30,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 10,
-        gap: 8,
-    },
-    tapbackIcon: {
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 25,
-        backgroundColor: 'transparent',
     },
 });
