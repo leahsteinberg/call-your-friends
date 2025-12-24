@@ -2,7 +2,7 @@ import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import React, { useEffect, useRef, useState } from "react";
 import { Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
 // Import SVG icons for tapback
 import BirdSoaring from "@/assets/images/bird-soaring.svg";
@@ -46,7 +46,7 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
 
     // Animation values for tapback popup
     const tapbackTranslateY = useSharedValue(30); // Start 30px below final position
-    const tapbackOpacity = useSharedValue(0);
+    const tapbackOpacity = useSharedValue(0); // Start transparent
 
     // Trigger animation when tapback popup appears
     useEffect(() => {
@@ -55,14 +55,14 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
             tapbackTranslateY.value = 30;
             tapbackOpacity.value = 0;
 
-            // Animate popup in with spring - slides up and fades in
+            // Animate popup in - slides up with spring, fades in linearly
             tapbackTranslateY.value = withSpring(0, {
                 damping: 15,
                 stiffness: 200,
             });
-            tapbackOpacity.value = withSpring(1, {
-                damping: 20,
-                stiffness: 300,
+            tapbackOpacity.value = withTiming(1, {
+                duration: 200,
+                easing: Easing.linear,
             });
         }
     }, [showTapback]);
