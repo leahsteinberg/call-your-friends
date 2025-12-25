@@ -7,6 +7,7 @@ import { StyleSheet, Text, View } from "react-native";
 interface StackedFriendAvatarsProps {
   selectedFriendIds: string[];
   allFriends: Friend[];
+  expanded?: boolean;
 }
 
 const AVATAR_SIZE = 40; // ~15% smaller than Friend.tsx's 48px
@@ -30,6 +31,7 @@ const MAX_VISIBLE_AVATARS = 4;
 export default function StackedFriendAvatars({
   selectedFriendIds,
   allFriends,
+  expanded = false,
 }: StackedFriendAvatarsProps): React.JSX.Element | null {
   // Don't show anything if no friends are selected
   if (!selectedFriendIds || selectedFriendIds.length === 0) {
@@ -61,6 +63,58 @@ export default function StackedFriendAvatars({
     ? displayFriends.length * offset + 40 // 40px for the badge approximate width
     : avatarsWidth;
 
+  // Render expanded view when expanded prop is true
+  if (expanded) {
+    const EXPANDED_AVATAR_SIZE = 48; // Slightly bigger when expanded
+    const AVATAR_SPACING = 12; // Space between avatars
+
+    return (
+      <View style={styles.expandedContainer}>
+        {displayFriends.map((friend, index) => (
+          <View key={friend.id} style={styles.expandedAvatarItem}>
+            <View
+              style={[
+                styles.expandedAvatar,
+                {
+                  width: EXPANDED_AVATAR_SIZE,
+                  height: EXPANDED_AVATAR_SIZE,
+                  borderRadius: EXPANDED_AVATAR_SIZE / 2,
+                },
+              ]}
+            >
+              <Text style={styles.expandedAvatarText}>
+                {friend.name.charAt(0).toUpperCase()}
+              </Text>
+            </View>
+            <Text style={styles.friendNameText} numberOfLines={1}>
+              {friend.name}
+            </Text>
+          </View>
+        ))}
+        {extraCount > 0 && (
+          <View style={styles.expandedAvatarItem}>
+            <View
+              style={[
+                styles.expandedExtraBadge,
+                {
+                  width: EXPANDED_AVATAR_SIZE,
+                  height: EXPANDED_AVATAR_SIZE,
+                  borderRadius: EXPANDED_AVATAR_SIZE / 2,
+                },
+              ]}
+            >
+              <Text style={styles.expandedExtraText}>+{extraCount}</Text>
+            </View>
+            <Text style={styles.friendNameText} numberOfLines={1}>
+              {extraCount} more
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  }
+
+  // Render stacked/collapsed view (default)
   return (
     <View style={styles.container}>
       {/* Stacked avatars */}
@@ -142,5 +196,48 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: CREAM,
     fontFamily: CustomFonts.ztnaturebold,
+  },
+  // Expanded view styles
+  expandedContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'flex-start',
+  },
+  expandedAvatarItem: {
+    alignItems: 'center',
+    maxWidth: 60,
+  },
+  expandedAvatar: {
+    backgroundColor: PALE_BLUE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: CORNFLOWER_BLUE,
+    marginBottom: 4,
+  },
+  expandedAvatarText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: BOLD_BLUE,
+    fontFamily: CustomFonts.ztnaturebold,
+  },
+  expandedExtraBadge: {
+    backgroundColor: CORNFLOWER_BLUE,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  expandedExtraText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: CREAM,
+    fontFamily: CustomFonts.ztnaturebold,
+  },
+  friendNameText: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: BOLD_BLUE,
+    fontFamily: CustomFonts.ztnaturemedium,
+    textAlign: 'center',
   },
 });

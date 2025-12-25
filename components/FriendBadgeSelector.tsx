@@ -43,6 +43,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
   const [showSelector, setShowSelector] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [isExpanded, setIsExpanded] = useState(false);
   const badgeRef = useRef<View>(null);
 
   // Animation values for modal
@@ -69,6 +70,15 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
   // Handle tapping the badge to show selector
   const handleBadgePress = () => {
+    const showingStackedAvatars = selectedFriendIds.length > 0;
+
+    // If showing stacked avatars and not yet expanded, expand them first
+    if (showingStackedAvatars && !isExpanded) {
+      setIsExpanded(true);
+      return;
+    }
+
+    // If already expanded or showing badge, open the modal selector
     // Pre-populate with currently selected friends
     setSelectedUserIds(selectedFriendIds);
 
@@ -79,9 +89,11 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
       setSelectorPosition({
         x: isLeft ? pageX : pageX - 180 + width, // Align left or right edge
-        y: isBottom ? pageY + height + 8 : pageY - 220, // Below or above badge
+        y: isBottom ? pageY + height + 16 : pageY - 220, // Increased offset to avoid overlap
       });
       setShowSelector(true);
+      // Collapse avatars when opening modal
+      setIsExpanded(false);
     });
   };
 
@@ -162,6 +174,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
           <StackedFriendAvatars
             selectedFriendIds={selectedFriendIds}
             allFriends={friends}
+            expanded={isExpanded}
           />
         ) : (
           <View style={styles.friendsBadge}>
