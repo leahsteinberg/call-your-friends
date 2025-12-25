@@ -112,9 +112,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               <Text style={styles.callNowText}>Call Now</Text>
             </TouchableOpacity>
           )}
-        </View>
-
-        {/* "Will Call Soon" chip - only show when NOT in call intent mode */}
+                  {/* "Will Call Soon" chip - only show when NOT in call intent mode */}
         {!showCallIntentActions && (
           <View style={styles.actionsSection}>
             <TouchableOpacity
@@ -130,6 +128,9 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
         )}
+        </View>
+
+
       </View>
     </View>
   );

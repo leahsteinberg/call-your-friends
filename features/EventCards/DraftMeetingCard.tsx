@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayDateTime, displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -39,7 +40,34 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const pulseScale = useSharedValue(1);
     const glowOpacity = useSharedValue(0);
 
+    // Slide animation for time text (triggered on time change)
+    const timeTranslateX = useSharedValue(0);
+    const timeOpacity = useSharedValue(1);
+
+    // First-time instruction state and animation
+    const [showInstruction, setShowInstruction] = useState(false);
+    const instructionOpacity = useSharedValue(0);
+    const instructionTranslateY = useSharedValue(10);
+
     console.log("IN DRAFT MEETING ---", meeting);
+
+    // Check if this is the first time viewing a draft meeting card
+    useEffect(() => {
+        const checkFirstTime = async () => {
+            try {
+                const hasSeenSwipeInstruction = await AsyncStorage.getItem('hasSeenDraftSwipeInstruction');
+                if (!hasSeenSwipeInstruction && meeting.backupScheduledTimes && meeting.backupScheduledTimes.length > 0) {
+                    setShowInstruction(true);
+                    // Fade in instruction
+                    instructionOpacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.ease) });
+                    instructionTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.ease) });
+                }
+            } catch (error) {
+                console.error('Error checking first time instruction:', error);
+            }
+        };
+        checkFirstTime();
+    }, [meeting.id]);
 
     // Format the display time and trigger animation whenever the selected time changes
     useEffect(() => {
@@ -147,6 +175,24 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     const strings = eventCardText.draft_suggestion;
 
+    // Function to dismiss instruction
+    const dismissInstruction = async () => {
+        // Fade out instruction
+        instructionOpacity.value = withTiming(0, { duration: 400 });
+        instructionTranslateY.value = withTiming(-10, { duration: 400 });
+
+        setTimeout(() => {
+            setShowInstruction(false);
+        }, 400);
+
+        // Mark as seen in storage
+        try {
+            await AsyncStorage.setItem('hasSeenDraftSwipeInstruction', 'true');
+        } catch (error) {
+            console.error('Error saving instruction state:', error);
+        }
+    };
+
     // Function to cycle to the next time
     const cycleToNextTime = () => {
         setSelectedTimeIndex((prevIndex) => {
@@ -157,6 +203,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
             }
             return nextIndex;
         });
+
+        // Dismiss instruction on first swipe
+        if (showInstruction) {
+            dismissInstruction();
+        }
     };
 
     // Gesture handler for swipe-to-cycle-times
@@ -190,6 +241,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     const animatedPulseStyle = useAnimatedStyle(() => ({
         transform: [{ scale: pulseScale.value }],
+    }));
+
+    const animatedInstructionStyle = useAnimatedStyle(() => ({
+        opacity: instructionOpacity.value,
+        transform: [{ translateY: instructionTranslateY.value }],
     }));
 
     return (
@@ -233,6 +289,22 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                             <Text style={styles.timeText}>{currentDisplayTime}</Text>
                         </Animated.View>
                     </View>
+
+                    {/* Right-edge gradient overlay with arrow (Option 3) - only show if there are backup times */}
+                    {meeting.backupScheduledTimes && meeting.backupScheduledTimes.length > 0 && (
+                        <View style={styles.gradientOverlay}>
+                            <Text style={styles.arrowText}>→</Text>
+                        </View>
+                    )}
+
+                    {/* First-time instructional text (Option 4) */}
+                    {showInstruction && (
+                        <Animated.View style={[styles.instructionContainer, animatedInstructionStyle]}>
+                            <TouchableOpacity onPress={dismissInstruction} activeOpacity={0.8}>
+                                <Text style={styles.instructionText}>Swipe for other times →</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    )}
 
                     {DEV_FLAG && (
                         <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}</Text>
@@ -321,5 +393,31 @@ const styles = StyleSheet.create({
     },
     buttonDisabled: {
         opacity: 0.6,
+    },
+    gradientOverlay: {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent',
+    },
+    arrowText: {
+        fontSize: 24,
+        color: BOLD_BROWN,
+        opacity: 0.4,
+        fontFamily: CustomFonts.ztnaturemedium,
+    },
+    instructionContainer: {
+        marginTop: 12,
+        alignSelf: 'flex-start',
+    },
+    instructionText: {
+        fontSize: 13,
+        color: BOLD_BROWN,
+        fontFamily: CustomFonts.ztnaturemedium,
+        opacity: 0.8,
     },
 });
