@@ -22,10 +22,10 @@ const TAPBACK_ICONS: Record<string, any> = {
 
 // Tapback word mapping
 const TAPBACK_WORDS: Record<string, string> = {
-    hi: 'Just saying Hi!',
-    catchup: 'Quick Catch up!',
-    miss: 'I miss you!',
-    yap: 'Yap it up',
+    hi: 'Just Hi',
+    catchup: 'Catch Up',
+    miss: 'Miss You',
+    yap: 'Yap Time',
 };
 
 interface TapbackDecorationProps {
