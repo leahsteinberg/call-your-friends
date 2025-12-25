@@ -65,7 +65,7 @@ export default function TodayList(): React.JSX.Element {
                         data: meeting,
                     }));
 
-                    console.log("today meetings", todayMeetings)
+                    console.log("raw meetings", todayMeetings)
 
                 const todayOffers: TodayItem[] = offers
                     // .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
@@ -76,7 +76,7 @@ export default function TodayList(): React.JSX.Element {
                         scheduledFor: offer.scheduledFor,
                         data: offer,
                     }));
-                    console.log("today offers", todayOffers);
+                    console.log("raw offers", todayOffers);
                 // Combine and sort by time
                 const combined = sortTodayItemsWithBroadcastPriority([...todayOffers, ...todayMeetings], userId)
                 

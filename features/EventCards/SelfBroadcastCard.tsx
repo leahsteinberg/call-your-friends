@@ -29,8 +29,16 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const meetingState: MeetingState = meeting.meetingState;
     const strings = eventCardText.broadcast_self_open;
 
-    // Get the name to display
+    // Get the name(s) to display - handles both single and multiple accepted users
     const getOtherUserName = () => {
+        // Try new multi-user field first
+        if (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) {
+            const names = meeting.acceptedUsers.map(user => user.name).filter(Boolean);
+            if (names.length > 0) {
+                return names.join(', ');
+            }
+        }
+        // Fallback to single acceptedUser for backwards compatibility
         if (meeting.acceptedUser) {
             return meeting.acceptedUser?.name;
         }

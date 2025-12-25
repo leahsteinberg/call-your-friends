@@ -58,7 +58,14 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const getClaimedSelfMeetingTitle = () => {
         console.log("hii getCLaimedddd")
-        const name = meeting.acceptedUser?.name;
+        // Try new multi-user field first, fall back to single acceptedUser
+        let name: string | undefined;
+        if (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) {
+            const names = meeting.acceptedUsers.map(user => user.name).filter(Boolean);
+            name = names.length > 0 ? names.join(', ') : undefined;
+        } else {
+            name = meeting.acceptedUser?.name;
+        }
         return (
         <View style={styles.searchingText}>
             <Text style={styles.searchingText}>
@@ -90,8 +97,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
-            if (meeting.acceptedUser) {
-                const name = meeting.acceptedUser?.name;
+            // Check if meeting has been accepted - try new multi-user field first
+            const hasAcceptedUsers = (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) || meeting.acceptedUser;
+
+            if (hasAcceptedUsers) {
                 return getClaimedSelfMeetingTitle()
             } else {
                 // Check if there are target users for open meetings
