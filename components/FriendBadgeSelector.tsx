@@ -1,14 +1,20 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
 import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import StackedFriendAvatars from "./StackedFriendAvatars";
 
 interface FriendBadgeSelectorProps {
   friends: Friend[];
   onSelectFriends: (userIds: string[]) => void;
   position?: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'below-left';
+  selectedFriendIds?: string[];
+}
+
+export interface FriendBadgeSelectorRef {
+  openSelector: () => void;
 }
 
 /**
@@ -16,6 +22,7 @@ interface FriendBadgeSelectorProps {
  *
  * Displays a "friends" badge that opens a modal with a list of friends when tapped.
  * Users can select multiple friends using checkboxes, then tap "Select" to confirm.
+ * When friends are selected, shows stacked avatars instead of badge.
  *
  * Usage:
  * ```tsx
@@ -23,14 +30,16 @@ interface FriendBadgeSelectorProps {
  *   friends={friendsList}
  *   onSelectFriends={(userIds) => console.log('Selected IDs:', userIds)}
  *   position="bottom-left"
+ *   selectedFriendIds={['id1', 'id2']}
  * />
  * ```
  */
-export default function FriendBadgeSelector({
+const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelectorProps>(({
   friends,
   onSelectFriends,
-  position = 'below-left'
-}: FriendBadgeSelectorProps): React.JSX.Element {
+  position = 'below-left',
+  selectedFriendIds = []
+}, ref) => {
   const [showSelector, setShowSelector] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -60,6 +69,9 @@ export default function FriendBadgeSelector({
 
   // Handle tapping the badge to show selector
   const handleBadgePress = () => {
+    // Pre-populate with currently selected friends
+    setSelectedUserIds(selectedFriendIds);
+
     badgeRef.current?.measure((x, y, width, height, pageX, pageY) => {
       // Position modal based on badge position
       const isBottom = position.includes('bottom') || position.includes('below');
@@ -72,6 +84,11 @@ export default function FriendBadgeSelector({
       setShowSelector(true);
     });
   };
+
+  // Expose openSelector method to parent via ref
+  useImperativeHandle(ref, () => ({
+    openSelector: handleBadgePress
+  }));
 
   // Toggle friend selection
   const handleToggleFriend = (userId: string) => {
@@ -124,21 +141,33 @@ export default function FriendBadgeSelector({
     return null;
   }
 
+  // Determine whether to show badge or stacked avatars
+  const showStackedAvatars = selectedFriendIds.length > 0;
+
   return friends.length > 0 ?
-  
+
   (
     <>
-      {/* "friends" Badge */}
+      {/* Container for badge or stacked avatars - always rendered for ref positioning */}
       <TouchableOpacity
         ref={badgeRef}
         style={[
-          isAbsolutePosition ? styles.friendsBadge : styles.friendsBadgeRelative,
-          getBadgePositionStyle()
+          isAbsolutePosition ? styles.container : styles.containerRelative,
+          getBadgePositionStyle(),
         ]}
         onPress={handleBadgePress}
         activeOpacity={0.7}
       >
-        <Text style={styles.badgeText}>friends</Text>
+        {showStackedAvatars ? (
+          <StackedFriendAvatars
+            selectedFriendIds={selectedFriendIds}
+            allFriends={friends}
+          />
+        ) : (
+          <View style={styles.friendsBadge}>
+            <Text style={styles.badgeText}>friends</Text>
+          </View>
+        )}
       </TouchableOpacity>
 
       {/* Friend Selector Modal */}
@@ -214,26 +243,19 @@ export default function FriendBadgeSelector({
       </Modal>
     </>
   ) : <View/>;
-}
+});
+
+export default FriendBadgeSelector;
 
 const styles = StyleSheet.create({
-  friendsBadge: {
+  container: {
     position: 'absolute',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: CORNFLOWER_BLUE,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
     zIndex: 10,
   },
-  friendsBadgeRelative: {
+  containerRelative: {
+    // No position styling for relative layout
+  },
+  friendsBadge: {
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,

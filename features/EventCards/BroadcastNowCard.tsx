@@ -1,5 +1,5 @@
 import AnimatedText from "@/components/AnimatedText";
-import FriendBadgeSelector from "@/components/FriendBadgeSelector";
+import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/FriendBadgeSelector";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
@@ -8,7 +8,7 @@ import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,7 +22,9 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
     // Friends state and API
     const [friends, setFriends] = useState<Friend[]>([]);
+    const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
     const [getFriends] = useGetFriendsMutation();
+    const friendSelectorRef = useRef<FriendBadgeSelectorRef>(null);
 
     // Fetch friends on component mount
     useEffect(() => {
@@ -80,6 +82,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
     // Handle friend selection from badge selector
     const handleFriendsSelect = (userIds: string[]) => {
         console.log('Selected friends for broadcast:', userIds);
+        setSelectedFriendIds(userIds);
         // TODO: Implement broadcast to specific friends
         // This could trigger a direct broadcast to the selected friends
         // Or initiate a call/meeting with them
@@ -87,11 +90,13 @@ export default function BroadcastNowCard(): React.JSX.Element {
 
     return (
         <View style={styles.outerContainer}>
-            {/* Friend Badge Selector - on the card */}
+            {/* Friend Badge Selector - shows badge or stacked avatars, opens modal on tap */}
             <FriendBadgeSelector
+                ref={friendSelectorRef}
                 friends={friends}
                 onSelectFriends={handleFriendsSelect}
-                position="bottom-left"
+                position="bottom-right"
+                selectedFriendIds={selectedFriendIds}
             />
 
             <TouchableOpacity
