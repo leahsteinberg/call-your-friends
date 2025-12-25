@@ -3,7 +3,7 @@ import type { Friend } from "@/features/Contacts/types";
 import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import StackedFriendAvatars from "./StackedFriendAvatars";
 
 interface FriendBadgeSelectorProps {
@@ -41,6 +41,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
   selectedFriendIds = []
 }, ref) => {
   const [showSelector, setShowSelector] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const badgeRef = useRef<View>(null);
@@ -49,21 +50,37 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
   const modalScale = useSharedValue(0.8);
   const modalOpacity = useSharedValue(0);
 
-  // Trigger animation when modal appears
+  // Trigger animation when modal appears or disappears
   useEffect(() => {
     if (showSelector) {
+      setModalVisible(true);
       modalScale.value = 0.8;
       modalOpacity.value = 0;
 
-      // Fan out animation - scale up with spring
-      modalScale.value = withSpring(1, {
-        damping: 12,
-        stiffness: 200,
+      // Fan out animation - scale up with ease-in-out curve
+      modalScale.value = withTiming(1, {
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
       });
       modalOpacity.value = withTiming(1, {
-        duration: 250,
-        easing: Easing.out(Easing.cubic),
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
       });
+    } else if (modalVisible) {
+      // Close animation - scale down with ease-in-out curve
+      modalScale.value = withTiming(0.8, {
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
+      });
+      modalOpacity.value = withTiming(0, {
+        duration: 300,
+        easing: Easing.inOut(Easing.ease),
+      });
+
+      // Hide modal after animation completes
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 300);
     }
   }, [showSelector]);
 
@@ -175,14 +192,14 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
           />
         ) : (
           <View style={styles.friendsBadge}>
-            <Text style={styles.badgeText}>Select friends</Text>
+            <Text style={styles.badgeText}>All friends</Text>
           </View>
         )}
       </TouchableOpacity>
 
       {/* Friend Selector Modal */}
       <Modal
-        visible={showSelector}
+        visible={modalVisible}
         transparent={true}
         animationType="none"
         onRequestClose={handleCloseModal}

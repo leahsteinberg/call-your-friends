@@ -26,6 +26,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
   }, [item.isContactIntended]);
 
   const handleCallIntent = async () => {
+    
     try {
       const payload: CallIntentPayload = { targetUserId: item.id };
       await addUserSignal({
