@@ -1,6 +1,7 @@
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
+import { CustomFonts } from "@/constants/theme";
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 
 // Import tapback SVG icons
@@ -19,12 +20,21 @@ const TAPBACK_ICONS: Record<string, any> = {
     person: StarPerson,
 };
 
+// Tapback word mapping
+const TAPBACK_WORDS: Record<string, string> = {
+    hi: 'Just saying Hi!',
+    catchup: 'Quick Catch up!',
+    miss: 'I miss you!',
+    yap: 'Yap it up',
+};
+
 interface TapbackDecorationProps {
     selectedTapback: string | null;
     size?: number;
     iconSize?: number;
     top?: number;
     right?: number;
+    useWords?: boolean; // If true, displays word instead of icon
 }
 
 /**
@@ -48,6 +58,7 @@ export default function TapbackDecoration({
     iconSize = 20,
     top = -10,
     right = -10,
+    useWords = false,
 }: TapbackDecorationProps): React.JSX.Element | null {
     // Animation values
     const scale = useSharedValue(0);
@@ -83,26 +94,48 @@ export default function TapbackDecoration({
 
     if (!selectedTapback) return null;
 
-    const TapbackIcon = TAPBACK_ICONS[selectedTapback];
-    if (!TapbackIcon) return null;
+    // Check if we're using words or icons
+    if (useWords) {
+        const tapbackText = TAPBACK_WORDS[selectedTapback];
+        if (!tapbackText) return null;
 
-    return (
-        <Animated.View
-            style={[
-                styles.tapbackBubble,
-                {
-                    width: size,
-                    height: size,
-                    borderRadius: size / 2,
-                    top,
-                    right,
-                },
-                animatedStyle,
-            ]}
-        >
-            <TapbackIcon width={iconSize} height={iconSize} fill={BOLD_BLUE} />
-        </Animated.View>
-    );
+        return (
+            <Animated.View
+                style={[
+                    styles.tapbackBubble,
+                    styles.tapbackWordBubble,
+                    {
+                        top,
+                        right,
+                    },
+                    animatedStyle,
+                ]}
+            >
+                <Text style={styles.tapbackWordText}>{tapbackText}</Text>
+            </Animated.View>
+        );
+    } else {
+        const TapbackIcon = TAPBACK_ICONS[selectedTapback];
+        if (!TapbackIcon) return null;
+
+        return (
+            <Animated.View
+                style={[
+                    styles.tapbackBubble,
+                    {
+                        width: size,
+                        height: size,
+                        borderRadius: size / 2,
+                        top,
+                        right,
+                    },
+                    animatedStyle,
+                ]}
+            >
+                <TapbackIcon width={iconSize} height={iconSize} fill={BOLD_BLUE} />
+            </Animated.View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
@@ -122,5 +155,18 @@ const styles = StyleSheet.create({
         zIndex: 10,
         borderWidth: 2,
         borderColor: BOLD_BLUE,
+    },
+    tapbackWordBubble: {
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 16,
+        height: 'auto',
+        width: 'auto',
+    },
+    tapbackWordText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: BOLD_BLUE,
+        fontFamily: CustomFonts.ztnaturebold,
     },
 });

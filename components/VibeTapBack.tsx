@@ -20,10 +20,19 @@ const TAPBACK_ICONS = [
     { id: 'person', Component: StarPerson, label: 'Person' },
 ];
 
+// Tapback word options
+const TAPBACK_WORDS = [
+    { id: 'hi', text: 'Just Hi', label: 'Hi' },
+    { id: 'catchup', text: 'Catch Up', label: 'Catch up' },
+    { id: 'miss', text: 'Miss You', label: 'Miss you' },
+    { id: 'yap', text: 'Yap Time', label: 'Yap' },
+];
+
 interface VibeTapBackProps {
     children: React.ReactNode;
     onTapbackSelect: (iconId: string | null, cardData?: any) => void;
     cardData?: any; // Data to pass back with the callback (e.g., meeting.id)
+    useWords?: boolean; // If true, shows word options instead of SVG icons
 }
 
 /**
@@ -39,10 +48,13 @@ interface VibeTapBackProps {
  * </VibeTapBack>
  * ```
  */
-export default function VibeTapBack({ children, onTapbackSelect, cardData }: VibeTapBackProps): React.JSX.Element {
+export default function VibeTapBack({ children, onTapbackSelect, cardData, useWords = false }: VibeTapBackProps): React.JSX.Element {
     const [showTapback, setShowTapback] = useState(false);
     const [tapbackPosition, setTapbackPosition] = useState({ x: 0, y: 0 });
     const cardRef = useRef<View>(null);
+
+    // Choose which set of options to display
+    const tapbackOptions = useWords ? TAPBACK_WORDS : TAPBACK_ICONS;
 
     // Animation values for tapback popup
     const tapbackTranslateY = useSharedValue(30); // Start 30px below final position
@@ -120,26 +132,41 @@ export default function VibeTapBack({ children, onTapbackSelect, cardData }: Vib
                                 styles.tapbackContainer,
                                 {
                                     position: 'absolute',
-                                    left: tapbackPosition.x - 175, // Center the popup (wider with None button)
+                                    left: tapbackPosition.x - (useWords ? 200 : 175), // Adjust centering based on mode
                                     top: tapbackPosition.y,
                                 },
                                 animatedPopupStyle,
                             ]}
                         >
-                            {TAPBACK_ICONS.map((icon) => (
-                                <TouchableOpacity
-                                    key={icon.id}
-                                    style={styles.tapbackIcon}
-                                    onPress={() => handleTapbackSelect(icon.id)}
-                                    activeOpacity={0.7}
-                                >
-                                    <icon.Component
-                                        width={40}
-                                        height={40}
-                                        fill={BOLD_BLUE}
-                                    />
-                                </TouchableOpacity>
-                            ))}
+                            {useWords ? (
+                                // Word-based tapbacks
+                                TAPBACK_WORDS.map((word) => (
+                                    <TouchableOpacity
+                                        key={word.id}
+                                        style={styles.tapbackWordButton}
+                                        onPress={() => handleTapbackSelect(word.id)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={styles.tapbackWordText}>{word.text}</Text>
+                                    </TouchableOpacity>
+                                ))
+                            ) : (
+                                // Icon-based tapbacks
+                                TAPBACK_ICONS.map((icon) => (
+                                    <TouchableOpacity
+                                        key={icon.id}
+                                        style={styles.tapbackIcon}
+                                        onPress={() => handleTapbackSelect(icon.id)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <icon.Component
+                                            width={40}
+                                            height={40}
+                                            fill={BOLD_BLUE}
+                                        />
+                                    </TouchableOpacity>
+                                ))
+                            )}
 
                             {/* Separator */}
                             <View style={styles.separator} />
@@ -188,6 +215,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         backgroundColor: 'transparent',
+    },
+    tapbackWordButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        backgroundColor: 'transparent',
+    },
+    tapbackWordText: {
+        color: BOLD_BLUE,
+        fontSize: 13,
+        fontWeight: '600',
     },
     separator: {
         width: 1,

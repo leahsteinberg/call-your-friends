@@ -2,7 +2,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, LAVENDER, ORANGE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -190,11 +190,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     const animatedPulseStyle = useAnimatedStyle(() => ({
         transform: [{ scale: pulseScale.value }],
-        shadowColor: BRIGHT_BLUE,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: glowOpacity.value,
-        shadowRadius: 10,
-        elevation: glowOpacity.value * 10, // For Android
     }));
 
     return (
@@ -202,38 +197,42 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[styles.container, animatedCardStyle]}>
                     <View style={styles.header}>
-                        <Text style={styles.nameText}>{strings.nameText!(getFromName())}</Text>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
+                        </View>
 
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity
-                                onPress={handleAcceptSuggestion}
-                                style={styles.acceptButton}
-                                disabled={isAccepting}
-                            >
-                                {isAccepting ? (
-                                    <ActivityIndicator size="small" color="green" />
-                                ) : (
-                                    <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
-                                )}
-                            </TouchableOpacity>
-                            <TouchableOpacity
                                 onPress={handleDismissSuggestion}
-                                style={styles.dismissButton}
+                                style={[styles.dismissButton, isDismissing && styles.buttonDisabled]}
                                 disabled={isDismissing}
                             >
                                 {isDismissing ? (
-                                    <ActivityIndicator size="small" color="red" />
+                                    <ActivityIndicator size="small" color={PALE_BLUE} />
                                 ) : (
                                     <Text style={styles.dismissButtonText}>{strings.rejectButtonText!()}</Text>
                                 )}
                             </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleAcceptSuggestion}
+                                style={[styles.acceptButton, isAccepting && styles.buttonDisabled]}
+                                disabled={isAccepting}
+                            >
+                                {isAccepting ? (
+                                    <ActivityIndicator size="small" color={PALE_BLUE} />
+                                ) : (
+                                    <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
+                                )}
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(getCurrentScheduledTime()))}</Text>
 
-                    <Animated.View style={[animatedPulseStyle]}>
-                        <Text style={styles.timeText}>{currentDisplayTime}</Text>
-                    </Animated.View>
+                    <View>
+                        <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(getCurrentScheduledTime()))}</Text>
+                        <Animated.View style={[animatedPulseStyle]}>
+                            <Text style={styles.timeText}>{currentDisplayTime}</Text>
+                        </Animated.View>
+                    </View>
 
                     {DEV_FLAG && (
                         <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}</Text>
@@ -249,62 +248,78 @@ const styles = StyleSheet.create({
         marginBottom: CARD_LOWER_MARGIN,
     },
     container: {
+        backgroundColor: BOLD_BLUE,
         borderRadius: 8,
-        padding: 12,
-        backgroundColor: LAVENDER,
+        padding: 20,
         minHeight: CARD_MIN_HEIGHT,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
     },
-    nameText: {
-        fontSize: 20,
+    titleContainer: {
+        flex: 1,
+    },
+    titleText: {
+        fontSize: 28,
         fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
+        color: CREAM,
         fontFamily: CustomFonts.ztnaturebold,
     },
     mainText: {
         fontSize: 14,
-        fontWeight: '600',
         color: CORNFLOWER_BLUE,
-        marginBottom: 4,
         fontFamily: CustomFonts.ztnatureregular,
+        marginBottom: 4,
     },
     timeText: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '600',
-        color: BRIGHT_BLUE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturelight,
+        color: BOLD_BROWN,
+        fontFamily: CustomFonts.ztnaturemedium,
     },
     debugText: {
         fontSize: 10,
-        color: '#999',
+        color: '#666',
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },
     buttonContainer: {
         flexDirection: 'row',
         gap: 8,
+        alignItems: 'center',
     },
     acceptButton: {
-        borderRadius: 4,
+        backgroundColor: BURGUNDY,
+        borderRadius: 15,
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        minWidth: 60,
+        alignItems: 'center',
     },
     acceptButtonText: {
-        color: BRIGHT_GREEN,
+        color: PALE_BLUE,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
     dismissButton: {
-        borderRadius: 4,
+        backgroundColor: BURGUNDY,
+        borderRadius: 15,
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        minWidth: 60,
+        alignItems: 'center',
     },
     dismissButtonText: {
         fontSize: 12,
-        color: CHOCOLATE_COLOR,
+        color: PALE_BLUE,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
+    },
+    buttonDisabled: {
+        opacity: 0.6,
     },
 });

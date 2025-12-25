@@ -74,7 +74,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     };
 
     return (
-        <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id}>
+        <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id} useWords={true}>
             <View style={styles.outerContainer}>
                         {/* Tapback decoration in top-right corner */}
                         <TapbackDecoration selectedTapback={selectedTapback} />
