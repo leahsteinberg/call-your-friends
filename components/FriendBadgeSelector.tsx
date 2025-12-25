@@ -1,6 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
-import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
@@ -165,7 +165,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
           />
         ) : (
           <View style={styles.friendsBadge}>
-            <Text style={styles.badgeText}>friends</Text>
+            <Text style={styles.badgeText}>Select friends</Text>
           </View>
         )}
       </TouchableOpacity>
@@ -192,12 +192,12 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
             >
               {/* Select button at the top */}
               <TouchableOpacity
-                style={[styles.selectButton, (selectedUserIds.length === 0) && {backgroundColor: LIGHT_BEIGE}]}
+                style={[styles.selectButton]}
                 onPress={handleConfirmSelection}
                 activeOpacity={0.7}
-                disabled={(selectedUserIds.length === 0)}
+                //disabled={(selectedUserIds.length === 0)}
               >
-                <Text style={styles.selectButtonText}>Select</Text>
+                <Text style={styles.selectButtonText}>{(selectedUserIds.length === 0) ? `Select All Friends` : `Select`}</Text>
               </TouchableOpacity>
 
               {/* Friend list with checkboxes */}
