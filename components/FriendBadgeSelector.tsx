@@ -1,38 +1,39 @@
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
+import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
 interface FriendBadgeSelectorProps {
   friends: Friend[];
-  onSelectFriend: (friend: Friend) => void;
+  onSelectFriends: (userIds: string[]) => void;
   position?: 'bottom-left' | 'bottom-right' | 'top-left' | 'top-right' | 'below-left';
 }
 
 /**
- * FriendBadgeSelector - Badge that expands into friend selector
+ * FriendBadgeSelector - Badge that expands into multi-select friend selector
  *
  * Displays a "friends" badge that opens a modal with a list of friends when tapped.
- * The modal "fans out" from the badge position.
+ * Users can select multiple friends using checkboxes, then tap "Select" to confirm.
  *
  * Usage:
  * ```tsx
  * <FriendBadgeSelector
  *   friends={friendsList}
- *   onSelectFriend={(friend) => console.log('Selected:', friend.name)}
+ *   onSelectFriends={(userIds) => console.log('Selected IDs:', userIds)}
  *   position="bottom-left"
  * />
  * ```
  */
 export default function FriendBadgeSelector({
   friends,
-  onSelectFriend,
+  onSelectFriends,
   position = 'below-left'
 }: FriendBadgeSelectorProps): React.JSX.Element {
   const [showSelector, setShowSelector] = useState(false);
   const [selectorPosition, setSelectorPosition] = useState({ x: 0, y: 0 });
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const badgeRef = useRef<View>(null);
 
   // Animation values for modal
@@ -72,10 +73,24 @@ export default function FriendBadgeSelector({
     });
   };
 
-  // Handle friend selection
-  const handleFriendSelect = (friend: Friend) => {
-    onSelectFriend(friend);
+  // Toggle friend selection
+  const handleToggleFriend = (userId: string) => {
+    setSelectedUserIds(prev => {
+      if (prev.includes(userId)) {
+        // Deselect - remove from array
+        return prev.filter(id => id !== userId);
+      } else {
+        // Select - add to array
+        return [...prev, userId];
+      }
+    });
+  };
+
+  // Confirm selection and close modal
+  const handleConfirmSelection = () => {
+    onSelectFriends(selectedUserIds);
     setShowSelector(false);
+    setSelectedUserIds([]); // Reset selection for next time
   };
 
   // Create animated style for modal
@@ -104,7 +119,14 @@ export default function FriendBadgeSelector({
 
   const isAbsolutePosition = position !== 'below-left';
 
-  return (
+  // Don't show the badge if there are no friends loaded
+  if (!friends || friends.length === 0) {
+    return null;
+  }
+
+  return friends.length > 0 ?
+  
+  (
     <>
       {/* "friends" Badge */}
       <TouchableOpacity
@@ -139,24 +161,49 @@ export default function FriendBadgeSelector({
                 animatedModalStyle,
               ]}
             >
-              <Text style={styles.selectorTitle}>Select a friend</Text>
+              {/* Select button at the top */}
+              <TouchableOpacity
+                style={styles.selectButton}
+                onPress={handleConfirmSelection}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.selectButtonText}>Select</Text>
+              </TouchableOpacity>
+
+              {/* Friend list with checkboxes */}
               <FlatList
                 data={friends}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.friendItem}
-                    onPress={() => handleFriendSelect(item)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.friendAvatar}>
-                      <Text style={styles.friendAvatarText}>
-                        {item.name.charAt(0).toUpperCase()}
-                      </Text>
-                    </View>
-                    <Text style={styles.friendName}>{item.name}</Text>
-                  </TouchableOpacity>
-                )}
+                renderItem={({ item }) => {
+                  const isSelected = selectedUserIds.includes(item.id);
+                  return (
+                    <TouchableOpacity
+                      style={styles.friendItem}
+                      onPress={() => handleToggleFriend(item.id)}
+                      activeOpacity={0.7}
+                    >
+                      {/* Checkbox circle */}
+                      <View style={[
+                        styles.checkbox,
+                        isSelected && styles.checkboxSelected
+                      ]}>
+                        {isSelected && (
+                          <Text style={styles.checkmark}>✓</Text>
+                        )}
+                      </View>
+
+                      {/* Avatar */}
+                      <View style={styles.friendAvatar}>
+                        <Text style={styles.friendAvatarText}>
+                          {item.name.charAt(0).toUpperCase()}
+                        </Text>
+                      </View>
+
+                      {/* Name */}
+                      <Text style={styles.friendName}>{item.name}</Text>
+                    </TouchableOpacity>
+                  );
+                }}
                 style={styles.friendsList}
                 showsVerticalScrollIndicator={false}
               />
@@ -165,7 +212,7 @@ export default function FriendBadgeSelector({
         </TouchableWithoutFeedback>
       </Modal>
     </>
-  );
+  ) : <View/>;
 }
 
 const styles = StyleSheet.create({
@@ -224,13 +271,19 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 10,
   },
-  selectorTitle: {
+  selectButton: {
+    backgroundColor: BOLD_GREEN,
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  selectButtonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: BOLD_BLUE,
+    color: CREAM,
     fontFamily: CustomFonts.ztnaturebold,
-    marginBottom: 10,
-    paddingHorizontal: 4,
   },
   friendsList: {
     flexGrow: 0,
@@ -241,6 +294,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 4,
     borderRadius: 8,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: BOLD_BLUE,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  checkboxSelected: {
+    backgroundColor: BOLD_GREEN,
+    borderColor: BOLD_GREEN,
+  },
+  checkmark: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: CREAM,
   },
   friendAvatar: {
     width: 32,

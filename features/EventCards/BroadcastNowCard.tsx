@@ -78,10 +78,10 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     // Handle friend selection from badge selector
-    const handleFriendSelect = (friend: Friend) => {
-        console.log('Selected friend for broadcast:', friend.name, friend.id);
-        // TODO: Implement broadcast to specific friend
-        // This could trigger a direct broadcast to the selected friend
+    const handleFriendsSelect = (userIds: string[]) => {
+        console.log('Selected friends for broadcast:', userIds);
+        // TODO: Implement broadcast to specific friends
+        // This could trigger a direct broadcast to the selected friends
         // Or initiate a call/meeting with them
     };
 
@@ -90,7 +90,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
             {/* Friend Badge Selector - on the card */}
             <FriendBadgeSelector
                 friends={friends}
-                onSelectFriend={handleFriendSelect}
+                onSelectFriends={handleFriendsSelect}
                 position="bottom-left"
             />
 
