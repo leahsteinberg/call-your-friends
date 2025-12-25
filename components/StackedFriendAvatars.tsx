@@ -1,17 +1,16 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
 import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 interface StackedFriendAvatarsProps {
-  selectedFriendIds: string[];
-  allFriends: Friend[];
+  selectedFriends: Friend[];
   expanded?: boolean;
 }
 
 const AVATAR_SIZE = 40; // ~15% smaller than Friend.tsx's 48px
-const OVERLAP_PERCENTAGE = 0.7;
 const MAX_VISIBLE_AVATARS = 4;
 
 /**
@@ -19,29 +18,24 @@ const MAX_VISIBLE_AVATARS = 4;
  *
  * Shows up to 4 friend avatars overlapping in a fanned-out card style.
  * If more than 4 friends are selected, shows a "+X" indicator.
+ * Animates smoothly between collapsed and expanded states.
  *
  * Usage:
  * ```tsx
  * <StackedFriendAvatars
- *   selectedFriendIds={['id1', 'id2', 'id3']}
- *   allFriends={friendsList}
+ *   selectedFriends={friendsList}
+ *   expanded={isExpanded}
  * />
  * ```
  */
 export default function StackedFriendAvatars({
-  selectedFriendIds,
-  allFriends,
+  selectedFriends,
   expanded = false,
 }: StackedFriendAvatarsProps): React.JSX.Element | null {
   // Don't show anything if no friends are selected
-  if (!selectedFriendIds || selectedFriendIds.length === 0) {
+  if (!selectedFriends || selectedFriends.length === 0) {
     return null;
   }
-
-  // Filter to get only selected friends
-  const selectedFriends = allFriends.filter(friend =>
-    selectedFriendIds.includes(friend.id)
-  );
 
   // Get the friends to display (max 4)
   const displayFriends = selectedFriends.slice(0, MAX_VISIBLE_AVATARS);
@@ -49,107 +43,100 @@ export default function StackedFriendAvatars({
   // Calculate how many extra friends there are
   const extraCount = selectedFriends.length - MAX_VISIBLE_AVATARS;
 
-  // Calculate the offset for each avatar (30% of size since we want 70% overlap)
-  const offset = AVATAR_SIZE * (1 - OVERLAP_PERCENTAGE);
+  // Calculate overlap offset for collapsed state (70% overlap = show 30% of avatar width)
+  const OVERLAP_OFFSET = -(AVATAR_SIZE * 0.7); // -28px for 40px avatars
+  const EXPANDED_SPACING = 8;
 
-  // Calculate the width needed for the avatar stack
-  // Width = (number of avatars - 1) * offset + one full avatar size
-  const avatarsWidth = displayFriends.length > 0
-    ? (displayFriends.length - 1) * offset + AVATAR_SIZE
-    : 0;
+  // Animation values
+  const avatarSpacing = useSharedValue(expanded ? EXPANDED_SPACING : OVERLAP_OFFSET);
+  const avatarSize = useSharedValue(expanded ? 48 : AVATAR_SIZE);
+  const nameOpacity = useSharedValue(expanded ? 1 : 0);
+  const nameHeight = useSharedValue(expanded ? 20 : 0);
 
-  // If there's an extra badge, add space for it (positioned at displayFriends.length * offset)
-  const totalWidth = extraCount > 0
-    ? displayFriends.length * offset + 40 // 40px for the badge approximate width
-    : avatarsWidth;
+  // Trigger animation when expanded state changes
+  useEffect(() => {
+    const duration = 300;
+    const easing = Easing.out(Easing.cubic);
 
-  // Render expanded view when expanded prop is true
-  if (expanded) {
-    const EXPANDED_AVATAR_SIZE = 48; // Slightly bigger when expanded
-    const AVATAR_SPACING = 12; // Space between avatars
+    if (expanded) {
+      // Expand animation - spread apart
+      avatarSpacing.value = withTiming(EXPANDED_SPACING, { duration, easing });
+      avatarSize.value = withTiming(48, { duration, easing });
+      nameOpacity.value = withTiming(1, { duration: duration + 50, easing });
+      nameHeight.value = withTiming(20, { duration, easing });
+    } else {
+      // Collapse animation - overlap
+      nameOpacity.value = withTiming(0, { duration: duration - 50, easing });
+      avatarSpacing.value = withTiming(OVERLAP_OFFSET, { duration, easing });
+      avatarSize.value = withTiming(AVATAR_SIZE, { duration, easing });
+      nameHeight.value = withTiming(0, { duration, easing });
+    }
+  }, [expanded]);
 
-    return (
-      <View style={styles.expandedContainer}>
-        {displayFriends.map((friend, index) => (
-          <View key={friend.id} style={styles.expandedAvatarItem}>
-            <View
-              style={[
-                styles.expandedAvatar,
-                {
-                  width: EXPANDED_AVATAR_SIZE,
-                  height: EXPANDED_AVATAR_SIZE,
-                  borderRadius: EXPANDED_AVATAR_SIZE / 2,
-                },
-              ]}
-            >
-              <Text style={styles.expandedAvatarText}>
-                {friend.name.charAt(0).toUpperCase()}
-              </Text>
-            </View>
-            <Text style={styles.friendNameText} numberOfLines={1}>
-              {friend.name}
-            </Text>
-          </View>
-        ))}
-        {extraCount > 0 && (
-          <View style={styles.expandedAvatarItem}>
-            <View
-              style={[
-                styles.expandedExtraBadge,
-                {
-                  width: EXPANDED_AVATAR_SIZE,
-                  height: EXPANDED_AVATAR_SIZE,
-                  borderRadius: EXPANDED_AVATAR_SIZE / 2,
-                },
-              ]}
-            >
-              <Text style={styles.expandedExtraText}>+{extraCount}</Text>
-            </View>
-            <Text style={styles.friendNameText} numberOfLines={1}>
-              {extraCount} more
-            </Text>
-          </View>
-        )}
-      </View>
-    );
-  }
-
-  // Render stacked/collapsed view (default)
   return (
     <View style={styles.container}>
-      {/* Stacked avatars */}
-      <View style={[styles.avatarStack, { width: totalWidth }]}>
-        {displayFriends.map((friend, index) => (
-          <View
-            key={friend.id}
-            style={[
-              styles.avatar,
-              {
-                left: index * offset,
-                zIndex: MAX_VISIBLE_AVATARS - index, // Reverse z-index so first is on top
-              },
-            ]}
-          >
-            <Text style={styles.avatarText}>
-              {friend.name.charAt(0).toUpperCase()}
-            </Text>
-          </View>
-        ))}
-      </View>
+      <View style={styles.contentWrapper}>
+        {displayFriends.map((friend, index) => {
+          const animatedStyle = useAnimatedStyle(() => ({
+            marginLeft: index === 0 ? 0 : avatarSpacing.value,
+          }));
 
-      {/* +X indicator if there are more friends */}
-      {extraCount > 0 && (
-        <View
-          style={[
-            styles.extraBadge,
-            {
-              left: displayFriends.length * offset,
-            },
-          ]}
-        >
-          <Text style={styles.extraText}>+{extraCount}</Text>
-        </View>
-      )}
+          const animatedAvatarStyle = useAnimatedStyle(() => ({
+            width: avatarSize.value,
+            height: avatarSize.value,
+            borderRadius: avatarSize.value / 2,
+          }));
+
+          const animatedNameStyle = useAnimatedStyle(() => ({
+            opacity: nameOpacity.value,
+            height: nameHeight.value,
+            marginTop: expanded ? 4 : 0,
+          }));
+
+          return (
+            <Animated.View key={friend.id} style={[styles.avatarItem, animatedStyle]}>
+              <Animated.View style={[styles.avatar, animatedAvatarStyle]}>
+                <Text style={styles.avatarText}>
+                  {friend.name.charAt(0).toUpperCase()}
+                </Text>
+              </Animated.View>
+              <Animated.View style={animatedNameStyle}>
+                {expanded && (
+                  <Text style={styles.friendNameText} numberOfLines={1}>
+                    {friend.name}
+                  </Text>
+                )}
+              </Animated.View>
+            </Animated.View>
+          );
+        })}
+
+        {/* +X indicator if there are more friends */}
+        {extraCount > 0 && (
+          <Animated.View style={[styles.avatarItem, useAnimatedStyle(() => ({
+            marginLeft: avatarSpacing.value,
+          }))]}>
+            <Animated.View style={[styles.extraBadge, useAnimatedStyle(() => ({
+              width: avatarSize.value,
+              height: avatarSize.value,
+              borderRadius: avatarSize.value / 2,
+            }))]}>
+              <Text style={styles.extraText}>+{extraCount}</Text>
+            </Animated.View>
+            <Animated.View style={useAnimatedStyle(() => ({
+              opacity: nameOpacity.value,
+              height: nameHeight.value,
+              marginTop: expanded ? 4 : 0,
+            }))}>
+              {expanded && (
+                <Text style={styles.friendNameText} numberOfLines={1}>
+                  {extraCount} more
+                </Text>
+              )}
+            </Animated.View>
+          </Animated.View>
+        )}
+      </View>
     </View>
   );
 }
@@ -157,18 +144,17 @@ export default function StackedFriendAvatars({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center',
-    height: AVATAR_SIZE,
+    alignItems: 'flex-start',
   },
-  avatarStack: {
+  contentWrapper: {
     flexDirection: 'row',
-    position: 'relative',
+    alignItems: 'flex-start',
+  },
+  avatarItem: {
+    alignItems: 'center',
+    maxWidth: 60,
   },
   avatar: {
-    position: 'absolute',
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
     backgroundColor: PALE_BLUE,
     justifyContent: 'center',
     alignItems: 'center',
@@ -182,14 +168,9 @@ const styles = StyleSheet.create({
     fontFamily: CustomFonts.ztnaturebold,
   },
   extraBadge: {
-    position: 'absolute',
-    minWidth: 32,
-    height: 24,
-    borderRadius: 12,
     backgroundColor: CORNFLOWER_BLUE,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 8,
   },
   extraText: {
     fontSize: 12,
@@ -197,46 +178,10 @@ const styles = StyleSheet.create({
     color: CREAM,
     fontFamily: CustomFonts.ztnaturebold,
   },
-  // Expanded view styles
-  expandedContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'flex-start',
-  },
-  expandedAvatarItem: {
-    alignItems: 'center',
-    maxWidth: 60,
-  },
-  expandedAvatar: {
-    backgroundColor: PALE_BLUE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: CORNFLOWER_BLUE,
-    marginBottom: 4,
-  },
-  expandedAvatarText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: BOLD_BLUE,
-    fontFamily: CustomFonts.ztnaturebold,
-  },
-  expandedExtraBadge: {
-    backgroundColor: CORNFLOWER_BLUE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  expandedExtraText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: CREAM,
-    fontFamily: CustomFonts.ztnaturebold,
-  },
   friendNameText: {
     fontSize: 10,
     fontWeight: '500',
-    color: BOLD_BLUE,
+    color: CREAM,
     fontFamily: CustomFonts.ztnaturemedium,
     textAlign: 'center',
   },
