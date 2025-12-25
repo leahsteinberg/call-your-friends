@@ -4,15 +4,15 @@ import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayDateTime, displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -32,13 +32,10 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     // Track which time is currently selected (index in backupScheduledTimes, or -1 for original)
     const [selectedTimeIndex, setSelectedTimeIndex] = useState(-1);
+    const [isInitialMount, setIsInitialMount] = useState(true);
 
     // Track formatted display time for the currently selected time
     const [currentDisplayTime, setCurrentDisplayTime] = useState(meeting.displayScheduledFor);
-
-    // Pulse and glow animation for time text (triggered on time change)
-    const pulseScale = useSharedValue(1);
-    const glowOpacity = useSharedValue(0);
 
     // Slide animation for time text (triggered on time change)
     const timeTranslateX = useSharedValue(0);
@@ -73,29 +70,44 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     useEffect(() => {
         const formatDisplayTime = async () => {
             const currentTime = getCurrentScheduledTime();
-            if (selectedTimeIndex === -1) {
-                setCurrentDisplayTime(meeting.displayScheduledFor);
+
+            // Only animate if this is NOT the initial mount
+            if (!isInitialMount) {
+                // Slide out to the right and fade out
+                timeTranslateX.value = withTiming(30, { duration: 150, easing: Easing.out(Easing.ease) });
+                timeOpacity.value = withTiming(0, { duration: 150, easing: Easing.out(Easing.ease) });
+
+                // Wait for slide out to complete, then update text and slide in from left
+                setTimeout(async () => {
+                    // Update the text content
+                    if (selectedTimeIndex === -1) {
+                        setCurrentDisplayTime(meeting.displayScheduledFor);
+                    } else {
+                        const formatted = await displayDateTime(currentTime);
+                        setCurrentDisplayTime(formatted);
+                    }
+
+                    // Reset position to left (off-screen) - set directly without animation
+                    timeTranslateX.value = -30;
+
+                    // Small delay to ensure state update, then slide in from left
+                    setTimeout(() => {
+                        timeTranslateX.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) });
+                        timeOpacity.value = withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) });
+                    }, 50);
+                }, 150);
             } else {
-                const formatted = await displayDateTime(currentTime);
-                setCurrentDisplayTime(formatted);
+                // Initial mount - no animation, just set the text
+                if (selectedTimeIndex === -1) {
+                    setCurrentDisplayTime(meeting.displayScheduledFor);
+                } else {
+                    const formatted = await displayDateTime(currentTime);
+                    setCurrentDisplayTime(formatted);
+                }
+                setIsInitialMount(false);
             }
         };
         formatDisplayTime();
-
-        // Trigger pulse and glow animation when time changes (but not on initial mount)
-        if (selectedTimeIndex !== -1 || meeting.backupScheduledTimes) {
-            // Scale pulse
-            pulseScale.value = withSequence(
-                withTiming(1.15, { duration: 200, easing: Easing.out(Easing.ease) }),
-                withTiming(1, { duration: 400, easing: Easing.inOut(Easing.ease) })
-            );
-
-            // Glow effect
-            glowOpacity.value = withSequence(
-                withTiming(0.8, { duration: 200, easing: Easing.out(Easing.ease) }),
-                withTiming(0, { duration: 600, easing: Easing.inOut(Easing.ease) })
-            );
-        }
     }, [selectedTimeIndex]);
 
     // Get the currently selected time
@@ -218,18 +230,18 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         })
         .onEnd((e) => {
             if (e.translationX > SWIPE_THRESHOLD) {
-                // Swipe completed - cycle to next time and bounce back quickly
+                // Swipe completed - cycle to next time and slide back smoothly
                 runOnJS(cycleToNextTime)();
-                // Bounce back to original position with snappy spring
-                translateX.value = withSpring(0, {
-                    damping: 20,
-                    stiffness: 300
+                // Slide back to original position with slight deceleration
+                translateX.value = withTiming(0, {
+                    duration: 200,
+                    easing: Easing.out(Easing.ease)
                 });
             } else {
-                // Snap back to original position quickly
-                translateX.value = withSpring(0, {
-                    damping: 20,
-                    stiffness: 300
+                // Slide back to original position with slight deceleration
+                translateX.value = withTiming(0, {
+                    duration: 200,
+                    easing: Easing.out(Easing.ease)
                 });
             }
         });
@@ -240,7 +252,8 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     }));
 
     const animatedPulseStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: pulseScale.value }],
+        transform: [{ translateX: timeTranslateX.value }],
+        opacity: timeOpacity.value,
     }));
 
     const animatedInstructionStyle = useAnimatedStyle(() => ({
