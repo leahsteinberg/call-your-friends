@@ -1,3 +1,4 @@
+import RightSwipe from "@/components/RightSwipe";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
@@ -7,8 +8,7 @@ import { RootState } from "@/types/redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayDateTime, displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -18,9 +18,6 @@ interface DraftMeetingCardProps {
     meeting: ProcessedMeetingType;
 }
 
-const SWIPE_THRESHOLD = 50; // pixels to trigger the action
-const MAX_SWIPE_DISTANCE = 70; // maximum swipe distance in pixels
-
 export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): React.JSX.Element {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -28,7 +25,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
-    const translateX = useSharedValue(0);
 
     // Track which time is currently selected (index in backupScheduledTimes, or -1 for original)
     const [selectedTimeIndex, setSelectedTimeIndex] = useState(-1);
@@ -222,35 +218,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         }
     };
 
-    // Gesture handler for swipe-to-cycle-times
-    const panGesture = Gesture.Pan()
-        .onUpdate((e) => {
-            // Only allow right swipe up to MAX_SWIPE_DISTANCE
-            translateX.value = Math.max(0, Math.min(MAX_SWIPE_DISTANCE, e.translationX));
-        })
-        .onEnd((e) => {
-            if (e.translationX > SWIPE_THRESHOLD) {
-                // Swipe completed - cycle to next time and slide back smoothly
-                runOnJS(cycleToNextTime)();
-                // Slide back to original position with slight deceleration
-                translateX.value = withTiming(0, {
-                    duration: 200,
-                    easing: Easing.out(Easing.ease)
-                });
-            } else {
-                // Slide back to original position with slight deceleration
-                translateX.value = withTiming(0, {
-                    duration: 200,
-                    easing: Easing.out(Easing.ease)
-                });
-            }
-        });
-
-    const animatedCardStyle = useAnimatedStyle(() => ({
-        transform: [{ translateX: translateX.value }],
-        opacity: 1 - (translateX.value / MAX_SWIPE_DISTANCE) * 0.3, // Fade slightly as it moves
-    }));
-
     const animatedPulseStyle = useAnimatedStyle(() => ({
         transform: [{ translateX: timeTranslateX.value }],
         opacity: timeOpacity.value,
@@ -263,8 +230,8 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     return (
         <View style={styles.outerContainer}>
-            <GestureDetector gesture={panGesture}>
-                <Animated.View style={[styles.container, animatedCardStyle]}>
+            <RightSwipe onSwipeComplete={cycleToNextTime}>
+                <View style={styles.container}>
                     <View style={styles.header}>
                         <View style={styles.titleContainer}>
                             <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
@@ -322,8 +289,8 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                     {DEV_FLAG && (
                         <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}</Text>
                     )}
-                </Animated.View>
-            </GestureDetector>
+                </View>
+            </RightSwipe>
         </View>
     );
 }
