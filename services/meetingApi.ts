@@ -34,6 +34,12 @@ export const meetingApi = createApi({
                 targetType,
                 timeType,
                 sourceType,
+                // NEW: Multiple target users support
+                targetUserIds,
+                intentLabel,
+                suggestionReason,
+                minParticipants,
+                maxParticipants,
             }) => ({
                 url: '/api/create-meeting',
                 method: 'POST',
@@ -45,7 +51,12 @@ export const meetingApi = createApi({
                     targetType,
                     title,
                     timeType,
-
+                    // NEW fields - only include if provided
+                    ...(targetUserIds && { targetUserIds }),
+                    ...(intentLabel && { intentLabel }),
+                    ...(suggestionReason && { suggestionReason }),
+                    ...(minParticipants !== undefined && { minParticipants }),
+                    ...(maxParticipants !== undefined && { maxParticipants }),
                 },
             }),
             // Step 3: invalidatesTags tells RTK Query:

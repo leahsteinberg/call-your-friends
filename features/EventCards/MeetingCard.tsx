@@ -68,17 +68,37 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     );
 };
     
+    // Helper to get target user names - handles both single and multiple target users
+    const getTargetUserNames = () => {
+        // Try new multi-user field first
+        if (meeting.targetUsers && meeting.targetUsers.length > 0) {
+            const names = meeting.targetUsers.map(user => user.name).filter(Boolean);
+            if (names.length > 0) {
+                return names.join(', ');
+            }
+        }
+        // Fallback to single targetUser for backwards compatibility
+        if (meeting.targetUser?.name && meeting.targetUserId) {
+            return meeting.targetUser.name;
+        }
+        // Also check targetUserIds array
+        if (meeting.targetUserIds && meeting.targetUserIds.length > 0) {
+            return null; // IDs exist but no name data
+        }
+        return null;
+    };
+
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
             if (meeting.acceptedUser) {
                 const name = meeting.acceptedUser?.name;
                 return getClaimedSelfMeetingTitle()
             } else {
-                // Check if there's a target user for open meetings
-                const targetName = meeting.targetUser?.name;
-                if (targetName && meeting.targetUserId) {
+                // Check if there are target users for open meetings
+                const targetNames = getTargetUserNames();
+                if (targetNames) {
                     const baseTitle = getOpenMeetingTitle();
-                    return `sent an offer out to → ${targetName}`;
+                    return `sent an offer out to → ${targetNames}`;
                 }
                 return getOpenMeetingTitle();
             }
@@ -86,10 +106,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         const name = meeting.userFrom?.name;
         const baseText = name ? `Accepted a meeting created by ${name}` : null;
 
-        // Check if there's a target user for accepted meetings
-        const targetName = meeting.targetUser?.name;
-        if (baseText && targetName && meeting.targetUserId) {
-            return `${baseText} → ${targetName}`;
+        // Check if there are target users for accepted meetings
+        const targetNames = getTargetUserNames();
+        if (baseText && targetNames) {
+            return `${baseText} → ${targetNames}`;
         }
         return baseText;
     };

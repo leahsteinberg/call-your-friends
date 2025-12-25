@@ -73,9 +73,16 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    // Get target user name if available
-    const getTargetUserName = () => {
-        // Check if the meeting has targetUserId and a corresponding targetUser name
+    // Get target user names - handles both single and multiple target users
+    const getTargetUserNames = () => {
+        // Try new multi-user field first
+        if (offer.meeting?.targetUsers && offer.meeting.targetUsers.length > 0) {
+            const names = offer.meeting.targetUsers.map(user => user.name).filter(Boolean);
+            if (names.length > 0) {
+                return names.join(', ');
+            }
+        }
+        // Fallback to single targetUser for backwards compatibility
         if (offer.meeting?.targetUserId && offer.meeting?.targetUser?.name) {
             return offer.meeting.targetUser.name;
         }
@@ -83,7 +90,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     };
 
     const strings = eventCardText.open_offer;
-    const targetUserName = getTargetUserName();
+    const targetUserName = getTargetUserNames();
 
     return (
         <View style={styles.outerContainer}>

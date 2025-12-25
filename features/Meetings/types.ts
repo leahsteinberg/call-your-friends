@@ -46,7 +46,16 @@ export interface MeetingType extends MeetingEvent {
     targetType: TargetType;
     sourceType: SourceType;
     intentLabel?: string;
+
+    // DEPRECATED: Keep for backwards compatibility
     targetUserId?: string;
+
+    // NEW: Multiple target users support
+    targetUserIds: string[];
+    acceptedUserIds: string[];
+    suggestionReason?: string;
+    minParticipants: number;
+    maxParticipants: number;
 
     title: string;
     broadcastMetadata?: BroadcastMetadata;
@@ -59,14 +68,24 @@ export interface ProcessedMeetingType extends MeetingType {
         name?: string;
         id?: string;
     };
+    acceptedUsers?: Array<{
+        name?: string;
+        id?: string;
+    }>;
     userFrom?: {
         name?: string;
         id?: string;
     };
+    // DEPRECATED: Keep for backwards compatibility
     targetUser?: {
         name?: string;
         id?: string;
     };
+    // NEW: Multiple target users support
+    targetUsers?: Array<{
+        name?: string;
+        id?: string;
+    }>;
 }
 
 export interface MeetingsListProps {

@@ -88,14 +88,23 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    const getTargetUserName = () => {
+    // Helper to get target user names - handles both single and multiple target users
+    const getTargetUserNames = () => {
+        // Try new multi-user field first
+        if (offer.meeting?.targetUsers && offer.meeting.targetUsers.length > 0) {
+            const names = offer.meeting.targetUsers.map(user => user.name).filter(Boolean);
+            if (names.length > 0) {
+                return names.join(', ');
+            }
+        }
+        // Fallback to single targetUser for backwards compatibility
         if (offer.meeting?.targetUserId && offer.meeting?.targetUser?.name) {
             return offer.meeting.targetUser.name;
         }
         return null;
     };
 
-    const targetUserName = getTargetUserName();
+    const targetUserName = getTargetUserNames();
 
     const renderButtons = () => {
         if (offer.offerState !== OPEN_OFFER_STATE) {

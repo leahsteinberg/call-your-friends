@@ -176,9 +176,17 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         }
     };
 
-    // Get the name from the meeting
+    // Get the name from the meeting - handles both single and multiple target users
     const getFromName = () => {
-        return meeting.targetUser.name || 'someone';
+        // Try new multi-user field first
+        if (meeting.targetUsers && meeting.targetUsers.length > 0) {
+            const names = meeting.targetUsers.map(user => user.name).filter(Boolean);
+            if (names.length > 0) {
+                return names.join(', ');
+            }
+        }
+        // Fallback to single targetUser for backwards compatibility
+        return meeting.targetUser?.name || 'someone';
     };
 
     const strings = eventCardText.draft_suggestion;
