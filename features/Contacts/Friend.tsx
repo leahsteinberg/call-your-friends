@@ -13,7 +13,7 @@ import { FriendProps } from "./types";
 
 export default function Friend({ item }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
-  const isBroadcasting = item.isBroadcasting;
+  const isBroadcasting = item.isBroadcastingToMe;
   const isContactIntended = item.isContactIntended;
   const [showCallIntentActions, setShowCallIntentActions] = useState(isContactIntended);
 
@@ -26,7 +26,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
   }, [item.isContactIntended]);
 
   const handleCallIntent = async () => {
-    
+
     try {
       const payload: CallIntentPayload = { targetUserId: item.id };
       await addUserSignal({

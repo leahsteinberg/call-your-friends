@@ -64,6 +64,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
+        console.log("friends ===", friendsResult.data);
 
         // Ensure we have both friends data and userSignals before processing
         if (!friendsResult.data || !userSignals) {

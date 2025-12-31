@@ -98,7 +98,7 @@ export interface FriendProps {
     id: string;
     index?: number;
     isContactIntended?: boolean;
-    isBroadcasting?: boolean;
+    isBroadcastingToMe?: boolean;
     callIntentSignal?: any;
   };
 }
