@@ -87,10 +87,15 @@ export const meetingApi = createApi({
             onQueryStarted: invalidateOffersOnSuccess,
         }),
         broadcastNow: builder.mutation({
-            query: ({ userId }) => ({
+            query: ({ userId, targetUserIds, targetType }) => ({
                 url: '/api/broadcast-now',
                 method: 'POST',
-                body: { userId },
+                body: {
+                    userId,
+                    // NEW fields - only include if provided
+                    ...(targetUserIds && { targetUserIds }),
+                    ...(targetType && { targetType }),
+                },
             }),
             // Invalidate meetings cache when starting broadcast
             invalidatesTags: ['Meeting', 'BroadcastStatus'],

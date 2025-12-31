@@ -8,6 +8,7 @@ import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BOLD_BROWN, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { determineTargetType } from "@/utils/broadcastUtils";
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
@@ -66,8 +67,16 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const handleStartBroadcast = async () => {
         try {
             setIsStarting(true);
+            const targetType = determineTargetType(selectedFriendIds);
+ 
             // Wait for API to succeed before updating Redux
-            await broadcastNow({ userId }).unwrap();
+            console.log("selecteddd", selectedFriendIds)
+            await broadcastNow({
+                userId,
+                targetUserIds: selectedFriendIds.length > 0 ? selectedFriendIds : undefined,
+                targetType,
+            }).unwrap();
+
             // Now update Redux state
             dispatch(startBroadcast());
             // RTK Query will auto-refresh via cache invalidation
@@ -83,14 +92,10 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const handleFriendsSelect = (userIds: string[]) => {
         console.log('Selected friends for broadcast:', userIds);
         setSelectedFriendIds(userIds);
-        // TODO: Implement broadcast to specific friends
-        // This could trigger a direct broadcast to the selected friends
-        // Or initiate a call/meeting with them
     };
 
     return (
         <View style={styles.outerContainer}>
-            {/* Friend Badge Selector - shows badge or stacked avatars, opens modal on tap */}
             <FriendBadgeSelector
                 ref={friendSelectorRef}
                 friends={friends}
@@ -98,7 +103,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 position="bottom-right"
                 selectedFriendIds={selectedFriendIds}
             />
-
             <TouchableOpacity
                 onPress={handleStartBroadcast}
                 disabled={isStarting}
