@@ -7,6 +7,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
+import { getTargetUserNames } from "@/utils/nameStringUtils";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -75,26 +76,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         </View>
     );
 };
-    
-    // Helper to get target user names - handles both single and multiple target users
-    const getTargetUserNames = () => {
-        // Try new multi-user field first
-        if (meeting.targetUsers && meeting.targetUsers.length > 0) {
-            const names = meeting.targetUsers.map(user => user.name).filter(Boolean);
-            if (names.length > 0) {
-                return names.join(', ');
-            }
-        }
-        // Fallback to single targetUser for backwards compatibility
-        if (meeting.targetUser?.name && meeting.targetUserId) {
-            return meeting.targetUser.name;
-        }
-        // Also check targetUserIds array
-        if (meeting.targetUserIds && meeting.targetUserIds.length > 0) {
-            return null; // IDs exist but no name data
-        }
-        return null;
-    };
 
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
@@ -105,7 +86,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 return getClaimedSelfMeetingTitle()
             } else {
                 // Check if there are target users for open meetings
-                const targetNames = getTargetUserNames();
+                const targetNames = getTargetUserNames(meeting);
                 if (targetNames) {
                     const baseTitle = getOpenMeetingTitle();
                     return `sent an offer out to → ${targetNames}`;
@@ -117,7 +98,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         const baseText = name ? `Accepted a meeting created by ${name}` : null;
 
         // Check if there are target users for accepted meetings
-        const targetNames = getTargetUserNames();
+        const targetNames = getTargetUserNames(meeting);
         if (baseText && targetNames) {
             return `${baseText} → ${targetNames}`;
         }

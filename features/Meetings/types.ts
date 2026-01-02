@@ -50,9 +50,17 @@ export interface MeetingType extends MeetingEvent {
     // DEPRECATED: Keep for backwards compatibility
     targetUserId?: string;
     acceptedUserId?: string;
+    targetUser?: {
+        name?: string;
+        id?: string;
+    };
 
     // NEW: Multiple target users support
     targetUserIds: string[];
+    targetUsers?: Array<{
+        name?: string;
+        id?: string;
+    }>;
     acceptedUserIds: string[];
     suggestionReason?: string;
     minParticipants: number;

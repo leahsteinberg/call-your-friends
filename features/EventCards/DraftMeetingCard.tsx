@@ -8,7 +8,7 @@ import { BOLD_BLUE, BOLD_BROWN, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -181,10 +181,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const getFromName = () => {
         // Try new multi-user field first
         if (meeting.targetUsers && meeting.targetUsers.length > 0) {
-            const names = meeting.targetUsers.map(user => user.name).filter(Boolean);
-            if (names.length > 0) {
-                return names.join(', ');
-            }
+            return meeting.targetUsers[0].name
         }
         // Fallback to single targetUser for backwards compatibility
         return meeting.targetUser?.name || 'someone';

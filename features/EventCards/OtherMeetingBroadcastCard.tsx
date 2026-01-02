@@ -6,6 +6,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
+import { getTargetUserNames } from "@/utils/nameStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";

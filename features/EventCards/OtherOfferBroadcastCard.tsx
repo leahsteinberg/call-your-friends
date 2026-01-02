@@ -8,6 +8,7 @@ import {
 import { BOLD_BROWN, BOLD_ORANGE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
+import { getTargetUserNames } from "@/utils/nameStringUtils";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
@@ -89,23 +90,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
-    // Helper to get target user names - handles both single and multiple target users
-    const getTargetUserNames = () => {
-        // Try new multi-user field first
-        if (offer.meeting?.targetUsers && offer.meeting.targetUsers.length > 0) {
-            const names = offer.meeting.targetUsers.map(user => user.name).filter(Boolean);
-            if (names.length > 0) {
-                return names.join(', ');
-            }
-        }
-        // Fallback to single targetUser for backwards compatibility
-        if (offer.meeting?.targetUserId && offer.meeting?.targetUser?.name) {
-            return offer.meeting.targetUser.name;
-        }
-        return null;
-    };
-
-    const targetUserName = getTargetUserNames();
+    const targetUserName = offer.meeting ? getTargetUserNames(offer.meeting) : null;
 
     return (
         <EventCard
