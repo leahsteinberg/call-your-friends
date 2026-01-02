@@ -1,12 +1,13 @@
 import HighFiveStar from "@/assets/images/high-five-star.svg";
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { EventCard } from "@/components/EventCard/EventCard";
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { ACCEPTED_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
@@ -90,98 +91,52 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
     const targetUserName = getTargetUserNames();
 
     return (
-        <View style={styles.outerContainer}>
-        <View >
-            <View style={styles.header}>
-                <View style={styles.nameContainer}>
-                    <Text style={styles.nameText}>
-                        {getFromName()}
-                        {targetUserName && ` → ${targetUserName}`}
-                    </Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                <TouchableOpacity
+        <EventCard backgroundColor={PALE_BLUE}>
+            <EventCard.Header spacing="between" align="start">
+                <EventCard.Title size="large" color={ORANGE}>
+                    {getFromName()}
+                    {targetUserName && ` → ${targetUserName}`}
+                </EventCard.Title>
+
+                <EventCard.Button
                     onPress={handleCancelMeeting}
-                    style={[styles.cancelButton, isCanceling && styles.cancelButtonDisabled]}
-                    disabled={isCanceling}
+                    loading={isCanceling}
+                    variant="ghost"
+                    size="small"
                 >
-                    {isCanceling ? (
-                        <ActivityIndicator size="small" color="orange" />
-                    ) : (
-                        <Text style={styles.cancelButtonText}>Unclaim Call</Text>
-                    )}
-                </TouchableOpacity>
-            </View>
+                    <Text style={styles.cancelButtonText}>Unclaim Call</Text>
+                </EventCard.Button>
+            </EventCard.Header>
 
-            </View>
-            <View style={styles.content}>
+            <EventCard.Body>
                 <Text style={styles.contentText}>You're on a call right now</Text>
-            </View>
-                        
-                {/* High Five Animation */}
-                <HighFiveStar fill={ORANGE} height={20} width={20}/>
 
-            {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-            )}
-        </View>
-        </View>
+                {/* High Five Animation */}
+                <HighFiveStar fill={ORANGE} height={20} width={20} />
+
+                {DEV_FLAG && (
+                    <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                )}
+            </EventCard.Body>
+        </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        marginBottom: CARD_LOWER_MARGIN,
-    },
-    container: {
-        backgroundColor: PALE_BLUE,
-        borderRadius: 8,
-        padding: 12,
-        minHeight: CARD_MIN_HEIGHT,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    nameContainer: {
-        flexDirection: 'row',
-    },
-    nameText: {
-        fontSize: 30,
-        fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    buttonContainer: {},
-    cancelButton: {
-        minWidth: 50,
-        alignItems: 'center'
-    },
-    cancelButtonDisabled: {
-        opacity: 0.6,
-    },
     cancelButtonText: {
         color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
+    contentText: {
+        fontFamily: CustomFonts.ztnatureregular,
+        color: CORNFLOWER_BLUE,
+    },
     debugText: {
         fontSize: 10,
         color: '#999',
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
-    },
-    content: {
-
-    },
-    contentText: {
-        fontFamily: CustomFonts.ztnatureregular,
-        color: CORNFLOWER_BLUE,
-    },
-    animationContainer: {
-        marginTop: 8,
-        alignItems: 'flex-end',
     },
 });

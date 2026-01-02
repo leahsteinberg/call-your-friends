@@ -1,14 +1,15 @@
 import AnimatedText from "@/components/AnimatedText";
+import { EventCard } from "@/components/EventCard/EventCard";
 import TapbackDecoration from "@/components/TapbackDecoration";
 import VibeTapBack from "@/components/VibeTapBack";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -82,134 +83,70 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     };
 
     return (
-        <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id} useWords={true}>
-            <View style={styles.outerContainer}>
-                        {/* Tapback decoration in top-right corner */}
-                        <TapbackDecoration selectedTapback={selectedTapback}
-                        useWords={true} />
+        <EventCard
+            backgroundColor={BOLD_BLUE}
+            gesture={(props) => (
+                <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id} useWords={true}>
+                    {props.children}
+                </VibeTapBack>
+            )}
+        >
+            {/* Tapback decoration in top-right corner */}
+            <EventCard.Decoration position="top-right">
+                <TapbackDecoration selectedTapback={selectedTapback} useWords={true} />
+            </EventCard.Decoration>
 
-                        <View style={styles.container}>
-                            <View style={styles.header}>
-                                <View style={styles.searchingContainer}>
-                                        <Text style={styles.searchingText}>{strings.mainText!()}</Text>
-                                        <AnimatedText
-                                            text="..."
-                                            style={styles.searchingText}
-                                            duration={300}
-                                            staggerDelay={500}
-                                        />
-                                </View>
-                                <TouchableOpacity
-                                    onPress={handleCancelMeeting}
-                                    style={[styles.endBroadcastButton, isEnding && styles.endBroadcastButtonDisabled]}
-                                    disabled={isEnding}
-                                >
-                                    <View style={styles.buttonContainer}>
-        
-                                        {isEnding ? (
-                                            <ActivityIndicator size="small" color="#fff" />
-                                        ) : (
+            <EventCard.Header spacing="between" align="start">
+                <EventCard.Row gap={0}>
+                    <EventCard.Title>{strings.mainText!()}</EventCard.Title>
+                    <AnimatedText
+                        text="..."
+                        style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                        duration={300}
+                        staggerDelay={500}
+                    />
+                </EventCard.Row>
 
-                                            <Text style={styles.endBroadcastButtonText}>{strings.acceptButtonText!()}</Text>
-                                        )}
-                                    </View>
-                                </TouchableOpacity>
+                <EventCard.Button
+                    onPress={handleCancelMeeting}
+                    loading={isEnding}
+                    variant="danger"
+                    size="small"
+                >
+                    <Text style={styles.endBroadcastButtonText}>
+                        {strings.acceptButtonText!()}
+                    </Text>
+                </EventCard.Button>
+            </EventCard.Header>
 
+            <EventCard.Body>
+                <EventCard.StatusText color={CORNFLOWER_BLUE}>
+                    {strings.subtext!(getOtherUserName())}
+                </EventCard.StatusText>
 
-                            </View>
+                <EventCard.Description>
+                    {strings.title!()}
+                </EventCard.Description>
 
-                            <View>
-                                <Text style={styles.statusText}>{strings.subtext!(getOtherUserName())}</Text>
-                                <View >
-                                    <Text style={styles.descriptionText}>{strings.title!()}</Text>
-                                </View>
-                            </View>
-                            {/* <View style={styles.circleContainerRelative}>
-                                <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM}/>
-                            </View> */}
-                            {DEV_FLAG && (
-                                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-                            )}
-                        </View>
-                </View>
-        </VibeTapBack>
+                {DEV_FLAG && (
+                    <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                )}
+            </EventCard.Body>
+        </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        marginBottom: CARD_LOWER_MARGIN,
-        position: 'relative', // Enable absolute positioning for TapbackDecoration
-    },
-    container: {
-        backgroundColor: BOLD_BLUE,
-        borderRadius: 8,
-        padding: 20,
-        overflow: 'hidden', // Clip circles that extend beyond card
-        minHeight: CARD_MIN_HEIGHT,
-    },
-    descriptionText: {
-        fontSize: 20,
-        color: BOLD_BROWN,
-        fontFamily: CustomFonts.ztnaturemedium,
-        opacity: 0.8,
-    },
-    searchingContainer: {
-        flexDirection: 'row',
-        //alignItems: 'center',
-    },
-    circleContainerRelative: {
-        alignSelf: 'flex-start',
-        marginTop: -110,
-        marginLeft: -80,
-        marginBottom: -30,
-        //backgroundColor: PALE_BLUE,
-        zIndex: -1,
-    },
-    buttonContainer: {
-        //backgroundColor: PEACH,
-        alignItems: 'flex-end',
-
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 8,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    searchingText: {
-        fontSize: 28,
+    endBroadcastButtonText: {
+        color: PALE_BLUE,
+        fontSize: 12,
         fontWeight: '600',
-        color: CREAM,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    statusText: {
-        fontSize: 14,
-        color: CORNFLOWER_BLUE,
-        fontFamily: CustomFonts.ztnatureregular,
-
+        fontFamily: CustomFonts.ztnaturemedium,
     },
     debugText: {
         fontSize: 10,
         color: '#666',
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
-    },
-    endBroadcastButton: {
-        minWidth: 40,
-        alignItems: 'center',
-        backgroundColor: BURGUNDY,
-        borderRadius: 15,
-        paddingVertical: 5,
-
-    },
-    endBroadcastButtonDisabled: {
-        opacity: 0.6,
-    },
-    endBroadcastButtonText: {
-        color: PALE_BLUE,
-        fontSize: 12,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
     },
 });
