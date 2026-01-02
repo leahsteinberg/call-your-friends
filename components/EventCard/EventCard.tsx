@@ -50,11 +50,18 @@ interface HeaderProps {
 }
 
 EventCard.Header = function Header({ children, spacing = 'between', align = 'start' }: HeaderProps) {
+  const justifyContentMap = {
+    between: 'space-between' as const,
+    start: 'flex-start' as const,
+    end: 'flex-end' as const,
+    center: 'center' as const,
+  };
+
   return (
     <View style={[
       styles.header,
       {
-        justifyContent: spacing === 'between' ? 'space-between' : `flex-${spacing}`,
+        justifyContent: justifyContentMap[spacing],
         alignItems: align === 'start' ? 'flex-start' : align === 'end' ? 'flex-end' : 'center'
       }
     ]}>
