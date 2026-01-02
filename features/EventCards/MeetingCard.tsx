@@ -1,6 +1,7 @@
 import AnimatedText from "@/components/AnimatedText";
+import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
@@ -8,7 +9,7 @@ import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -153,66 +154,48 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const mainDisplayText = getMainDisplay();
 
-    return (
-        <View style={styles.outerContainer}>
-        <View style={[styles.container, isOldPastMeeting() && styles.oldPastContainer]}>
-            <View style={styles.header}>
-            {mainDisplayText && (
-                <Text style={styles.mainText}>{mainDisplayText}</Text>
-            )}
-                <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={handleCancelMeeting}
-                            style={[styles.deleteButton, isCanceling && styles.deleteButtonDisabled]}
-                            disabled={isCanceling}
-                        >
-                            {isCanceling ? (
-                                <ActivityIndicator size="small" color="red" />
-                            ) : (
-                                <Text style={styles.deleteButtonText}>Cancel</Text>
-                            )}
-                        </TouchableOpacity>
-                </View>
-            </View>
+    // Determine background color and opacity based on meeting state
+    const backgroundColor = isOldPastMeeting() ? '#E8E8E8' : PALE_BLUE;
+    const cardOpacity = isOldPastMeeting() ? 0.7 : 1;
 
-            <Text style={styles.timeText}>{getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}</Text>
-            {DEV_FLAG && (
-                <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-            )}
-        </View>
+    return (
+        <View style={{ opacity: cardOpacity }}>
+            <EventCard backgroundColor={backgroundColor}>
+                <EventCard.Header spacing="between" align="start">
+                    {mainDisplayText && (
+                        <Text style={styles.mainText}>{mainDisplayText}</Text>
+                    )}
+
+                    <EventCard.Button
+                        onPress={handleCancelMeeting}
+                        loading={isCanceling}
+                        variant="ghost"
+                        size="small"
+                    >
+                        <Text style={styles.deleteButtonText}>Cancel</Text>
+                    </EventCard.Button>
+                </EventCard.Header>
+
+                <EventCard.Body>
+                    <Text style={styles.timeText}>
+                        {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
+                    </Text>
+
+                    {DEV_FLAG && (
+                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                    )}
+                </EventCard.Body>
+            </EventCard>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        marginBottom: CARD_LOWER_MARGIN,
-    },
-    container: {
-        backgroundColor: PALE_BLUE,
-        borderRadius: 8,
-        padding: 12,
-        minHeight: CARD_MIN_HEIGHT,
-    },
-    oldPastContainer: {
-        backgroundColor: '#E8E8E8',
-        opacity: 0.7,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //alignItems: 'center',
-        marginBottom: 8,
-    },
-    buttonContainer: {
-    },
     searchingText: {
         fontSize: 20,
         fontWeight: '600',
-        //maxWidth: 100,
         color: ORANGE,
         fontFamily: CustomFonts.ztnaturebold,
-        //flexShrink: 1, // Allow text to wrap
     },
     timeText: {
         fontSize: 16,
@@ -220,7 +203,6 @@ const styles = StyleSheet.create({
         color: BRIGHT_BLUE,
         marginBottom: 4,
         fontFamily: CustomFonts.ztnatureregular,
-
     },
     mainText: {
         fontSize: 20,
@@ -230,27 +212,19 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         flexShrink: 1, // Allow text to wrap/shrink to prevent overflow
     },
-    debugText: {
-        fontSize: 10,
-        color: '#999',
-        marginTop: 4,
-        fontFamily: CustomFonts.ztnaturelight,
-    },
-    deleteButton: {
-        //minWidth: 50,
-        //marginLeft: 10,
-        //alignItems: 'flex-end',
-    },
     displayTimeContainer: {
         flexDirection: 'row',
-    },
-    deleteButtonDisabled: {
-        opacity: 0.6,
     },
     deleteButtonText: {
         color: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturebold
+        fontFamily: CustomFonts.ztnaturebold,
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#999',
+        marginTop: 4,
+        fontFamily: CustomFonts.ztnaturelight,
     },
 });
