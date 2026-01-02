@@ -1,13 +1,14 @@
+import { EventCard } from "@/components/EventCard/EventCard";
 import RightSwipe from "@/components/RightSwipe";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
+import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -237,97 +238,79 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     }));
 
     return (
-        <View style={styles.outerContainer}>
-            <RightSwipe onSwipeComplete={cycleToNextTime}>
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <View style={styles.titleContainer}>
-                            <Text style={styles.titleText}>{strings.nameText!(getFromName())}</Text>
-                        </View>
+        <EventCard
+            backgroundColor={BOLD_BLUE}
+            gesture={(props) => (
+                <RightSwipe onSwipeComplete={cycleToNextTime}>
+                    {props.children}
+                </RightSwipe>
+            )}
+        >
+            <EventCard.Header spacing="between" align="center">
+                <EventCard.Title>{strings.nameText!(getFromName())}</EventCard.Title>
 
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity
-                                onPress={handleDismissSuggestion}
-                                style={[styles.dismissButton, isDismissing && styles.buttonDisabled]}
-                                disabled={isDismissing}
-                            >
-                                {isDismissing ? (
-                                    <ActivityIndicator size="small" color={PALE_BLUE} />
-                                ) : (
-                                    <Text style={styles.dismissButtonText}>{strings.rejectButtonText!()}</Text>
-                                )}
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={handleAcceptSuggestion}
-                                style={[styles.acceptButton, isAccepting && styles.buttonDisabled]}
-                                disabled={isAccepting}
-                            >
-                                {isAccepting ? (
-                                    <ActivityIndicator size="small" color={PALE_BLUE} />
-                                ) : (
-                                    <Text style={styles.acceptButtonText}>{strings.acceptButtonText!()}</Text>
-                                )}
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+                <EventCard.Actions layout="horizontal" spacing={8}>
+                    <EventCard.Button
+                        onPress={handleDismissSuggestion}
+                        loading={isDismissing}
+                        variant="danger"
+                        size="small"
+                    >
+                        <Text style={styles.dismissButtonText}>
+                            {strings.rejectButtonText!()}
+                        </Text>
+                    </EventCard.Button>
 
-                    <View>
-                        <Text style={styles.mainText}>{strings.mainText!(getFromName(), displayTimeDifference(getCurrentScheduledTime()))}</Text>
-                        <Animated.View style={[animatedPulseStyle]}>
-                            <Text style={styles.timeText}>{currentDisplayTime}</Text>
-                        </Animated.View>
-                    </View>
+                    <EventCard.Button
+                        onPress={handleAcceptSuggestion}
+                        loading={isAccepting}
+                        variant="danger"
+                        size="small"
+                    >
+                        <Text style={styles.acceptButtonText}>
+                            {strings.acceptButtonText!()}
+                        </Text>
+                    </EventCard.Button>
+                </EventCard.Actions>
+            </EventCard.Header>
 
-                    {/* Right-edge gradient overlay with arrow (Option 3) - only show if there are backup times */}
-                    {meeting.backupScheduledTimes && meeting.backupScheduledTimes.length > 0 && (
-                        <View style={styles.gradientOverlay}>
-                            <Text style={styles.arrowText}>→</Text>
-                        </View>
-                    )}
+            <EventCard.Body>
+                <Text style={styles.mainText}>
+                    {strings.mainText!(getFromName(), displayTimeDifference(getCurrentScheduledTime()))}
+                </Text>
 
-                    {/* First-time instructional text (Option 4) */}
-                    {showInstruction && (
-                        <Animated.View style={[styles.instructionContainer, animatedInstructionStyle]}>
-                            <TouchableOpacity onPress={dismissInstruction} activeOpacity={0.8}>
-                                <Text style={styles.instructionText}>Swipe for other times →</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    )}
+                {/* Custom animated time carousel */}
+                <Animated.View style={[animatedPulseStyle]}>
+                    <Text style={styles.timeText}>{currentDisplayTime}</Text>
+                </Animated.View>
 
-                    {DEV_FLAG && (
-                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}</Text>
-                    )}
-                </View>
-            </RightSwipe>
-        </View>
+                {/* First-time instructional text */}
+                {showInstruction && (
+                    <Animated.View style={[styles.instructionContainer, animatedInstructionStyle]}>
+                        <TouchableOpacity onPress={dismissInstruction} activeOpacity={0.8}>
+                            <Text style={styles.instructionText}>Swipe for other times →</Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                )}
+
+                {DEV_FLAG && (
+                    <Text style={styles.debugText}>
+                        ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}
+                    </Text>
+                )}
+            </EventCard.Body>
+
+            {/* Right-edge arrow decoration - only show if there are backup times */}
+            {meeting.backupScheduledTimes && meeting.backupScheduledTimes.length > 0 && (
+                <EventCard.Decoration position="right-edge">
+                    <Text style={styles.arrowText}>→</Text>
+                </EventCard.Decoration>
+            )}
+        </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        marginBottom: CARD_LOWER_MARGIN,
-    },
-    container: {
-        backgroundColor: BOLD_BLUE,
-        borderRadius: 8,
-        padding: 20,
-        minHeight: CARD_MIN_HEIGHT,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    titleContainer: {
-        flex: 1,
-    },
-    titleText: {
-        fontSize: 28,
-        fontWeight: '600',
-        color: CREAM,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
     mainText: {
         fontSize: 14,
         color: CREAM,
@@ -340,57 +323,17 @@ const styles = StyleSheet.create({
         color: BOLD_BROWN,
         fontFamily: CustomFonts.ztnaturemedium,
     },
-    debugText: {
-        fontSize: 10,
-        color: '#666',
-        marginTop: 4,
-        fontFamily: CustomFonts.ztnaturelight,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        gap: 8,
-        alignItems: 'center',
-    },
-    acceptButton: {
-        backgroundColor: BURGUNDY,
-        borderRadius: 15,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-        minWidth: 60,
-        alignItems: 'center',
-    },
     acceptButtonText: {
         color: PALE_BLUE,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
-    dismissButton: {
-        backgroundColor: BURGUNDY,
-        borderRadius: 15,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-        minWidth: 60,
-        alignItems: 'center',
-    },
     dismissButtonText: {
         fontSize: 12,
         color: PALE_BLUE,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
-    },
-    buttonDisabled: {
-        opacity: 0.6,
-    },
-    gradientOverlay: {
-        position: 'absolute',
-        right: 0,
-        top: 0,
-        bottom: 0,
-        width: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
     },
     arrowText: {
         fontSize: 24,
@@ -407,5 +350,11 @@ const styles = StyleSheet.create({
         color: BOLD_BROWN,
         fontFamily: CustomFonts.ztnaturemedium,
         opacity: 0.8,
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#666',
+        marginTop: 4,
+        fontFamily: CustomFonts.ztnaturelight,
     },
 });
