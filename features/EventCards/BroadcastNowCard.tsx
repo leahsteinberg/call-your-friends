@@ -1,16 +1,16 @@
 import AnimatedText from "@/components/AnimatedText";
+import { EventCard } from "@/components/EventCard/EventCard";
 import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/FriendBadgeSelector";
 import { eventCardText } from "@/constants/event_card_strings";
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import type { Friend } from "@/features/Contacts/types";
 import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastNowMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, BOLD_BROWN, CREAM } from "@/styles/styles";
+import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -95,7 +95,8 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     return (
-        <View style={styles.outerContainer}>
+        <View style={{ position: 'relative' }}>
+            {/* Friend selector floats outside card */}
             <FriendBadgeSelector
                 ref={friendSelectorRef}
                 friends={friends}
@@ -103,128 +104,39 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 position="bottom-right"
                 selectedFriendIds={selectedFriendIds}
             />
-            <TouchableOpacity
-                onPress={handleStartBroadcast}
-                disabled={isStarting}
-                style={styles.container}
-            >
-                <Animated.View style={[animatedCardStyle]}>
-                    <View style={styles.header}>
-                        <View style={styles.titleContainer}>
-                            {/* Option B: Change title when loading */}
-                            <Text style={styles.titleText}>
-                                {strings.mainText()}
-                            </Text>
-                            {isStarting &&
+
+            {/* Wrap EventCard in Animated.View for pulse animation */}
+            <Animated.View style={[animatedCardStyle]}>
+                <EventCard
+                    backgroundColor={BOLD_BLUE}
+                    onPress={handleStartBroadcast}
+                    disabled={isStarting}
+                >
+                    <EventCard.Header>
+                        <EventCard.Row gap={0}>
+                            <EventCard.Title>{strings.mainText()}</EventCard.Title>
+                            {isStarting && (
                                 <AnimatedText
                                     text="..."
-                                    style={styles.loadingText}
+                                    style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
                                     duration={300}
                                     staggerDelay={500}
                                 />
-                            }
-                        </View>
-                        <View>
-                            {/* <View style={styles.broadcastButton}>
-                            <View style={styles.broadcastButtonContainer}>
-                                <TouchableOpacity
-                                    onPress={handleStartBroadcast}
-                                    style={[styles.startButton, isStarting && styles.startButtonDisabled]}
-                                    disabled={isStarting}
-                                >
-                                    {!isStarting && (
-                                        <Text style={styles.startButtonText}>{strings.acceptButtonText!()}</Text>
-                                    )}
-                                </TouchableOpacity>
-                            </View>
-                            </View> */}
-                        </View>
-                    </View>
+                            )}
+                        </EventCard.Row>
+                    </EventCard.Header>
+
                     {!isStarting && (
-                        <View>
-                            <Text style={styles.descriptionText}>
+                        <EventCard.Body>
+                            <EventCard.Description>
                                 {strings.title()}
-                            </Text>
-                        </View>
+                            </EventCard.Description>
+                        </EventCard.Body>
                     )}
-                </Animated.View>
-            </TouchableOpacity>
+                </EventCard>
+            </Animated.View>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-    outerContainer: {
-        marginBottom: CARD_LOWER_MARGIN,
-    },
-    container: {
-        backgroundColor: BOLD_BLUE,
-        borderRadius: 8,
-        padding: 18,
-        paddingBottom: 18,
-        minHeight: CARD_MIN_HEIGHT,
-    },
-    titleContainer: {
-        flexDirection: 'row',
-    },
-    broadcastButton: {
-        position: 'absolute',
-        marginTop: -50,
-        marginLeft: -40,
-        backgroundColor: BOLD_BLUE,
-        paddingBottom: 15,
-        paddingTop: 5,
-        borderRadius: 10,
-    },
-    broadcastButtonContainer: {
-        alignSelf: 'flex-start',
-
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    titleText: {
-        fontSize: 28,
-        fontWeight: '600',
-        color: CREAM,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    descriptionText: {
-        fontSize: 20,
-        color: BOLD_BROWN,
-        fontFamily: CustomFonts.ztnaturemedium,
-        opacity: 0.8,
-    },
-    startButton: {
-        minWidth: 50,
-        alignItems: 'center',
-        // justifyContent: 'flex-start',
-        //alignContent: 'flex-start',
-        borderRadius: 10,
-        //backgroundColor: ORANGE,
-    },
-    startButtonDisabled: {
-        opacity: 0.6,
-    },
-    startButtonText: {
-        fontSize: 12,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
-    },
-    loadingTextContainer: {
-        flexDirection: 'row',
-        //alignItems: 'center',
-    },
-
-    loadingText: {
-        fontSize: 28,
-        fontWeight: '600',
-        color: CREAM,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-
-});
+// All styles now provided by EventCard components
