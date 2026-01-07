@@ -295,6 +295,8 @@ const styles = StyleSheet.create({
   },
   badgeWithAvatars: {
     alignItems: 'flex-end', // Align children to the right
+    marginRight: 10,
+    marginBottom: 10,
   },
   friendsBadge: {
     paddingHorizontal: 14,

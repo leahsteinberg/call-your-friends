@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   contentWrapper: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    marginBottom: 5,
   },
   avatarItem: {
     alignItems: 'center',
