@@ -191,7 +191,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         activeOpacity={0.7}
       >
         {showStackedAvatars ? (
-          <View>
+          <View style={styles.badgeWithAvatars}>
             <StackedFriendAvatars
               selectedFriends={selectedFriends}
               expanded={showSelector}
@@ -292,6 +292,9 @@ const styles = StyleSheet.create({
   },
   containerRelative: {
     // No position styling for relative layout
+  },
+  badgeWithAvatars: {
+    alignItems: 'flex-end', // Align children to the right
   },
   friendsBadge: {
     paddingHorizontal: 14,
