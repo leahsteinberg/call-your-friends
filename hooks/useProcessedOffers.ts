@@ -26,11 +26,11 @@ export function useProcessedOffers(forceReprocess = 0) {
         const processAsync = async () => {
             if (rawOffers && rawOffers.length > 0) {
                 const processed = await processOffers(rawOffers);
-
                 // Filter out stale offers where scheduledEnd is in the past
                 const now = new Date();
                 const activeOffers = processed.filter(offer => {
-                    const scheduledEnd = new Date(offer.scheduledEnd);
+
+                    const scheduledEnd = new Date(offer.meeting.scheduledEnd);
                     return scheduledEnd > now;
                 });
 

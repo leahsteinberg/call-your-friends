@@ -66,7 +66,6 @@ export default function TodayList(): React.JSX.Element {
                     }));
 
                     console.log("raw meetings", todayMeetings)
-
                 const todayOffers: TodayItem[] = offers
                     // .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
                     .map((offer: ProcessedOfferType) => ({
