@@ -1,10 +1,10 @@
 import {
-  MeetingType,
-  ProcessedMeetingType,
-  IMMEDIATE_TIME_TYPE,
-  FUTURE_TIME_TYPE,
-  OPEN_TARGET_TYPE,
   FRIEND_SPECIFIC_TARGET_TYPE,
+  FUTURE_TIME_TYPE,
+  IMMEDIATE_TIME_TYPE,
+  MeetingType,
+  OPEN_TARGET_TYPE,
+  ProcessedMeetingType,
   SYSTEM_PATTERN_SOURCE_TYPE,
   SYSTEM_REAL_TIME_SOURCE_TYPE
 } from './types';
@@ -14,7 +14,7 @@ import {
  * Replaces: meeting.meetingType === 'BROADCAST'
  */
 export function isBroadcastMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === IMMEDIATE_TIME_TYPE && meeting.targetType === OPEN_TARGET_TYPE;
+  return meeting.timeType === IMMEDIATE_TIME_TYPE;// && meeting.targetType === OPEN_TARGET_TYPE;
 }
 
 /**

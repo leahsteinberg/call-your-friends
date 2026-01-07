@@ -27,6 +27,7 @@ interface AvatarItemProps {
 function AvatarItem({ friend, index, expanded, avatarSpacing, avatarSize, nameOpacity, nameHeight }: AvatarItemProps) {
   const animatedStyle = useAnimatedStyle(() => ({
     marginLeft: index === 0 ? 0 : avatarSpacing.value,
+
   }));
 
   const animatedAvatarStyle = useAnimatedStyle(() => ({

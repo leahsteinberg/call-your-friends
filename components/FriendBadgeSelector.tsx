@@ -151,7 +151,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
       case 'bottom-left':
         return { bottom: 10, left: 10 };
       case 'bottom-right':
-        return { bottom: 10, right: 10 };
+        return { bottom: 0, right: 10 };
       case 'top-left':
         return { top: 10, left: 10 };
       case 'top-right':

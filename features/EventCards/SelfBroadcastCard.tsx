@@ -39,12 +39,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         return isClaimed ? (
             <EventCard.Row gap={0}>
             <EventCard.Title>{strings.mainText!(getOtherUserName())}</EventCard.Title>
-            <AnimatedText
-                text="..."
-                style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
-                duration={300}
-                staggerDelay={500}
-            />
         </EventCard.Row>
         ) : (
             <EventCard.Row gap={0}>
