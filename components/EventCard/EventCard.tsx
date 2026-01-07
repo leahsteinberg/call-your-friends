@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontWeight: '600',
     fontFamily: CustomFonts.ztnaturebold,
+    flexShrink: 1,
   },
   descriptionText: {
     fontFamily: CustomFonts.ztnaturemedium,
@@ -320,5 +321,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexShrink: 1,
   },
 });

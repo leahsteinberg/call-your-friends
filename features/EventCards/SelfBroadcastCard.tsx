@@ -7,6 +7,7 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { ACCEPTED_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
@@ -28,8 +29,36 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const [selectedTapback, setSelectedTapback] = useState<string | null>(null);
 
     const meetingState: MeetingState = meeting.meetingState;
-    const strings = eventCardText.broadcast_self_open;
+    const isClaimed = meetingState === ACCEPTED_MEETING_STATE;
+    const strings = isClaimed ?
+        eventCardText.broadcast_self_accepted
+        : eventCardText.broadcast_self_open ;
 
+
+    const getTitle = () => {
+        return isClaimed ? (
+            <EventCard.Row gap={0}>
+            <EventCard.Title>{strings.mainText!(getOtherUserName())}</EventCard.Title>
+            <AnimatedText
+                text="..."
+                style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                duration={300}
+                staggerDelay={500}
+            />
+        </EventCard.Row>
+        ) : (
+            <EventCard.Row gap={0}>
+                <EventCard.Title>{strings.mainText!()}</EventCard.Title>
+                <AnimatedText
+                    text="..."
+                    style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                    duration={300}
+                    staggerDelay={500}
+                />
+            </EventCard.Row>
+        );
+
+    };
     // Get the name(s) to display - handles both single and multiple accepted users
     const getOtherUserName = () => {
         // Try new multi-user field first
@@ -97,16 +126,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </EventCard.Decoration>
 
             <EventCard.Header spacing="between" align="start">
-                <EventCard.Row gap={0}>
-                    <EventCard.Title>{strings.mainText!()}</EventCard.Title>
-                    <AnimatedText
-                        text="..."
-                        style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
-                        duration={300}
-                        staggerDelay={500}
-                    />
-                </EventCard.Row>
-
+                {getTitle()}
                 <EventCard.Button
                     onPress={handleCancelMeeting}
                     loading={isEnding}
@@ -120,9 +140,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </EventCard.Header>
 
             <EventCard.Body>
-                <EventCard.StatusText color={CREAM}>
-                    {strings.subtext!(getOtherUserName())}
-                </EventCard.StatusText>
 
                 <EventCard.Description>
                     {strings.title!()}
