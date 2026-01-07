@@ -138,8 +138,9 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
     opacity: modalOpacity.value,
   }));
   const getButtonText = () => {
-    const friendCount = selectedFriendIds.length;
-    return friendCount === 1 ? `Share with one friend` : `Share with ${friendCount} friends`;
+    const friendCount = selectedFriends.length;
+    return friendCount === 0 ? `Share with all friends`
+      : (friendCount === 1 ? `Share with ${selectedFriends[0].name}` : `Share with ${friendCount} friends`);
   }
 
   // Get position styles for badge
@@ -202,7 +203,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
         ) : (
           <View style={styles.friendsBadge}>
-            <Text style={styles.badgeText}>All friends</Text>
+            <Text style={styles.badgeText}>{getButtonText()}</Text>
           </View>
         )}
       </TouchableOpacity>

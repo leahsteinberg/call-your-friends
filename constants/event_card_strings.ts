@@ -28,11 +28,11 @@ export const eventCardText: Record<string, EventCardStrings> = {
         title: () => `Friends can call you now.`,
     },
     broadcast_now_card: {
-        mainText: () => `Broadcast to friends`,
+        mainText: () => `Talk with friends now`,
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'Start',
         // Legacy support
-        title: () => `Tap to say you're free to talk.`,
+        title: () => `Tap to share that you're free for calls.`,
     },
 
     // OFFERS
