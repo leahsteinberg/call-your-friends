@@ -1,5 +1,4 @@
 import CallIntentDecorator from "@/components/CallIntentDecorator";
-import ConcentricCircles from "@/components/ConcentricCircles";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
@@ -81,12 +80,12 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
       />
 
       <View style={styles.container}>
-        {/* Concentric circles animation for broadcasting */}
+        {/* Concentric circles animation for broadcasting
         {isBroadcasting && (
           <View style={styles.circleContainerRelative}>
             <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM} />
           </View>
-        )}
+        )} */}
 
         {/* Header with avatar, name, and call now button */}
         <View style={styles.header}>
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
     },
     broadcastingText: {
       fontSize: 14,
-      color: CORNFLOWER_BLUE,
+      color: CREAM,
       fontFamily: CustomFonts.ztnatureregular,
     },
     callNowButton: {

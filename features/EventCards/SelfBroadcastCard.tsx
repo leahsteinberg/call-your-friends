@@ -6,7 +6,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
@@ -120,7 +120,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </EventCard.Header>
 
             <EventCard.Body>
-                <EventCard.StatusText color={CORNFLOWER_BLUE}>
+                <EventCard.StatusText color={CREAM}>
                     {strings.subtext!(getOtherUserName())}
                 </EventCard.StatusText>
 

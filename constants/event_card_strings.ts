@@ -21,7 +21,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
 
     broadcast_self_open: {
         nameText: () => '',
-        mainText: () => `You are free to talk`,
+        mainText: () => `Sharing that you're free to talk`,
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'End',
         // Legacy support
@@ -79,7 +79,9 @@ export const eventCardText: Record<string, EventCardStrings> = {
         title: (userName: string) => `Your broadcast is pending by  ${userName}. `,
     },
     broadcast_self_accepted: {
-        title: (userName: string) => `Your broadcast was accepted by ${userName}.`,
+        nameText: () => '',
+        mainText: (userName?: string) => userName ? `${userName} has claimed your open call.` : undefined,
+        acceptButtonText: () => 'End',
     },
     broadcast_self_cancelled: {
         title: () => `Your broadcast was cancelled by you.`,
