@@ -137,6 +137,10 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
     transform: [{ scale: modalScale.value }],
     opacity: modalOpacity.value,
   }));
+  const getButtonText = () => {
+    const friendCount = selectedFriendIds.length;
+    return friendCount === 1 ? `Share with one friend` : `Share with ${friendCount} friends`;
+  }
 
   // Get position styles for badge
   const getBadgePositionStyle = () => {
@@ -186,10 +190,16 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         activeOpacity={0.7}
       >
         {showStackedAvatars ? (
-          <StackedFriendAvatars
-            selectedFriends={selectedFriends}
-            expanded={showSelector}
-          />
+          <View>
+            <StackedFriendAvatars
+              selectedFriends={selectedFriends}
+              expanded={showSelector}
+            />
+            <View style={styles.friendsBadge}>
+              <Text style={styles.badgeText}>{getButtonText()}</Text>
+            </View>
+          </View>
+
         ) : (
           <View style={styles.friendsBadge}>
             <Text style={styles.badgeText}>All friends</Text>
