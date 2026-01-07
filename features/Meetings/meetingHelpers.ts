@@ -22,7 +22,7 @@ export function isBroadcastMeeting(meeting: MeetingType | ProcessedMeetingType):
  * Replaces: meeting.meetingType === 'ADVANCE'
  */
 export function isAdvanceMeeting(meeting: MeetingType | ProcessedMeetingType): boolean {
-  return meeting.timeType === FUTURE_TIME_TYPE && meeting.targetType === OPEN_TARGET_TYPE;
+  return meeting.timeType === FUTURE_TIME_TYPE;// && meeting.targetType === OPEN_TARGET_TYPE;
 }
 
 /**

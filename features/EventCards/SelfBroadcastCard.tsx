@@ -7,14 +7,13 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
-import { ACCEPTED_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import type { ProcessedMeetingType } from "../Meetings/types";
 
 interface SelfBroadcastCardProps {
     meeting: ProcessedMeetingType;
@@ -28,47 +27,31 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const [isEnding, setIsEnding] = useState(false);
     const [selectedTapback, setSelectedTapback] = useState<string | null>(null);
 
-    const meetingState: MeetingState = meeting.meetingState;
-    const isClaimed = meetingState === ACCEPTED_MEETING_STATE;
-    const strings = isClaimed ?
-        eventCardText.broadcast_self_accepted
-        : eventCardText.broadcast_self_open ;
+
+    const acceptedUsers = meeting.acceptedUsers || [];
+    const targetUsers = meeting.targetUsers || [];
+
+    const hasAcceptedUsers = acceptedUsers.length > 0;
+    const hasTargetUsers = targetUsers.length > 0;
 
 
-    const getTitle = () => {
-        return isClaimed ? (
-            <EventCard.Row gap={0}>
-            <EventCard.Title>{strings.mainText!(getOtherUserName())}</EventCard.Title>
-        </EventCard.Row>
-        ) : (
-            <EventCard.Row gap={0}>
-                <EventCard.Title>{strings.mainText!()}</EventCard.Title>
-                <AnimatedText
-                    text="..."
-                    style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
-                    duration={300}
-                    staggerDelay={500}
-                />
-            </EventCard.Row>
-        );
+    // Get display names based on current state
+    const displayNames = hasAcceptedUsers
+        ? acceptedUsers.map(user => user.name).filter(Boolean).join(', ')
+        : hasTargetUsers
+            ? targetUsers.map(user => user.name).filter(Boolean).join(', ')
+            : null;
 
-    };
-    // Get the name(s) to display - handles both single and multiple accepted users
-    const getOtherUserName = () => {
-        // Try new multi-user field first
-        if (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) {
-            const names = meeting.acceptedUsers.map(user => user.name).filter(Boolean);
-            if (names.length > 0) {
-                return names.join(', ');
-            }
-        }
-        // Fallback to single acceptedUser for backwards compatibility
-        if (meeting.acceptedUser) {
-            return meeting.acceptedUser?.name;
-        }
-    }
+    const strings = hasAcceptedUsers
+        ? eventCardText.broadcast_self_accepted
+        : eventCardText.broadcast_self_open;
 
-    // Handle tapback selection
+    const showAnimatedDots = !hasAcceptedUsers;
+
+    const titleText = displayNames
+        ? strings.mainText!(displayNames)
+        : strings.mainText!();
+
     const handleTapback = (iconId: string | null, cardData?: any) => {
         console.log(`Tapback selected: ${iconId} for meeting ${cardData}`);
         setSelectedTapback(iconId);
@@ -79,7 +62,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         try {
             setIsEnding(true);
 
-            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
 
             try {
@@ -120,7 +102,17 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </EventCard.Decoration>
 
             <EventCard.Header spacing="between" align="start">
-                {getTitle()}
+                <EventCard.Row gap={0}>
+                    <EventCard.Title>{titleText}</EventCard.Title>
+                    {showAnimatedDots && (
+                        <AnimatedText
+                            text="..."
+                            style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                            duration={300}
+                            staggerDelay={500}
+                        />
+                    )}
+                </EventCard.Row>
                 <EventCard.Button
                     onPress={handleCancelMeeting}
                     loading={isEnding}

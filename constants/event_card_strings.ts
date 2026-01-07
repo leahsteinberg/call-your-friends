@@ -21,7 +21,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
 
     broadcast_self_open: {
         nameText: () => '',
-        mainText: () => `Sharing that you're free to talk`,
+        mainText: (userName?: string) => userName ? `Sharing with ${userName} that you're free to talk` : `Sharing that you're free to talk`,
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'End',
         // Legacy support
