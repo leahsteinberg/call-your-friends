@@ -1,4 +1,3 @@
-import HighFiveStar from "@/assets/images/high-five-star.svg";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
@@ -95,9 +94,6 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
 
             <EventCard.Body>
                 <Text style={styles.contentText}>You're on a call right now</Text>
-
-                {/* High Five Animation */}
-                <HighFiveStar fill={ORANGE} height={20} width={20} />
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
