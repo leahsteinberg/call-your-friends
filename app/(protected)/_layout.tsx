@@ -1,6 +1,6 @@
-import Butterfly from "@/assets/images/butterfly.svg";
-import FlowerBlob from "@/assets/images/flower-blob.svg";
-import HighFiveStar from "@/assets/images/high-five-star.svg";
+import SmileyFace from "@/assets/images/smiley-face.svg";
+import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
+import CloudIcon from "@/assets/images/cloud-icon.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
@@ -102,7 +102,7 @@ const Layout = () => {
                     ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
-                            Icon={FlowerBlob}
+                            Icon={SmileyFace}
                             focused={focused}
                             color={color}
                         />
@@ -120,7 +120,7 @@ const Layout = () => {
                     ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
-                            Icon={HighFiveStar}
+                            Icon={SpeechBubbles}
                             focused={focused}
                             color={color}
                         />
@@ -138,7 +138,7 @@ const Layout = () => {
                     ),
                     tabBarIcon: ({ color, focused }) => (
                         <TabIconWithCircle
-                            Icon={Butterfly}
+                            Icon={CloudIcon}
                             focused={focused}
                             color={color}
                         />
