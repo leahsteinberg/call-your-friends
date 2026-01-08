@@ -4,7 +4,7 @@ import HighFiveStar from "@/assets/images/high-five-star.svg";
 
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BOLD_BLUE, BOLD_GREEN, LIGHT_BURGUNDY, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_ORANGE, PALE_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
@@ -58,7 +58,7 @@ const Layout = () => {
     return (
         <Tabs
         screenOptions={{
-            tabBarActiveTintColor: BOLD_GREEN,
+            tabBarActiveTintColor: BOLD_ORANGE,
             tabBarInactiveTintColor: BOLD_BLUE,
             tabBarStyle: {
               backgroundColor: 'transparent',
@@ -175,11 +175,8 @@ const styles = StyleSheet.create({
     tabLabelFocused: {
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 22,
-        color: BOLD_GREEN,
+        color: BOLD_ORANGE,
         transform: [{ translateY: -8 }],
-        //textShadowColor: ,
-        // textShadowOffset: { width: 0, height: 0 },
-        // textShadowRadius: 8,
     },
 });
 
