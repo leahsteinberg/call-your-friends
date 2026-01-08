@@ -5,6 +5,7 @@ import HighFiveStar from "@/assets/images/high-five-star.svg";
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { BOLD_BLUE, BOLD_GREEN, LIGHT_BURGUNDY, PALE_BLUE } from "@/styles/styles";
+import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -60,7 +61,7 @@ const Layout = () => {
             tabBarActiveTintColor: BOLD_GREEN,
             tabBarInactiveTintColor: BOLD_BLUE,
             tabBarStyle: {
-              backgroundColor: LIGHT_BURGUNDY,
+              backgroundColor: 'transparent',
               borderTopColor: 'transparent',
               borderTopWidth: 0,
               height: 80,
@@ -80,8 +81,15 @@ const Layout = () => {
               shadowOpacity: 0.3,
               shadowRadius: 8,
               elevation: 10,
-              overflow: 'visible',
+              overflow: 'hidden',
             },
+            tabBarBackground: () => (
+              <BlurView
+                intensity={80}
+                tint="light"
+                style={StyleSheet.absoluteFill}
+              />
+            ),
             headerShown: false,
           }}
         >
