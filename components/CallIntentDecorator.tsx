@@ -1,5 +1,5 @@
-import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { CustomFonts } from "@/constants/theme";
+import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
@@ -93,7 +93,7 @@ export default function CallIntentDecorator({
         onPress={handleDecoratorPress}
         activeOpacity={0.7}
       >
-        <Text style={styles.decoratorText}>remind me</Text>
+        <Text style={styles.decoratorText}>we'll help you talk to them soon</Text>
       </TouchableOpacity>
 
       {/* Never Mind Modal */}

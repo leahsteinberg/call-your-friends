@@ -80,12 +80,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
       />
 
       <View style={styles.container}>
-        {/* Concentric circles animation for broadcasting
-        {isBroadcasting && (
-          <View style={styles.circleContainerRelative}>
-            <ConcentricCircles isActive={true} primaryColor={BOLD_BLUE} secondaryColor={CREAM} />
-          </View>
-        )} */}
 
         {/* Header with avatar, name, and call now button */}
         <View style={styles.header}>
@@ -112,7 +106,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               <Text style={styles.callNowText}>Call Now</Text>
             </TouchableOpacity>
           )}
-                  {/* "Will Call Soon" chip - only show when NOT in call intent mode */}
         {!showCallIntentActions && (
           <View style={styles.actionsSection}>
             <TouchableOpacity
@@ -123,7 +116,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               {isCallingIntent ? (
                 <ActivityIndicator size="small" color={CORNFLOWER_BLUE} />
               ) : (
-                <Text style={styles.willCallSoonText}>Will Call Soon</Text>
+                <Text style={styles.willCallSoonText}>Call Soon</Text>
               )}
             </TouchableOpacity>
           </View>
