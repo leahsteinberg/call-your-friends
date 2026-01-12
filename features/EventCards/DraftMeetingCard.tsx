@@ -1,5 +1,6 @@
 import { EventCard } from "@/components/EventCard/EventCard";
 import RightSwipe from "@/components/GestureComponents/RightSwipe";
+import TimePickerModal from "@/components/Pickers/TimePickerModal";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
@@ -26,6 +27,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
+    const [showTimePickerModal, setShowTimePickerModal] = useState(false);
 
     // Track which time is currently selected (index in backupScheduledTimes, or -1 for original)
     const [selectedTimeIndex, setSelectedTimeIndex] = useState(-1);
@@ -290,12 +292,31 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                     </Animated.View>
                 )}
 
+                {/* Propose Different Time Button */}
+                <TouchableOpacity
+                    style={styles.proposeTimeButton}
+                    onPress={() => setShowTimePickerModal(true)}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.proposeTimeButtonText}>Propose Different Time</Text>
+                </TouchableOpacity>
+
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>
                         ID: {meeting.id.substring(0, 4)} (DRAFT) - Time {selectedTimeIndex + 1}/{getTotalTimesCount()}
                     </Text>
                 )}
             </EventCard.Body>
+
+            {/* Time Picker Modal */}
+            <TimePickerModal
+                visible={showTimePickerModal}
+                onClose={() => setShowTimePickerModal(false)}
+                onConfirm={(day, timeOfDay) => {
+                    console.log('Selected time:', day, timeOfDay);
+                    // TODO: Handle the selected time
+                }}
+            />
 
             {/* Right-edge arrow decoration - only show if there are backup times */}
             {meeting.backupScheduledTimes && meeting.backupScheduledTimes.length > 0 && (
@@ -353,5 +374,21 @@ const styles = StyleSheet.create({
         color: '#666',
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
+    },
+    proposeTimeButton: {
+        backgroundColor: PALE_BLUE,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: BOLD_BLUE,
+        marginTop: 12,
+        alignSelf: 'flex-start',
+    },
+    proposeTimeButtonText: {
+        fontSize: 13,
+        fontWeight: '600',
+        color: BOLD_BLUE,
+        fontFamily: CustomFonts.ztnaturebold,
     },
 });
