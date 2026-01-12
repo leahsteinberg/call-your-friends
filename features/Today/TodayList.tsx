@@ -157,12 +157,12 @@ export default function TodayList(): React.JSX.Element {
         }
         return null;
     };
-
-    if (isLoading) {
+    const x = true
+    if (x) {
         return (
             <View style={styles.container}>
                 <TodayListLoader
-                    selectedLoader={LoaderType.ANIMATED_DOTS}
+                    selectedLoader={LoaderType.PULSING_SPEECH_BUBBLES}
                 />
             </View>
         );
