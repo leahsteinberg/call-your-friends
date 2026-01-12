@@ -1,8 +1,8 @@
+import CloudIcon from "@/assets/images/cloud-icon.svg";
 import SmileyFace from "@/assets/images/smiley-face.svg";
 import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
-import CloudIcon from "@/assets/images/cloud-icon.svg";
-
 import { CustomFonts } from "@/constants/theme";
+import { DEV_FLAG } from "@/environment";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { BOLD_BLUE, BOLD_ORANGE, PALE_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
@@ -13,7 +13,6 @@ import { StyleSheet, Text, View } from "react-native";
 const ICON_SIZE = 33;
 const CIRCLE_SIZE = 70;
 
-// Custom tab label that "pops" when selected
 function TabLabel({ label, focused }: { label: string; focused: boolean }) {
     return (
         <Text
@@ -27,7 +26,6 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
     );
 }
 
-// Icon wrapper with animated circle background
 function TabIconWithCircle({
     Icon,
     focused,
@@ -53,10 +51,9 @@ function TabIconWithCircle({
 const Layout = () => {
     usePushNotifications();
 
-
-
     return (
         <Tabs
+        initialRouteName="index"
         screenOptions={{
             tabBarActiveTintColor: BOLD_ORANGE,
             tabBarInactiveTintColor: BOLD_BLUE,
@@ -123,6 +120,8 @@ const Layout = () => {
                             Icon={SpeechBubbles}
                             focused={focused}
                             color={color}
+                            height={ICON_SIZE+ 10}
+                            width={ICON_SIZE+10}
                         />
                     ),
                     headerShown: false,
@@ -133,6 +132,7 @@ const Layout = () => {
                 name="settings"
                 options={{
                     title: 'Settings',
+                    href: DEV_FLAG ? undefined : null,// hide behind dev flag
                     tabBarLabel: ({ focused }) => (
                         <TabLabel label="Settings" focused={focused} />
                     ),
@@ -141,6 +141,8 @@ const Layout = () => {
                             Icon={CloudIcon}
                             focused={focused}
                             color={color}
+                            height={ICON_SIZE+ 15}
+                            width={ICON_SIZE+15}
                         />
                     ),
                     headerShown: false,
