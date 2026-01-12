@@ -1,5 +1,6 @@
 import { EventCard } from "@/components/EventCard/EventCard";
 import RightSwipe from "@/components/GestureComponents/RightSwipe";
+import InlineTimePicker from "@/components/Pickers/InlineTimePicker";
 import TimePickerModal from "@/components/Pickers/TimePickerModal";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
@@ -282,6 +283,14 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 <Animated.View style={[animatedPulseStyle]}>
                     <Text style={styles.timeText}>{currentDisplayTime}</Text>
                 </Animated.View>
+
+                {/* Inline Time Picker */}
+                <InlineTimePicker
+                    onTimeChange={(day, timeOfDay) => {
+                        console.log('Selected time:', day, timeOfDay);
+                        // TODO: Handle the selected time
+                    }}
+                />
 
                 {/* First-time instructional text */}
                 {showInstruction && (
