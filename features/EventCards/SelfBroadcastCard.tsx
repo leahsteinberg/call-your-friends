@@ -94,7 +94,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 </EventCard.Decoration>
             }
 
-
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
                     <EventCard.Title>{titleText}</EventCard.Title>

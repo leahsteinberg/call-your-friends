@@ -1,3 +1,4 @@
+import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
@@ -6,7 +7,6 @@ import {
     useRejectOfferMutation
 } from "@/services/offersApi";
 import { BOLD_BROWN, BOLD_ORANGE } from "@/styles/styles";
-import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
 import React, { useEffect, useState } from "react";
@@ -98,6 +98,15 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
             onPress={handleAccept}
             disabled={isAccepting}
         >
+            {offer.meeting?.intentLabel &&
+                <EventCard.Decoration position="top-right">
+                    <VibeButton
+                        selectedVibe={offer.meeting.intentLabel}
+                        displayOnly={true}
+                    />
+                </EventCard.Decoration>
+            }
+            
             <EventCard.Header>
                 <EventCard.Title>
                     {strings.nameText!(getFromName())}

@@ -1,3 +1,4 @@
+import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
@@ -76,6 +77,15 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
 
     return (
         <EventCard backgroundColor={PALE_BLUE}>
+
+            {meeting.intentLabel &&
+                <EventCard.Decoration position="top-right">
+                    <VibeButton
+                        selectedVibe={meeting.intentLabel}
+                        displayOnly={true}
+                    />
+                </EventCard.Decoration>
+            }
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Title size="large" color={ORANGE}>
                     {getFromName()}

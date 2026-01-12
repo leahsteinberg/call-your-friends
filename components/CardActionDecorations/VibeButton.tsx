@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CREAM, ORANGE } from "@/styles/styles";
+import { BOLD_BLUE, CREAM, GREEN_AVOCADO } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         borderStyle: 'dashed',
     },
     vibeButtonFilled: {
-        backgroundColor: ORANGE,
+        backgroundColor: GREEN_AVOCADO,
         borderWidth: 2,
         borderColor: CREAM,
         borderStyle: 'solid',
