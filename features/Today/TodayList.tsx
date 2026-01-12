@@ -14,6 +14,7 @@ import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
+import TodayListLoader, { LoaderType } from "./LoadingAnimations/TodayListLoader";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
 function isToday(dateString: string): boolean {
@@ -36,8 +37,10 @@ export default function TodayList(): React.JSX.Element {
     const insets = useSafeAreaInsets();
 
     // Use custom hooks for data fetching and processing
-    const { meetings, refetch: refetchMeetings } = useProcessedMeetings();
-    const { offers, refetch: refetchOffers } = useProcessedOffers(forceReprocess);
+    const { meetings, isLoading: meetingsLoading, refetch: refetchMeetings } = useProcessedMeetings();
+    const { offers, isLoading: offersLoading, refetch: refetchOffers } = useProcessedOffers(forceReprocess);
+
+    const isLoading = meetingsLoading || offersLoading;
 
     // Check if there's an active self-created broadcast meeting (excluding PAST meetings)
     const hasSelfBroadcastMeeting = todayItems.some(item => {
@@ -154,6 +157,16 @@ export default function TodayList(): React.JSX.Element {
         }
         return null;
     };
+
+    if (isLoading) {
+        return (
+            <View style={styles.container}>
+                <TodayListLoader
+                    selectedLoader={LoaderType.ANIMATED_DOTS}
+                />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
