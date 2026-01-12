@@ -1,5 +1,5 @@
 import { useGetMeetingsQuery } from "@/services/meetingApi";
-import { CANCELED_MEETING_STATE, PAST_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
+import { CANCELED_MEETING_STATE, DRAFT_MEETING_STATE, PAST_MEETING_STATE, SEARCHING_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,6 +34,7 @@ export function useProcessedMeetings() {
                 const filteredMeetings = rawMeetings.filter(m => {
                     if (m.meetingState === CANCELED_MEETING_STATE || m.meetingState === PAST_MEETING_STATE) return false;
                     if (m.meetingState === SEARCHING_MEETING_STATE && new Date(m.scheduledEnd).getTime() < now) return false;
+                    if (m.meetingState === DRAFT_MEETING_STATE && new Date(m.scheduledEnd).getTime() < now) return false;
                     return true;
                 });
                 const processed = await processMeetings(filteredMeetings);
