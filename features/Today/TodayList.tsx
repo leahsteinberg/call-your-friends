@@ -13,7 +13,7 @@ import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { ProcessedMeetingType } from "../Meetings/types";
 import { ProcessedOfferType } from "../Offers/types";
-import TodayListLoader, { LoaderType } from "./LoadingAnimations/TodayListLoader";
+import TodayListLoader from "./LoadingAnimations/TodayListLoader";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
 function isToday(dateString: string): boolean {
@@ -163,7 +163,6 @@ export default function TodayList(): React.JSX.Element {
         return (
             <View style={styles.container}>
                 <TodayListLoader
-                    selectedLoader={LoaderType.PULSING_SPEECH_BUBBLES}
                 />
             </View>
         );

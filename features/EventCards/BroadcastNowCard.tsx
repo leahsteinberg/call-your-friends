@@ -73,6 +73,18 @@ export default function BroadcastNowCard(): React.JSX.Element {
         // TODO: Send vibe to server
     };
 
+    const getMainText = () => {
+        if (selectedFriendIds.length > 0) {
+            const selectedFriends = friends.filter(friend =>
+                selectedFriendIds.includes(friend.id)
+            );
+            const selectedFriendNames = selectedFriends.map((f) => f.name);
+
+            return `Share with ${selectedFriendNames[0]}${selectedFriendNames.length > 1 ? ` and ${selectedFriendNames.length-1} more friend` :``}`;
+        }
+        return strings.mainText();
+    }
+
     const handleStartBroadcast = async () => {
         try {
             setIsStarting(true);
@@ -122,17 +134,9 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     onPress={handleStartBroadcast}
                     disabled={isStarting}
                 >
-                    {/* Vibe badge in top-right corner */}
-                    <EventCard.Decoration position="top-right">
-                        <VibeButton
-                            selectedVibe={selectedVibe}
-                            onVibeSelect={handleVibeSelect}
-                        />
-                    </EventCard.Decoration>
-
                     <EventCard.Header>
                         <EventCard.Row gap={0}>
-                            <EventCard.Title>{strings.mainText()}</EventCard.Title>
+                            <EventCard.Title>{getMainText()}</EventCard.Title>
                             {isStarting && (
                                 <AnimatedText
                                     text="..."
@@ -149,6 +153,10 @@ export default function BroadcastNowCard(): React.JSX.Element {
                             <EventCard.Description>
                                 {strings.title()}
                             </EventCard.Description>
+                            <VibeButton
+                                selectedVibe={selectedVibe}
+                                onVibeSelect={handleVibeSelect}
+                            />
                         </EventCard.Body>
                     )}
                 </EventCard>
@@ -156,3 +164,5 @@ export default function BroadcastNowCard(): React.JSX.Element {
         </View>
     );
 }
+
+// All styles now provided by EventCard components
