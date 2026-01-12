@@ -254,6 +254,9 @@ const styles = StyleSheet.create({
     padding: 18,
     overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
+
+
+    
   },
   header: {
     flexDirection: 'row',
