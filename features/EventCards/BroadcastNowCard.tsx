@@ -1,5 +1,6 @@
 import AnimatedText from "@/components/AnimationComponents/AnimatedText";
 import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/CardActionDecorations/FriendBadgeSelector";
+import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
@@ -20,6 +21,8 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const [broadcastNow] = useBroadcastNowMutation();
     const [isStarting, setIsStarting] = useState(false);
     const strings = eventCardText.broadcast_now_card;
+    const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
+
 
     // Friends state and API
     const [friends, setFriends] = useState<Friend[]>([]);
@@ -64,6 +67,12 @@ export default function BroadcastNowCard(): React.JSX.Element {
         opacity: pulseOpacity.value
     }));
 
+    const handleVibeSelect = (vibeId: string | null) => {
+        console.log(`Vibe selected: ${vibeId}`);
+        setSelectedVibe(vibeId);
+        // TODO: Send vibe to server
+    };
+
     const handleStartBroadcast = async () => {
         try {
             setIsStarting(true);
@@ -75,6 +84,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 userId,
                 targetUserIds: selectedFriendIds.length > 0 ? selectedFriendIds : undefined,
                 targetType,
+                intentLabel: selectedVibe,
             }).unwrap();
 
             // Now update Redux state
@@ -131,6 +141,10 @@ export default function BroadcastNowCard(): React.JSX.Element {
                             <EventCard.Description>
                                 {strings.title()}
                             </EventCard.Description>
+                            <VibeButton
+                    selectedVibe={selectedVibe}
+                    onVibeSelect={handleVibeSelect}
+                />
                         </EventCard.Body>
                     )}
                 </EventCard>

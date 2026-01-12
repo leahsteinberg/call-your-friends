@@ -118,11 +118,10 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     {strings.title!()}
                 </EventCard.Description>
 
-                <VibeButton
-                    selectedVibe={selectedVibe}
-                    onVibeSelect={handleVibeSelect}
-                    useWords={true}
-                />
+                {meeting.intentLabel && <VibeButton
+                    selectedVibe={meeting.intentLabel || null}
+                    displayOnly={true}
+                />}
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>

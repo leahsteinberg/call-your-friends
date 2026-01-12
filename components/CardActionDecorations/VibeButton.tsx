@@ -4,25 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
-// Import SVG icons for tapback
-import BirdSoaring from "@/assets/images/bird-soaring.svg";
-import ClapBurst from "@/assets/images/clap-burst.svg";
-import HighFiveStar from "@/assets/images/high-five-star.svg";
-import PaperAirplane from "@/assets/images/paper-airplane.svg";
-import StarPerson from "@/assets/images/star-person.svg";
-
-// Tapback icon options
-const TAPBACK_ICONS = [
-    { id: 'bird', Component: BirdSoaring, label: 'Bird' },
-    { id: 'clap', Component: ClapBurst, label: 'Clap' },
-    { id: 'star', Component: HighFiveStar, label: 'Star' },
-    { id: 'airplane', Component: PaperAirplane, label: 'Airplane' },
-    { id: 'person', Component: StarPerson, label: 'Person' },
-];
 
 // Tapback word options
-const TAPBACK_WORDS = [
-    { id: 'hi', text: 'Just Hi', label: 'Hi' },
+const VIBE_WORDS = [
+    { id: 'hi', text: 'Just Saying Hi', label: 'Just Saying Hi' },
     { id: 'catchup', text: 'Catch Up', label: 'Catch up' },
     { id: 'miss', text: 'Miss You', label: 'Miss you' },
     { id: 'yap', text: 'Yap Time', label: 'Yap' },
@@ -31,7 +16,6 @@ const TAPBACK_WORDS = [
 interface VibeButtonProps {
     selectedVibe: string | null;
     onVibeSelect: (vibeId: string | null) => void;
-    useWords?: boolean; // If true, shows word options instead of SVG icons
     displayOnly?: boolean; // If true, button is disabled and only displays the current vibe
 }
 
@@ -49,22 +33,17 @@ interface VibeButtonProps {
  * <VibeButton
  *   selectedVibe={vibe}
  *   onVibeSelect={setVibe}
- *   useWords={true}
  * />
  * ```
  */
 export default function VibeButton({
     selectedVibe,
     onVibeSelect,
-    useWords = false,
     displayOnly = false
 }: VibeButtonProps): React.JSX.Element {
     const [showModal, setShowModal] = useState(false);
 
-    // Choose which set of options to display
-    const vibeOptions = useWords ? TAPBACK_WORDS : TAPBACK_ICONS;
 
-    // Animation values for modal popup
     const modalTranslateY = useSharedValue(30); // Start 30px below final position
     const modalOpacity = useSharedValue(0); // Start transparent
 
@@ -112,13 +91,8 @@ export default function VibeButton({
             return "Add a Vibe";
         }
 
-        if (useWords) {
-            const word = TAPBACK_WORDS.find(w => w.id === selectedVibe);
-            return word?.text || "Add a Vibe";
-        } else {
-            const icon = TAPBACK_ICONS.find(i => i.id === selectedVibe);
-            return icon?.label || "Add a Vibe";
-        }
+        const word = VIBE_WORDS.find(w => w.id === selectedVibe);
+        return word?.text || "Add a Vibe";
     };
 
     return (
@@ -150,9 +124,8 @@ export default function VibeButton({
                                 animatedPopupStyle,
                             ]}
                         >
-                            {useWords ? (
-                                // Word-based vibes
-                                TAPBACK_WORDS.map((word) => (
+                            {(
+                                VIBE_WORDS.map((word) => (
                                     <TouchableOpacity
                                         key={word.id}
                                         style={styles.vibeWordButton}
@@ -162,23 +135,7 @@ export default function VibeButton({
                                         <Text style={styles.vibeWordText}>{word.text}</Text>
                                     </TouchableOpacity>
                                 ))
-                            ) : (
-                                // Icon-based vibes
-                                TAPBACK_ICONS.map((icon) => (
-                                    <TouchableOpacity
-                                        key={icon.id}
-                                        style={styles.vibeIcon}
-                                        onPress={() => handleVibeSelect(icon.id)}
-                                        activeOpacity={0.7}
-                                    >
-                                        <icon.Component
-                                            width={40}
-                                            height={40}
-                                            fill={BOLD_BLUE}
-                                        />
-                                    </TouchableOpacity>
-                                ))
-                            )}
+                            ) }
 
                             {/* Separator */}
                             <View style={styles.separator} />
