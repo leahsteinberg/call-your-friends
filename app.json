@@ -15,8 +15,7 @@
         "applinks:call-your-friends.expo.app"
       ],
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false,
-        "NSHealthShareUsageDescription": "Use your steps data times to help find times to talk to friends while you're both walking."
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -40,11 +39,6 @@
     },
     "plugins": [
       "expo-notifications",
-      ["@kingstinct/react-native-healthkit", {
-        "NSHealthShareUsageDescription": "Use your steps data to help find times to chat with friends while walking.",
-        "NSHealthUpdateUsageDescription": "Use your steps data to help find times to chat with friends while walking.",
-        "background": true
-      }],
       "expo-router",
       [
         "expo-splash-screen",

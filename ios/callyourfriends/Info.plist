@@ -55,10 +55,6 @@
     </dict>
     <key>NSContactsUsageDescription</key>
     <string>Allow Call Your Friends to access your contacts.</string>
-    <key>NSHealthShareUsageDescription</key>
-    <string>Use your steps data to help find times to chat with friends while walking.</string>
-    <key>NSHealthUpdateUsageDescription</key>
-    <string>Use your steps data to help find times to chat with friends while walking.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
