@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
+import ContactsLoader from "./ContactsLoader";
 import ContactsList from "./ContactsList";
 import ContactsSelector from "./ContactsSelector";
 import InvitePhoneNumber from "./InvitePhoneNumber";
@@ -127,13 +128,17 @@ export default function ContactsComponent(): React.JSX.Element {
                 </View>
             }
             <View style={styles.listComponent}>
-                <ContactsList
-                    friends={friends}
-                    friendRequests={friendRequests}
-                    sentInvites={processedSentInvites}
-                    onRefresh={handleRefresh}
-                    refreshing={refreshing}
-                />
+                {isLoading ? (
+                    <ContactsLoader />
+                ) : (
+                    <ContactsList
+                        friends={friends}
+                        friendRequests={friendRequests}
+                        sentInvites={processedSentInvites}
+                        onRefresh={handleRefresh}
+                        refreshing={refreshing}
+                    />
+                )}
             </View>
             {
                 Platform.OS !== 'web' ?

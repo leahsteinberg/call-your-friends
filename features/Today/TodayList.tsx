@@ -6,7 +6,6 @@ import { RootState } from "@/types";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
-import Animated, { Easing, Layout, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import BroadcastNowCard from "../EventCards/BroadcastNowCard";
@@ -108,13 +107,15 @@ export default function TodayList(): React.JSX.Element {
             // Wrap SelfBroadcastCard with pop-in animation
             if (isBroadcastMeeting(meeting) && meeting.userFromId === userId && meeting.meetingState !== PAST_MEETING_STATE) {
                 return (
-                    <Animated.View
+                    <View>
+                    {/* <Animated.View
                         key={`self-broadcast-${meeting.id}`}
                         entering={ZoomIn.duration(300).easing(Easing.inOut(Easing.ease))}
                         layout={Layout.duration(300).easing(Easing.inOut(Easing.ease))}
-                    >
+                    > */}
                         {card}
-                    </Animated.View>
+                    {/* </Animated.View> */}
+                    </View>
                 );
             }
 
@@ -138,13 +139,13 @@ export default function TodayList(): React.JSX.Element {
         // This prevents visual gaps during the transition
         if (!hasSelfBroadcastMeeting) {
             return (
-                <Animated.View
-                    key="broadcast-now-card"
-                    exiting={ZoomOut.duration(300)}
-                    layout={Layout.springify()}
-                >
+                // <Animated.View
+                //     key="broadcast-now-card"
+                //     exiting={ZoomOut.duration(300)}
+                //     layout={Layout.springify()}
+                // >
                     <BroadcastNowCard />
-                </Animated.View>
+                // </Animated.View>
             );
         }
         return null;
@@ -158,7 +159,7 @@ export default function TodayList(): React.JSX.Element {
         return null;
     };
     const x = true
-    if (x) {
+    if (isLoading) {
         return (
             <View style={styles.container}>
                 <TodayListLoader
