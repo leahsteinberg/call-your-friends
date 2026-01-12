@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { BOLD_BLUE, CREAM, ORANGE } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 
 // Tapback word options
@@ -37,11 +37,10 @@ export default function VibeButton({
             modalTranslateY.value = 30;
             modalOpacity.value = 0;
 
-            // Animate popup in - slides up with spring, fades in linearly
-            modalTranslateY.value = withSpring(0, {
-                damping: 15,
-                stiffness: 200,
-            });
+            modalTranslateY.value = withTiming(1, {
+                duration: 300,
+                easing: Easing.inOut(Easing.ease),
+              });
             modalOpacity.value = withTiming(1, {
                 duration: 200,
                 easing: Easing.linear,
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     vibeButtonEmpty: {
-        backgroundColor: ORANGE,//'rgba(255, 255, 255, 0.15)',
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
         borderWidth: 1.5,
         borderColor: CREAM,
         borderStyle: 'dashed',
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalContainer: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: CREAM,
         borderRadius: 30,
         paddingHorizontal: 12,

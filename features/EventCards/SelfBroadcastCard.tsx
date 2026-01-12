@@ -84,12 +84,16 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
             {/* Vibe badge in top-right corner */}
-            {<EventCard.Decoration position="top-right">
-                <VibeButton
-                    selectedVibe={selectedVibe}
-                    displayOnly={true}
-                />
-            </EventCard.Decoration>}
+            
+            {selectedVibe &&
+                <EventCard.Decoration position="top-right">
+                    <VibeButton
+                        selectedVibe={selectedVibe}
+                        displayOnly={true}
+                    />
+                </EventCard.Decoration>
+            }
+
 
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
@@ -100,6 +104,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                             style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
                             duration={300}
                             staggerDelay={500}
+                            inline={true}
                         />
                     )}
                 </EventCard.Row>
