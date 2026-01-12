@@ -93,7 +93,7 @@ export default function CallIntentDecorator({
         onPress={handleDecoratorPress}
         activeOpacity={0.7}
       >
-        <Text style={styles.decoratorText}>Will call soon</Text>
+        <Text style={styles.decoratorText}>We'll help you talk soon</Text>
       </TouchableOpacity>
 
       {/* Never Mind Modal */}

@@ -116,7 +116,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               {isCallingIntent ? (
                 <ActivityIndicator size="small" color={CORNFLOWER_BLUE} />
               ) : (
-                <Text style={styles.willCallSoonText}>Help me call soon</Text>
+                <Text style={styles.willCallSoonText}>talk soon</Text>
               )}
             </TouchableOpacity>
           </View>
