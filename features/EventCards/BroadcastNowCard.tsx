@@ -122,6 +122,14 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     onPress={handleStartBroadcast}
                     disabled={isStarting}
                 >
+                    {/* Vibe badge in top-right corner */}
+                    <EventCard.Decoration position="top-right">
+                        <VibeButton
+                            selectedVibe={selectedVibe}
+                            onVibeSelect={handleVibeSelect}
+                        />
+                    </EventCard.Decoration>
+
                     <EventCard.Header>
                         <EventCard.Row gap={0}>
                             <EventCard.Title>{strings.mainText()}</EventCard.Title>
@@ -141,10 +149,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
                             <EventCard.Description>
                                 {strings.title()}
                             </EventCard.Description>
-                            <VibeButton
-                    selectedVibe={selectedVibe}
-                    onVibeSelect={handleVibeSelect}
-                />
                         </EventCard.Body>
                     )}
                 </EventCard>
@@ -152,5 +156,3 @@ export default function BroadcastNowCard(): React.JSX.Element {
         </View>
     );
 }
-
-// All styles now provided by EventCard components

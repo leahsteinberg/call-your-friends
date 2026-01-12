@@ -24,7 +24,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [endBroadcastRequest] = useBroadcastEndMutation();
     const [isEnding, setIsEnding] = useState(false);
-    const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
+    const selectedVibe = meeting.intentLabel || null;
 
 
     const acceptedUsers = meeting.acceptedUsers || [];
@@ -51,11 +51,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         ? strings.mainText!(displayNames)
         : strings.mainText!();
 
-    const handleVibeSelect = (vibeId: string | null) => {
-        console.log(`Vibe selected: ${vibeId} for meeting ${meeting.id}`);
-        setSelectedVibe(vibeId);
-        // TODO: Send vibe to server
-    };
 
     const handleCancelMeeting = async () => {
         try {
@@ -88,6 +83,14 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
+            {/* Vibe badge in top-right corner */}
+            {<EventCard.Decoration position="top-right">
+                <VibeButton
+                    selectedVibe={selectedVibe}
+                    displayOnly={true}
+                />
+            </EventCard.Decoration>}
+
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
                     <EventCard.Title>{titleText}</EventCard.Title>
@@ -117,11 +120,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 <EventCard.Description>
                     {strings.title!()}
                 </EventCard.Description>
-
-                {meeting.intentLabel && <VibeButton
-                    selectedVibe={meeting.intentLabel || null}
-                    displayOnly={true}
-                />}
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>

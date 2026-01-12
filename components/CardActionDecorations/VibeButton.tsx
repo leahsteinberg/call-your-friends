@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CREAM, ORANGE } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
@@ -15,30 +15,13 @@ const VIBE_WORDS = [
 
 interface VibeButtonProps {
     selectedVibe: string | null;
-    onVibeSelect: (vibeId: string | null) => void;
+    onVibeSelect?: (vibeId: string | null) => void;
     displayOnly?: boolean; // If true, button is disabled and only displays the current vibe
 }
 
-/**
- * VibeButton - Reusable vibe selection button component for event cards
- *
- * Displays a button that opens a modal with vibe/reaction options.
- * When no vibe is selected, shows "Add a Vibe".
- * When a vibe is selected, shows the selected vibe text.
- *
- * Usage:
- * ```tsx
- * const [vibe, setVibe] = useState<string | null>(null);
- *
- * <VibeButton
- *   selectedVibe={vibe}
- *   onVibeSelect={setVibe}
- * />
- * ```
- */
 export default function VibeButton({
     selectedVibe,
-    onVibeSelect,
+    onVibeSelect=undefined,
     displayOnly = false
 }: VibeButtonProps): React.JSX.Element {
     const [showModal, setShowModal] = useState(false);
@@ -81,32 +64,40 @@ export default function VibeButton({
 
     // Handle vibe selection
     const handleVibeSelect = (vibeId: string | null) => {
-        onVibeSelect(vibeId);
+        onVibeSelect?.(vibeId);
         setShowModal(false);
     };
 
     // Get button text based on selected vibe
     const getButtonText = () => {
         if (!selectedVibe) {
-            return "Add a Vibe";
+            return "+ ADD A VIBE";
         }
 
         const word = VIBE_WORDS.find(w => w.id === selectedVibe);
-        return word?.text || "Add a Vibe";
+        return word?.text.toUpperCase() || "+ ADD A VIBE";
     };
+
+    const hasVibe = !!selectedVibe;
 
     return (
         <>
             <TouchableOpacity
                 style={[
                     styles.vibeButton,
+                    hasVibe ? styles.vibeButtonFilled : styles.vibeButtonEmpty,
                     displayOnly && styles.vibeButtonDisabled
                 ]}
                 onPress={handleButtonPress}
                 activeOpacity={displayOnly ? 1 : 0.7}
                 disabled={displayOnly}
             >
-                <Text style={styles.vibeButtonText}>{getButtonText()}</Text>
+                <Text style={[
+                    styles.vibeButtonText,
+                    hasVibe ? styles.vibeButtonTextFilled : styles.vibeButtonTextEmpty
+                ]}>
+                    {getButtonText()}
+                </Text>
             </TouchableOpacity>
 
             {/* Vibe Selection Modal */}
@@ -158,21 +149,39 @@ export default function VibeButton({
 
 const styles = StyleSheet.create({
     vibeButton: {
-        backgroundColor: PALE_BLUE,
-        paddingHorizontal: 14,
-        paddingVertical: 8,
-        borderRadius: 20,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 16,
+        alignSelf: 'flex-start',
+    },
+    vibeButtonEmpty: {
+        backgroundColor: ORANGE,//'rgba(255, 255, 255, 0.15)',
+        borderWidth: 1.5,
+        borderColor: CREAM,
+        borderStyle: 'dashed',
+    },
+    vibeButtonFilled: {
+        backgroundColor: ORANGE,
         borderWidth: 2,
-        borderColor: BOLD_BLUE,
+        borderColor: CREAM,
+        borderStyle: 'solid',
     },
     vibeButtonDisabled: {
-        opacity: 0.7,
+        opacity: 0.85,
     },
     vibeButtonText: {
-        color: BOLD_BLUE,
-        fontSize: 13,
-        fontWeight: '600',
         fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 10,
+        letterSpacing: 0.5,
+    },
+    vibeButtonTextEmpty: {
+        color: CREAM,
+        opacity: 0.8,
+        fontWeight: '500',
+    },
+    vibeButtonTextFilled: {
+        color: BOLD_BLUE,
+        fontWeight: '700',
     },
     modalOverlay: {
         flex: 1,

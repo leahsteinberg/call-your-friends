@@ -1,8 +1,8 @@
+import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
+import { BOLD_BROWN, BURGUNDY, CREAM } from '@/styles/styles';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
-import { BOLD_BROWN, BURGUNDY, CREAM } from '@/styles/styles';
 
 // ============================================
 // ROOT COMPONENT
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
     padding: 18,
-    overflow: 'hidden',
+    overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
   },
   header: {
