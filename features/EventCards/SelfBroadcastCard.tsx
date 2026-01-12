@@ -1,6 +1,5 @@
 import AnimatedText from "@/components/AnimationComponents/AnimatedText";
-import TapbackDecoration from "@/components/CardActionDecorations/TapbackDecoration";
-import VibeTapBack from "@/components/CardActionDecorations/VibeTapBack";
+import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
@@ -25,7 +24,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [endBroadcastRequest] = useBroadcastEndMutation();
     const [isEnding, setIsEnding] = useState(false);
-    const [selectedTapback, setSelectedTapback] = useState<string | null>(null);
+    const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
 
 
     const acceptedUsers = meeting.acceptedUsers || [];
@@ -52,10 +51,10 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
         ? strings.mainText!(displayNames)
         : strings.mainText!();
 
-    const handleTapback = (iconId: string | null, cardData?: any) => {
-        console.log(`Tapback selected: ${iconId} for meeting ${cardData}`);
-        setSelectedTapback(iconId);
-        // TODO: Send tapback to server
+    const handleVibeSelect = (vibeId: string | null) => {
+        console.log(`Vibe selected: ${vibeId} for meeting ${meeting.id}`);
+        setSelectedVibe(vibeId);
+        // TODO: Send vibe to server
     };
 
     const handleCancelMeeting = async () => {
@@ -88,19 +87,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     };
 
     return (
-        <EventCard
-            backgroundColor={BOLD_BLUE}
-            gesture={(props) => (
-                <VibeTapBack onTapbackSelect={handleTapback} cardData={meeting.id} useWords={true}>
-                    {props.children}
-                </VibeTapBack>
-            )}
-        >
-            {/* Tapback decoration in top-right corner */}
-            <EventCard.Decoration position="top-right">
-                <TapbackDecoration selectedTapback={selectedTapback} useWords={true} />
-            </EventCard.Decoration>
-
+        <EventCard backgroundColor={BOLD_BLUE}>
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
                     <EventCard.Title>{titleText}</EventCard.Title>
@@ -130,6 +117,12 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 <EventCard.Description>
                     {strings.title!()}
                 </EventCard.Description>
+
+                <VibeButton
+                    selectedVibe={selectedVibe}
+                    onVibeSelect={handleVibeSelect}
+                    useWords={true}
+                />
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
