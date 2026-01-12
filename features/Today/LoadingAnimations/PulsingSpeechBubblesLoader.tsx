@@ -6,6 +6,8 @@ import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
+const SCALE = 100;
+
 export default function PulsingSpeechBubblesLoader(): React.JSX.Element {
     // Scale animations - each bubble pulses at different rates
     const scale1 = useSharedValue(1);
@@ -56,8 +58,8 @@ export default function PulsingSpeechBubblesLoader(): React.JSX.Element {
 
         rotate1.value = withRepeat(
             withSequence(
-                withTiming(-5, { duration: 2000 }),
-                withTiming(5, { duration: 2000 })
+                withTiming(5, { duration: 2000 }),
+                withTiming(15, { duration: 2000 })
             ),
             -1,
             true
@@ -170,13 +172,13 @@ export default function PulsingSpeechBubblesLoader(): React.JSX.Element {
             {/* Arranged in a circular cluster */}
             <View style={styles.bubbleCluster}>
                 <Animated.View style={[styles.bubble1, animatedStyle1]}>
-                    <SpeechBubble1 width={100} height={100} fill={BOLD_BLUE} />
+                    <SpeechBubble1 width={SCALE*1} height={SCALE*1} fill={BOLD_BLUE} />
                 </Animated.View>
                 <Animated.View style={[styles.bubble2, animatedStyle2]}>
-                    <SpeechBubble2 width={80} height={80} fill={BOLD_ORANGE} />
+                    <SpeechBubble2 width={SCALE*.80} height={SCALE*.80} fill={BOLD_ORANGE} />
                 </Animated.View>
                 <Animated.View style={[styles.bubble3, animatedStyle3]}>
-                    <SpeechBubble3 width={65} height={65} fill={PALE_BLUE} />
+                    <SpeechBubble3 width={SCALE*.65} height={SCALE*.65} fill={PALE_BLUE} />
                 </Animated.View>
             </View>
         </View>
@@ -191,8 +193,8 @@ const styles = StyleSheet.create({
         paddingVertical: 60,
     },
     bubbleCluster: {
-        width: 200,
-        height: 190,
+        width: SCALE*2,
+        height: SCALE*1.9,
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
