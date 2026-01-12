@@ -1,4 +1,4 @@
-import AnimatedText from "@/components/AnimatedText";
+import AnimatedText from "@/components/AnimationComponents/AnimatedText";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";

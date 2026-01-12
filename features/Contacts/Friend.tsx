@@ -1,4 +1,4 @@
-import CallIntentDecorator from "@/components/CallIntentDecorator";
+import CallIntentDecorator from "@/components/CardActionDecorations/CallIntentDecorator";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";

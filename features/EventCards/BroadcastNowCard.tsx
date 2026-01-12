@@ -1,6 +1,6 @@
-import AnimatedText from "@/components/AnimatedText";
+import AnimatedText from "@/components/AnimationComponents/AnimatedText";
+import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/CardActionDecorations/FriendBadgeSelector";
 import { EventCard } from "@/components/EventCard/EventCard";
-import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/FriendBadgeSelector";
 import { eventCardText } from "@/constants/event_card_strings";
 import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import type { Friend } from "@/features/Contacts/types";

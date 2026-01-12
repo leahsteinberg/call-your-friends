@@ -1,5 +1,5 @@
 import { EventCard } from "@/components/EventCard/EventCard";
-import RightSwipe from "@/components/RightSwipe";
+import RightSwipe from "@/components/GestureComponents/RightSwipe";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";

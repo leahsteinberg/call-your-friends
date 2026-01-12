@@ -1,7 +1,7 @@
-import AnimatedText from "@/components/AnimatedText";
+import AnimatedText from "@/components/AnimationComponents/AnimatedText";
+import TapbackDecoration from "@/components/CardActionDecorations/TapbackDecoration";
+import VibeTapBack from "@/components/CardActionDecorations/VibeTapBack";
 import { EventCard } from "@/components/EventCard/EventCard";
-import TapbackDecoration from "@/components/TapbackDecoration";
-import VibeTapBack from "@/components/VibeTapBack";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
