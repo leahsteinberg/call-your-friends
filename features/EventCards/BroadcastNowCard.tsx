@@ -80,7 +80,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
             );
             const selectedFriendNames = selectedFriends.map((f) => f.name);
 
-            return `Share with ${selectedFriendNames[0]}${selectedFriendNames.length > 1 ? ` and ${selectedFriendNames.length-1} more friend` :``}`;
+            return `Share with ${selectedFriendNames[0]}${selectedFriendNames.length > 1 ? ` and ${selectedFriendNames.length-1} more friend` : ``}`;
         }
         return strings.mainText();
     }
