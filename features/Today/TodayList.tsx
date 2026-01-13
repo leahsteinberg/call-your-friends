@@ -52,6 +52,17 @@ export default function TodayList(): React.JSX.Element {
         return false;
     });
 
+    // Check if the user has accepted another user's broadcast (excluding PAST meetings)
+    const hasAcceptedOtherBroadcast = todayItems.some(item => {
+        if (item.type === 'meeting') {
+            const meeting = item.data as ProcessedMeetingType;
+            return isBroadcastMeeting(meeting) &&
+                   meeting.userFromId !== userId &&
+                   meeting.meetingState !== PAST_MEETING_STATE;
+        }
+        return false;
+    });
+
     // Process and filter data when it changes
     useEffect(() => {
         const processData = async () => {
@@ -135,9 +146,10 @@ export default function TodayList(): React.JSX.Element {
 
     // Render header: BroadcastNowCard when not broadcasting
     const renderListHeader = () => {
-        // Only hide BroadcastNowCard when SelfBroadcastCard actually exists in data
-        // This prevents visual gaps during the transition
-        if (!hasSelfBroadcastMeeting) {
+        // Hide BroadcastNowCard when:
+        // 1. User has their own active broadcast (SelfBroadcastCard exists)
+        // 2. User has accepted another user's broadcast (OtherMeetingBroadcastCard exists)
+        if (!hasSelfBroadcastMeeting && !hasAcceptedOtherBroadcast) {
             return (
                 // <Animated.View
                 //     key="broadcast-now-card"
@@ -153,7 +165,7 @@ export default function TodayList(): React.JSX.Element {
 
     // Render empty state inside the list
     const renderEmptyComponent = () => {
-        if (todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting) {
+        if (todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting && !hasAcceptedOtherBroadcast) {
             return <Text style={styles.emptyText}>No meetings or offers for today</Text>;
         }
         return null;
