@@ -53,13 +53,15 @@ export default function InlineTimePicker({ onTimeChange }: InlineTimePickerProps
                 items={dayOptions}
                 selectedIndex={selectedDayIndex}
                 onValueChange={handleDayChange}
-                width={140}
+                itemWidth={120}
+                height={40}
             />
             <CompactWheelPicker
                 items={TIME_OF_DAY_OPTIONS}
                 selectedIndex={selectedTimeOfDayIndex}
                 onValueChange={handleTimeOfDayChange}
-                width={120}
+                itemWidth={110}
+                height={40}
             />
         </View>
     );
@@ -67,7 +69,7 @@ export default function InlineTimePicker({ onTimeChange }: InlineTimePickerProps
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         gap: 8,

@@ -8,42 +8,42 @@ interface CompactWheelPickerProps {
     items: string[];
     selectedIndex: number;
     onValueChange: (index: number) => void;
-    itemHeight?: number;
-    width?: number;
+    itemWidth?: number;
+    height?: number;
 }
 
 export default function CompactWheelPicker({
     items,
     selectedIndex,
     onValueChange,
-    itemHeight = 28,
-    width = 120
+    itemWidth = 100,
+    height = 40
 }: CompactWheelPickerProps): React.JSX.Element {
     const scrollViewRef = useRef<ScrollView>(null);
     const [currentIndex, setCurrentIndex] = useState(selectedIndex);
     const lastHapticIndex = useRef(selectedIndex);
-    const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+    const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Only 1 padding item for more compact view
     const paddedItems = ['', ...items, ''];
     const PADDING_OFFSET = 1;
 
-    // The visible height should show exactly 1.4 items (0.2 + 1 + 0.2)
-    const containerHeight = itemHeight * 1.4;
+    // The visible width should show exactly 1.4 items (0.2 + 1 + 0.2)
+    const containerWidth = itemWidth * 1.4;
 
     useEffect(() => {
         // Scroll to initial position on mount
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({
-                y: (selectedIndex + PADDING_OFFSET) * itemHeight,
+                x: (selectedIndex + PADDING_OFFSET) * itemWidth,
                 animated: false
             });
         }
     }, []);
 
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        const index = Math.round(offsetY / itemHeight);
+        const offsetX = event.nativeEvent.contentOffset.x;
+        const index = Math.round(offsetX / itemWidth);
         const actualIndex = index - PADDING_OFFSET;
 
         if (actualIndex >= 0 && actualIndex < items.length) {
@@ -60,14 +60,14 @@ export default function CompactWheelPicker({
         }
     };
 
-    const snapToNearestItem = (offsetY: number) => {
-        const index = Math.round(offsetY / itemHeight);
+    const snapToNearestItem = (offsetX: number) => {
+        const index = Math.round(offsetX / itemWidth);
         const actualIndex = Math.max(0, Math.min(items.length - 1, index - PADDING_OFFSET));
 
         // Strong snap to center
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({
-                y: (actualIndex + PADDING_OFFSET) * itemHeight,
+                x: (actualIndex + PADDING_OFFSET) * itemWidth,
                 animated: true
             });
         }
@@ -84,33 +84,35 @@ export default function CompactWheelPicker({
     };
 
     const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        snapToNearestItem(offsetY);
+        const offsetX = event.nativeEvent.contentOffset.x;
+        snapToNearestItem(offsetX);
     };
 
     // Auto-snap if user stops scrolling mid-way
     const handleScrollWithTimeout = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         handleScroll(event);
 
+        // Read the offset before the timeout (event pooling issue)
+        const offsetX = event.nativeEvent.contentOffset.x;
+
         if (scrollTimeout.current) {
             clearTimeout(scrollTimeout.current);
         }
 
         scrollTimeout.current = setTimeout(() => {
-            const offsetY = event.nativeEvent.contentOffset.y;
-            snapToNearestItem(offsetY);
+            snapToNearestItem(offsetX);
         }, 150);
     };
 
     return (
-        <View style={[styles.container, { width, height: containerHeight }]}>
+        <View style={[styles.container, { width: containerWidth, height }]}>
             {/* Selection indicator - fixed in center */}
             <View
                 style={[
                     styles.selectionIndicator,
                     {
-                        height: itemHeight,
-                        top: itemHeight * 0.2,
+                        width: itemWidth,
+                        left: itemWidth * 0.2,
                     }
                 ]}
                 pointerEvents="none"
@@ -118,14 +120,19 @@ export default function CompactWheelPicker({
 
             <ScrollView
                 ref={scrollViewRef}
-                showsVerticalScrollIndicator={false}
-                snapToInterval={itemHeight}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={itemWidth}
                 decelerationRate="fast"
                 onScroll={handleScrollWithTimeout}
                 onScrollEndDrag={handleScrollEnd}
                 onMomentumScrollEnd={handleScrollEnd}
                 scrollEventThrottle={16}
                 contentContainerStyle={styles.listContent}
+                directionalLockEnabled={true}
+                alwaysBounceHorizontal={false}
+                scrollEnabled={true}
+                nestedScrollEnabled={true}
             >
                 {paddedItems.map((item, index) => {
                     const actualIndex = index - PADDING_OFFSET;
@@ -136,7 +143,7 @@ export default function CompactWheelPicker({
                     const opacity = distance === 0 ? 1 : 0.15;
 
                     return (
-                        <View key={`${item}-${index}`} style={[styles.itemContainer, { height: itemHeight }]}>
+                        <View key={`${item}-${index}`} style={[styles.itemContainer, { width: itemWidth }]}>
                             <Text
                                 style={[
                                     styles.itemText,
@@ -160,12 +167,11 @@ export default function CompactWheelPicker({
 
 const styles = StyleSheet.create({
     container: {
-        height: 96, // 3 items visible (0.2 + 1 + 0.2 = 1.4 items, ~96px for 32px items)
         position: 'relative',
         overflow: 'hidden',
     },
     listContent: {
-        paddingVertical: 0,
+        paddingHorizontal: 0,
     },
     itemContainer: {
         justifyContent: 'center',
@@ -179,10 +185,8 @@ const styles = StyleSheet.create({
     },
     selectionIndicator: {
         position: 'absolute',
-        top: '50%',
-        marginTop: -16,
-        left: 0,
-        right: 0,
+        top: 0,
+        bottom: 0,
         backgroundColor: CREAM,
         opacity: 0.2,
         borderRadius: 6,

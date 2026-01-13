@@ -9,12 +9,12 @@ const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
 export default function Profile(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
-
+    const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Loyal';}
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <View>
-                <Text style={styles.greetingText}>Hi, {userName}</Text>
+                <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 {/* <FlowersWithStem
                     style={styles.flowerStyle}
                     fill={PALE_BLUE}

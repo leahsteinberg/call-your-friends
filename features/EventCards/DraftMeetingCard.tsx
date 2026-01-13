@@ -1,5 +1,4 @@
 import { EventCard } from "@/components/EventCard/EventCard";
-import RightSwipe from "@/components/GestureComponents/RightSwipe";
 import InlineTimePicker from "@/components/Pickers/InlineTimePicker";
 import TimePickerModal from "@/components/Pickers/TimePickerModal";
 import { eventCardText } from "@/constants/event_card_strings";
@@ -240,11 +239,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     return (
         <EventCard
             backgroundColor={BOLD_BLUE}
-            gesture={(props) => (
-                <RightSwipe onSwipeComplete={cycleToNextTime}>
-                    {props.children}
-                </RightSwipe>
-            )}
+            // gesture={(props) => (
+            //     <RightSwipe onSwipeComplete={cycleToNextTime}>
+            //         {props.children}
+            //     </RightSwipe>
+            // )}
         >
             <EventCard.Header spacing="between" align="center">
                 <EventCard.Title>{strings.nameText!(getFromName())}</EventCard.Title>
