@@ -14,6 +14,7 @@ interface CallUserButtonProps {
 
     // Optional callbacks (kept for backward compatibility but not needed)
     onBeforeCall?: (phoneNumber: string) => Promise<void>;
+    onAfterCall?: () => Promise<void>;
     onCallError?: (error: Error) => void;
 
     buttonText?: string;
@@ -30,6 +31,7 @@ export default function CallUserButton({
     participantId,
     meetingId,
     onBeforeCall,
+    onAfterCall,
     onCallError,
     buttonText,
     style,
@@ -61,14 +63,6 @@ export default function CallUserButton({
         return number;
     };
 
-    // Monitor app state to detect when user returns from phone call
-    useEffect(() => {
-        const subscription = AppState.addEventListener('change', handleAppStateChange);
-        return () => {
-            subscription.remove();
-        };
-    }, [callStartTime, participantId, meetingId]);
-
     const handleAppStateChange = async (nextAppState: AppStateStatus) => {
         // User returned to app after making a call
         if (appState.match(/inactive|background/) && nextAppState === 'active' && callStartTime) {
@@ -84,6 +78,9 @@ export default function CallUserButton({
                     endReason: 'completed',
                 }).unwrap();
                 console.log(`Call end logged successfully. Duration: ${duration}s`);
+                if (onAfterCall) {
+                    await onAfterCall();
+                }
             } catch (error) {
                 console.error('Error logging call end:', error);
             }
@@ -94,6 +91,14 @@ export default function CallUserButton({
         }
         setAppState(nextAppState);
     };
+
+    // Monitor app state to detect when user returns from phone call
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+        return () => {
+            subscription.remove();
+        };
+    }, [callStartTime, participantId, meetingId, appState]);
 
     const initiateCall = async () => {
         try {
@@ -108,9 +113,9 @@ export default function CallUserButton({
                     callType: 'phone',
                 }).unwrap();
 
-                callLogIdRef.current = result.id;
+                callLogIdRef.current = result.eventId;
                 setCallStartTime(new Date());
-                console.log(`Call start logged with ID: ${result.id}`);
+                console.log(`Call start logged with ID: ${result.eventId}`);
             } catch (apiError) {
                 console.error('Error logging call start:', apiError);
                 // Continue with call even if logging fails

@@ -26,7 +26,7 @@ export interface CallErrorRequest {
 }
 
 export interface CallLogResponse {
-    id: string;
+    eventId: string;
     userId: string;
     eventType: string;
     metadata: any;
@@ -69,7 +69,7 @@ const {
 } = callLoggingApi;
 
 export {
-    useStartCallMutation,
     useEndCallMutation,
-    useLogCallErrorMutation
+    useLogCallErrorMutation, useStartCallMutation
 };
+

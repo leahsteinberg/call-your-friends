@@ -7,7 +7,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedMeetingType } from "../Meetings/types";
@@ -23,6 +23,10 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
     const [isCanceling, setIsCanceling] = useState(false);
     const [cancelMeeting] = useCancelMeetingMutation();
     const selectedVibe = meeting.intentLabel || null;
+
+    const handleCallEnd = async () => {
+        console.log("In OtherMeetingBroadcastCard, call over!!")
+    };
 
     const handleCancelMeeting = async () => {
         try {
@@ -92,6 +96,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                     phoneNumber={meeting.userFrom?.phoneNumber || ''}
                     userName={getFromName()}
                     userId={userId}
+                    onAfterCall={handleCallEnd}
                     participantId={meeting.userFromId}
                     meetingId={meeting.id}
                     buttonText="Call Now"
