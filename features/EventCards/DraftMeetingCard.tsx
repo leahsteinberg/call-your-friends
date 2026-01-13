@@ -45,8 +45,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const instructionOpacity = useSharedValue(0);
     const instructionTranslateY = useSharedValue(10);
 
-    console.log("IN DRAFT MEETING ---", meeting);
-
     // Check if this is the first time viewing a draft meeting card
     useEffect(() => {
         const checkFirstTime = async () => {

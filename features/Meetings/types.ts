@@ -84,6 +84,7 @@ export interface ProcessedMeetingType extends MeetingType {
     userFrom?: {
         name?: string;
         id?: string;
+        phoneNumber?: string;
     };
     // DEPRECATED: Keep for backwards compatibility
     targetUser?: {

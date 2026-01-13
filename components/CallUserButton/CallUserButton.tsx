@@ -1,12 +1,21 @@
 import { CustomFonts } from "@/constants/theme";
-import React, { useState } from "react";
-import { Alert, Linking, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEndCallMutation, useLogCallErrorMutation, useStartCallMutation } from "@/services/callLoggingApi";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, AppState, AppStateStatus, Linking, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 interface CallUserButtonProps {
     phoneNumber: string;
     userName?: string;
+
+    // Required for call logging
+    userId: string;
+    participantId: string;
+    meetingId?: string;
+
+    // Optional callbacks (kept for backward compatibility but not needed)
     onBeforeCall?: (phoneNumber: string) => Promise<void>;
     onCallError?: (error: Error) => void;
+
     buttonText?: string;
     style?: any;
     textStyle?: any;
@@ -17,6 +26,9 @@ interface CallUserButtonProps {
 export default function CallUserButton({
     phoneNumber,
     userName,
+    userId,
+    participantId,
+    meetingId,
     onBeforeCall,
     onCallError,
     buttonText,
@@ -26,6 +38,16 @@ export default function CallUserButton({
     showConfirmation = true,
 }: CallUserButtonProps): React.JSX.Element {
     const [isLoading, setIsLoading] = useState(false);
+
+    // Call logging hooks
+    const [startCall] = useStartCallMutation();
+    const [endCall] = useEndCallMutation();
+    const [logCallError] = useLogCallErrorMutation();
+
+    // State for tracking calls
+    const [callStartTime, setCallStartTime] = useState<Date | null>(null);
+    const [appState, setAppState] = useState<AppStateStatus>(AppState.currentState);
+    const callLogIdRef = useRef<string | null>(null);
 
     // Format phone number for display (e.g., +1 (234) 567-8900)
     const formatPhoneNumber = (number: string): string => {
@@ -39,39 +61,114 @@ export default function CallUserButton({
         return number;
     };
 
+    // Monitor app state to detect when user returns from phone call
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', handleAppStateChange);
+        return () => {
+            subscription.remove();
+        };
+    }, [callStartTime, participantId, meetingId]);
+
+    const handleAppStateChange = async (nextAppState: AppStateStatus) => {
+        // User returned to app after making a call
+        if (appState.match(/inactive|background/) && nextAppState === 'active' && callStartTime) {
+            const duration = Math.floor((new Date().getTime() - callStartTime.getTime()) / 1000);
+
+            // Log call end
+            try {
+                await endCall({
+                    userId,
+                    participantId,
+                    meetingId,
+                    duration,
+                    endReason: 'completed',
+                }).unwrap();
+                console.log(`Call end logged successfully. Duration: ${duration}s`);
+            } catch (error) {
+                console.error('Error logging call end:', error);
+            }
+
+            // Reset state
+            setCallStartTime(null);
+            callLogIdRef.current = null;
+        }
+        setAppState(nextAppState);
+    };
+
     const initiateCall = async () => {
         try {
             setIsLoading(true);
 
-            // Call the API logging callback if provided
+            // 1. Log call start (BEFORE opening dialer)
+            try {
+                const result = await startCall({
+                    userId,
+                    participantId,
+                    meetingId,
+                    callType: 'phone',
+                }).unwrap();
+
+                callLogIdRef.current = result.id;
+                setCallStartTime(new Date());
+                console.log(`Call start logged with ID: ${result.id}`);
+            } catch (apiError) {
+                console.error('Error logging call start:', apiError);
+                // Continue with call even if logging fails
+            }
+
+            // 2. Call the legacy callback if provided (for backward compatibility)
             if (onBeforeCall) {
                 await onBeforeCall(phoneNumber);
             }
 
-            // Clean phone number for dialing (remove all non-numeric characters except +)
+            // 3. Clean phone number for dialing (remove all non-numeric characters except +)
             const cleanedNumber = phoneNumber.replace(/[^0-9+]/g, '');
             const phoneUrl = `tel:${cleanedNumber}`;
 
-            // Check if the device can make phone calls
+            // 4. Check if the device can make phone calls
             const canOpen = await Linking.canOpenURL(phoneUrl);
 
             if (!canOpen) {
+                // Log error
+                await logCallError({
+                    userId,
+                    participantId,
+                    meetingId,
+                    errorMessage: 'Device cannot make phone calls',
+                    errorCode: 'DEVICE_UNSUPPORTED',
+                }).unwrap().catch(err => console.error('Error logging call error:', err));
+
                 Alert.alert(
                     'Cannot Make Call',
                     'This device cannot make phone calls.',
                     [{ text: 'OK' }]
                 );
                 setIsLoading(false);
+                setCallStartTime(null);
                 return;
             }
 
-            // Initiate the phone call
+            // 5. Initiate the phone call
             await Linking.openURL(phoneUrl);
             setIsLoading(false);
 
         } catch (error) {
             console.error('Error making call:', error);
             setIsLoading(false);
+            setCallStartTime(null);
+
+            // Log the error
+            try {
+                await logCallError({
+                    userId,
+                    participantId,
+                    meetingId,
+                    errorMessage: error instanceof Error ? error.message : 'Unknown error',
+                    errorCode: 'CALL_INITIATION_FAILED',
+                }).unwrap();
+            } catch (logError) {
+                console.error('Error logging call error:', logError);
+            }
 
             if (onCallError) {
                 onCallError(error as Error);
@@ -112,8 +209,8 @@ export default function CallUserButton({
 
     const getButtonText = () => {
         if (isLoading) return 'Calling...';
-        if (buttonText) return buttonText;
         if (userName) return `Call ${userName}`;
+        if (buttonText) return buttonText;
         return 'Call';
     };
 

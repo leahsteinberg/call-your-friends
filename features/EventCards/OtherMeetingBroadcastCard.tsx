@@ -1,3 +1,4 @@
+import CallUserButton from "@/components/CallUserButton";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { CustomFonts } from "@/constants/theme";
@@ -6,7 +7,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedMeetingType } from "../Meetings/types";
@@ -86,6 +87,26 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                 <EventCard.Description>
                     You're on a call right now
                 </EventCard.Description>
+
+                <CallUserButton
+                    phoneNumber={meeting.userFrom?.phoneNumber || ''}
+                    userName={getFromName()}
+                    userId={userId}
+                    participantId={meeting.userFromId}
+                    meetingId={meeting.id}
+                    buttonText="Call Now"
+                    style={{
+                        marginTop: 12,
+                        backgroundColor: PALE_BLUE,
+                        borderWidth: 2,
+                        borderColor: BOLD_BLUE,
+                    }}
+                    textStyle={{
+                        color: BOLD_BLUE,
+                        fontWeight: '600',
+                        fontFamily: CustomFonts.ztnaturemedium,
+                    }}
+                />
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
