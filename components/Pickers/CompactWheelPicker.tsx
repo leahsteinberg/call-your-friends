@@ -129,10 +129,6 @@ export default function CompactWheelPicker({
                 onMomentumScrollEnd={handleScrollEnd}
                 scrollEventThrottle={16}
                 contentContainerStyle={styles.listContent}
-                directionalLockEnabled={true}
-                alwaysBounceHorizontal={false}
-                scrollEnabled={true}
-                nestedScrollEnabled={true}
             >
                 {paddedItems.map((item, index) => {
                     const actualIndex = index - PADDING_OFFSET;
