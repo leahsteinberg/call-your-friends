@@ -1,14 +1,15 @@
 import AnimatedText from "@/components/AnimationComponents/AnimatedText";
+import StackedFriendAvatars from "@/components/CardActionDecorations/StackedFriendAvatars";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -125,6 +126,23 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     {strings.title!()}
                 </EventCard.Description>
 
+                {/* Show target users badge if broadcast is directed to specific friends */}
+                {hasTargetUsers && (
+                    <View style={styles.targetUsersContainer}>
+                        <StackedFriendAvatars
+                            selectedFriends={targetUsers}
+                            expanded={false}
+                        />
+                        <View style={styles.targetUsersBadge}>
+                            <Text style={styles.targetUsersText}>
+                                {targetUsers.length === 1
+                                    ? `Shared with ${targetUsers[0].name}`
+                                    : `Shared with ${targetUsers.length} friends`}
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
                 )}
@@ -138,6 +156,24 @@ const styles = StyleSheet.create({
         color: PALE_BLUE,
         fontSize: 12,
         fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturemedium,
+    },
+    targetUsersContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 12,
+        gap: 8,
+    },
+    targetUsersBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 16,
+        backgroundColor: CORNFLOWER_BLUE,
+    },
+    targetUsersText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: CREAM,
         fontFamily: CustomFonts.ztnaturemedium,
     },
     debugText: {
