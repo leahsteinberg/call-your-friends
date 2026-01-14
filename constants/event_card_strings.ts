@@ -82,7 +82,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
         nameText: () => '',
         mainText: (userName?: string) => userName ? `${userName} has claimed your open call.` : undefined,
         acceptButtonText: () => 'End',
-        title: () => `broadcast self accepted title`,
+        title: () => `They've been invited to call`,
     },
     broadcast_self_cancelled: {
         title: () => `Your broadcast was cancelled by you.`,

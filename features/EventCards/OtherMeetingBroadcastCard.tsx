@@ -7,7 +7,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedMeetingType } from "../Meetings/types";
@@ -60,7 +60,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
         return meeting.userFrom?.name || 'someone';
     };
 
-    const titleText = `On a call with ${getFromName()} right now`;
+    const titleText = `${getFromName()} is ready for your call`;
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
@@ -89,29 +89,30 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
 
             <EventCard.Body>
                 <EventCard.Description>
-                    You're on a call right now
+                    You claimed the call
                 </EventCard.Description>
 
-                <CallUserButton
-                    phoneNumber={meeting.userFrom?.phoneNumber || ''}
-                    userName={getFromName()}
-                    userId={userId}
-                    onAfterCall={handleCallEnd}
-                    participantId={meeting.userFromId}
-                    meetingId={meeting.id}
-                    buttonText="Call Now"
-                    style={{
-                        marginTop: 12,
-                        backgroundColor: PALE_BLUE,
-                        borderWidth: 2,
-                        borderColor: BOLD_BLUE,
-                    }}
-                    textStyle={{
-                        color: BOLD_BLUE,
-                        fontWeight: '600',
-                        fontFamily: CustomFonts.ztnaturemedium,
-                    }}
-                />
+                {(Platform.OS !== 'web' || DEV_FLAG) &&
+                    <CallUserButton
+                        phoneNumber={meeting.userFrom?.phoneNumber || ''}
+                        userName={getFromName()}
+                        userId={userId}
+                        participantId={meeting.userFromId}
+                        meetingId={meeting.id}
+                        buttonText="Call Now"
+                        style={{
+                            marginTop: 12,
+                            backgroundColor: PALE_BLUE,
+                            borderWidth: 2,
+                            borderColor: BOLD_BLUE,
+                        }}
+                        textStyle={{
+                            color: BOLD_BLUE,
+                            fontWeight: '600',
+                            fontFamily: CustomFonts.ztnaturemedium,
+                        }}
+                    />
+                }
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
