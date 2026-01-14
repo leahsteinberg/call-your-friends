@@ -4,7 +4,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
-import { BRIGHT_BLUE, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
@@ -42,19 +42,19 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const getOpenMeetingTitle = () => {
         return (
-            <Text style={styles.searchingText}>
-                <Text>{eventCardText.meeting_self_open.title()}{'\n'}</Text>
-                <View style={styles.displayTimeContainer}>
-                    <Text style={styles.searchingText}>{displayTimeDifference(meeting.scheduledFor)}</Text>
-                    <AnimatedText
-                        text="..."
-                        style={{ fontSize: 20, fontFamily: CustomFonts.ztnaturebold, color: ORANGE }}
-                        duration={300}
-                        staggerDelay={500}
-                        inline={false}
-                    />
-                </View>
-            </Text>
+            <EventCard.Row gap={0}>
+                <EventCard.Title>
+                    {eventCardText.meeting_self_open.title()}{'\n'}
+                    {displayTimeDifference(meeting.scheduledFor)}
+                </EventCard.Title>
+                <AnimatedText
+                    text="..."
+                    style={{ fontSize: 28, fontFamily: CustomFonts.ztnaturebold, color: CREAM, fontWeight: '600' }}
+                    duration={300}
+                    staggerDelay={500}
+                    inline={true}
+                />
+            </EventCard.Row>
         );
     };
 
@@ -69,13 +69,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             name = meeting.acceptedUser?.name;
         }
         return (
-        <View style={styles.searchingText}>
-            <Text style={styles.searchingText}>
+            <EventCard.Title>
                 {eventCardText.meeting_self_accepted.title(name)}{displayTimeDifference(meeting.scheduledFor)}
-            </Text>
-        </View>
-    );
-};
+            </EventCard.Title>
+        );
+    };
 
     const getMainDisplay = () => {
         if (selfCreatedMeeting) {
@@ -88,21 +86,24 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 // Check if there are target users for open meetings
                 const targetNames = getTargetUserNames(meeting);
                 if (targetNames) {
-                    const baseTitle = getOpenMeetingTitle();
-                    return `sent an offer out to → ${targetNames}`;
+                    return (
+                        <EventCard.Title>
+                            sent an offer out to → {targetNames}
+                        </EventCard.Title>
+                    );
                 }
                 return getOpenMeetingTitle();
             }
         }
         const name = meeting.userFrom?.name;
-        const baseText = name ? `Accepted a meeting created by ${name}` : null;
-
-        // Check if there are target users for accepted meetings
         const targetNames = getTargetUserNames(meeting);
-        if (baseText && targetNames) {
-            return `${baseText} → ${targetNames}`;
-        }
-        return baseText;
+
+        return (
+            <EventCard.Title>
+                {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
+                {targetNames && ` → ${targetNames}`}
+            </EventCard.Title>
+        );
     };
 
     const handleCancelMeeting = async () => {
@@ -143,24 +144,22 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         <View style={{ opacity: cardOpacity }}>
             <EventCard backgroundColor={backgroundColor}>
                 <EventCard.Header spacing="between" align="start">
-                    {mainDisplayText && (
-                        <Text style={styles.mainText}>{mainDisplayText}</Text>
-                    )}
+                    {mainDisplayText}
 
                     <EventCard.Button
                         onPress={handleCancelMeeting}
                         loading={isCanceling}
-                        variant="ghost"
+                        variant="danger"
                         size="small"
                     >
-                        <Text style={styles.deleteButtonText}>Cancel</Text>
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
                     </EventCard.Button>
                 </EventCard.Header>
 
                 <EventCard.Body>
-                    <Text style={styles.timeText}>
+                    <EventCard.Description>
                         {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
-                    </Text>
+                    </EventCard.Description>
 
                     {DEV_FLAG && (
                         <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
@@ -172,39 +171,15 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 }
 
 const styles = StyleSheet.create({
-    searchingText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: ORANGE,
-        fontFamily: CustomFonts.ztnaturebold,
-    },
-    timeText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: BRIGHT_BLUE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnatureregular,
-    },
-    mainText: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: ORANGE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturebold,
-        flexShrink: 1, // Allow text to wrap/shrink to prevent overflow
-    },
-    displayTimeContainer: {
-        flexDirection: 'row',
-    },
-    deleteButtonText: {
-        color: CHOCOLATE_COLOR,
+    cancelButtonText: {
+        color: PALE_BLUE,
         fontSize: 12,
         fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturebold,
+        fontFamily: CustomFonts.ztnaturemedium,
     },
     debugText: {
         fontSize: 10,
-        color: '#999',
+        color: '#666',
         marginTop: 4,
         fontFamily: CustomFonts.ztnaturelight,
     },

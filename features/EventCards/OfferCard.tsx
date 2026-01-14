@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CORNFLOWER_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_GREEN, CORNFLOWER_BLUE, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
@@ -81,7 +81,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     return (
         <EventCard backgroundColor={PALE_BLUE}>
             <EventCard.Header spacing="between" align="start">
-                <EventCard.Title size="medium" color={ORANGE}>
+                <EventCard.Title>
                     {strings.nameText!(getFromName())}
                     {targetUserName && ` → ${targetUserName}`}
                 </EventCard.Title>
@@ -91,7 +91,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                         <EventCard.Button
                             onPress={handleAcceptOffer}
                             loading={isAccepting}
-                            variant="ghost"
+                            variant="success"
                             size="small"
                         >
                             <Text style={styles.acceptButtonText}>
@@ -102,7 +102,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                         <EventCard.Button
                             onPress={handleRejectOffer}
                             loading={isRejecting}
-                            variant="ghost"
+                            variant="danger"
                             size="small"
                         >
                             <Text style={styles.rejectButtonText}>
@@ -114,13 +114,13 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             </EventCard.Header>
 
             <EventCard.Body>
-                <Text style={styles.mainText}>
+                <EventCard.Description>
                     {strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}
-                </Text>
+                </EventCard.Description>
 
-                <Text style={styles.timeText}>
+                <EventCard.Description>
                     {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
-                </Text>
+                </EventCard.Description>
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
@@ -131,36 +131,22 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 }
 
 const styles = StyleSheet.create({
-    mainText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: CORNFLOWER_BLUE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnatureregular,
-    },
-    timeText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: BRIGHT_BLUE,
-        marginBottom: 4,
-        fontFamily: CustomFonts.ztnaturelight,
-    },
-    debugText: {
-        fontSize: 10,
-        color: '#999',
-        marginTop: 4,
-        fontFamily: CustomFonts.ztnaturelight,
-    },
     acceptButtonText: {
-        color: BRIGHT_GREEN,
+        color: BOLD_GREEN,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
     rejectButtonText: {
         fontSize: 12,
-        color: CHOCOLATE_COLOR,
+        color: PALE_BLUE,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
+    },
+    debugText: {
+        fontSize: 10,
+        color: '#666',
+        marginTop: 4,
+        fontFamily: CustomFonts.ztnaturelight,
     },
 });
