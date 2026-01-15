@@ -4,7 +4,7 @@ import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BOLD_BLUE, BOLD_ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
 import { Tabs } from "expo-router";
 import React from "react";
@@ -55,7 +55,7 @@ const Layout = () => {
         <Tabs
         initialRouteName="index"
         screenOptions={{
-            tabBarActiveTintColor: BOLD_ORANGE,
+            tabBarActiveTintColor: BURGUNDY,
             tabBarInactiveTintColor: BOLD_BLUE,
             tabBarStyle: {
               backgroundColor: 'transparent',
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     tabLabelFocused: {
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 22,
-        color: BOLD_ORANGE,
+        color: BURGUNDY,
         transform: [{ translateY: -8 }],
     },
 });

@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { DARK_GREEN } from "@/styles/styles";
+import { BURGUNDY } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     sectionHeader: {
         fontSize: 16,
         fontWeight: '600',
-        color: DARK_GREEN,
+        color: BURGUNDY,
         fontFamily: CustomFonts.ztnaturemedium,
     }
 });

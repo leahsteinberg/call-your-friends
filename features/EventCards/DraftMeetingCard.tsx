@@ -248,9 +248,19 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
                 <EventCard.Actions layout="horizontal" spacing={8}>
                     <EventCard.Button
+                        onPress={handleAcceptSuggestion}
+                        loading={isAccepting}
+                        variant="primary"
+                        size="small"
+                    >
+                        <Text style={styles.acceptButtonText}>
+                            {strings.acceptButtonText!()}
+                        </Text>
+                    </EventCard.Button>
+                    <EventCard.Button
                         onPress={handleDismissSuggestion}
                         loading={isDismissing}
-                        variant="danger"
+                        variant="secondary"
                         size="small"
                     >
                         <Text style={styles.dismissButtonText}>
@@ -258,16 +268,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                         </Text>
                     </EventCard.Button>
 
-                    <EventCard.Button
-                        onPress={handleAcceptSuggestion}
-                        loading={isAccepting}
-                        variant="danger"
-                        size="small"
-                    >
-                        <Text style={styles.acceptButtonText}>
-                            {strings.acceptButtonText!()}
-                        </Text>
-                    </EventCard.Button>
+
                 </EventCard.Actions>
             </EventCard.Header>
 
@@ -348,7 +349,7 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturemedium,
     },
     acceptButtonText: {
-        color: PALE_BLUE,
+        color: CREAM,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,

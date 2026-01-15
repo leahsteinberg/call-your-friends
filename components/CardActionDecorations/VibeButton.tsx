@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CREAM, GREEN_AVOCADO } from "@/styles/styles";
+import { BURGUNDY, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -7,9 +7,9 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "
 
 // Tapback word options
 const VIBE_WORDS = [
-    { id: 'hi', text: 'Just Saying Hi', label: 'Just Saying Hi' },
+    { id: 'hi', text: 'Just Saying Hi!', label: 'Just Saying Hi' },
     { id: 'catchup', text: 'Catch Up', label: 'Catch up' },
-    { id: 'miss', text: 'Miss You', label: 'Miss you' },
+    { id: 'miss', text: 'Miss You!', label: 'Miss you' },
     { id: 'yap', text: 'Yap Time', label: 'Yap' },
 ];
 
@@ -74,7 +74,7 @@ export default function VibeButton({
         }
 
         const word = VIBE_WORDS.find(w => w.id === selectedVibe);
-        return word?.text.toUpperCase() || "+ PICK A CALL VIBE";
+        return `${word?.text.toUpperCase()}` || "+ PICK A CALL VIBE";
     };
 
     const hasVibe = !!selectedVibe;
@@ -155,12 +155,11 @@ const styles = StyleSheet.create({
     },
     vibeButtonEmpty: {
         backgroundColor: 'rgba(255, 255, 255, 0.15)',
-        borderWidth: 1.5,
         borderColor: CREAM,
-        borderStyle: 'dashed',
+        borderStyle: "dotted",
     },
     vibeButtonFilled: {
-        backgroundColor: GREEN_AVOCADO,
+        backgroundColor: PALE_BLUE,
         borderWidth: 2,
         borderColor: CREAM,
         borderStyle: 'solid',
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     vibeButtonTextFilled: {
-        color: BOLD_BLUE,
+        color: BURGUNDY,
         fontWeight: '700',
     },
     modalOverlay: {
@@ -190,6 +189,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flexDirection: 'column',
+        alignItems: 'center',
         backgroundColor: CREAM,
         borderRadius: 30,
         paddingHorizontal: 12,
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 25,
-        backgroundColor: 'transparent',
+        //backgroundColor: 'transparent',
     },
     vibeWordButton: {
         paddingHorizontal: 12,
@@ -218,29 +218,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 20,
-        backgroundColor: 'transparent',
+        backgroundColor: PALE_BLUE,
+
+        //backgroundColor: 'transparent',
     },
     vibeWordText: {
-        color: BOLD_BLUE,
+        color: BURGUNDY,
         fontSize: 13,
         fontWeight: '600',
+
     },
     separator: {
         width: 1,
-        backgroundColor: BOLD_BLUE,
+        backgroundColor: ORANGE,
         opacity: 0.2,
         marginHorizontal: 4,
     },
     noneButton: {
         width: 60,
-        height: 50,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 25,
-        backgroundColor: 'transparent',
     },
     noneButtonText: {
-        color: BOLD_BLUE,
+        color: BURGUNDY,
         fontSize: 14,
         fontWeight: '600',
     },

@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BRIGHT_BLUE, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BRIGHT_BLUE, PALE_BLUE } from "@/styles/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 20,
     fontWeight: '600',
-    color: ORANGE,
+    color: BOLD_BLUE,
     fontFamily: CustomFonts.ztnaturebold,
   },
   subtitle: {

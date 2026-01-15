@@ -10,7 +10,7 @@ const HOST = 'cyf-backend.onrender.com';
 export const HOST_WITH_PORT = `https://${HOST}`;
 console.log("HOST_WITH_PORT", HOST_WITH_PORT);
 
-export const DEV_FLAG = true;
+export const DEV_FLAG = false;
 
 export const expoPushToken = 'KuvqqIEo9Yonp0weGgdDGz';
 

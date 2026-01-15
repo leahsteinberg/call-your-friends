@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
   buttonSecondary: {
     backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: CREAM,
+    borderColor: PALE_BLUE,
   },
   buttonDanger: {
     backgroundColor: PALE_BLUE,

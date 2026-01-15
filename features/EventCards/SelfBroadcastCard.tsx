@@ -111,7 +111,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                 <EventCard.Button
                     onPress={handleCancelMeeting}
                     loading={isEnding}
-                    variant="danger"
+                    variant="secondary"
                     size="small"
                 >
                     <Text style={styles.endBroadcastButtonText}>
@@ -121,7 +121,6 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
             </EventCard.Header>
 
             <EventCard.Body>
-
                 <EventCard.Description>
                     {strings.title!()}
                 </EventCard.Description>

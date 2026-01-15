@@ -1,6 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
-import { BOLD_BLUE, BOLD_GREEN, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: CORNFLOWER_BLUE,
+    backgroundColor: CREAM,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 13,
     fontWeight: '600',
-    color: CREAM,
+    color: BURGUNDY,
     fontFamily: CustomFonts.ztnaturemedium,
   },
   modalOverlay: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   selectButton: {
-    backgroundColor: BOLD_GREEN,
+    backgroundColor: BURGUNDY,
     borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -366,15 +366,15 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: BOLD_BLUE,
+    borderColor: BURGUNDY,
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
   },
   checkboxSelected: {
-    backgroundColor: BOLD_GREEN,
-    borderColor: BOLD_GREEN,
+    backgroundColor: BOLD_BLUE,
+    borderColor: BOLD_BLUE,
   },
   checkmark: {
     fontSize: 14,

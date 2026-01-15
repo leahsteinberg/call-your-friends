@@ -1,6 +1,6 @@
 import SmileyFace from "@/assets/images/smiley-face.svg";
 import PulsingLoader from "@/components/LoadingAnimations/PulsingLoader";
-import { BOLD_BLUE, BOLD_ORANGE, PEACH } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import React from "react";
 
 export default function ContactsLoader(): React.JSX.Element {
@@ -17,7 +17,7 @@ export default function ContactsLoader(): React.JSX.Element {
         {
             SVG: SmileyFace,
             size: 80,
-            color: BOLD_ORANGE,
+            color: BURGUNDY,
             position: { top: 15, right: 15 },
             scaleDuration: 1700,
             translateDuration: 1900,
@@ -26,7 +26,7 @@ export default function ContactsLoader(): React.JSX.Element {
         {
             SVG: SmileyFace,
             size: 65,
-            color: PEACH,
+            color: PALE_BLUE,
             position: { bottom: 50, left: '65%' },
             scaleDuration: 1400,
             translateDuration: 2300,
