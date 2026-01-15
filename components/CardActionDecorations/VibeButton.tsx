@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
     },
     vibeButtonDisabled: {
-        opacity: 0.85,
+        //opacity: 0.85,
     },
     vibeButtonText: {
         fontFamily: CustomFonts.ztnaturebold,
