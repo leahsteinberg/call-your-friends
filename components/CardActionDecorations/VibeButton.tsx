@@ -70,11 +70,11 @@ export default function VibeButton({
     // Get button text based on selected vibe
     const getButtonText = () => {
         if (!selectedVibe) {
-            return "+ ADD A VIBE";
+            return "+ PICK A CALL VIBE";
         }
 
         const word = VIBE_WORDS.find(w => w.id === selectedVibe);
-        return word?.text.toUpperCase() || "+ ADD A VIBE";
+        return word?.text.toUpperCase() || "+ PICK A CALL VIBE";
     };
 
     const hasVibe = !!selectedVibe;

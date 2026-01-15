@@ -37,8 +37,8 @@ export const eventCardText: Record<string, EventCardStrings> = {
 
     // OFFERS
     open_offer: {
-        nameText: (userName: string) => userName || 'Unknown',
-        mainText: (userName: string, timeDiff: string) => `Talk to ${userName} ${timeDiff}`,
+        nameText: (userName: string, timeDiff: string) => `${userName} wants to talk ${timeDiff}` || 'Unknown',
+        mainText: (userName: string, timeDiff: string) => `Let her know if you're free.`,
         acceptButtonText: () => 'Accept',
         rejectButtonText: () => 'Reject',
         // Legacy support

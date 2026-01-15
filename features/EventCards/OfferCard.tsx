@@ -3,7 +3,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { BOLD_GREEN, CORNFLOWER_BLUE, PALE_BLUE } from "@/styles/styles";
+import { CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
@@ -20,9 +20,7 @@ interface OfferCardProps {
 }
 
 export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element {
-    console.log("offer card!!!!!");
     const dispatch = useDispatch();
-    console.log(offer)
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [rejectOffer] = useRejectOfferMutation();
@@ -82,7 +80,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         <EventCard backgroundColor={PALE_BLUE}>
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Title>
-                    {strings.nameText!(getFromName())}
+                    {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
                     {targetUserName && ` → ${targetUserName}`}
                 </EventCard.Title>
 
@@ -91,7 +89,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                         <EventCard.Button
                             onPress={handleAcceptOffer}
                             loading={isAccepting}
-                            variant="success"
+                            variant="primary"
                             size="small"
                         >
                             <Text style={styles.acceptButtonText}>
@@ -132,14 +130,15 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
 const styles = StyleSheet.create({
     acceptButtonText: {
-        color: BOLD_GREEN,
+        color: CREAM,
+        //backgroundColor: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },
     rejectButtonText: {
         fontSize: 12,
-        color: PALE_BLUE,
+        color: CREAM,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
     },

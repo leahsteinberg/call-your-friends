@@ -1,5 +1,5 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
-import { BOLD_BROWN, BURGUNDY, CREAM } from '@/styles/styles';
+import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from '@/styles/styles';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
@@ -254,9 +254,6 @@ const styles = StyleSheet.create({
     padding: 18,
     overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
-
-
-    
   },
   header: {
     flexDirection: 'row',
@@ -297,7 +294,7 @@ const styles = StyleSheet.create({
     borderColor: CREAM,
   },
   buttonDanger: {
-    backgroundColor: BURGUNDY,
+    backgroundColor: PALE_BLUE,
   },
   buttonGhost: {
     backgroundColor: 'transparent',

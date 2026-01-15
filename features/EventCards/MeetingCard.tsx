@@ -4,7 +4,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { CREAM, PALE_BLUE } from "@/styles/styles";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
@@ -88,7 +88,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 if (targetNames) {
                     return (
                         <EventCard.Title>
-                            sent an offer out to → {targetNames}
+                            We'll see if {targetNames} is free in {displayTimeDifference(meeting.scheduledFor)}
                         </EventCard.Title>
                     );
                 }
