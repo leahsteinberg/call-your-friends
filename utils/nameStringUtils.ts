@@ -1,3 +1,4 @@
+import { User } from "@/features/Auth/types";
 import { MeetingType } from "@/features/Meetings/types";
 
 /**
@@ -25,4 +26,26 @@ export const getTargetUserNames = (meeting: MeetingType): string | null => {
     }
 
     return null;
+};
+
+export const getDisplayNameList = (userList: User[]): string => {
+    const friendCount = userList.length;
+    switch (friendCount) {
+        case 0: {
+            return 'your friends';
+        }
+        case 1: {
+            return userList[0].name || 'a friend';
+        }
+        case 2: {
+            const hasBothNames = userList[0].name && userList[1].name;
+            return hasBothNames ? `${userList[0].name} and ${userList[1].name}` : `two friends`;
+        }
+        default: {
+            const hasBeginningNames = userList[0].name && userList[1].name;
+            return hasBeginningNames
+                ? `${userList[0].name}, ${userList[1].name} and ${friendCount - 2} friends`
+                : `${friendCount} friends`;
+        } 
+    }
 };

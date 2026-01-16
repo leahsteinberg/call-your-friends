@@ -1,4 +1,3 @@
-import AnimatedText from "@/components/AnimationComponents/AnimatedText";
 import StackedFriendAvatars from "@/components/CardActionDecorations/StackedFriendAvatars";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
@@ -8,6 +7,7 @@ import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { getDisplayNameList } from "@/utils/nameStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -36,21 +36,16 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
 
     // Get display names based on current state
-    const displayNames = hasAcceptedUsers
-        ? acceptedUsers.map(user => user.name).filter(Boolean).join(', ')
-        : hasTargetUsers
-            ? targetUsers.map(user => user.name).filter(Boolean).join(', ')
-            : null;
-
+    const friends = hasAcceptedUsers ? acceptedUsers : (hasTargetUsers ? targetUsers : []);
+    const displayNames = getDisplayNameList(friends);
+    
     const strings = hasAcceptedUsers
         ? eventCardText.broadcast_self_accepted
         : eventCardText.broadcast_self_open;
 
     const showAnimatedDots = !hasAcceptedUsers;
 
-    const titleText = displayNames
-        ? strings.mainText!(displayNames)
-        : strings.mainText!();
+    const titleText = strings.mainText!(displayNames);
 
 
     const handleCancelMeeting = async () => {
@@ -97,16 +92,18 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
-                    <EventCard.Title>{titleText}</EventCard.Title>
-                    {showAnimatedDots && (
+                    <EventCard.Title>
+                        {titleText}
+                    </EventCard.Title>
+                    {/* {showAnimatedDots && (
                         <AnimatedText
                             text="..."
-                            style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                            style={styles.animatedDots}
                             duration={300}
                             staggerDelay={500}
                             inline={true}
                         />
-                    )}
+                    )} */}
                 </EventCard.Row>
                 <EventCard.Button
                     onPress={handleCancelMeeting}
@@ -151,6 +148,12 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 }
 
 const styles = StyleSheet.create({
+    animatedDots: {
+        fontSize: 28,
+        color: CREAM,
+        fontWeight: '600',
+        fontFamily: CustomFonts.ztnaturebold,
+    },
     endBroadcastButtonText: {
         color: PALE_BLUE,
         fontSize: 12,

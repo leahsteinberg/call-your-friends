@@ -10,6 +10,7 @@ import { useBroadcastNowMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
+import { getDisplayNameList } from "@/utils/nameStringUtils";
 import React, { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
@@ -74,15 +75,11 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     const getMainText = () => {
-        if (selectedFriendIds.length > 0) {
-            const selectedFriends = friends.filter(friend =>
-                selectedFriendIds.includes(friend.id)
-            );
-            const selectedFriendNames = selectedFriends.map((f) => f.name);
-
-            return `Share with ${selectedFriendNames[0]}${selectedFriendNames.length > 1 ? ` and ${selectedFriendNames.length-1} more friend` : ``}`;
-        }
-        return strings.mainText();
+        const selectedFriends = friends.filter(friend =>
+            selectedFriendIds.includes(friend.id)
+        );
+        const displayNames = getDisplayNameList(selectedFriends);
+        return `Share with ${displayNames}`;
     }
 
     const handleStartBroadcast = async () => {

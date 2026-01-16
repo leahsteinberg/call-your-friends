@@ -1,3 +1,4 @@
+import { User } from "@/features/Auth/types";
 import { BaseEntity } from "@/types/common";
 import { ProcessedOfferType } from "../Offers/types";
 
@@ -73,29 +74,16 @@ export interface MeetingType extends MeetingEvent {
 
 export interface ProcessedMeetingType extends MeetingType {
     displayScheduledFor: string;
-    acceptedUser?: {
-        name?: string;
-        id?: string;
-    };
-    acceptedUsers?: Array<{
-        name?: string;
-        id?: string;
-    }>;
-    userFrom?: {
-        name?: string;
-        id?: string;
-        phoneNumber?: string;
-    };
+    acceptedUser?: User;
+    acceptedUsers?: Array<User>;
+    userFrom?: User;
     // DEPRECATED: Keep for backwards compatibility
     targetUser?: {
         name?: string;
         id?: string;
     };
     // NEW: Multiple target users support
-    targetUsers?: Array<{
-        name?: string;
-        id?: string;
-    }>;
+    targetUsers?: Array<User>;
 }
 
 export interface MeetingsListProps {
