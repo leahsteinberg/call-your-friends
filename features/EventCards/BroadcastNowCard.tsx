@@ -25,13 +25,11 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
 
 
-    // Friends state and API
     const [friends, setFriends] = useState<Friend[]>([]);
     const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
     const [getFriends] = useGetFriendsMutation();
     const friendSelectorRef = useRef<FriendBadgeSelectorRef>(null);
 
-    // Fetch friends on component mount
     useEffect(() => {
         const fetchFriends = async () => {
             try {
@@ -44,12 +42,10 @@ export default function BroadcastNowCard(): React.JSX.Element {
         fetchFriends();
     }, [userId]);
 
-    // Pulse animation for loading state (Option A)
     const pulseOpacity = useSharedValue(1);
 
     useEffect(() => {
         if (isStarting) {
-            // Start subtle pulse when loading
             pulseOpacity.value = withRepeat(
                 withSequence(
                     withTiming(0.7, { duration: 600 }),
@@ -71,7 +67,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const handleVibeSelect = (vibeId: string | null) => {
         console.log(`Vibe selected: ${vibeId}`);
         setSelectedVibe(vibeId);
-        // TODO: Send vibe to server
     };
 
     const getMainText = () => {
@@ -87,8 +82,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
             setIsStarting(true);
             const targetType = determineTargetType(selectedFriendIds);
  
-            // Wait for API to succeed before updating Redux
-            console.log("selecteddd", selectedFriendIds)
             await broadcastNow({
                 userId,
                 targetUserIds: selectedFriendIds.length > 0 ? selectedFriendIds : undefined,
@@ -96,26 +89,19 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 intentLabel: selectedVibe,
             }).unwrap();
 
-            // Now update Redux state
             dispatch(startBroadcast());
-            // RTK Query will auto-refresh via cache invalidation
-            // The card will disappear and be replaced by SelfBroadcastCard
         } catch (error) {
-            console.error("Error starting broadcast:", error);
             alert('Failed to start broadcast. Please try again.');
             setIsStarting(false);
         }
     };
 
-    // Handle friend selection from badge selector
     const handleFriendsSelect = (userIds: string[]) => {
-        console.log('Selected friends for broadcast:', userIds);
         setSelectedFriendIds(userIds);
     };
 
     return (
         <View style={{ position: 'relative' }}>
-            {/* Friend selector floats outside card */}
             <FriendBadgeSelector
                 ref={friendSelectorRef}
                 friends={friends}
@@ -124,7 +110,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 selectedFriendIds={selectedFriendIds}
             />
 
-            {/* Wrap EventCard in Animated.View for pulse animation */}
             <Animated.View style={[animatedCardStyle]}>
                 <EventCard
                     backgroundColor={BOLD_BLUE}
@@ -161,5 +146,3 @@ export default function BroadcastNowCard(): React.JSX.Element {
         </View>
     );
 }
-
-// All styles now provided by EventCard components
