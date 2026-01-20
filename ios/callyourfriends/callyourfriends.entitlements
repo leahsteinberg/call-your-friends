@@ -6,7 +6,7 @@
     <string>development</string>
     <key>com.apple.developer.associated-domains</key>
     <array>
-      <string>applink:call-your-friends.expo.app/</string>
+      <string>applinks:call-your-friends.expo.app</string>
     </array>
   </dict>
 </plist>

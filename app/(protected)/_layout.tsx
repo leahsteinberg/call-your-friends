@@ -29,7 +29,7 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
     );
 }
 
-function TabIconWithCircle({
+function TabIcon({
     Icon,
     focused,
     color,
@@ -108,7 +108,7 @@ const Layout = () => {
                         <TabLabel label="Friends" focused={focused} />
                     ),
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIconWithCircle
+                        <TabIcon
                             Icon={SmileyFace}
                             focused={focused}
                             color={color}
@@ -126,8 +126,7 @@ const Layout = () => {
                         <TabLabel label="Chats" focused={focused} />
                     ),
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIconWithCircle
-                            Icon={SpeechBubbles}
+                        <TabIcon                            Icon={SpeechBubbles}
                             focused={focused}
                             color={color}
                             height={ICON_SIZE+ 10}
@@ -147,7 +146,7 @@ const Layout = () => {
                         <TabLabel label="Settings" focused={focused} />
                     ),
                     tabBarIcon: ({ color, focused }) => (
-                        <TabIconWithCircle
+                        <TabIcon
                             Icon={CloudIcon}
                             focused={focused}
                             color={color}
@@ -170,6 +169,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: CIRCLE_SIZE,
         height: CIRCLE_SIZE,
+        margin: 20,
     },
     circle: {
         position: 'absolute',
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 18,
         color: BOLD_BLUE,
-        paddingTop: 5,
+        padding: 5,
     },
     tabLabelFocused: {
         fontFamily: CustomFonts.ztnaturebold,
