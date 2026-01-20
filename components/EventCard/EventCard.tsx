@@ -1,7 +1,7 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
 import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from '@/styles/styles';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 // ============================================
@@ -28,13 +28,15 @@ export function EventCard({
   return (
     <View style={styles.outerContainer}>
       <GestureWrapper>
-        <Wrapper
-          style={[styles.container, { backgroundColor }]}
-          onPress={onPress}
-          disabled={disabled}
-        >
-          {children}
-        </Wrapper>
+        <View style={[styles.cardContainer, { backgroundColor }]}>
+          <Wrapper
+            style={styles.container}
+            onPress={onPress}
+            disabled={disabled}
+          >
+            {children}
+          </Wrapper>
+        </View>
       </GestureWrapper>
     </View>
   );
@@ -248,10 +250,27 @@ const styles = StyleSheet.create({
     marginBottom: CARD_LOWER_MARGIN,
     position: 'relative',
     marginHorizontal: 10,
+    marginTop: 10,
+  },
+  cardContainer: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    minHeight: CARD_MIN_HEIGHT,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   container: {
-    borderRadius: 8,
-    padding: 18,
+    borderRadius: 20,
+    padding: 20,
     overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
   },
@@ -279,9 +298,9 @@ const styles = StyleSheet.create({
     fontFamily: CustomFonts.ztnatureregular,
   },
   button: {
-    borderRadius: 15,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    borderRadius: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -289,30 +308,33 @@ const styles = StyleSheet.create({
     backgroundColor: BURGUNDY,
   },
   buttonSecondary: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: PALE_BLUE,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   buttonDanger: {
     backgroundColor: PALE_BLUE,
   },
   buttonGhost: {
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   buttonSmall: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
   },
   buttonMedium: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 22,
   },
   buttonLarge: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 26,
   },
   buttonDisabled: {
-    opacity: 0.6,
+    opacity: 0.5,
   },
   decoration: {
     position: 'absolute',

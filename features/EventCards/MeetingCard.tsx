@@ -7,7 +7,7 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { CREAM, PALE_BLUE } from "@/styles/styles";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { getTargetUserNames } from "@/utils/nameStringUtils";
+import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -59,18 +59,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
     const getClaimedSelfMeetingTitle = () => {
-        console.log("hii getCLaimedddd")
-        // Try new multi-user field first, fall back to single acceptedUser
-        let name: string | undefined;
-        if (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) {
-            const names = meeting.acceptedUsers.map(user => user.name).filter(Boolean);
-            name = names.length > 0 ? names.join(', ') : undefined;
-        } else {
-            name = meeting.acceptedUser?.name;
-        }
+        const names = getDisplayNameList(meeting.acceptedUsers || []);
         return (
             <EventCard.Title>
-                {eventCardText.meeting_self_accepted.title(name)}{displayTimeDifference(meeting.scheduledFor)}
+                {eventCardText.meeting_self_accepted.title(names)}{displayTimeDifference(meeting.scheduledFor)}
             </EventCard.Title>
         );
     };
@@ -88,7 +80,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 if (targetNames) {
                     return (
                         <EventCard.Title>
-                            We'll see if {targetNames} is free in {displayTimeDifference(meeting.scheduledFor)}
+                            We'll see if {targetNames} is free {displayTimeDifference(meeting.scheduledFor)}
                         </EventCard.Title>
                     );
                 }
@@ -109,10 +101,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const handleCancelMeeting = async () => {
         try {
             setIsCanceling(true);
-
-            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteMeetingOptimistic(meeting.id));
-
             try {
                 const response = await cancelMeeting({
                     meetingId: meeting.id,
@@ -126,7 +115,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 dispatch(addMeetingRollback(meeting));
                 throw apiError;
             }
-
         } catch (error) {
             console.error("Error deleting meeting:", error);
             alert('Failed to delete meeting. The item has been restored.');
@@ -134,28 +122,28 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         }
     };
 
+    const cancelButton = () => {
+        return (
+            <EventCard.Button
+                onPress={handleCancelMeeting}
+                loading={isCanceling}
+                variant="primary"
+                size="small"
+            >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+            </EventCard.Button>
+        );
+    };
+
     const mainDisplayText = getMainDisplay();
 
-    // Determine background color and opacity based on meeting state
-    const backgroundColor = isOldPastMeeting() ? '#E8E8E8' : PALE_BLUE;
-    const cardOpacity = isOldPastMeeting() ? 0.7 : 1;
-
     return (
-        <View style={{ opacity: cardOpacity }}>
-            <EventCard backgroundColor={backgroundColor}>
+        <View >
+            <EventCard backgroundColor={PALE_BLUE}>
                 <EventCard.Header spacing="between" align="start">
                     {mainDisplayText}
-
-                    <EventCard.Button
-                        onPress={handleCancelMeeting}
-                        loading={isCanceling}
-                        variant="danger"
-                        size="small"
-                    >
-                        <Text style={styles.cancelButtonText}>Cancel</Text>
-                    </EventCard.Button>
+                    {cancelButton()}
                 </EventCard.Header>
-
                 <EventCard.Body>
                     <EventCard.Description>
                         {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}

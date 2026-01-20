@@ -1,5 +1,5 @@
 import AnimatedText from "@/components/AnimationComponents/AnimatedText";
-import FriendBadgeSelector, { FriendBadgeSelectorRef } from "@/components/CardActionDecorations/FriendBadgeSelector";
+import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
@@ -11,7 +11,7 @@ import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
 import { getDisplayNameList } from "@/utils/nameStringUtils";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,7 +28,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
     const [friends, setFriends] = useState<Friend[]>([]);
     const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
     const [getFriends] = useGetFriendsMutation();
-    const friendSelectorRef = useRef<FriendBadgeSelectorRef>(null);
 
     useEffect(() => {
         const fetchFriends = async () => {
@@ -65,7 +64,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
     }));
 
     const handleVibeSelect = (vibeId: string | null) => {
-        console.log(`Vibe selected: ${vibeId}`);
         setSelectedVibe(vibeId);
     };
 
@@ -103,7 +101,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
     return (
         <View style={{ position: 'relative' }}>
             <FriendBadgeSelector
-                ref={friendSelectorRef}
                 friends={friends}
                 onSelectFriends={handleFriendsSelect}
                 position="bottom-right"

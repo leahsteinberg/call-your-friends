@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
+		9B30437E2F1F4C2A00A23DE2 /* Loyal_Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 9B30437D2F1F4C2A00A23DE2 /* Loyal_Icon.icon */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		BC532262B47AA451AC83540F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E6683C8CD7DD1E82066A0AE7 /* PrivacyInfo.xcprivacy */; };
 		D9375D312A22C803C6AEC382 /* libPods-callyourfriends.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6FB2EA7753D91EE59B18E4BE /* libPods-callyourfriends.a */; };
@@ -22,10 +23,11 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = callyourfriends/Info.plist; sourceTree = "<group>"; };
 		6FB2EA7753D91EE59B18E4BE /* libPods-callyourfriends.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-callyourfriends.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77D0635BFDE81919F79859E9 /* Pods-callyourfriends.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.debug.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.debug.xcconfig"; sourceTree = "<group>"; };
+		9B30437D2F1F4C2A00A23DE2 /* Loyal_Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Loyal_Icon.icon; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = callyourfriends/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		BD6B07CDBDD6737B0FE3BE11 /* Pods-callyourfriends.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.release.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.release.xcconfig"; sourceTree = "<group>"; };
-		E6683C8CD7DD1E82066A0AE7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = callyourfriends/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		E6683C8CD7DD1E82066A0AE7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = callyourfriends/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		EF6503AEDCFF370F0F086A2E /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-callyourfriends/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = callyourfriends/AppDelegate.swift; sourceTree = "<group>"; };
@@ -73,7 +75,6 @@
 				77D0635BFDE81919F79859E9 /* Pods-callyourfriends.debug.xcconfig */,
 				BD6B07CDBDD6737B0FE3BE11 /* Pods-callyourfriends.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -95,6 +96,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				9B30437D2F1F4C2A00A23DE2 /* Loyal_Icon.icon */,
 				13B07FAE1A68108700A75B9A /* callyourfriends */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -199,6 +201,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				BC532262B47AA451AC83540F /* PrivacyInfo.xcprivacy in Resources */,
+				9B30437E2F1F4C2A00A23DE2 /* Loyal_Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +356,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 77D0635BFDE81919F79859E9 /* Pods-callyourfriends.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = callyourfriends/callyourfriends.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -392,7 +395,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BD6B07CDBDD6737B0FE3BE11 /* Pods-callyourfriends.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = callyourfriends/callyourfriends.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
