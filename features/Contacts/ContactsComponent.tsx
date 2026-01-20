@@ -63,17 +63,17 @@ export default function ContactsComponent(): React.JSX.Element {
         }
     };
 
-    const fetchFriends = async () => {
+    const fetchFriends = async (signals: typeof userSignals) => {
         const friendsResult = await getFriends({ id: userFromId });
         console.log("friends ===", friendsResult.data);
 
-        // Ensure we have both friends data and userSignals before processing
-        if (!friendsResult.data || !userSignals) {
+        // Ensure we have both friends data and signals before processing
+        if (!friendsResult.data || !signals) {
             console.log("Waiting for both friends and userSignals to be ready");
             return;
         }
 
-        const filteredUserSignals = userSignals
+        const filteredUserSignals = signals
             .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE);
         const callIntentSignalsMap = filteredUserSignals.reduce((obj, item) => {
             obj[item.payload.targetUserId] = item; // Use the id as the key for the entire object
@@ -100,14 +100,14 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const handleRefresh = async () => {
         setRefreshing(true);
-        await Promise.all([fetchFriends(), fetchFriendInvites(), fetchSentInvites()]);
+        await Promise.all([fetchFriends(userSignals), fetchFriendInvites(), fetchSentInvites()]);
         setRefreshing(false);
     };
 
     useEffect(()=> {
         // Only fetch when userSignals are loaded and ready
         if (!isLoading && userSignals) {
-            fetchFriends();
+            fetchFriends(userSignals);
             fetchFriendInvites();
             fetchSentInvites();
         }

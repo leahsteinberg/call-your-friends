@@ -1,4 +1,4 @@
-import CallIntentDecorator from "@/components/CardActionDecorations/CallIntentDecorator";
+import TalkSoonButton from "@/components/CardActionDecorations/TalkSoonButton";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
@@ -6,7 +6,7 @@ import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { FriendProps } from "./types";
 
@@ -22,17 +22,19 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   useEffect(() => {
     setShowCallIntentActions(item.isContactIntended)
+    console.log("setting call intent");
   }, [item.isContactIntended]);
 
   const handleCallIntent = async () => {
-
+    console.log("handleCallIntent")
     try {
       const payload: CallIntentPayload = { targetUserId: item.id };
-      await addUserSignal({
+      const userSignal = await addUserSignal({
         userId,
         type: CALL_INTENT_SIGNAL_TYPE,
         payload
       }).unwrap();
+      console.log("adding user signal", userSignal);
     } catch (error) {
       console.error("Error setting call intent:", error);
       alert('Failed to set call intent. Please try again.');
@@ -40,6 +42,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
   };
 
   const handleNeverMind = async () => {
+    console.log("handle never mind");
     try {
       if (item.callIntentSignal) {
         await removeUserSignal({ userId, signalId: item.callIntentSignal.id }).unwrap();
@@ -72,12 +75,6 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   return (
     <View style={styles.outerContainer} key={item.index}>
-      {/* "remind me" Decorator - only when call intent is active */}
-      <CallIntentDecorator
-        isVisible={isContactIntended}
-        onNeverMind={handleNeverMind}
-        isLoading={isUndoing}
-      />
 
       <View style={styles.container}>
 
@@ -106,24 +103,15 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               <Text style={styles.callNowText}>Call Now</Text>
             </TouchableOpacity>
           )}
-        {!showCallIntentActions && (
-          <View style={styles.actionsSection}>
-            <TouchableOpacity
-              onPress={handleCallIntent}
-              style={styles.willCallSoonChip}
-              disabled={isCallingIntent}
-            >
-              {isCallingIntent ? (
-                <ActivityIndicator size="small" color={CORNFLOWER_BLUE} />
-              ) : (
-                <Text style={styles.willCallSoonText}>talk soon</Text>
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.actionsSection}>
+          <TalkSoonButton
+            isActive={showCallIntentActions}
+            onPress={handleCallIntent}
+            onNeverMind={handleNeverMind}
+            isLoading={isCallingIntent}
+          />
         </View>
-
-
+        </View>
       </View>
     </View>
   );
@@ -208,21 +196,7 @@ const styles = StyleSheet.create({
       fontFamily: CustomFonts.ztnaturemedium,
     },
     actionsSection: {
-      marginTop: 8,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    willCallSoonChip: {
-      backgroundColor: CORNFLOWER_BLUE,
-      borderRadius: 16,
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      alignSelf: 'flex-start',
-    },
-    willCallSoonText: {
-      fontSize: 13,
-      fontWeight: '600',
-      color: CREAM,
-      fontFamily: CustomFonts.ztnaturemedium,
+      marginLeft: 'auto',
+      justifyContent: 'center',
     },
 });
