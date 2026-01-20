@@ -1,9 +1,9 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM, ORANGE } from "@/styles/styles";
+import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import * as Haptics from "expo-haptics";
 import { Heart } from "lucide-react-native";
 import React, { useCallback, useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -15,6 +15,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 const ICON_SIZE = 24;
+const GROWING_SCALE = [1.3, 1.1, 1.15, 1.3];
+const SHRINKING_SCALE = [0.7, 0.9, 0.8, 0.9];
 
 interface TalkSoonButtonProps {
   isActive?: boolean;
@@ -31,12 +33,10 @@ export default function TalkSoonButton({
   isLoading = false,
   disabled = false,
 }: TalkSoonButtonProps): React.JSX.Element {
-  console.log("Talk soon button - ", isActive);
-  // Animation values for icon bounce
+  console.log("Talk soon button ---------- ", isActive, isLoading);
   const iconScale = useSharedValue(1);
-  const iconTranslateY = useSharedValue(0);
+  const iconOpacity = useSharedValue(1);
 
-  // Animation values for sliding text
   const textOpacity = useSharedValue(0);
   const textTranslateY = useSharedValue(10);
 
@@ -46,62 +46,54 @@ export default function TalkSoonButton({
 
   // Handle the press with animation and haptic feedback
   const handlePress = useCallback(() => {
-    if (isLoading || disabled || isActive) return;
-
-    // Trigger haptic feedback
-    triggerHaptic();
-
-    // Bounce animation - bounces up (negative Y), never below baseline (0)
-    iconScale.value = withSequence(
-      withSpring(1.3, { damping: 8, stiffness: 400 }),
-      withSpring(1.1, { damping: 10, stiffness: 300 }),
-      withSpring(1.15, { damping: 12, stiffness: 250 }),
-      withSpring(1, { damping: 15, stiffness: 200 })
-    );
-
-    iconTranslateY.value = withSequence(
-      withSpring(-8, { damping: 8, stiffness: 400 }),
-      withSpring(-3, { damping: 10, stiffness: 300 }),
-      withSpring(-5, { damping: 12, stiffness: 250 }),
-      withSpring(0, { damping: 15, stiffness: 200 })
-    );
-
-    // Show the sliding text with proper sequencing
-    // First reset to starting position, then animate in, hold, then animate out
-    textTranslateY.value = withSequence(
-      withTiming(10, { duration: 0 }), // Reset to start position
-      withSpring(0, { damping: 15, stiffness: 200 }), // Slide up
-      withDelay(3500, withTiming(-10, { duration: 300, easing: Easing.in(Easing.ease) })) // Slide away
-    );
-
-    textOpacity.value = withSequence(
-      withTiming(0, { duration: 0 }), // Reset to invisible
-      withTiming(1, { duration: 400, easing: Easing.out(Easing.ease) }), // Fade in
-      withDelay(3500, withTiming(0, { duration: 3000, easing: Easing.in(Easing.ease) })) // Fade out
-    );
-
-    // Call the actual onPress handler
+    if (isLoading || disabled ) return;
     if (!isActive) {
       onPress();
+
     } else {
       onNeverMind();
+
+    }
+
+    const scale = !isActive ? GROWING_SCALE : SHRINKING_SCALE;
+
+    triggerHaptic();
+
+    iconScale.value = withSequence(
+      withSpring(scale[0], { damping: 15, stiffness: 200 }),
+      withSpring(scale[1], { damping: 10, stiffness: 300 }),
+      withSpring(scale[2], { damping: 12, stiffness: 250 }),
+      withSpring(scale[3], { damping: 8, stiffness: 200 })
+    );
+
+    if (!isActive) {
+      textTranslateY.value = withSequence(
+        withTiming(8, { duration: 0 }), // Start below
+        withTiming(0, { duration: 1500, easing: Easing.out(Easing.ease) }), // Slide up
+        withDelay(1500, withTiming(8, { duration: 2000, easing: Easing.in(Easing.ease) })) // Slide back down
+      );
+
+      textOpacity.value = withSequence(
+        withTiming(0, { duration: 0 }), // Start invisible
+        withTiming(1, { duration: 1500 }), // Fade in
+        withDelay(500, withTiming(0, { duration: 2000 })) // Fade out
+      );
+    } else {
     }
   }, [isLoading, disabled, isActive, onPress, triggerHaptic]);
 
-  // Reset text animation when component becomes inactive
   useEffect(() => {
+    //Resetting based on actually getting updated isActive value
+    iconScale.value = withTiming(1, {duration: 1000});
     if (!isActive) {
       textOpacity.value = 0;
-      textTranslateY.value = 10;
+      textTranslateY.value = 8;
     }
   }, [isActive]);
 
-  // Animated styles
   const iconAnimatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { scale: iconScale.value },
-      { translateY: iconTranslateY.value },
-    ],
+    opacity: iconOpacity.value,
+    transform: [{ scale: iconScale.value}],
   }));
 
   const textAnimatedStyle = useAnimatedStyle(() => ({
@@ -111,35 +103,28 @@ export default function TalkSoonButton({
 
   return (
     <View style={styles.container}>
-
-
-      {/* Icon button */}
       <TouchableOpacity
         onPress={handlePress}
-        disabled={isLoading || disabled || isActive}
+        disabled={isLoading || disabled}
         activeOpacity={0.7}
         style={[
           styles.button,
           isActive && styles.buttonActive,
         ]}
       >
-        {isLoading ? (
-          <ActivityIndicator size="small" color={CORNFLOWER_BLUE} />
-        ) : (
-          <Animated.View style={iconAnimatedStyle}>
-            <Heart
-              size={ICON_SIZE}
-              color={isActive ? CREAM : CORNFLOWER_BLUE}
-              fill={isActive ? CREAM : "transparent"}
-              strokeWidth={2}
-            />
-          </Animated.View>
-        )}
-              {/* Sliding text message */}
-      <Animated.View style={[styles.textContainer, textAnimatedStyle]}>
-        <Text style={styles.messageText}>We'll help you stay in touch soon</Text>
-      </Animated.View>
+        <Animated.View style={iconAnimatedStyle}>
+          <Heart
+            size={ICON_SIZE}
+            color={CORNFLOWER_BLUE}
+            fill={isActive ? CORNFLOWER_BLUE : "transparent"}
+            strokeWidth={2}
+          />
+        </Animated.View>
       </TouchableOpacity>
+
+      <Animated.Text style={[styles.captionText, textAnimatedStyle]}>
+        We'll help you stay in touch
+      </Animated.Text>
     </View>
   );
 }
@@ -147,43 +132,20 @@ export default function TalkSoonButton({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    position: "relative",
-    overflow: "visible",
-    zIndex: 100,
-  },
-  textContainer: {
-    position: "absolute",
-    bottom: 52, // Button height (44) + gap (8)
-    backgroundColor: CREAM,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
-    minWidth: 200,
-    zIndex: 101,
-  },
-  messageText: {
-    fontSize: 12,
-    fontFamily: CustomFonts.ztnaturemedium,
-    color: ORANGE,
-    textAlign: "center",
   },
   button: {
     width: 44,
     height: 44,
     borderRadius: 22,
     backgroundColor: "transparent",
-    borderWidth: 2,
-    borderColor: CORNFLOWER_BLUE,
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonActive: {
-    backgroundColor: CORNFLOWER_BLUE,
-    borderColor: CORNFLOWER_BLUE,
+  buttonActive: {},
+  captionText: {
+    fontSize: 11,
+    fontFamily: CustomFonts.ztnaturemedium,
+    color: CREAM,
+    marginTop: 4,
   },
 });
