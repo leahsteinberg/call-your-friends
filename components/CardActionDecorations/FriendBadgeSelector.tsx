@@ -47,7 +47,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
   const badgeRef = useRef<View>(null);
 
   // Animation values for modal
-  const modalScale = useSharedValue(0.8);
+  const modalScale = useSharedValue(0.1);
   const modalOpacity = useSharedValue(0);
 
   // Trigger animation when modal appears or disappears
@@ -63,7 +63,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         easing: Easing.inOut(Easing.ease),
       });
       modalOpacity.value = withTiming(1, {
-        duration: 300,
+        duration: 500,
         easing: Easing.inOut(Easing.ease),
       });
     } else if (modalVisible) {
@@ -96,7 +96,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
       setSelectorPosition({
         x: isLeft ? pageX : pageX - 180 + width, // Align left or right edge
-        y: isBottom ? pageY + height + 16 : pageY - 220, // Increased offset to avoid overlap
+        y: isBottom ? pageY + height - 4 : pageY - 220, // Increased offset to avoid overlap
       });
       setShowSelector(true);
     });
@@ -137,6 +137,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
     transform: [{ scale: modalScale.value }],
     opacity: modalOpacity.value,
   }));
+
   const getButtonText = () => {
     const friendCount = selectedFriends.length;
     return friendCount === 0 ? `Share with all friends`
@@ -151,7 +152,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
       case 'bottom-left':
         return { bottom: 10, left: 10 };
       case 'bottom-right':
-        return { bottom: 0, right: 10 };
+        return { bottom: 0, right: 20 };
       case 'top-left':
         return { top: 10, left: 10 };
       case 'top-right':
@@ -190,22 +191,17 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         onPress={handleBadgePress}
         activeOpacity={0.7}
       >
-        {showStackedAvatars ? (
           <View style={styles.badgeWithAvatars}>
-            <StackedFriendAvatars
-              selectedFriends={selectedFriends}
-              expanded={showSelector}
-            />
+            {showStackedAvatars && (
+              <StackedFriendAvatars
+                selectedFriends={selectedFriends}
+                expanded={showSelector}
+              />
+            )}
             <View style={styles.friendsBadge}>
               <Text style={styles.badgeText}>{getButtonText()}</Text>
             </View>
           </View>
-
-        ) : (
-          <View style={styles.friendsBadge}>
-            <Text style={styles.badgeText}>{getButtonText()}</Text>
-          </View>
-        )}
       </TouchableOpacity>
 
       {/* Friend Selector Modal */}
