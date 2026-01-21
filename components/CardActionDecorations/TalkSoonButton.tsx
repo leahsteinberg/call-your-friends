@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
+import { CREAM } from "@/styles/styles";
 import * as Haptics from "expo-haptics";
 import { Heart } from "lucide-react-native";
 import React, { useCallback, useEffect } from "react";
@@ -36,7 +36,6 @@ export default function TalkSoonButton({
   console.log("Talk soon button ---------- ", isActive, isLoading);
   const iconScale = useSharedValue(1);
   const iconOpacity = useSharedValue(1);
-
   const textOpacity = useSharedValue(0);
   const textTranslateY = useSharedValue(10);
 
@@ -52,13 +51,9 @@ export default function TalkSoonButton({
 
     } else {
       onNeverMind();
-
     }
-
     const scale = !isActive ? GROWING_SCALE : SHRINKING_SCALE;
-
     triggerHaptic();
-
     iconScale.value = withSequence(
       withSpring(scale[0], { damping: 15, stiffness: 200 }),
       withSpring(scale[1], { damping: 10, stiffness: 300 }),
@@ -115,8 +110,8 @@ export default function TalkSoonButton({
         <Animated.View style={iconAnimatedStyle}>
           <Heart
             size={ICON_SIZE}
-            color={CORNFLOWER_BLUE}
-            fill={isActive ? CORNFLOWER_BLUE : "transparent"}
+            color={CREAM}
+            fill={isActive ? CREAM : "transparent"}
             strokeWidth={2}
           />
         </Animated.View>
