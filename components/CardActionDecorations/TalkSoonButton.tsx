@@ -35,7 +35,7 @@ export default function TalkSoonButton({
 }: TalkSoonButtonProps): React.JSX.Element {
   console.log("Talk soon button ---------- ", isActive, isLoading);
   const iconScale = useSharedValue(1);
-  const iconOpacity = useSharedValue(1);
+  const fillOpacity = useSharedValue(isActive ? 1 : 0);
   const textOpacity = useSharedValue(0);
   const textTranslateY = useSharedValue(10);
 
@@ -62,6 +62,9 @@ export default function TalkSoonButton({
     );
 
     if (!isActive) {
+      // Fade in the fill
+      fillOpacity.value = withTiming(1, { duration: 400, easing: Easing.out(Easing.ease) });
+
       textTranslateY.value = withSequence(
         withTiming(8, { duration: 0 }), // Start below
         withTiming(0, { duration: 1500, easing: Easing.out(Easing.ease) }), // Slide up
@@ -74,12 +77,15 @@ export default function TalkSoonButton({
         withDelay(500, withTiming(0, { duration: 2000 })) // Fade out
       );
     } else {
+      // Fade out the fill
+      fillOpacity.value = withTiming(0, { duration: 300, easing: Easing.in(Easing.ease) });
     }
   }, [isLoading, disabled, isActive, onPress, triggerHaptic]);
 
   useEffect(() => {
-    //Resetting based on actually getting updated isActive value
-    iconScale.value = withTiming(1, {duration: 1000});
+    // Sync state on mount/remount
+    iconScale.value = withTiming(1, { duration: 1000 });
+    fillOpacity.value = isActive ? 1 : 0;
     if (!isActive) {
       textOpacity.value = 0;
       textTranslateY.value = 8;
@@ -87,8 +93,11 @@ export default function TalkSoonButton({
   }, [isActive]);
 
   const iconAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: iconOpacity.value,
-    transform: [{ scale: iconScale.value}],
+    transform: [{ scale: iconScale.value }],
+  }));
+
+  const fillAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: fillOpacity.value,
   }));
 
   const textAnimatedStyle = useAnimatedStyle(() => ({
@@ -107,13 +116,23 @@ export default function TalkSoonButton({
           isActive && styles.buttonActive,
         ]}
       >
-        <Animated.View style={iconAnimatedStyle}>
+        <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
+          {/* Outline layer - always visible */}
           <Heart
             size={ICON_SIZE}
             color={CREAM}
-            fill={isActive ? CREAM : "transparent"}
+            fill="transparent"
             strokeWidth={2}
           />
+          {/* Fill layer - animated opacity */}
+          <Animated.View style={[styles.fillLayer, fillAnimatedStyle]}>
+            <Heart
+              size={ICON_SIZE}
+              color="transparent"
+              fill={CREAM}
+              strokeWidth={0}
+            />
+          </Animated.View>
         </Animated.View>
       </TouchableOpacity>
 
@@ -137,6 +156,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonActive: {},
+  iconContainer: {
+    position: "relative",
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+  },
+  fillLayer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
   captionText: {
     fontSize: 11,
     fontFamily: CustomFonts.ztnaturemedium,
