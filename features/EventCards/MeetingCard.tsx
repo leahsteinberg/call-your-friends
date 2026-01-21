@@ -1,11 +1,13 @@
 import AnimatedText from "@/components/AnimationComponents/AnimatedText";
 import { EventCard } from "@/components/EventCard/EventCard";
+import MeetingActionBanner from "@/components/MeetingActionBanner/MeetingActionBanner";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import { isMeetingActionable } from "@/utils/meetingTimeUtils";
 import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
 import { getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
@@ -44,7 +46,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
                 </EventCard.Title>
             );
-
     };
 
     const getSelfOpenMeetingTitle = () => {
@@ -133,8 +134,12 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
 
+    // Show action banner when meeting is ≤30 mins away or happening, but not for SELF_OPEN
+    const shouldShowBanner = isMeetingActionable(meeting.scheduledFor, meeting.scheduledEnd)
+        && meetingCardState !== SELF_OPEN;
+
     return (
-        <View >
+        <View>
             <EventCard backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}>
                 <EventCard.Header spacing="between" align="start">
                     {getMainDisplayText()}
@@ -150,6 +155,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     )}
                 </EventCard.Body>
             </EventCard>
+
+            {shouldShowBanner && (
+                <MeetingActionBanner
+                    meeting={meeting}
+                    meetingCardState={meetingCardState}
+                />
+            )}
         </View>
     );
 }
