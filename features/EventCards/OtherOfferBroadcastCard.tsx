@@ -6,7 +6,7 @@ import {
     useAcceptOfferMutation,
     useRejectOfferMutation
 } from "@/services/offersApi";
-import { BOLD_BLUE, BOLD_BROWN } from "@/styles/styles";
+import { BOLD_BROWN, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
 import React, { useEffect, useState } from "react";
@@ -94,7 +94,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
 
     return (
         <EventCard
-            backgroundColor={BOLD_BLUE}
+            backgroundColor={PALE_BLUE}
             onPress={handleAccept}
             disabled={isAccepting}
         >

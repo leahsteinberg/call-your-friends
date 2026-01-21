@@ -4,8 +4,7 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
-import { CREAM, PALE_BLUE } from "@/styles/styles";
-import { PAST_MEETING_STATE } from "@/types/meetings-offers";
+import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
 import { getDisplayDate } from "@/utils/timeStringUtils";
@@ -16,12 +15,17 @@ import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meeting
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 
+export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
+export const SELF_OPEN: MeetingCardState = "SELF_OPEN" as const;
+export const SELF_ACCEPTED: MeetingCardState = "SELF_ACCEPTED" as const;
+export const OTHER_ACCEPTED: MeetingCardState = "OTHER_ACCEPTED" as const;
+
 interface MeetingCardProps {
     meeting: ProcessedMeetingType;
 }
 
 export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.Element {
-    console.log("MEETING CARDF -,", meeting)
+    console.log("MEETING CARD -,", meeting)
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
@@ -30,15 +34,8 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const meetingState: MeetingState  = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
-
-    // Check if meeting is PAST and started more than 30 minutes ago
-    const isOldPastMeeting = () => {
-        if (meetingState !== PAST_MEETING_STATE) return false;
-        const scheduledTime = new Date(meeting.scheduledFor).getTime();
-        const thirtyMinutesAgo = Date.now() - 30 * 60 * 1000;
-        return scheduledTime < thirtyMinutesAgo;
-    };
-
+    const hasAcceptedUsers = meeting.acceptedUserIds.length !== 0;
+    const meetingCardState = selfCreatedMeeting ? (hasAcceptedUsers ? SELF_ACCEPTED : SELF_OPEN) : (OTHER_ACCEPTED);
 
     const getOpenMeetingTitle = () => {
         return (
@@ -68,34 +65,27 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
     const getMainDisplay = () => {
-        if (selfCreatedMeeting) {
-            // Check if meeting has been accepted - try new multi-user field first
-            const hasAcceptedUsers = (meeting.acceptedUsers && meeting.acceptedUsers.length > 0) || meeting.acceptedUser;
-
-            if (hasAcceptedUsers) {
-                return getClaimedSelfMeetingTitle()
-            } else {
-                // Check if there are target users for open meetings
-                const targetNames = getTargetUserNames(meeting);
-                if (targetNames) {
-                    return (
-                        <EventCard.Title>
-                            We'll see if {targetNames} is free {displayTimeDifference(meeting.scheduledFor)}
-                        </EventCard.Title>
-                    );
-                }
-                return getOpenMeetingTitle();
+        if (meetingCardState === SELF_ACCEPTED) {
+            return getClaimedSelfMeetingTitle();
+        } else if (SELF_OPEN) {
+            // Check if there are target users for open meetings
+            const targetNames = getTargetUserNames(meeting);
+            if (targetNames) {
+                return (
+                    <EventCard.Title>
+                        We'll see if {targetNames} is free {displayTimeDifference(meeting.scheduledFor)}
+                    </EventCard.Title>
+                );
             }
+            return getOpenMeetingTitle();
+        } else if (meetingCardState === OTHER_ACCEPTED) {
+            const name = meeting.userFrom?.name;
+            return (
+                <EventCard.Title>
+                    {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
+                </EventCard.Title>
+            );
         }
-        const name = meeting.userFrom?.name;
-        const targetNames = getTargetUserNames(meeting);
-
-        return (
-            <EventCard.Title>
-                {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
-                {targetNames && ` → ${targetNames}`}
-            </EventCard.Title>
-        );
     };
 
     const handleCancelMeeting = async () => {
@@ -139,7 +129,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     return (
         <View >
-            <EventCard backgroundColor={PALE_BLUE}>
+            <EventCard backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}>
                 <EventCard.Header spacing="between" align="start">
                     {mainDisplayText}
                     {cancelButton()}
