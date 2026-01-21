@@ -87,6 +87,8 @@ const Layout = () => {
             tabBarBackground: () => (
               supportsGlass ? (
                 <GlassView
+
+                
                    style={StyleSheet.absoluteFill}
                   //tintColor={CREAM}
                 />

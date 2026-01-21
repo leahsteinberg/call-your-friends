@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     title: {
         color: APP_HEADER_TEXT_COLOR,
         fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 50,
+        fontSize: 36,
         fontWeight: '600',
     },
     signOutButton: {

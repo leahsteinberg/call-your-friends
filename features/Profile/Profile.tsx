@@ -38,9 +38,8 @@ const styles = StyleSheet.create({
     headerContainer: {
         flexDirection: 'row',
         paddingHorizontal: 10,
-
-        zIndex: 99, // Sit above the scrolling TodayList
-        paddingBottom: 8, // Extra padding so background extends
+        zIndex: 99,
+        paddingBottom: 8,
         justifyContent: 'space-between',
         marginHorizontal: 15,
         borderRadius: 20,
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
     greetingText: {
         color: APP_HEADER_TEXT_COLOR,
         fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 50,
+        fontSize: 36,
         fontWeight: '600',
     },
     component: {

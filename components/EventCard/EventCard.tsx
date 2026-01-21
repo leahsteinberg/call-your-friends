@@ -88,7 +88,7 @@ EventCard.Title = function Title({
   color = CREAM,
   animated = false
 }: TitleProps) {
-  const fontSize = size === 'large' ? 28 : size === 'medium' ? 22 : 18;
+  const fontSize = size === 'large' ? 24 : size === 'medium' ? 20 : 16;
   const Component = animated ? Animated.Text : Text;
 
   return (
@@ -107,7 +107,7 @@ interface DescriptionProps {
 EventCard.Description = function Description({
   children,
   color = BOLD_BROWN,
-  size = 20
+  size = 16
 }: DescriptionProps) {
   return (
     <Text style={[styles.descriptionText, { color, fontSize: size }]}>

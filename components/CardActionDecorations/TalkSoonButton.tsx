@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     left: 0,
   },
   captionText: {
-    fontSize: 11,
+    fontSize: 13,
     fontFamily: CustomFonts.ztnaturemedium,
     color: CREAM,
     marginTop: 4,

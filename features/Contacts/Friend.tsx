@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
     container: {
       backgroundColor: BOLD_BLUE,
-      borderRadius: 8,
+      borderRadius: 20,
       padding: 18,
       overflow: 'hidden',
       minHeight: CARD_MIN_HEIGHT,
