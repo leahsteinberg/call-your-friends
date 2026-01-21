@@ -4,7 +4,7 @@ import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
@@ -12,6 +12,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 const supportsGlass = isLiquidGlassAvailable();
+console.log("supports glass -", supportsGlass)
 
 const ICON_SIZE = 33;
 const CIRCLE_SIZE = 70;
@@ -86,8 +87,8 @@ const Layout = () => {
             tabBarBackground: () => (
               supportsGlass ? (
                 <GlassView
-                  style={StyleSheet.absoluteFill}
-                  tintColor={CREAM}
+                   style={StyleSheet.absoluteFill}
+                  //tintColor={CREAM}
                 />
               ) : (
                 <BlurView
