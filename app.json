@@ -16,7 +16,8 @@
       ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
-        "UIDesignRequiresCompatibility": "1"
+        "UIDesignRequiresCompatibility": "1",
+        "UIUserInterfaceStyle": "Light"
       }
     },
     "android": {

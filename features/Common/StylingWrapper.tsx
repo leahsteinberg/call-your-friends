@@ -29,6 +29,8 @@ const styles = StyleSheet.create({
   },
   padding: {
     minHeight: safePadding,
+    backgroundColor: APP_BACKGROUND_COLOR,
+
     //paddingVertical: safePadding,
     zIndex: 100, // Sit above the scrolling TodayList
     //position: 'relative', // Create stacking context
