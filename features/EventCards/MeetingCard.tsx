@@ -37,39 +37,18 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const hasAcceptedUsers = meeting.acceptedUserIds.length !== 0;
     const meetingCardState = selfCreatedMeeting ? (hasAcceptedUsers ? SELF_ACCEPTED : SELF_OPEN) : (OTHER_ACCEPTED);
 
-    const getOpenMeetingTitle = () => {
-        return (
-            <EventCard.Row gap={0}>
+    const getOtherAcceptedMeetingTitle = () => {
+        const name = meeting.userFrom?.name;
+            return (
                 <EventCard.Title>
-                    {eventCardText.meeting_self_open.title()}{'\n'}
-                    {displayTimeDifference(meeting.scheduledFor)}
+                    {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
                 </EventCard.Title>
-                <AnimatedText
-                    text="..."
-                    style={{ fontSize: 28, fontFamily: CustomFonts.ztnaturebold, color: CREAM, fontWeight: '600' }}
-                    duration={300}
-                    staggerDelay={500}
-                    inline={true}
-                />
-            </EventCard.Row>
-        );
+            );
+
     };
 
-    const getClaimedSelfMeetingTitle = () => {
-        const names = getDisplayNameList(meeting.acceptedUsers || []);
-        return (
-            <EventCard.Title>
-                {eventCardText.meeting_self_accepted.title(names)}{displayTimeDifference(meeting.scheduledFor)}
-            </EventCard.Title>
-        );
-    };
-
-    const getMainDisplay = () => {
-        if (meetingCardState === SELF_ACCEPTED) {
-            return getClaimedSelfMeetingTitle();
-        } else if (SELF_OPEN) {
-            // Check if there are target users for open meetings
-            const targetNames = getTargetUserNames(meeting);
+    const getSelfOpenMeetingTitle = () => {
+        const targetNames = getTargetUserNames(meeting);
             if (targetNames) {
                 return (
                     <EventCard.Title>
@@ -77,14 +56,43 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     </EventCard.Title>
                 );
             }
-            return getOpenMeetingTitle();
-        } else if (meetingCardState === OTHER_ACCEPTED) {
-            const name = meeting.userFrom?.name;
             return (
-                <EventCard.Title>
-                    {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
-                </EventCard.Title>
+                <EventCard.Row gap={0}>
+                    <EventCard.Title>
+                        {eventCardText.meeting_self_open.title()}{'\n'}
+                        {displayTimeDifference(meeting.scheduledFor)}
+                    </EventCard.Title>
+                    <AnimatedText
+                        text="..."
+                        style={{ fontSize: 28, fontFamily: CustomFonts.ztnaturebold, color: CREAM, fontWeight: '600' }}
+                        duration={300}
+                        staggerDelay={500}
+                        inline={true}
+                    />
+                </EventCard.Row>
             );
+    }
+
+    const getSelfAcceptedMeetingTitle = () => {
+        const names = getDisplayNameList(meeting.acceptedUsers || []);
+        return (
+            <EventCard.Title>
+                {eventCardText.meeting_self_accepted.title(names)}{displayTimeDifference(meeting.scheduledFor)}
+            </EventCard.Title>
+        );
+
+    }
+
+    const getMainDisplayText = () => {
+        switch (meetingCardState) {
+            case SELF_ACCEPTED:
+                return getSelfAcceptedMeetingTitle();
+
+            case SELF_OPEN:
+                return getSelfOpenMeetingTitle();
+
+            case OTHER_ACCEPTED:
+                return getOtherAcceptedMeetingTitle();
         }
     };
 
@@ -97,7 +105,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     meetingId: meeting.id,
                     userId
                 }).unwrap();
-                console.log("response", response);
                 // Success - optimistic update already applied
                 setIsCanceling(false);
             } catch (apiError) {
@@ -125,13 +132,12 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         );
     };
 
-    const mainDisplayText = getMainDisplay();
 
     return (
         <View >
             <EventCard backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}>
                 <EventCard.Header spacing="between" align="start">
-                    {mainDisplayText}
+                    {getMainDisplayText()}
                     {cancelButton()}
                 </EventCard.Header>
                 <EventCard.Body>
