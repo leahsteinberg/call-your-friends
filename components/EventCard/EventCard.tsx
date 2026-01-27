@@ -20,6 +20,7 @@ interface EventCardProps {
   gesture?: React.ComponentType<{ children: React.ReactNode }>;
   onPress?: () => void;
   disabled?: boolean;
+  hasBanner?: boolean;
 }
 
 export function EventCard({
@@ -27,17 +28,24 @@ export function EventCard({
   backgroundColor,
   gesture,
   onPress,
-  disabled
+  disabled,
+  hasBanner = false,
 }: EventCardProps) {
   const GestureWrapper = gesture || React.Fragment;
   const Wrapper = onPress ? TouchableOpacity : View;
 
+  // When banner is attached, remove bottom border radius from the card
+  const bannerRadiusOverride = hasBanner ? {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  } : {};
+
   return (
     <View style={styles.outerContainer}>
       <GestureWrapper>
-        <View style={[styles.cardContainer, { backgroundColor }]}>
+        <View style={[styles.cardContainer, { backgroundColor }, bannerRadiusOverride]}>
           <Wrapper
-            style={styles.container}
+            style={[styles.container, bannerRadiusOverride]}
             onPress={onPress}
             disabled={disabled}
           >

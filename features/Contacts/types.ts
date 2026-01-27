@@ -15,6 +15,13 @@ export interface Friend extends BaseEntity {
   email?: string;
   userId: string;
   contactIntended: boolean;
+  isBroadcastingToMe?: boolean;
+  isContactIntended?: boolean;
+  callIntentSignal?: {
+    id: string;
+    type: string;
+    payload?: Record<string, unknown>;
+  };
 }
 
 export interface FriendRequest extends BaseEntity {

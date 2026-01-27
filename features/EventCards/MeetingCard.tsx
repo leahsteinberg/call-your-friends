@@ -141,7 +141,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     return (
         <View>
-            <EventCard backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}>
+            <EventCard
+                backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}
+                hasBanner={canShowBanner && isBannerVisible}
+            >
                 <EventCard.Header spacing="between" align="start">
                     {getMainDisplayText()}
                     {cancelButton()}

@@ -1,6 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
-import { endBroadcast, startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { User } from "@/features/Auth/types";
+import { endBroadcast, startBroadcast } from "@/features/Broadcast/broadcastSlice";
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
@@ -61,7 +61,9 @@ export default function MiniBroadcastButton({
             const names = getDisplayNameList(targetUsers as User[]);
             return `Broadcasting to ${names}`;
         }
-
+        if (targetUsers.length === 1 && targetUsers[0].name) {
+            return `Broadcast to ${targetUsers[0].name}`;
+        }
         return "Broadcast to them";
     };
 
