@@ -80,7 +80,7 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
                 <EventCard.Button
                     onPress={handleCancelMeeting}
                     loading={isCanceling}
-                    variant="danger"
+                    variant="secondary"
                     size="small"
                 >
                     <Text style={styles.unclaimButtonText}>Unclaim Call</Text>

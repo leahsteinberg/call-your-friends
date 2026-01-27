@@ -445,8 +445,9 @@ const styles = StyleSheet.create({
   bannerContainer: {
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    paddingTop: 28, // Extra padding to account for overlap
+    paddingTop: 24, // Extra padding to account for overlap
     paddingBottom: 14,
     paddingHorizontal: 16,
+    marginHorizontal: 10,
   },
 });

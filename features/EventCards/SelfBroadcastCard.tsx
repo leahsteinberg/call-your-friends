@@ -119,7 +119,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
             <EventCard.Body>
                 <EventCard.Description>
-                    {strings.title!()}
+                    {strings.title!(displayNames)}
                 </EventCard.Description>
 
                 {/* Show target users badge if broadcast is directed to specific friends */}

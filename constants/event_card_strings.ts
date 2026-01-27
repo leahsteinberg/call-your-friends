@@ -25,7 +25,7 @@ export const eventCardText: Record<string, EventCardStrings> = {
         subtext: (userName?: string) => userName ? `${userName} has claimed the broadcast.` : undefined,
         acceptButtonText: () => 'End',
         // Legacy support
-        title: () => `Friends can call you now.`,
+        title: (userName?: string) => `We told ${userName} they can call you now.`,
     },
     broadcast_now_card: {
         mainText: () => `Talk with friends now`,
