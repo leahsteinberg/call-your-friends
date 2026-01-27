@@ -134,9 +134,10 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
 
-    // Show action banner when meeting is ≤30 mins away or happening, but not for SELF_OPEN
-    const shouldShowBanner = isMeetingActionable(meeting.scheduledFor, meeting.scheduledEnd)
-        && meetingCardState !== SELF_OPEN;
+    // Banner is visible when meeting is ≤30 mins away or happening
+    const isBannerVisible = isMeetingActionable(meeting.scheduledFor, meeting.scheduledEnd);
+    // Banner only applies to accepted meetings (not SELF_OPEN)
+    const canShowBanner = meetingCardState !== SELF_OPEN;
 
     return (
         <View>
@@ -156,10 +157,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 </EventCard.Body>
             </EventCard>
 
-            {shouldShowBanner && (
+            {canShowBanner && (
                 <MeetingActionBanner
                     meeting={meeting}
                     meetingCardState={meetingCardState}
+                    visible={isBannerVisible}
                 />
             )}
         </View>

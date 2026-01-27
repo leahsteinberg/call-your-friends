@@ -1,29 +1,30 @@
 import CallUserButton from "@/components/CallUserButton/CallUserButton";
 import MiniBroadcastButton from "@/components/CardActionDecorations/MiniBroadcastButton";
+import { EventCard } from "@/components/EventCard/EventCard";
 import { CustomFonts } from "@/constants/theme";
 import { User } from "@/features/Auth/types";
 import { MeetingCardState, OTHER_ACCEPTED, SELF_ACCEPTED } from "@/features/EventCards/MeetingCard";
 import { ProcessedMeetingType } from "@/features/Meetings/types";
-import { BURGUNDY, CREAM, BOLD_BLUE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingHappening } from "@/utils/meetingTimeUtils";
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, SlideInDown } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 
 interface MeetingActionBannerProps {
     meeting: ProcessedMeetingType;
     meetingCardState: MeetingCardState;
+    visible: boolean;
 }
 
 export default function MeetingActionBanner({
     meeting,
     meetingCardState,
+    visible,
 }: MeetingActionBannerProps): React.JSX.Element {
     const userId = useSelector((state: RootState) => state.auth.user.id);
     const isHappening = isMeetingHappening(meeting.scheduledFor, meeting.scheduledEnd);
-    const pulseOpacity = useSharedValue(1);
 
     // Determine target users based on meeting state
     const getTargetData = (): {
@@ -51,30 +52,11 @@ export default function MeetingActionBanner({
 
     const { targetUserIds, targetUsers, callUser } = getTargetData();
 
-    // Pulse animation when meeting is happening
-    useEffect(() => {
-        if (isHappening) {
-            pulseOpacity.value = withRepeat(
-                withSequence(
-                    withTiming(0.85, { duration: 1000 }),
-                    withTiming(1, { duration: 1000 })
-                ),
-                -1,
-                false
-            );
-        } else {
-            pulseOpacity.value = withTiming(1, { duration: 300 });
-        }
-    }, [isHappening]);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-        opacity: pulseOpacity.value,
-    }));
-
     return (
-        <Animated.View
-            entering={SlideInDown.springify().damping(15).stiffness(100)}
-            style={[styles.container, animatedStyle]}
+        <EventCard.Banner
+            visible={visible}
+            backgroundColor={BURGUNDY}
+            pulsing={isHappening}
         >
             <View style={styles.buttonRow}>
                 {callUser?.phoneNumber && (
@@ -97,21 +79,11 @@ export default function MeetingActionBanner({
                     style={styles.broadcastButtonWrapper}
                 />
             </View>
-        </Animated.View>
+        </EventCard.Banner>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: BURGUNDY,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-        marginTop: -10, // Overlap slightly with card above
-        paddingTop: 18,
-        paddingBottom: 14,
-        paddingHorizontal: 16,
-        marginHorizontal: 10,
-    },
     buttonRow: {
         flexDirection: "row",
         gap: 10,

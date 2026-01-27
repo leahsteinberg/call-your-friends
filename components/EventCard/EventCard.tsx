@@ -1,8 +1,15 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
 import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from '@/styles/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 // ============================================
 // ROOT COMPONENT
@@ -243,6 +250,83 @@ EventCard.Row = function Row({ children, gap = 4 }: { children: React.ReactNode;
 };
 
 // ============================================
+// BANNER COMPONENT (slides out from under card)
+// ============================================
+interface BannerProps {
+  children: React.ReactNode;
+  backgroundColor?: string;
+  visible: boolean;
+  pulsing?: boolean;
+}
+
+const BANNER_HEIGHT = 70;
+
+EventCard.Banner = function Banner({
+  children,
+  backgroundColor = BURGUNDY,
+  visible,
+  pulsing = false,
+}: BannerProps) {
+  const translateY = useSharedValue(-BANNER_HEIGHT);
+  const opacity = useSharedValue(0);
+  const pulseOpacity = useSharedValue(1);
+
+  useEffect(() => {
+    if (visible) {
+      // Slide out from under the card
+      translateY.value = withSpring(0, {
+        damping: 18,
+        stiffness: 90,
+        mass: 1,
+      });
+      opacity.value = withTiming(1, { duration: 200 });
+    } else {
+      // Slide back under the card
+      translateY.value = withSpring(-BANNER_HEIGHT, {
+        damping: 20,
+        stiffness: 120,
+      });
+      opacity.value = withTiming(0, { duration: 150 });
+    }
+  }, [visible]);
+
+  // Pulsing animation when active/happening
+  useEffect(() => {
+    if (pulsing && visible) {
+      pulseOpacity.value = withRepeat(
+        withSequence(
+          withTiming(0.85, { duration: 1000 }),
+          withTiming(1, { duration: 1000 })
+        ),
+        -1,
+        false
+      );
+    } else {
+      pulseOpacity.value = withTiming(1, { duration: 300 });
+    }
+  }, [pulsing, visible]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: opacity.value * pulseOpacity.value,
+  }));
+
+  return (
+    <View style={styles.bannerClipContainer}>
+      <Animated.View
+        style={[
+          styles.bannerContainer,
+          { backgroundColor },
+          animatedStyle,
+        ]}
+      >
+        {children}
+      </Animated.View>
+    </View>
+  );
+};
+
+// ============================================
 // STYLES
 // ============================================
 const styles = StyleSheet.create({
@@ -344,5 +428,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flexShrink: 1,
+  },
+  bannerClipContainer: {
+    overflow: 'hidden',
+    marginTop: -20, // Overlap with card above
+    marginHorizontal: 0,
+  },
+  bannerContainer: {
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    paddingTop: 28, // Extra padding to account for overlap
+    paddingBottom: 14,
+    paddingHorizontal: 16,
   },
 });
