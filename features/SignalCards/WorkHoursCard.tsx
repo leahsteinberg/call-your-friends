@@ -1,7 +1,8 @@
+import { EventCard } from "@/components/EventCard/EventCard";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { CustomFonts } from '@/constants/theme';
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { CHARTREUSE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { SignalType, UserSignal, WORK_HOURS_SIGNAL_TYPE, WorkHoursPayload } from "@/types/userSignalsTypes";
 import { useEffect, useState } from "react";
@@ -27,7 +28,6 @@ export default function WorkHoursCard({ userSignal }: WorkHoursCardProps) {
 
     const handleAddWorkHours = async () => {
         try {
-            // Default work hours: 9 AM to 5 PM
             const payload: WorkHoursPayload = { startHour: 9, endHour: 17 };
             await addUserSignal({
                 userId,
@@ -53,7 +53,7 @@ export default function WorkHoursCard({ userSignal }: WorkHoursCardProps) {
 
     const handleToggle = async () => {
         const newValue = !optimisticActive;
-        setOptimisticActive(newValue); // Optimistic update
+        setOptimisticActive(newValue);
 
         try {
             if (isActive) {
@@ -62,72 +62,51 @@ export default function WorkHoursCard({ userSignal }: WorkHoursCardProps) {
                 await handleAddWorkHours();
             }
         } catch (error) {
-            // Revert on error
             setOptimisticActive(!newValue);
             throw error;
         }
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>
-                    Share work hours (9 AM - 5 PM)
-                </Text>
-            </View>
-            <View style={styles.toggleContainer}>
-                <View style={styles.toggle}>
+        <EventCard backgroundColor={BURGUNDY}>
+            <EventCard.Header spacing="between" align="center">
+                <EventCard.Title color={CREAM}>
+                    Work hours
+                </EventCard.Title>
+            </EventCard.Header>
+
+            <EventCard.Body>
+                <EventCard.Description color={PALE_BLUE}>
+                    Don't suggest calls during 9 AM - 5 PM
+                </EventCard.Description>
+
+                <View style={styles.toggleRow}>
+                    <Text style={styles.toggleLabel}>
+                        {optimisticActive ? 'Enabled' : 'Disabled'}
+                    </Text>
                     <ToggleSwitch
                         value={optimisticActive}
                         onValueChange={handleToggle}
-                        activeColor={CHARTREUSE}
+                        activeColor={PALE_BLUE}
                         inactiveColor={CREAM}
-                        thumbColor={CREAM}
                     />
                 </View>
-            </View>
-        </View>
+            </EventCard.Body>
+        </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: DARK_GREEN,
-        padding: 16,
-        marginVertical: 8,
-        marginHorizontal: 15,
-        borderRadius: 12,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    header: {
+    toggleRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 8,
+        justifyContent: 'space-between',
+        marginTop: 12,
     },
-    title: {
-        fontWeight: 'bold',
+    toggleLabel: {
+        fontSize: 14,
         color: CREAM,
-        fontSize: 16,
-        flex: 1,
-        marginRight: 12,
         fontFamily: CustomFonts.ztnaturemedium,
+        opacity: 0.8,
     },
-    toggle: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    toggleContainer: {
-        justifyContent: 'flex-end',
-        alignContent: 'flex-end',
-        alignItems: 'flex-end',
-        paddingBottom: 20,
-    }
 });

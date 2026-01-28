@@ -1,7 +1,8 @@
+import { EventCard } from "@/components/EventCard/EventCard";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { CustomFonts } from '@/constants/theme';
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BRIGHT_BLUE, CHARTREUSE, CREAM, DARK_GREEN } from "@/styles/styles";
+import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_TIME_PREFERENCE_SIGNAL_TYPE, CallTimePreferencePayload, SignalType, UserSignal } from "@/types/userSignalsTypes";
 import { useEffect, useState } from "react";
@@ -34,18 +35,17 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
         setIsActive(prevValue => prevValue !== newValue ? newValue : prevValue);
         setOptimisticActive(prevValue => prevValue !== newValue ? newValue : prevValue);
 
-        // Load existing preferences if signal exists
         if (userSignal && userSignal.payload) {
-            const payload = userSignal.payload as any;
+            const payload = userSignal.payload as CallTimePreferencePayload;
             if (payload.preferredTimes) {
-                setSelectedTimes(payload.preferredTimes);
+                setSelectedTimes(payload.preferredTimes as TimeOfDay[]);
             }
         }
     }, [userSignal]);
 
-    const handleAddCallTimePreference = async () => {
+    const savePreferences = async (times: TimeOfDay[]) => {
         try {
-            const payload: CallTimePreferencePayload = { preferredTimes: selectedTimes };
+            const payload: CallTimePreferencePayload = { preferredTimes: times };
             await addUserSignal({
                 userId,
                 type: CALL_TIME_PREFERENCE_SIGNAL_TYPE,
@@ -53,7 +53,7 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
             }).unwrap();
         } catch (error) {
             console.error("Error setting call time preference:", error);
-            alert('Failed to set call time preference. Please try again.');
+            alert('Failed to save preferences. Please try again.');
         }
     };
 
@@ -70,42 +70,49 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
 
     const handleToggle = async () => {
         const newValue = !optimisticActive;
-        setOptimisticActive(newValue); // Optimistic update
+        setOptimisticActive(newValue);
 
         try {
             if (isActive) {
                 await handleRemoveCallTimePreference();
             } else {
-                await handleAddCallTimePreference();
+                await savePreferences(selectedTimes);
             }
         } catch (error) {
-            // Revert on error
             setOptimisticActive(!newValue);
             throw error;
         }
     };
 
-    const toggleTimeSelection = (time: TimeOfDay) => {
-        setSelectedTimes(prev => {
-            if (prev.includes(time)) {
-                // Don't allow deselecting if it's the only one selected
-                if (prev.length === 1) return prev;
-                return prev.filter(t => t !== time);
-            } else {
-                return [...prev, time];
-            }
-        });
+    const toggleTimeSelection = async (time: TimeOfDay) => {
+        const newTimes = selectedTimes.includes(time)
+            ? selectedTimes.filter(t => t !== time)
+            : [...selectedTimes, time];
+
+        // Don't allow empty selection
+        if (newTimes.length === 0) return;
+
+        setSelectedTimes(newTimes);
+
+        // If signal is active, persist the change
+        if (isActive && userSignal) {
+            await savePreferences(newTimes);
+        }
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>
-                    Preferred times for calls
-                </Text>
-            </View>
+        <EventCard backgroundColor={BURGUNDY}>
+            <EventCard.Header spacing="between" align="center">
+                <EventCard.Title color={CREAM}>
+                    Preferred call times
+                </EventCard.Title>
+            </EventCard.Header>
 
-            {optimisticActive && (
+            <EventCard.Body>
+                <EventCard.Description color={PALE_BLUE}>
+                    When do you like to chat?
+                </EventCard.Description>
+
                 <View style={styles.timeOptionsContainer}>
                     {TIME_OPTIONS.map(option => (
                         <TouchableOpacity
@@ -125,87 +132,60 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
                         </TouchableOpacity>
                     ))}
                 </View>
-            )}
 
-            <View style={styles.toggleContainer}>
-                <View style={styles.toggle}>
+                <View style={styles.toggleRow}>
+                    <Text style={styles.toggleLabel}>
+                        {optimisticActive ? 'Sharing with friends' : 'Not sharing'}
+                    </Text>
                     <ToggleSwitch
                         value={optimisticActive}
                         onValueChange={handleToggle}
-                        activeColor={CHARTREUSE}
+                        activeColor={PALE_BLUE}
                         inactiveColor={CREAM}
-                        thumbColor={CREAM}
                     />
                 </View>
-            </View>
-        </View>
+            </EventCard.Body>
+        </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: DARK_GREEN,
-        padding: 16,
-        marginVertical: 8,
-        marginHorizontal: 15,
-        borderRadius: 12,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    title: {
-        fontWeight: 'bold',
-        color: CREAM,
-        fontSize: 16,
-        flex: 1,
-        marginRight: 12,
-        fontFamily: CustomFonts.ztnaturemedium,
-    },
-    toggle: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    toggleContainer: {
-        justifyContent: 'flex-end',
-        alignContent: 'flex-end',
-        alignItems: 'flex-end',
-        paddingBottom: 20,
-    },
     timeOptionsContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 8,
+        marginTop: 12,
         marginBottom: 16,
     },
     timeOption: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 16,
-        backgroundColor: CREAM,
-        borderWidth: 2,
-        borderColor: CREAM,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderRadius: 18,
+        backgroundColor: 'transparent',
+        borderWidth: 1.5,
+        borderColor: PALE_BLUE,
     },
     timeOptionSelected: {
-        backgroundColor: BRIGHT_BLUE,
-        borderColor: BRIGHT_BLUE,
+        backgroundColor: PALE_BLUE,
+        borderColor: PALE_BLUE,
     },
     timeOptionText: {
         fontSize: 14,
         fontFamily: CustomFonts.ztnaturemedium,
-        color: DARK_GREEN,
+        color: PALE_BLUE,
     },
     timeOptionTextSelected: {
+        color: BOLD_BROWN,
+    },
+    toggleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    toggleLabel: {
+        fontSize: 14,
         color: CREAM,
+        fontFamily: CustomFonts.ztnaturemedium,
+        opacity: 0.8,
     },
 });
