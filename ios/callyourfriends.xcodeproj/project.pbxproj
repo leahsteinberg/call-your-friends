@@ -9,27 +9,27 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		8C1CD8695E334B6DE886A9CA /* libPods-callyourfriends.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE04CF0DB633F357B80D12CE /* libPods-callyourfriends.a */; };
-		BADAD02167D81BCA1C5E642C /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E8AE5C92910E1743AA6B246 /* ExpoModulesProvider.swift */; };
+		3ED854A71A6B229196FA1E60 /* libPods-callyourfriends.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3183930F435F69CD87D2DB32 /* libPods-callyourfriends.a */; };
+		469272C7512A74047970CE9A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 66C49E9833ED34FB1CA4D16D /* PrivacyInfo.xcprivacy */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		FA30B290AEECCBD82AA57F66 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9A7C86EDC3F1DC7D1C7444F6 /* PrivacyInfo.xcprivacy */; };
+		F6A4929212043ED3BAB461D7 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E33BB39D39B5F4FFE884DE /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0E8AE5C92910E1743AA6B246 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-callyourfriends/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		00CF375B14B585A906FC8348 /* Pods-callyourfriends.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.debug.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.debug.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* callyourfriends.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = callyourfriends.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = callyourfriends/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = callyourfriends/Info.plist; sourceTree = "<group>"; };
-		9A7C86EDC3F1DC7D1C7444F6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = callyourfriends/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		3183930F435F69CD87D2DB32 /* libPods-callyourfriends.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-callyourfriends.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		66C49E9833ED34FB1CA4D16D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = callyourfriends/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = callyourfriends/SplashScreen.storyboard; sourceTree = "<group>"; };
+		B3E33BB39D39B5F4FFE884DE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-callyourfriends/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		C80B21DCC1507A513792AB5F /* Pods-callyourfriends.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.debug.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = callyourfriends/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* callyourfriends-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "callyourfriends-Bridging-Header.h"; path = "callyourfriends/callyourfriends-Bridging-Header.h"; sourceTree = "<group>"; };
-		F25F3C144F4250ECD44CE9B9 /* Pods-callyourfriends.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.release.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.release.xcconfig"; sourceTree = "<group>"; };
-		FE04CF0DB633F357B80D12CE /* libPods-callyourfriends.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-callyourfriends.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F69225180437BC5F7D67B88E /* Pods-callyourfriends.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-callyourfriends.release.xcconfig"; path = "Target Support Files/Pods-callyourfriends/Pods-callyourfriends.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C1CD8695E334B6DE886A9CA /* libPods-callyourfriends.a in Frameworks */,
+				3ED854A71A6B229196FA1E60 /* libPods-callyourfriends.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,36 +53,44 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				9A7C86EDC3F1DC7D1C7444F6 /* PrivacyInfo.xcprivacy */,
+				66C49E9833ED34FB1CA4D16D /* PrivacyInfo.xcprivacy */,
 			);
 			name = callyourfriends;
 			sourceTree = "<group>";
 		};
-		292EE12A89F63A139A0D6A69 /* callyourfriends */ = {
+		15DF593B31FB42D01CA0A7D1 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0E8AE5C92910E1743AA6B246 /* ExpoModulesProvider.swift */,
+				00CF375B14B585A906FC8348 /* Pods-callyourfriends.debug.xcconfig */,
+				F69225180437BC5F7D67B88E /* Pods-callyourfriends.release.xcconfig */,
 			);
-			name = callyourfriends;
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				FE04CF0DB633F357B80D12CE /* libPods-callyourfriends.a */,
+				3183930F435F69CD87D2DB32 /* libPods-callyourfriends.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		7323C3AE1B8A75BAEC95D0E3 /* Pods */ = {
+		650473D9F2F2B1BF8342A90A /* ExpoModulesProviders */ = {
 			isa = PBXGroup;
 			children = (
-				C80B21DCC1507A513792AB5F /* Pods-callyourfriends.debug.xcconfig */,
-				F25F3C144F4250ECD44CE9B9 /* Pods-callyourfriends.release.xcconfig */,
+				7B050E67F6B558E4837992EA /* callyourfriends */,
 			);
-			name = Pods;
-			path = Pods;
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		7B050E67F6B558E4837992EA /* callyourfriends */ = {
+			isa = PBXGroup;
+			children = (
+				B3E33BB39D39B5F4FFE884DE /* ExpoModulesProvider.swift */,
+			);
+			name = callyourfriends;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -99,8 +107,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				7323C3AE1B8A75BAEC95D0E3 /* Pods */,
-				9ADFD5613CC56DC0344A9EB8 /* ExpoModulesProviders */,
+				15DF593B31FB42D01CA0A7D1 /* Pods */,
+				650473D9F2F2B1BF8342A90A /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -113,14 +121,6 @@
 				13B07F961A680F5B00A75B9A /* callyourfriends.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		9ADFD5613CC56DC0344A9EB8 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				292EE12A89F63A139A0D6A69 /* callyourfriends */,
-			);
-			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "callyourfriends" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				2C15E1B20CB1752BB3494441 /* [Expo] Configure project */,
+				DA34CDD7FD4A802FC73F8DD9 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				ECEE91BA72D0F6DA147A3866 /* [CP] Embed Pods Frameworks */,
+				A72C94562507C1B4AACA6137 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -198,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				FA30B290AEECCBD82AA57F66 /* PrivacyInfo.xcprivacy in Resources */,
+				469272C7512A74047970CE9A /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,30 +244,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2C15E1B20CB1752BB3494441 /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env",
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/callyourfriends/callyourfriends.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-callyourfriends/expo-configure-project.sh",
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-callyourfriends/ExpoModulesProvider.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-callyourfriends/expo-configure-project.sh\"\n";
-		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -312,7 +288,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-callyourfriends/Pods-callyourfriends-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		ECEE91BA72D0F6DA147A3866 /* [CP] Embed Pods Frameworks */ = {
+		A72C94562507C1B4AACA6137 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -334,6 +310,30 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-callyourfriends/Pods-callyourfriends-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		DA34CDD7FD4A802FC73F8DD9 /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/callyourfriends/callyourfriends.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-callyourfriends/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-callyourfriends/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-callyourfriends/expo-configure-project.sh\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -342,7 +342,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				BADAD02167D81BCA1C5E642C /* ExpoModulesProvider.swift in Sources */,
+				F6A4929212043ED3BAB461D7 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +351,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C80B21DCC1507A513792AB5F /* Pods-callyourfriends.debug.xcconfig */;
+			baseConfigurationReference = 00CF375B14B585A906FC8348 /* Pods-callyourfriends.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -390,7 +390,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F25F3C144F4250ECD44CE9B9 /* Pods-callyourfriends.release.xcconfig */;
+			baseConfigurationReference = F69225180437BC5F7D67B88E /* Pods-callyourfriends.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

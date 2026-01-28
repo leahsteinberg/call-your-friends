@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     borderRadius: 20,
-    overflow: 'hidden',
+    overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
     ...Platform.select({
       ios: {

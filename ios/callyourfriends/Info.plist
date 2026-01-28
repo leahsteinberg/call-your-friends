@@ -61,6 +61,8 @@
     </array>
     <key>RCTNewArchEnabled</key>
     <true/>
+    <key>UIDesignRequiresCompatibility</key>
+    <string>1</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
