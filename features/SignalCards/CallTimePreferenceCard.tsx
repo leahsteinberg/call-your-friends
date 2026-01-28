@@ -1,4 +1,5 @@
 import { EventCard } from "@/components/EventCard/EventCard";
+import TimezonePicker, { detectUserTimezone } from "@/components/TimezonePicker/TimezonePicker";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { CustomFonts } from '@/constants/theme';
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
@@ -29,6 +30,7 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
     const [isActive, setIsActive] = useState<boolean>(!!userSignal);
     const [optimisticActive, setOptimisticActive] = useState<boolean>(!!userSignal);
     const [selectedTimes, setSelectedTimes] = useState<TimeOfDay[]>(["EVENING"]);
+    const [selectedTimezone, setSelectedTimezone] = useState<string>(detectUserTimezone());
 
     useEffect(() => {
         const newValue = !!userSignal;
@@ -40,12 +42,18 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
             if (payload.preferredTimes) {
                 setSelectedTimes(payload.preferredTimes as TimeOfDay[]);
             }
+            if (payload.timezone) {
+                setSelectedTimezone(payload.timezone);
+            }
         }
     }, [userSignal]);
 
-    const savePreferences = async (times: TimeOfDay[]) => {
+    const savePreferences = async (times: TimeOfDay[], timezone?: string) => {
         try {
-            const payload: CallTimePreferencePayload = { preferredTimes: times };
+            const payload: CallTimePreferencePayload = {
+                preferredTimes: times,
+                timezone: timezone || selectedTimezone,
+            };
             await addUserSignal({
                 userId,
                 type: CALL_TIME_PREFERENCE_SIGNAL_TYPE,
@@ -89,14 +97,20 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
             ? selectedTimes.filter(t => t !== time)
             : [...selectedTimes, time];
 
-        // Don't allow empty selection
         if (newTimes.length === 0) return;
 
         setSelectedTimes(newTimes);
 
-        // If signal is active, persist the change
         if (isActive && userSignal) {
             await savePreferences(newTimes);
+        }
+    };
+
+    const handleTimezoneChange = async (timezone: string) => {
+        setSelectedTimezone(timezone);
+
+        if (isActive && userSignal) {
+            await savePreferences(selectedTimes, timezone);
         }
     };
 
@@ -109,6 +123,11 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
             </EventCard.Header>
 
             <EventCard.Body>
+                <TimezonePicker
+                    selectedTimezone={selectedTimezone}
+                    onTimezoneChange={handleTimezoneChange}
+                />
+
                 <EventCard.Description color={PALE_BLUE}>
                     When do you like to chat?
                 </EventCard.Description>

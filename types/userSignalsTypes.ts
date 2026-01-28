@@ -18,6 +18,7 @@ export type WorkHoursPayload = {
 
 export type CallTimePreferencePayload = {
     preferredTimes: ("MORNING" | "AFTERNOON" | "EVENING" | "LATE_NIGHT")[];
+    timezone?: string; // IANA timezone string (e.g., "America/New_York")
 };
 
 export type SignalPayloadMap = {
