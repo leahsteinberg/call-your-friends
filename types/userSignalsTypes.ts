@@ -1,10 +1,10 @@
 import { BaseEntity } from "./common";
 
-export type SignalType = "CALL_INTENT" | "WORK_HOURS" | "CALL_TIME_PREFERENCE";
+export type SignalType = "CALL_INTENT" | "WORK_HOURS" | "TIME_OF_DAY_PREFERENCE";
 
 export const CALL_INTENT_SIGNAL_TYPE: SignalType = "CALL_INTENT" as const;
 export const WORK_HOURS_SIGNAL_TYPE: SignalType = "WORK_HOURS" as const;
-export const CALL_TIME_PREFERENCE_SIGNAL_TYPE: SignalType = "CALL_TIME_PREFERENCE" as const;
+export const TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE: SignalType = "TIME_OF_DAY_PREFERENCE" as const;
 
 
 export type CallIntentPayload = {
@@ -24,7 +24,7 @@ export type CallTimePreferencePayload = {
 export type SignalPayloadMap = {
     CALL_INTENT: CallIntentPayload;
     WORK_HOURS: WorkHoursPayload;
-    CALL_TIME_PREFERENCE: CallTimePreferencePayload;
+    TIME_OF_DAY_PREFERENCE: CallTimePreferencePayload;
 }
 
 export interface UserSignal<T extends SignalType> extends BaseEntity {

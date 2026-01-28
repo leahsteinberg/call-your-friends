@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { useUserSignals } from "@/hooks/useUserSignals";
 import { CREAM, DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
-import { CALL_TIME_PREFERENCE_SIGNAL_TYPE, SignalType, UserSignal, WORK_HOURS_SIGNAL_TYPE } from "@/types/userSignalsTypes";
+import { SignalType, TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE, UserSignal, WORK_HOURS_SIGNAL_TYPE } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -25,7 +25,7 @@ export default function UserSignalSettings(): React.JSX.Element {
         }
 
         const callTimeUserSignals = userSignals
-            .filter(signal => signal.type === CALL_TIME_PREFERENCE_SIGNAL_TYPE);
+            .filter(signal => signal.type === TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE);
         if (callTimeUserSignals && callTimeUserSignals.length > 0) {
             setCallTimeSignal(callTimeUserSignals[0]);
         } else {

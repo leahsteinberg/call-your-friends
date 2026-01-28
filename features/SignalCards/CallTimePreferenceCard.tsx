@@ -1,14 +1,16 @@
+import FlowerBlob from "@/assets/images/flower-blob.svg";
 import { EventCard } from "@/components/EventCard/EventCard";
 import TimezonePicker, { detectUserTimezone } from "@/components/TimezonePicker/TimezonePicker";
 import ToggleSwitch from "@/components/ToggleSwitch";
 import { CustomFonts } from '@/constants/theme';
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { CALL_TIME_PREFERENCE_SIGNAL_TYPE, CallTimePreferencePayload, SignalType, UserSignal } from "@/types/userSignalsTypes";
+import { CallTimePreferencePayload, SignalType, TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE, UserSignal } from "@/types/userSignalsTypes";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
+
 
 interface CallTimePreferenceCardProps {
     userSignal?: UserSignal<SignalType> | null;
@@ -56,7 +58,7 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
             };
             await addUserSignal({
                 userId,
-                type: CALL_TIME_PREFERENCE_SIGNAL_TYPE,
+                type: TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE,
                 payload
             }).unwrap();
         } catch (error) {
@@ -161,7 +163,13 @@ export default function CallTimePreferenceCard({ userSignal }: CallTimePreferenc
                         onValueChange={handleToggle}
                         activeColor={PALE_BLUE}
                         inactiveColor={CREAM}
-                    />
+                    >
+                        <FlowerBlob
+                            width={30}
+                            height={30}
+                            fill={BOLD_BLUE}
+                        />
+                    </ToggleSwitch>
                 </View>
             </EventCard.Body>
         </EventCard>
