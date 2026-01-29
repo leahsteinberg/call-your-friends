@@ -300,13 +300,13 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 )}
 
                 {/* Propose Different Time Button */}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.proposeTimeButton}
                     onPress={() => setShowTimePickerModal(true)}
                     activeOpacity={0.7}
                 >
                     <Text style={styles.proposeTimeButtonText}>Propose Different Time</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {DEV_FLAG && (
                     <Text style={styles.debugText}>

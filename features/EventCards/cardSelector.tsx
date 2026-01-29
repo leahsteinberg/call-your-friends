@@ -11,7 +11,7 @@ import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import type { ProcessedMeetingType } from "../Meetings/types";
 import { isBroadcastOffer } from "../Offers/offerHelpers";
 import type { ProcessedOfferType } from "../Offers/types";
-import DraftMeetingCard from "./DraftMeetingCard_OLD";
+import DraftMeetingCard from "./DraftMeetingCard";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
 import OtherMeetingBroadcastCard from "./OtherMeetingBroadcastCard";

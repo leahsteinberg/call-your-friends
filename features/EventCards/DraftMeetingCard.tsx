@@ -79,12 +79,15 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     };
 
     const targetNames = getTargetNames();
+    const isSystemPattern = meeting.sourceType === "SYSTEM_PATTERN";
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Title>
-                    Talk with {targetNames} {displayTimeDifference(meeting.scheduledFor)}?
+                    {(isSystemPattern && meeting.title)
+                        ? meeting.title
+                        : `Talk with ${targetNames} ${displayTimeDifference(meeting.scheduledFor)}?`}
                 </EventCard.Title>
 
                 <EventCard.Actions layout="horizontal" spacing={8}>
