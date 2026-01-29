@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import CallTimePreferenceCard from "../SignalCards/CallTimePreferenceCard";
-import WorkHoursCard from "../SignalCards/WorkHoursCard";
 
 export default function UserSignalSettings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -38,7 +37,7 @@ export default function UserSignalSettings(): React.JSX.Element {
             <View>
                 <Text style={styles.signalText}></Text>
             </View>
-            <WorkHoursCard userSignal={workHoursSignal}/>
+            {/* <WorkHoursCard userSignal={workHoursSignal}/> */}
             <CallTimePreferenceCard userSignal={callTimeSignal}/>
         </View>
     );

@@ -5,7 +5,6 @@ import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import AddMeetingsButton from "./AddMeetingsButton";
 import UserSignalSettings from "./UserSignalSettings";
 
 export default function Settings(): React.JSX.Element {
@@ -19,7 +18,7 @@ export default function Settings(): React.JSX.Element {
                 <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
                 <UserSignalSettings/>
             </ScrollView>
-            <AddMeetingsButton/>
+            {/* <AddMeetingsButton/> */}
         </View>
     );
 }
