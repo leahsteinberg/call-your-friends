@@ -94,7 +94,6 @@ const PhoneNumberInput = forwardRef<PhoneNumberInputRef, PhoneNumberInputProps>(
                 {renderDigitInput(1)}
                 {renderDigitInput(2)}
                 <Text style={styles.separator}>)</Text>
-                <View style={styles.spacer} />
                 {renderDigitInput(3)}
                 {renderDigitInput(4)}
                 {renderDigitInput(5)}
@@ -103,8 +102,10 @@ const PhoneNumberInput = forwardRef<PhoneNumberInputRef, PhoneNumberInputProps>(
                 {renderDigitInput(7)}
                 {renderDigitInput(8)}
                 {renderDigitInput(9)}
+                <View style={styles.validityContainer}>
+                    <PhoneNumberValidity phoneNumber={phoneNumber} />
+                </View>
             </View>
-            <PhoneNumberValidity phoneNumber={phoneNumber} />
         </View>
     );
 });
