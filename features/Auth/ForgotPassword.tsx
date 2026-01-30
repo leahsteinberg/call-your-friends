@@ -1,56 +1,45 @@
 import FlowerBlob from '@/assets/images/flower-blob.svg';
 import { CustomFonts } from '@/constants/theme';
-import { usePostSignInMutation } from '@/services/authApi';
+import { usePostForgotPasswordMutation } from '@/services/authApi';
 import { CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from '@/styles/styles';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { setLogInCredentials } from './authSlice';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import EntryButton from './EntryButton';
 import MessageDisplay from './MessageDisplay';
-import UserEmailPasswordInput from './UserEmailPasswordInput';
 
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
-
-export function SignIn()  {
-
+export function ForgotPassword() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const dispatch = useDispatch();
-    const [signInUser] = usePostSignInMutation();
+    const [forgotPassword] = usePostForgotPasswordMutation();
 
-    const handleAuthQuery = async (e: any, authQuery: any) => {
+    const handleSubmit = async () => {
         try {
             setIsLoading(true);
             setErrorMessage('');
-            const result = await authQuery({email, password}).unwrap();
-            if (result) {
-                dispatch(setLogInCredentials({ token: result.token, user: result.user }))
-            } else {
-                setErrorMessage("Unable to sign in. Please try again.");
-            }
-        } catch (error: any) {
-            console.error("Sign in error:", error);
+            setSuccessMessage('');
 
-            // Provide user-friendly error messages
-            if (error.status === 401) {
-                setErrorMessage("Invalid email or password. Please try again.");
-            } else if (error.status === 404) {
-                setErrorMessage("Account not found. Please check your email or sign up.");
-            } else if (error.status === 'FETCH_ERROR') {
+            await forgotPassword({ email }).unwrap();
+            setSuccessMessage('If an account exists with this email, you will receive password reset instructions.');
+        } catch (error: any) {
+            console.error("Forgot password error:", error);
+
+            if (error.status === 'FETCH_ERROR') {
                 setErrorMessage("Network error. Please check your connection and try again.");
             } else {
-                setErrorMessage(error.data?.message || "Sign in failed. Please try again.");
+                // Don't reveal if email exists or not for security
+                setSuccessMessage('If an account exists with this email, you will receive password reset instructions.');
             }
         } finally {
             setIsLoading(false);
         }
-    }
-    const isSigninButtonDisabled = () => !(email.length > 0 && password.length > 0) || isLoading;
+    };
+
+    const isButtonDisabled = () => email.length === 0 || isLoading;
 
     return (
         <KeyboardAvoidingView
@@ -62,13 +51,13 @@ export function SignIn()  {
                 keyboardShouldPersistTaps="handled"
             >
                 <View style={styles.container}>
-                    {/* Header with bird decoration */}
+                    {/* Header */}
                     <View style={styles.header}>
-                    <View style={styles.flowerContainer}>
+                        <View style={styles.flowerContainer}>
                             <FlowerBlob fill={ORANGE} width={60} height={60} />
                         </View>
-                        <Text style={styles.title}>Loyal</Text>
-                        <Text style={styles.subtitle}>Sign in to connect</Text>
+                        <Text style={styles.title}>Reset Password</Text>
+                        <Text style={styles.subtitle}>Enter your email to receive reset instructions</Text>
                     </View>
 
                     {/* Error message display */}
@@ -76,41 +65,43 @@ export function SignIn()  {
                         <MessageDisplay message={errorMessage} type="error" />
                     )}
 
+                    {/* Success message display */}
+                    {successMessage && (
+                        <MessageDisplay message={successMessage} type="success" />
+                    )}
+
                     {/* Input form card */}
                     <View style={styles.formCard}>
-                        <UserEmailPasswordInput
-                            onChangeEmail={(text: string) => {
+                        <TextInput
+                            placeholder="Email address"
+                            placeholderTextColor={CORNFLOWER_BLUE + '80'}
+                            style={styles.textInput}
+                            onChangeText={(text) => {
                                 setEmail(text);
                                 setErrorMessage('');
+                                setSuccessMessage('');
                             }}
-                            onChangePassword={(text: string) => {
-                                setPassword(text);
-                                setErrorMessage('');
-                            }}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            value={email}
                         />
-                    </View>
-
-                    {/* Forgot password link */}
-                    <View style={styles.forgotPasswordContainer}>
-                        <Link href="/forgot-password">
-                            <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
-                        </Link>
                     </View>
 
                     {/* Button container */}
                     <View style={styles.buttonContainer}>
                         <EntryButton
-                            title={isLoading ? "Signing in..." : "Sign In"}
-                            onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
-                            isDisabled={isSigninButtonDisabled()}
+                            title={isLoading ? "Sending..." : "Send Reset Link"}
+                            onPressQuery={handleSubmit}
+                            isDisabled={isButtonDisabled()}
                         />
                     </View>
 
-                    {/* Sign up link */}
+                    {/* Back to sign in link */}
                     <View style={styles.linkContainer}>
-                        <Text style={styles.linkText}>Don't have an account? </Text>
-                        <Link href="/signup" style={styles.link}>
-                            <Text style={styles.linkTextBold}>Sign up</Text>
+                        <Text style={styles.linkText}>Remember your password? </Text>
+                        <Link href="/login">
+                            <Text style={styles.linkTextBold}>Sign in</Text>
                         </Link>
                     </View>
                 </View>
@@ -119,8 +110,7 @@ export function SignIn()  {
     );
 }
 
-
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     keyboardView: {
         flex: 1,
         backgroundColor: CREAM,
@@ -157,22 +147,23 @@ export function SignIn()  {
         textAlign: 'center',
         fontFamily: CustomFonts.ztnatureregular,
         opacity: 0.7,
+        paddingHorizontal: 20,
     },
     formCard: {
         backgroundColor: PALE_BLUE,
         borderRadius: 12,
         padding: 20,
-        marginBottom: 12,
+        marginBottom: 24,
     },
-    forgotPasswordContainer: {
-        alignItems: 'flex-end',
-        marginBottom: 16,
-    },
-    forgotPasswordText: {
-        fontSize: 14,
+    textInput: {
+        borderRadius: 8,
+        padding: 14,
+        backgroundColor: CREAM,
         color: CORNFLOWER_BLUE,
+        fontSize: 16,
         fontFamily: CustomFonts.ztnatureregular,
-        textDecorationLine: 'underline',
+        borderWidth: 2,
+        borderColor: 'transparent',
     },
     buttonContainer: {
         marginTop: 8,
@@ -187,9 +178,6 @@ export function SignIn()  {
         fontSize: 14,
         color: CORNFLOWER_BLUE,
         fontFamily: CustomFonts.ztnatureregular,
-    },
-    link: {
-        // Link component doesn't need additional styling
     },
     linkTextBold: {
         fontSize: 14,

@@ -38,10 +38,19 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
             };
           }
         }),
+        postForgotPassword: builder.mutation({
+          query: ({ email }) => {
+            return {
+              url: '/api/forgot-password',
+              method: 'POST',
+              body: { email },
+            };
+          }
+        }),
       })
   });
 
-const {usePostSignInMutation, usePostPhoneSignupMutation, usePostSignOutMutation} = authApi;
+const {usePostSignInMutation, usePostPhoneSignupMutation, usePostSignOutMutation, usePostForgotPasswordMutation} = authApi;
 
-export { usePostPhoneSignupMutation, usePostSignInMutation, usePostSignOutMutation };
+export { usePostForgotPasswordMutation, usePostPhoneSignupMutation, usePostSignInMutation, usePostSignOutMutation };
 
