@@ -2,11 +2,9 @@ import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
-import { useUserSignals } from "@/hooks/useUserSignals";
 import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
 import { APP_HEADER_TEXT_COLOR, CORNFLOWER_BLUE } from "@/styles/styles";
-import { CALL_INTENT_SIGNAL_TYPE } from "@/types/userSignalsTypes";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -33,11 +31,9 @@ export default function ContactsComponent(): React.JSX.Element {
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [getFriendInvites] = useGetFriendInvitesMutation();
 
+    const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [signOut] = usePostSignOutMutation();
-
-    const [processedContactIntended, setProcessedContactIntended] = useState<string[]>();
-    const { userSignals, isLoading } = useUserSignals();
 
 
     const handleSignOut = async () => {
@@ -63,32 +59,12 @@ export default function ContactsComponent(): React.JSX.Element {
         }
     };
 
-    const fetchFriends = async (signals: typeof userSignals) => {
+    const fetchFriends = async () => {
         const friendsResult = await getFriends({ id: userFromId });
-        console.log("friends ===", friendsResult.data);
-
-        // Ensure we have both friends data and signals before processing
-        if (!friendsResult.data || !signals) {
-            console.log("Waiting for both friends and userSignals to be ready");
-            return;
+        if (friendsResult && friendsResult.data) {
+            console.log("got friends!!!!", friendsResult.data)
+            setFriends(friendsResult.data);
         }
-
-        const filteredUserSignals = signals
-            .filter(signal => signal.type === CALL_INTENT_SIGNAL_TYPE);
-        const callIntentSignalsMap = filteredUserSignals.reduce((obj, item) => {
-            obj[item.payload.targetUserId] = item; // Use the id as the key for the entire object
-            return obj;
-            }, {})
-
-
-        const processedFriends = friendsResult.data
-            .map(f => ({
-                ...f,
-                callIntentSignal: callIntentSignalsMap[f.id] || null,
-                isContactIntended: !!callIntentSignalsMap[f.id]
-            }));
-
-        setFriends(processedFriends);
     };
 
     const fetchFriendInvites = async () => {
@@ -100,18 +76,18 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const handleRefresh = async () => {
         setRefreshing(true);
-        await Promise.all([fetchFriends(userSignals), fetchFriendInvites(), fetchSentInvites()]);
+        await Promise.all([fetchFriends(), fetchFriendInvites(), fetchSentInvites()]);
         setRefreshing(false);
     };
 
-    useEffect(()=> {
-        // Only fetch when userSignals are loaded and ready
-        if (!isLoading && userSignals) {
-            fetchFriends(userSignals);
-            fetchFriendInvites();
-            fetchSentInvites();
-        }
-    }, [userSignals, isLoading])
+    useEffect(() => {
+        const loadInitialData = async () => {
+            setIsLoading(true);
+            await Promise.all([fetchFriends(), fetchFriendInvites(), fetchSentInvites()]);
+            setIsLoading(false);
+        };
+        loadInitialData();
+    }, [])
 
 
     return (
@@ -137,6 +113,7 @@ export default function ContactsComponent(): React.JSX.Element {
                         sentInvites={processedSentInvites}
                         onRefresh={handleRefresh}
                         refreshing={refreshing}
+                        onCallIntentChange={fetchFriends}
                     />
                 )}
             </View>

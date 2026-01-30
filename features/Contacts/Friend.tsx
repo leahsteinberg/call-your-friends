@@ -10,44 +10,55 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { FriendProps } from "./types";
 
-export default function Friend({ item }: FriendProps): React.JSX.Element {
+export default function Friend({ item, onCallIntentChange }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
   const isBroadcasting = item.isBroadcastingToMe;
-  const isContactIntended = item.isContactIntended;
-  const [showCallIntentActions, setShowCallIntentActions] = useState(isContactIntended);
-
+  const [showCallIntentActions, setShowCallIntentActions] = useState(item.hasOutgoingCallIntent ?? false);
+  console.log("friend, item", item);
   const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
   const [removeUserSignal, { isLoading: isUndoing }] = useRemoveUserSignalMutation();
-  const [userCalled, { isLoading: isCalling }] = useUserCalledMutation();
+  const [userCalled] = useUserCalledMutation();
 
   useEffect(() => {
-    setShowCallIntentActions(item.isContactIntended)
-    console.log("setting call intent");
-  }, [item.isContactIntended]);
+    setShowCallIntentActions(item.hasOutgoingCallIntent ?? false);
+  }, [item.hasOutgoingCallIntent]);
 
   const handleCallIntent = async () => {
-    console.log("handleCallIntent")
+    // Optimistic update
+    setShowCallIntentActions(true);
+
     try {
       const payload: CallIntentPayload = { targetUserId: item.id };
-      const userSignal = await addUserSignal({
+      await addUserSignal({
         userId,
         type: CALL_INTENT_SIGNAL_TYPE,
         payload
       }).unwrap();
-      console.log("adding user signal", userSignal);
+
+      // Refresh friends list to get updated state from backend
+      onCallIntentChange?.();
     } catch (error) {
+      // Rollback on error
+      setShowCallIntentActions(false);
       console.error("Error setting call intent:", error);
       alert('Failed to set call intent. Please try again.');
     }
   };
 
   const handleNeverMind = async () => {
-    console.log("handle never mind");
+    // Optimistic update
+    setShowCallIntentActions(false);
+
     try {
-      if (item.callIntentSignal) {
-        await removeUserSignal({ userId, signalId: item.callIntentSignal.id }).unwrap();
+      if (item.outgoingCallIntentSignalId) {
+        await removeUserSignal({ userId, signalId: item.outgoingCallIntentSignalId }).unwrap();
       }
+
+      // Refresh friends list to get updated state from backend
+      onCallIntentChange?.();
     } catch (error) {
+      // Rollback on error
+      setShowCallIntentActions(true);
       console.error("Error undoing call intent:", error);
       alert('Failed to undo call intent. Please try again.');
     }
@@ -55,10 +66,11 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 
   const handleCalled = async () => {
     try {
-      if (item.callIntentSignal) {
-        await removeUserSignal({ userId, signalId: item.callIntentSignal.id }).unwrap();
+      if (item.outgoingCallIntentSignalId) {
+        await removeUserSignal({ userId, signalId: item.outgoingCallIntentSignalId }).unwrap();
       }
       await userCalled({ userId, userToId: item.id }).unwrap();
+      onCallIntentChange?.();
     } catch (error) {
       console.error("Error marking as called:", error);
       alert('Failed to mark as called. Please try again.');
@@ -91,6 +103,10 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
               {isBroadcasting && (
                 <Text style={styles.broadcastingText}>is broadcasting now</Text>
               )}
+              {item.hasIncomingCallIntent &&
+              <Text style={styles.broadcastingText}>---They want to call you!</Text>
+
+              }
             </View>
           </View>
 
@@ -108,7 +124,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
             isActive={showCallIntentActions}
             onPress={handleCallIntent}
             onNeverMind={handleNeverMind}
-            isLoading={isCallingIntent}
+            isLoading={isCallingIntent || isUndoing}
           />
         </View>
         </View>
@@ -120,7 +136,7 @@ export default function Friend({ item }: FriendProps): React.JSX.Element {
 const styles = StyleSheet.create({
     outerContainer: {
       marginBottom: CARD_LOWER_MARGIN,
-      position: 'relative', // Enable absolute positioning for decorator
+      position: 'relative',
       marginHorizontal: 10,
     },
     container: {

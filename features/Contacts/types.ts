@@ -14,14 +14,10 @@ export interface Friend extends BaseEntity {
   phoneNumber: string;
   email?: string;
   userId: string;
-  contactIntended: boolean;
   isBroadcastingToMe?: boolean;
-  isContactIntended?: boolean;
-  callIntentSignal?: {
-    id: string;
-    type: string;
-    payload?: Record<string, unknown>;
-  };
+  hasOutgoingCallIntent?: boolean;
+  hasIncomingCallIntent?: boolean;
+  outgoingCallIntentSignalId?: string;
 }
 
 export interface FriendRequest extends BaseEntity {
@@ -104,10 +100,12 @@ export interface FriendProps {
     phoneNumber: string;
     id: string;
     index?: number;
-    isContactIntended?: boolean;
     isBroadcastingToMe?: boolean;
-    callIntentSignal?: any;
+    hasOutgoingCallIntent?: boolean;
+    hasIncomingCallIntent?: boolean;
+    outgoingCallIntentSignalId?: string;
   };
+  onCallIntentChange?: () => void;
 }
 
 export interface FriendRequestProps {

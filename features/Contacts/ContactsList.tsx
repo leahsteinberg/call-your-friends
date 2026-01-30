@@ -11,9 +11,10 @@ import { ContactsListProps, Friend as FriendType } from "./types";
 interface ContactsListPropsExtended extends ContactsListProps {
     onRefresh?: () => void;
     refreshing?: boolean;
+    onCallIntentChange?: () => void;
 }
 
-export default function ContactsList({ friends, friendRequests, sentInvites, onRefresh, refreshing = false }: ContactsListPropsExtended): React.JSX.Element {
+export default function ContactsList({ friends, friendRequests, sentInvites, onRefresh, refreshing = false, onCallIntentChange }: ContactsListPropsExtended): React.JSX.Element {
     const insets = useSafeAreaInsets();
 
     const friendListData =
@@ -21,7 +22,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
         //title: "Friends",
         data: friends,
         renderItem: ({ item, index }: { item: FriendType; index: number }) =>
-            (<Friend item={{ ...item, index }} />)
+            (<Friend item={{ ...item, index }} onCallIntentChange={onCallIntentChange} />)
     };
 
     const friendRequestsListData =
