@@ -12,7 +12,7 @@ interface StylingWrapperProps {
 export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
     if (showGradientBackground) {      
   return (
-            <OrganicGradientBackground>
+            <OrganicGradientBackground >
                 <View style={styles.padding}/>
                 {children}
             </OrganicGradientBackground>

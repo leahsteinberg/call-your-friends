@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnatureregular,
         marginHorizontal: 1,
     },
-    spacer: {
-        width: 6,
+    validityContainer: {
+        marginLeft: 4,
     },
 });
