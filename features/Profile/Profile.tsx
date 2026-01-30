@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { APP_BACKGROUND_COLOR, APP_HEADER_TEXT_COLOR } from "@/styles/styles";
+import { APP_HEADER_TEXT_COLOR } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -37,18 +37,14 @@ const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '100%',
         justifyContent: 'space-between',
-        backgroundColor: APP_BACKGROUND_COLOR,
         flex: 1,
     },
     headerContainer: {
         flexDirection: 'row',
-        zIndex: 99, // Sit above the scrolling TodayList
-        paddingBottom: 8, // Extra padding so background extends
+        zIndex: 99,
+        paddingBottom: 8,
         justifyContent: 'space-between',
         marginHorizontal: 15,
-        backgroundColor: APP_BACKGROUND_COLOR,
-
-
     },
     greetingText: {
         color: APP_HEADER_TEXT_COLOR,

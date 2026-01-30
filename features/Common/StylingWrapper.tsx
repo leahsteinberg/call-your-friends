@@ -1,14 +1,23 @@
-import { APP_BACKGROUND_COLOR } from '@/styles/styles';
+import OrganicGradientBackground from '@/components/OrganicGradientBackground';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
 
 interface StylingWrapperProps {
   children: React.ReactElement; // Or JSX.Element
+  showGradientBackground?: boolean;
 }
 
 
-export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children}) => {
+export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
+    if (showGradientBackground) {      
+  return (
+            <OrganicGradientBackground>
+                <View style={styles.padding}/>
+                {children}
+            </OrganicGradientBackground>
+        );
+      }
 
     return (
         <View style={styles.container}>
@@ -22,19 +31,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: APP_BACKGROUND_COLOR,
-    //alignItems: 'center',
-
-    //paddingTop: safePadding,
+    //backgroundColor: APP_BACKGROUND_COLOR,
   },
   padding: {
     minHeight: safePadding,
-    backgroundColor: APP_BACKGROUND_COLOR,
-
-    //paddingVertical: safePadding,
-    zIndex: 100, // Sit above the scrolling TodayList
-    //position: 'relative', // Create stacking context
-    //backgroundColor: BOLD_BROWN, // Opaque background to hide content underneath
-
+    zIndex: 100,
   },
 });

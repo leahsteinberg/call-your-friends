@@ -1,7 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
-import { CREAM, DARK_GREEN } from "@/styles/styles";
+import { DARK_GREEN } from "@/styles/styles";
 import { RootState } from "@/types";
 import { DRAFT_MEETING_STATE, PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
@@ -172,7 +172,6 @@ export default function TodayList(): React.JSX.Element {
         }
         return null;
     };
-    const x = true
     if (isLoading) {
         return (
             <View style={styles.container}>
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturemedium,
         position: 'relative', // Create stacking context
         zIndex: 100, // High z-index to sit above FlatList
-        backgroundColor: CREAM, // Opaque background to hide content underneath
+        //backgroundColor: CREAM, // Opaque background to hide content underneath
         // paddingBottom: 4, // Extra padding so background extends a bit
 
     },
