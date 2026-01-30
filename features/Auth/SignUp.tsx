@@ -65,10 +65,13 @@ export function SignUp()  {
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.keyboardView}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         >
             <ScrollView
                 contentContainerStyle={styles.scrollContent}
                 keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                bounces={true}
             >
                 <View style={styles.container}>
                     {/* Header with flower decoration */}

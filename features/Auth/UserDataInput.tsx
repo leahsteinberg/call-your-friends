@@ -1,31 +1,48 @@
 import { CustomFonts } from '@/constants/theme';
 import { CORNFLOWER_BLUE, CREAM } from '@/styles/styles';
-import React from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import PhoneNumberInput from './PhoneNumberInput';
+import PhoneNumberInput, { PhoneNumberInputRef } from './PhoneNumberInput';
 
+interface UserDataInputProps {
+    onChangeName: (text: string) => void;
+    onChangePhoneNumber: (phone: string) => void;
+    showName: boolean;
+    phoneNumber: string;
+    showPhoneNumber: boolean;
+}
 
-export default function UserDataInput({onChangeName, onChangePhoneNumber, showName, phoneNumber, showPhoneNumber}) {
+export default function UserDataInput({ onChangeName, onChangePhoneNumber, showName, phoneNumber, showPhoneNumber }: UserDataInputProps) {
+    const phoneInputRef = useRef<PhoneNumberInputRef>(null);
+
     return (
         <View style={styles.container}>
-            { showName &&
+            {showName && (
                 <TextInput
                     placeholder="Your Name"
                     placeholderTextColor={CORNFLOWER_BLUE + '80'}
                     style={styles.textInput}
-                    onChangeText={(text)=> onChangeName(text)}
+                    onChangeText={(text) => onChangeName(text)}
                     autoCapitalize="words"
                     autoCorrect={false}
+                    returnKeyType={showPhoneNumber ? "next" : "done"}
+                    blurOnSubmit={!showPhoneNumber}
+                    onSubmitEditing={() => {
+                        if (showPhoneNumber) {
+                            phoneInputRef.current?.focusFirstInput();
+                        }
+                    }}
                 />
-            }
-            { showPhoneNumber &&
+            )}
+            {showPhoneNumber && (
                 <View style={styles.phoneInput}>
                     <PhoneNumberInput
+                        ref={phoneInputRef}
                         onDataChange={onChangePhoneNumber}
                         phoneNumber={phoneNumber}
                     />
                 </View>
-            }
+            )}
         </View>
     );
 }
