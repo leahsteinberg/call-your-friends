@@ -2,16 +2,67 @@ import { meetingApi } from "@/services/meetingApi";
 import { usePostRegisterPushMutation } from "@/services/notificationApi";
 import { offerApi } from "@/services/offersApi";
 import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from "@/services/notificationsService";
+import { NOTIFICATION_SCREENS, PushPayload } from "@/types/pushNotification";
 import { RootState } from "@/types/redux";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 export function usePushNotifications() {
     const dispatch = useDispatch();
+    const router = useRouter();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [expoPushToken, setExpoPushToken] = useState<string>('');
     const [postRegisterPushToken] = usePostRegisterPushMutation();
+
+    // Invalidate caches to refresh data
+    const invalidateCaches = () => {
+        dispatch(offerApi.util.invalidateTags(['Offer']));
+        dispatch(meetingApi.util.invalidateTags(['Meeting']));
+    };
+
+    // Handle navigation based on notification screen
+    const handleNavigate = (payload: PushPayload) => {
+        if (!payload.screen) {
+            return;
+        }
+
+        const route = NOTIFICATION_SCREENS[payload.screen] || `/(protected)`;
+
+        // Navigate with params from payload data
+        router.push({
+            pathname: route as any,
+            params: payload.data,
+        });
+    };
+
+    // Handle notification response (when user taps notification)
+    const handleNotificationResponse = (payload: PushPayload | undefined) => {
+        if (!payload) {
+            // Legacy notification without new payload structure - just refresh
+            invalidateCaches();
+            return;
+        }
+
+        switch (payload.action) {
+            case 'navigate':
+                handleNavigate(payload);
+                break;
+
+            case 'refresh':
+                invalidateCaches();
+                break;
+
+            case 'silent':
+                // Background update, no action needed
+                break;
+
+            default:
+                // Fallback: refresh data
+                invalidateCaches();
+        }
+    };
 
     useEffect(() => {
         console.log("usePushNotifications - useEffect");
@@ -43,12 +94,17 @@ export function usePushNotifications() {
         const cleanup = setupNotificationListeners(
             (notification) => {
                 console.log('Notification received:', notification);
+                const payload = notification.request.content.data as PushPayload | undefined;
+
+                // Always refresh data when notification is received in foreground
+                if (payload?.type) {
+                    invalidateCaches();
+                }
             },
             (response) => {
                 console.log('Notification response:', response);
-                // Invalidate offers and meetings cache to trigger a refresh
-                dispatch(offerApi.util.invalidateTags(['Offer']));
-                dispatch(meetingApi.util.invalidateTags(['Meeting']));
+                const payload = response.notification.request.content.data as PushPayload | undefined;
+                handleNotificationResponse(payload);
             }
         );
 

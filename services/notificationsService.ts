@@ -1,3 +1,4 @@
+import { PushPayload } from '@/types/pushNotification';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -6,12 +7,27 @@ import { Platform } from 'react-native';
 // Configure how notifications are handled when the app is in the foreground
 export function configureNotificationHandler() {
   Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldPlaySound: true,
-      shouldSetBadge: true,
-      shouldShowBanner: true,
-      shouldShowList: true,
-    }),
+    handleNotification: async (notification) => {
+      const data = notification.request.content.data as PushPayload | undefined;
+
+      // BROADCAST_ENDED: silent refresh, no banner
+      if (data?.type === 'BROADCAST_ENDED') {
+        return {
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+          shouldShowBanner: false,
+          shouldShowList: false,
+        };
+      }
+
+      // All other types: show notification
+      return {
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      };
+    },
   });
 }
 
