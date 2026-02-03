@@ -30,8 +30,6 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
     const [isRejecting, setIsRejecting] = useState(false);
     const offerId = offer.id;
     const strings = eventCardText.broadcast_other_open;
-    console.log("STRINGS", strings);
-
 
 
     const animatedFlowerStyle = useAnimatedStyle(() => ({

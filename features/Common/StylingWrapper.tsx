@@ -1,4 +1,3 @@
-import OrganicGradientBackground from '@/components/OrganicGradientBackground';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
@@ -10,14 +9,14 @@ interface StylingWrapperProps {
 
 
 export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
-    if (showGradientBackground) {      
-  return (
-            <OrganicGradientBackground >
-                <View style={styles.padding}/>
-                {children}
-            </OrganicGradientBackground>
-        );
-      }
+  //   if (showGradientBackground) {      
+  // return (
+  //           <OrganicGradientBackground >
+  //               <View style={styles.padding}/>
+  //               {children}
+  //           </OrganicGradientBackground>
+  //       );
+  //     }
 
     return (
         <View style={styles.container}>

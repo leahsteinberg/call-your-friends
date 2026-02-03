@@ -1,7 +1,7 @@
 import { meetingApi } from "@/services/meetingApi";
 import { usePostRegisterPushMutation } from "@/services/notificationApi";
-import { offerApi } from "@/services/offersApi";
 import { configureNotificationHandler, registerForPushNotificationsAsync, setupNotificationListeners } from "@/services/notificationsService";
+import { offerApi } from "@/services/offersApi";
 import { NOTIFICATION_SCREENS, PushPayload } from "@/types/pushNotification";
 import { RootState } from "@/types/redux";
 import { useRouter } from "expo-router";
@@ -39,6 +39,7 @@ export function usePushNotifications() {
 
     // Handle notification response (when user taps notification)
     const handleNotificationResponse = (payload: PushPayload | undefined) => {
+        console.log("handle notification response, ", payload);
         if (!payload) {
             // Legacy notification without new payload structure - just refresh
             invalidateCaches();
