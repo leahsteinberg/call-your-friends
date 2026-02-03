@@ -1,8 +1,9 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
 import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from '@/styles/styles';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated, {
+  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -12,15 +13,33 @@ import Animated, {
 } from 'react-native-reanimated';
 
 // ============================================
+// NEUMORPHISM CONFIGURATION
+// ============================================
+const NEUMORPHIC = {
+  // Shadow colors for the raised effect
+  lightShadow: 'rgba(255, 255, 255, 0.7)',
+  darkShadow: 'rgba(0, 0, 0, 0.25)',
+  // Background tint (medium transparency with dark tint)
+  backgroundTint: 'rgba(0, 0, 0, 0.08)',
+  // Border for subtle definition
+  borderColor: 'rgba(255, 255, 255, 0.15)',
+  // Shadow offset for raised state
+  shadowOffset: 6,
+  // Shadow blur
+  shadowBlur: 12,
+};
+
+// ============================================
 // ROOT COMPONENT
 // ============================================
 interface EventCardProps {
   children: React.ReactNode;
-  backgroundColor: string;
+  backgroundColor?: string; // Now optional - defaults to transparent neumorphic
   gesture?: React.ComponentType<{ children: React.ReactNode }>;
   onPress?: () => void;
   disabled?: boolean;
   hasBanner?: boolean;
+  variant?: 'solid' | 'neumorphic'; // Allow switching between old and new style
 }
 
 export function EventCard({
@@ -30,9 +49,10 @@ export function EventCard({
   onPress,
   disabled,
   hasBanner = false,
+  variant = 'neumorphic',
 }: EventCardProps) {
   const GestureWrapper = gesture || React.Fragment;
-  const Wrapper = onPress ? TouchableOpacity : View;
+  const pressed = useSharedValue(0);
 
   // When banner is attached, remove bottom border radius from the card
   const bannerRadiusOverride = hasBanner ? {
@@ -40,17 +60,93 @@ export function EventCard({
     borderBottomRightRadius: 0,
   } : {};
 
+  // Animated styles for press effect
+  const animatedLightShadow = useAnimatedStyle(() => {
+    const offset = interpolate(pressed.value, [0, 1], [NEUMORPHIC.shadowOffset, 2]);
+    const opacity = interpolate(pressed.value, [0, 1], [1, 0.3]);
+    return {
+      shadowOffset: { width: -offset, height: -offset },
+      shadowOpacity: opacity,
+    };
+  });
+
+  const animatedDarkShadow = useAnimatedStyle(() => {
+    const offset = interpolate(pressed.value, [0, 1], [NEUMORPHIC.shadowOffset, 2]);
+    const opacity = interpolate(pressed.value, [0, 1], [1, 0.3]);
+    return {
+      shadowOffset: { width: offset, height: offset },
+      shadowOpacity: opacity,
+    };
+  });
+
+  const animatedContent = useAnimatedStyle(() => {
+    const scale = interpolate(pressed.value, [0, 1], [1, 0.98]);
+    return {
+      transform: [{ scale }],
+    };
+  });
+
+  const handlePressIn = () => {
+    pressed.value = withTiming(1, { duration: 150 });
+  };
+
+  const handlePressOut = () => {
+    pressed.value = withTiming(0, { duration: 150 });
+  };
+
+  // Use solid variant (original style)
+  if (variant === 'solid') {
+    const Wrapper = onPress ? TouchableOpacity : View;
+    return (
+      <View style={styles.outerContainer}>
+        <GestureWrapper>
+          <View style={[styles.cardContainer, { backgroundColor }, bannerRadiusOverride]}>
+            <Wrapper
+              style={[styles.container, bannerRadiusOverride]}
+              onPress={onPress}
+              disabled={disabled}
+            >
+              {children}
+            </Wrapper>
+          </View>
+        </GestureWrapper>
+      </View>
+    );
+  }
+
+  // Neumorphic variant (new transparent style)
   return (
     <View style={styles.outerContainer}>
       <GestureWrapper>
-        <View style={[styles.cardContainer, { backgroundColor }, bannerRadiusOverride]}>
-          <Wrapper
-            style={[styles.container, bannerRadiusOverride]}
+        <View style={[styles.neumorphicWrapper, bannerRadiusOverride]}>
+          {/* Light shadow layer (top-left) */}
+          <Animated.View
+            style={[
+              styles.shadowLayerLight,
+              bannerRadiusOverride,
+              animatedLightShadow,
+            ]}
+          />
+          {/* Dark shadow layer (bottom-right) */}
+          <Animated.View
+            style={[
+              styles.shadowLayerDark,
+              bannerRadiusOverride,
+              animatedDarkShadow,
+            ]}
+          />
+          {/* Main content */}
+          <Pressable
             onPress={onPress}
+            onPressIn={onPress ? handlePressIn : undefined}
+            onPressOut={onPress ? handlePressOut : undefined}
             disabled={disabled}
+            style={[styles.neumorphicContainer, bannerRadiusOverride]}
           >
-            {children}
-          </Wrapper>
+            <Animated.View style={[styles.neumorphicContent, animatedContent]}>
+              {children}
+            </Animated.View>
+          </Pressable>
         </View>
       </GestureWrapper>
     </View>
@@ -344,6 +440,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 10,
   },
+  // Original solid card styles
   cardContainer: {
     borderRadius: 20,
     overflow: 'visible',
@@ -364,6 +461,72 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     overflow: 'visible',
+    minHeight: CARD_MIN_HEIGHT,
+  },
+  // Neumorphic styles
+  neumorphicWrapper: {
+    position: 'relative',
+    borderRadius: 20,
+    minHeight: CARD_MIN_HEIGHT,
+  },
+  shadowLayerLight: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    pointerEvents: 'none',
+    ...Platform.select({
+      ios: {
+        shadowColor: NEUMORPHIC.lightShadow,
+        shadowOffset: { width: -NEUMORPHIC.shadowOffset, height: -NEUMORPHIC.shadowOffset },
+        shadowOpacity: 1,
+        shadowRadius: NEUMORPHIC.shadowBlur,
+      },
+      android: {
+        elevation: 4,
+      },
+      web: {
+        // Shadows applied to container on web, hide this layer
+        display: 'none',
+      },
+    }),
+  },
+  shadowLayerDark: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    pointerEvents: 'none',
+    ...Platform.select({
+      ios: {
+        shadowColor: NEUMORPHIC.darkShadow,
+        shadowOffset: { width: NEUMORPHIC.shadowOffset, height: NEUMORPHIC.shadowOffset },
+        shadowOpacity: 1,
+        shadowRadius: NEUMORPHIC.shadowBlur,
+      },
+      android: {
+        elevation: 6,
+      },
+      web: {
+        // Shadows applied to container on web, hide this layer
+        display: 'none',
+      },
+    }),
+  },
+  neumorphicContainer: {
+    borderRadius: 20,
+    minHeight: CARD_MIN_HEIGHT,
+    backgroundColor: NEUMORPHIC.backgroundTint,
+    borderWidth: 1,
+    borderColor: NEUMORPHIC.borderColor,
+    overflow: 'hidden',
+    ...Platform.select({
+      web: {
+        // On web, apply both shadows directly to container (cleaner than separate layers)
+        boxShadow: `${-NEUMORPHIC.shadowOffset}px ${-NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur}px ${NEUMORPHIC.lightShadow}, ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur}px ${NEUMORPHIC.darkShadow}`,
+      },
+    }),
+  },
+  neumorphicContent: {
+    padding: 20,
     minHeight: CARD_MIN_HEIGHT,
   },
   header: {
