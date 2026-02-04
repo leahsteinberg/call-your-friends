@@ -1,4 +1,3 @@
-import OrganicGradientBackground from '@/components/OrganicGradientBackground.native';
 import { useIsBroadcasting } from "@/hooks/useIsBroadcasting";
 import React from 'react';
 
@@ -15,14 +14,14 @@ export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({childre
   
   const isBroadcasting = useIsBroadcasting();
 
-  if (showGradientBackground) {      
-    return (
-              <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
-                  <View style={styles.padding}/>
-                  {children}
-              </OrganicGradientBackground>
-          );
-        }
+  // if (showGradientBackground) {      
+  //   return (
+  //             <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
+  //                 <View style={styles.padding}/>
+  //                 {children}
+  //             </OrganicGradientBackground>
+  //         );
+  //       }
 
     return (
         <View style={styles.container}>

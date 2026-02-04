@@ -2,7 +2,7 @@ import FlowerBlob from '@/assets/images/flower-blob.svg';
 import { CustomFonts } from '@/constants/theme';
 import { usePostForgotPasswordMutation } from '@/services/authApi';
 import { CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from '@/styles/styles';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import EntryButton from './EntryButton';
@@ -16,6 +16,7 @@ export function ForgotPassword() {
     const [successMessage, setSuccessMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [forgotPassword] = usePostForgotPasswordMutation();
+    const router = useRouter();
 
     const handleSubmit = async () => {
         try {
@@ -24,15 +25,20 @@ export function ForgotPassword() {
             setSuccessMessage('');
 
             await forgotPassword({ email }).unwrap();
-            setSuccessMessage('If an account exists with this email, you will receive password reset instructions.');
+            // OTP sent successfully — navigate to reset screen with email
+            router.push({ pathname: '/reset-password', params: { email } });
         } catch (error: any) {
             console.error("Forgot password error:", error);
 
+            const code = error.data?.code;
             if (error.status === 'FETCH_ERROR') {
                 setErrorMessage("Network error. Please check your connection and try again.");
+            } else if (code === 'USER_NOT_FOUND') {
+                setErrorMessage("No account found with this email address.");
+            } else if (code === 'TOO_MANY_ATTEMPTS') {
+                setErrorMessage("Too many attempts. Please wait a few minutes and try again.");
             } else {
-                // Don't reveal if email exists or not for security
-                setSuccessMessage('If an account exists with this email, you will receive password reset instructions.');
+                setErrorMessage("Something went wrong. Please try again.");
             }
         } finally {
             setIsLoading(false);
@@ -60,7 +66,7 @@ export function ForgotPassword() {
                             <FlowerBlob fill={ORANGE} width={60} height={60} />
                         </View>
                         <Text style={styles.title}>Reset Password</Text>
-                        <Text style={styles.subtitle}>Enter your email to receive reset instructions</Text>
+                        <Text style={styles.subtitle}>Enter your email to receive a verification code</Text>
                     </View>
 
                     {/* Error message display */}
@@ -94,7 +100,7 @@ export function ForgotPassword() {
                     {/* Button container */}
                     <View style={styles.buttonContainer}>
                         <EntryButton
-                            title={isLoading ? "Sending..." : "Send Reset Link"}
+                            title={isLoading ? "Sending..." : "Send Code"}
                             onPressQuery={handleSubmit}
                             isDisabled={isButtonDisabled()}
                         />
