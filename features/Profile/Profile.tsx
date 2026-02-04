@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { APP_HEADER_TEXT_COLOR } from "@/styles/styles";
+import { BOLD_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
     },
     greetingText: {
-        color: APP_HEADER_TEXT_COLOR,
-        fontFamily: CustomFonts.ztnaturebold,
+        color: BOLD_BLUE,
+        fontFamily: CustomFonts.ztnatureextralight,
         fontSize: 50,
         fontWeight: '600',
     },

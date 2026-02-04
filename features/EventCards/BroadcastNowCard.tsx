@@ -72,7 +72,8 @@ export default function BroadcastNowCard(): React.JSX.Element {
             selectedFriendIds.includes(friend.id)
         );
         const displayNames = getDisplayNameList(selectedFriends);
-        return `Share with ${displayNames}`;
+        //return `Share with ${displayNames}`;
+        return 'Tap to start Call Me mode'
     }
 
     const handleStartBroadcast = async () => {
@@ -112,6 +113,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     backgroundColor={BOLD_BLUE}
                     onPress={handleStartBroadcast}
                     disabled={isStarting}
+                    pill={{ text: 'TAP TO START', backgroundColor: CREAM, textColor: BOLD_BLUE }}
                 >
                     <EventCard.Header>
                         <EventCard.Row gap={0}>

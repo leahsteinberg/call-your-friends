@@ -16,8 +16,9 @@ interface StylingWrapperProps {
 export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
   
   const isBroadcasting = useIsBroadcasting();
-
-  if (showGradientBackground && isIos) {
+  const x = true;
+  if (x) {
+  //if (showGradientBackground && isIos) {
     return (
               <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
                   <View style={styles.padding}/>
@@ -26,12 +27,12 @@ export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({childre
           );
         }
 
-    return (
-        <View style={styles.container}>
-          <View style={styles.padding}/>
-           {children}
-        </View>
-    )
+    // return (
+    //     <View style={styles.container}>
+    //       <View style={styles.padding}/>
+    //        {children}
+    //     </View>
+    // )
 }
 
 const styles = StyleSheet.create({
