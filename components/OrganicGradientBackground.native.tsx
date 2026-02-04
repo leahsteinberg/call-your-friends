@@ -2,12 +2,16 @@ import {
     Canvas,
     Fill,
     Shader,
-    Skia,
-    useClock,
+    Skia
 } from "@shopify/react-native-skia";
 import React, { useEffect } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
-import { useDerivedValue, useSharedValue, withSpring } from "react-native-reanimated";
+import {
+    useDerivedValue,
+    useFrameCallback,
+    useSharedValue,
+    withSpring,
+} from "react-native-reanimated";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -73,16 +77,15 @@ const TRANSITION_SPRING = {
 
 const organicShader = Skia.RuntimeEffect.Make(`
     uniform float2 resolution;
-    uniform float time;
     uniform float aspect;
 
-    // Per-blob hue and rotation speeds
-    uniform float hueSpeed1;
-    uniform float hueSpeed2;
-    uniform float hueSpeed3;
-    uniform float rotSpeed1;
-    uniform float rotSpeed2;
-    uniform float rotSpeed3;
+    // Accumulated phases (incremented each frame, not time * speed)
+    uniform float huePhase1;
+    uniform float huePhase2;
+    uniform float huePhase3;
+    uniform float rotPhase1;
+    uniform float rotPhase2;
+    uniform float rotPhase3;
 
     // Dynamic properties (smoothly animated)
     uniform float scale;     // 1.0 = normal, >1 = bigger blobs
@@ -127,27 +130,17 @@ const organicShader = Skia.RuntimeEffect.Make(`
 
         float3 cream = float3(0.976, 0.961, 0.929);
 
-        // ---- Rotation angles ----
-        float rot1 = time * rotSpeed1;
-        float rot2 = time * rotSpeed2;
-        float rot3 = time * rotSpeed3;
-
-        // ---- Hue shifts (each at different rate) ----
-        float hShift1 = time * hueSpeed1;
-        float hShift2 = time * hueSpeed2;
-        float hShift3 = time * hueSpeed3;
-
         // ---- Blob 1: Green — large, centered at bottom middle ----
-        float3 col1 = hsl2rgb(float3(mod(0.25 + hShift1, 1.0), min(0.75 + satBoost, 1.0), 0.58));
-        float  g1   = ellipseGrad(uv, float2(0.5, 1.0), float2(0.9, 0.60), rot1);
+        float3 col1 = hsl2rgb(float3(mod(0.25 + huePhase1, 1.0), min(0.75 + satBoost, 1.0), 0.58));
+        float  g1   = ellipseGrad(uv, float2(0.5, 1.0), float2(0.9, 0.60), rotPhase1);
 
         // ---- Blob 2: Teal — offset left ----
-        float3 col2 = hsl2rgb(float3(mod(0.48 + hShift2, 1.0), min(0.60 + satBoost, 1.0), 0.55));
-        float  g2   = ellipseGrad(uv, float2(0.35, 1.0), float2(0.65, 0.45), rot2);
+        float3 col2 = hsl2rgb(float3(mod(0.48 + huePhase2, 1.0), min(0.60 + satBoost, 1.0), 0.55));
+        float  g2   = ellipseGrad(uv, float2(0.35, 1.0), float2(0.65, 0.45), rotPhase2);
 
         // ---- Blob 3: Blue — offset right ----
-        float3 col3 = hsl2rgb(float3(mod(0.56 + hShift3, 1.0), min(0.70 + satBoost, 1.0), 0.52));
-        float  g3   = ellipseGrad(uv, float2(0.65, 1.0), float2(0.60, 0.42), rot3);
+        float3 col3 = hsl2rgb(float3(mod(0.56 + huePhase3, 1.0), min(0.70 + satBoost, 1.0), 0.52));
+        float  g3   = ellipseGrad(uv, float2(0.65, 1.0), float2(0.60, 0.42), rotPhase3);
 
         // ---- Composite: layer blobs onto cream ----
         float3 result = cream;
@@ -172,9 +165,7 @@ export default function OrganicGradientBackground({
     children,
     mode = "slow",
 }: OrganicGradientBackgroundProps): React.JSX.Element {
-    const clock = useClock();
-
-    // Shared values for each animated parameter
+    // Current speeds (animated with springs when mode changes)
     const hueSpeed1 = useSharedValue(MODE_CONFIGS[mode].hueSpeed1);
     const hueSpeed2 = useSharedValue(MODE_CONFIGS[mode].hueSpeed2);
     const hueSpeed3 = useSharedValue(MODE_CONFIGS[mode].hueSpeed3);
@@ -185,7 +176,28 @@ export default function OrganicGradientBackground({
     const satBoost = useSharedValue(MODE_CONFIGS[mode].satBoost);
     const intensity = useSharedValue(MODE_CONFIGS[mode].intensity);
 
-    // Smoothly animate all values when mode changes
+    // Accumulated phases — incremented each frame by (dt * speed).
+    // Speed changes only affect future accumulation, no retroactive jumps.
+    const huePhase1 = useSharedValue(0);
+    const huePhase2 = useSharedValue(0);
+    const huePhase3 = useSharedValue(0);
+    const rotPhase1 = useSharedValue(0);
+    const rotPhase2 = useSharedValue(0);
+    const rotPhase3 = useSharedValue(0);
+
+    // Accumulate phases every frame on the UI thread
+    useFrameCallback((frameInfo) => {
+        "worklet";
+        const dt = (frameInfo.timeSincePreviousFrame ?? 16) / 1000;
+        huePhase1.value += dt * hueSpeed1.value;
+        huePhase2.value += dt * hueSpeed2.value;
+        huePhase3.value += dt * hueSpeed3.value;
+        rotPhase1.value += dt * rotSpeed1.value;
+        rotPhase2.value += dt * rotSpeed2.value;
+        rotPhase3.value += dt * rotSpeed3.value;
+    });
+
+    // Smoothly animate speeds and visual properties when mode changes
     useEffect(() => {
         const target = MODE_CONFIGS[mode];
         hueSpeed1.value = withSpring(target.hueSpeed1, TRANSITION_SPRING);
@@ -201,18 +213,17 @@ export default function OrganicGradientBackground({
 
     const uniforms = useDerivedValue(() => ({
         resolution: [SCREEN_WIDTH, SCREEN_HEIGHT],
-        time: clock.value / 1000,
         aspect: ASPECT,
-        hueSpeed1: hueSpeed1.value,
-        hueSpeed2: hueSpeed2.value,
-        hueSpeed3: hueSpeed3.value,
-        rotSpeed1: rotSpeed1.value,
-        rotSpeed2: rotSpeed2.value,
-        rotSpeed3: rotSpeed3.value,
+        huePhase1: huePhase1.value,
+        huePhase2: huePhase2.value,
+        huePhase3: huePhase3.value,
+        rotPhase1: rotPhase1.value,
+        rotPhase2: rotPhase2.value,
+        rotPhase3: rotPhase3.value,
         scale: scale.value,
         satBoost: satBoost.value,
         intensity: intensity.value,
-    }), [clock]);
+    }));
 
     return (
         <View style={styles.container}>
