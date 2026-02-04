@@ -10,6 +10,7 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import { useDerivedValue } from "react-native-reanimated";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT;
 
 // ============================================================================
 // CONFIGURATION
@@ -18,139 +19,136 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 export type GradientMode = "slow" | "fast";
 
 interface ModeConfig {
-    // How fast the hue rotates (radians per second)
-    hueSpeed: number;
-    // How fast the blobs drift
-    driftSpeed: number;
-    // How pronounced the movement is
-    driftAmount: number;
-    // Blur/softness of the gradients
-    softness: number;
+    // How fast each blob's hue shifts (radians per second)
+    hueSpeed1: number;
+    hueSpeed2: number;
+    hueSpeed3: number;
+    // How fast each blob rotates (radians per second)
+    rotSpeed1: number;
+    rotSpeed2: number;
+    rotSpeed3: number;
 }
 
 const MODE_CONFIGS: Record<GradientMode, ModeConfig> = {
     slow: {
-        hueSpeed: 0.15,
-        driftSpeed: 0.2,
-        driftAmount: 0.01,
-        softness: 0.2,
+        hueSpeed1: 0.04,
+        hueSpeed2: 0.025,
+        hueSpeed3: 0.055,
+        rotSpeed1: 0.08,
+        rotSpeed2: 0.05,
+        rotSpeed3: 0.11,
     },
     fast: {
-        hueSpeed: 0.5,
-        driftSpeed: 0.8,
-        driftAmount: 0.12,
-        softness: 0.35,
+        hueSpeed1: 0.15,
+        hueSpeed2: 0.10,
+        hueSpeed3: 0.20,
+        rotSpeed1: 0.3,
+        rotSpeed2: 0.2,
+        rotSpeed3: 0.4,
     },
 };
 
 // ============================================================================
-// SKIA SHADER - Runs entirely on GPU for smooth 60fps
+// SKIA SHADER
+// Three large elliptical gradients centered at bottom of screen.
+// Each rotates independently and shifts color at its own rate.
 // ============================================================================
 
-// This shader creates multiple soft radial gradients that:
-// 1. Drift slowly in organic patterns
-// 2. Shift through hues smoothly (mood ring effect)
-// 3. Blend together with soft edges
-const moodRingShader = Skia.RuntimeEffect.Make(`
+const organicShader = Skia.RuntimeEffect.Make(`
     uniform float2 resolution;
     uniform float time;
+    uniform float aspect;
 
-    // Configuration uniforms
-    uniform float hueSpeed;
-    uniform float driftSpeed;
-    uniform float driftAmount;
-    uniform float softness;
+    // Per-blob hue and rotation speeds
+    uniform float hueSpeed1;
+    uniform float hueSpeed2;
+    uniform float hueSpeed3;
+    uniform float rotSpeed1;
+    uniform float rotSpeed2;
+    uniform float rotSpeed3;
 
-    // Base colors (in HSL-like space, we'll animate the hue)
-    const float3 baseColor1 = float3(0.25, 0.85, 0.65); // Green-ish
-    const float3 baseColor2 = float3(0.5, 0.75, 0.6);   // Cyan-ish
-    const float3 baseColor3 = float3(0.55, 0.8, 0.55);  // Blue-ish
-    const float3 baseColor4 = float3(0.18, 0.9, 0.7);   // Yellow-green
-
-    // Convert HSL to RGB
+    // ---- HSL to RGB ----
     float3 hsl2rgb(float3 hsl) {
         float h = hsl.x;
         float s = hsl.y;
         float l = hsl.z;
-
         float c = (1.0 - abs(2.0 * l - 1.0)) * s;
         float x = c * (1.0 - abs(mod(h * 6.0, 2.0) - 1.0));
         float m = l - c / 2.0;
-
         float3 rgb;
-        if (h < 1.0/6.0) rgb = float3(c, x, 0.0);
+        if      (h < 1.0/6.0) rgb = float3(c, x, 0.0);
         else if (h < 2.0/6.0) rgb = float3(x, c, 0.0);
         else if (h < 3.0/6.0) rgb = float3(0.0, c, x);
         else if (h < 4.0/6.0) rgb = float3(0.0, x, c);
         else if (h < 5.0/6.0) rgb = float3(x, 0.0, c);
-        else rgb = float3(c, 0.0, x);
-
+        else                   rgb = float3(c, 0.0, x);
         return rgb + m;
     }
 
-    // Soft radial gradient
-    float softGradient(float2 uv, float2 center, float radius, float soft) {
-        float dist = length(uv - center);
-        return 1.0 - smoothstep(0.0, radius * (1.0 + soft), dist);
+    // ---- Rotated elliptical gradient ----
+    // center: in UV space, radii: (rx, ry) in UV space, angle: rotation
+    // Returns 0..1 intensity with multi-stop falloff matching the SVG stops.
+    float ellipseGrad(float2 uv, float2 center, float2 radii, float angle) {
+        float2 p = uv - center;
+        // Correct for screen aspect ratio so ellipses look right
+        p.x *= aspect;
+        radii.x *= aspect;
+        // Rotate
+        float ca = cos(angle);
+        float sa = sin(angle);
+        p = float2(p.x * ca - p.y * sa, p.x * sa + p.y * ca);
+        // Normalised distance inside ellipse
+        float2 q = p / radii;
+        float d = length(q);
+        // Multi-stop falloff: solid core -> soft edge -> gone
+        // 0..0.3 = full, 0.3..0.7 = fade, 0.7..1.0 = tail
+        float intensity = 1.0 - smoothstep(0.0, 1.0, d);
+        return intensity * intensity; // Square for softer falloff
     }
 
     half4 main(float2 fragCoord) {
         float2 uv = fragCoord / resolution;
 
-        // Cream background color
+        // Cream background  (matches CREAM constant)
         float3 cream = float3(0.976, 0.961, 0.929);
 
-        // Animate blob positions with organic drift
-        float t = time * driftSpeed;
+        // ---- Rotation angles ----
+        float rot1 = time * rotSpeed1;
+        float rot2 = time * rotSpeed2;
+        float rot3 = time * rotSpeed3;
 
-        // Each blob drifts in a unique pattern (Lissajous-like curves)
-        float2 center1 = float2(
-            0.5 + sin(t * 0.7) * driftAmount + cos(t * 0.3) * driftAmount * 0.5,
-            0.85 + cos(t * 0.5) * driftAmount * 0.3
-        );
-        float2 center2 = float2(
-            0.2 + sin(t * 0.5 + 1.0) * driftAmount + sin(t * 0.8) * driftAmount * 0.3,
-            0.9 + cos(t * 0.6 + 2.0) * driftAmount * 0.4
-        );
-        float2 center3 = float2(
-            0.8 + cos(t * 0.6 + 3.0) * driftAmount + sin(t * 0.4) * driftAmount * 0.4,
-            0.88 + sin(t * 0.4 + 1.5) * driftAmount * 0.3
-        );
-        float2 center4 = float2(
-            0.4 + sin(t * 0.4 + 2.0) * driftAmount * 0.8,
-            1.0 + cos(t * 0.7 + 0.5) * driftAmount * 0.2
-        );
+        // ---- Hue shifts (each at different rate) ----
+        float hShift1 = time * hueSpeed1;
+        float hShift2 = time * hueSpeed2;
+        float hShift3 = time * hueSpeed3;
 
-        // Animate hue rotation (the "mood ring" effect)
-        float hueShift = time * hueSpeed;
+        // ---- Blob 1: Green  — large, centered at bottom middle ----
+        // Original SVG: cx=0.5  cy=0.85  rx=0.9w  ry=0.55h
+        float3 col1 = hsl2rgb(float3(mod(0.25 + hShift1, 1.0), 0.75, 0.58));
+        float  g1   = ellipseGrad(uv, float2(0.5, 1.0), float2(0.9, 0.60), rot1);
 
-        // Create colors with shifting hues
-        float3 color1 = hsl2rgb(float3(mod(baseColor1.x + hueShift, 1.0), baseColor1.y, baseColor1.z));
-        float3 color2 = hsl2rgb(float3(mod(baseColor2.x + hueShift, 1.0), baseColor2.y, baseColor2.z));
-        float3 color3 = hsl2rgb(float3(mod(baseColor3.x + hueShift, 1.0), baseColor3.y, baseColor3.z));
-        float3 color4 = hsl2rgb(float3(mod(baseColor4.x + hueShift, 1.0), baseColor4.y, baseColor4.z));
+        // ---- Blob 2: Teal  — offset left ----
+        // Original SVG: cx=0.25 cy=0.88  rx=0.6w  ry=0.4h
+        float3 col2 = hsl2rgb(float3(mod(0.48 + hShift2, 1.0), 0.60, 0.55));
+        float  g2   = ellipseGrad(uv, float2(0.35, 1.0), float2(0.65, 0.45), rot2);
 
-        // Calculate gradient intensities
-        float g1 = softGradient(uv, center1, 0.7, softness);
-        float g2 = softGradient(uv, center2, 0.5, softness);
-        float g3 = softGradient(uv, center3, 0.45, softness);
-        float g4 = softGradient(uv, center4, 0.4, softness);
+        // ---- Blob 3: Blue  — offset right ----
+        // Original SVG: cx=0.75 cy=0.85  rx=0.55w ry=0.38h
+        float3 col3 = hsl2rgb(float3(mod(0.56 + hShift3, 1.0), 0.70, 0.52));
+        float  g3   = ellipseGrad(uv, float2(0.65, 1.0), float2(0.60, 0.42), rot3);
 
-        // Blend colors additively with soft falloff
-        float3 finalColor = cream;
+        // ---- Composite: layer blobs onto cream ----
+        float3 result = cream;
+        result = mix(result, col1, g1 * 0.70);
+        result = mix(result, col2, g2 * 0.50);
+        result = mix(result, col3, g3 * 0.45);
 
-        // Layer the gradients (back to front, blending with cream)
-        finalColor = mix(finalColor, color4, g4 * 0.5);
-        finalColor = mix(finalColor, color3, g3 * 0.45);
-        finalColor = mix(finalColor, color2, g2 * 0.55);
-        finalColor = mix(finalColor, color1, g1 * 0.6);
-
-        return half4(finalColor, 1.0);
+        return half4(result, 1.0);
     }
 `)!;
 
 // ============================================================================
-// MAIN COMPONENT
+// COMPONENT
 // ============================================================================
 
 interface OrganicGradientBackgroundProps {
@@ -163,30 +161,27 @@ export default function OrganicGradientBackground({
     mode = "slow",
 }: OrganicGradientBackgroundProps): React.JSX.Element {
     const config = MODE_CONFIGS[mode];
-
-    // Clock for smooth animation (updates every frame, in milliseconds)
     const clock = useClock();
 
-    // Uniforms that change every frame - use derived value for animation
     const uniforms = useDerivedValue(() => ({
         resolution: [SCREEN_WIDTH, SCREEN_HEIGHT],
-        time: clock.value / 1000, // Convert ms to seconds
-        hueSpeed: config.hueSpeed,
-        driftSpeed: config.driftSpeed,
-        driftAmount: config.driftAmount,
-        softness: config.softness,
+        time: clock.value / 1000,
+        aspect: ASPECT,
+        hueSpeed1: config.hueSpeed1,
+        hueSpeed2: config.hueSpeed2,
+        hueSpeed3: config.hueSpeed3,
+        rotSpeed1: config.rotSpeed1,
+        rotSpeed2: config.rotSpeed2,
+        rotSpeed3: config.rotSpeed3,
     }), [clock, config]);
 
     return (
         <View style={styles.container}>
-            {/* Skia Canvas for GPU-accelerated gradient */}
             <Canvas style={styles.canvas}>
                 <Fill>
-                    <Shader source={moodRingShader} uniforms={uniforms} />
+                    <Shader source={organicShader} uniforms={uniforms} />
                 </Fill>
             </Canvas>
-
-            {/* Content */}
             <View style={styles.contentContainer}>{children}</View>
         </View>
     );
