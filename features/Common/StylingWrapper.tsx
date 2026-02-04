@@ -1,4 +1,7 @@
+const isIos = Platform.OS === 'ios';
+import OrganicGradientBackground from "@/components/OrganicGradientBackground";
 import { useIsBroadcasting } from "@/hooks/useIsBroadcasting";
+import { APP_BACKGROUND_COLOR } from "@/styles/styles";
 import React from 'react';
 
 import { Platform, StyleSheet, View } from 'react-native';
@@ -14,14 +17,14 @@ export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({childre
   
   const isBroadcasting = useIsBroadcasting();
 
-  // if (showGradientBackground) {      
-  //   return (
-  //             <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
-  //                 <View style={styles.padding}/>
-  //                 {children}
-  //             </OrganicGradientBackground>
-  //         );
-  //       }
+  if (showGradientBackground && isIos) {
+    return (
+              <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
+                  <View style={styles.padding}/>
+                  {children}
+              </OrganicGradientBackground>
+          );
+        }
 
     return (
         <View style={styles.container}>
@@ -35,7 +38,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    //backgroundColor: APP_BACKGROUND_COLOR,
+    backgroundColor: APP_BACKGROUND_COLOR,
   },
   padding: {
     minHeight: safePadding,
