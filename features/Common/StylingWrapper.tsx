@@ -1,5 +1,7 @@
 import OrganicGradientBackground from '@/components/OrganicGradientBackground.native';
+import { useIsBroadcasting } from "@/hooks/useIsBroadcasting";
 import React from 'react';
+
 import { Platform, StyleSheet, View } from 'react-native';
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
 
@@ -10,14 +12,17 @@ interface StylingWrapperProps {
 
 
 export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
-    if (showGradientBackground) {      
-  return (
-            <OrganicGradientBackground >
-                <View style={styles.padding}/>
-                {children}
-            </OrganicGradientBackground>
-        );
-      }
+  
+  const isBroadcasting = useIsBroadcasting();
+
+  if (showGradientBackground) {      
+    return (
+              <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
+                  <View style={styles.padding}/>
+                  {children}
+              </OrganicGradientBackground>
+          );
+        }
 
     return (
         <View style={styles.container}>

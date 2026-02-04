@@ -28,7 +28,6 @@ export function useProcessedMeetings() {
         const processAsync = async () => {
             // Update Redux store with raw meetings
             dispatch(setMeetings(rawMeetings));
-            console.log("raw meetings --", rawMeetings);
             if (rawMeetings && rawMeetings.length > 0) {
                 const now = Date.now();
                 const filteredMeetings = rawMeetings.filter(m => {
