@@ -1,18 +1,39 @@
 import { CustomFonts } from '@/constants/theme';
 import { CORNFLOWER_BLUE, CREAM } from '@/styles/styles';
 import { Eye, EyeOff } from 'lucide-react-native';
-import React, { useRef, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface UserEmailPasswordInputProps {
     onChangeEmail: (text: string) => void;
     onChangePassword: (text: string) => void;
     onSubmitPassword?: () => void;
+    validatePassword?: boolean;
+    onPasswordValidityChange?: (isValid: boolean) => void;
 }
 
-export default function UserEmailPasswordInput({ onChangeEmail, onChangePassword, onSubmitPassword }: UserEmailPasswordInputProps) {
+const MIN_PASSWORD_LENGTH = 8;
+
+export default function UserEmailPasswordInput({ onChangeEmail, onChangePassword, onSubmitPassword, validatePassword, onPasswordValidityChange }: UserEmailPasswordInputProps) {
     const [showPassword, setShowPassword] = useState(false);
+    const [password, setPassword] = useState('');
+    const [hasInteracted, setHasInteracted] = useState(false);
     const passwordRef = useRef<TextInput>(null);
+
+    const isPasswordValid = password.length >= MIN_PASSWORD_LENGTH;
+    const showError = validatePassword && hasInteracted && password.length > 0 && !isPasswordValid;
+
+    useEffect(() => {
+        if (validatePassword && onPasswordValidityChange) {
+            onPasswordValidityChange(isPasswordValid);
+        }
+    }, [isPasswordValid, validatePassword, onPasswordValidityChange]);
+
+    const handlePasswordChange = (text: string) => {
+        setPassword(text);
+        setHasInteracted(true);
+        onChangePassword(text);
+    };
 
     return (
         <View style={styles.container}>
@@ -28,13 +49,13 @@ export default function UserEmailPasswordInput({ onChangeEmail, onChangePassword
                 blurOnSubmit={false}
                 onSubmitEditing={() => passwordRef.current?.focus()}
             />
-            <View style={styles.passwordContainer}>
+            <View style={[styles.passwordContainer, showError && styles.passwordContainerError]}>
                 <TextInput
                     ref={passwordRef}
                     placeholder="Password"
                     placeholderTextColor={CORNFLOWER_BLUE + '80'}
                     style={styles.passwordInput}
-                    onChangeText={(text) => onChangePassword(text)}
+                    onChangeText={handlePasswordChange}
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -53,6 +74,11 @@ export default function UserEmailPasswordInput({ onChangeEmail, onChangePassword
                     )}
                 </TouchableOpacity>
             </View>
+            {showError && (
+                <Text style={styles.errorText}>
+                    Password must be at least {MIN_PASSWORD_LENGTH} characters
+                </Text>
+            )}
         </View>
     );
 }
@@ -80,6 +106,9 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: 'transparent',
     },
+    passwordContainerError: {
+        borderColor: '#DC3545',
+    },
     passwordInput: {
         flex: 1,
         padding: 14,
@@ -90,5 +119,11 @@ const styles = StyleSheet.create({
     eyeButton: {
         paddingHorizontal: 14,
         paddingVertical: 14,
+    },
+    errorText: {
+        color: '#DC3545',
+        fontSize: 12,
+        fontFamily: CustomFonts.ztnatureregular,
+        marginTop: 4,
     },
 });

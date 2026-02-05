@@ -22,6 +22,7 @@ export function SignUp()  {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
     const dispatch = useDispatch();
     const [phoneSignUpUser] = usePostPhoneSignupMutation();
 
@@ -56,6 +57,7 @@ export function SignUp()  {
     const isSignupButtonDisabled = () => !(
         email.length > 0
         && password.length > 0
+        && isPasswordValid
         && name.length > 0
         && phoneNumber.length === 10
     ) || isLoading;
@@ -112,6 +114,8 @@ export function SignUp()  {
                                 setPassword(text);
                                 setErrorMessage('');
                             }}
+                            validatePassword={true}
+                            onPasswordValidityChange={setIsPasswordValid}
                         />
                     </View>
 
