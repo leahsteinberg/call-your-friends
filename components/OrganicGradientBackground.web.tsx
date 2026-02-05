@@ -5,11 +5,32 @@ import Svg, { Defs, Ellipse, RadialGradient, Rect, Stop } from "react-native-svg
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+// ============================================================================
+// CONFIGURATION (exported for type compatibility)
+// ============================================================================
+
+export type GradientMode = "slow" | "fast";
+
+// Purple, blue, pink
+export const DEFAULT_GRADIENT_COLORS: [string, string, string] = ['#8B5CF6', '#3B82F6', '#EC4899'];
+
+// Fixed 4th accent blob
+const ACCENT_COLOR = '#7DD3FC';
+
+// ============================================================================
+// WEB FALLBACK - Static SVG gradient (Skia not available on web)
+// ============================================================================
+
 interface OrganicGradientBackgroundProps {
     children?: React.ReactNode;
+    mode?: GradientMode;
+    colors?: [string, string, string];
 }
 
-export default function OrganicGradientBackground({ children }: OrganicGradientBackgroundProps): React.JSX.Element {
+export default function OrganicGradientBackground({
+    children,
+    colors = DEFAULT_GRADIENT_COLORS,
+}: OrganicGradientBackgroundProps): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.gradientContainer}>
@@ -19,58 +40,31 @@ export default function OrganicGradientBackground({ children }: OrganicGradientB
                     style={StyleSheet.absoluteFill}
                 >
                     <Defs>
-                        {/* Main green blob - bottom center */}
-                        <RadialGradient
-                            id="greenBlob"
-                            cx="50%"
-                            cy="50%"
-                            rx="50%"
-                            ry="50%"
-                        >
-                            <Stop offset="0%" stopColor="#a8d94a" stopOpacity="0.85" />
-                            <Stop offset="40%" stopColor="#b8e35a" stopOpacity="0.6" />
-                            <Stop offset="70%" stopColor="#d0f080" stopOpacity="0.3" />
+                        <RadialGradient id="blob1" cx="50%" cy="50%" rx="50%" ry="50%">
+                            <Stop offset="0%" stopColor={colors[0]} stopOpacity="0.85" />
+                            <Stop offset="40%" stopColor={colors[0]} stopOpacity="0.5" />
+                            <Stop offset="75%" stopColor={colors[0]} stopOpacity="0.2" />
                             <Stop offset="100%" stopColor={CREAM} stopOpacity="0" />
                         </RadialGradient>
 
-                        {/* Blue-teal blob - left side */}
-                        <RadialGradient
-                            id="tealBlob"
-                            cx="50%"
-                            cy="50%"
-                            rx="50%"
-                            ry="50%"
-                        >
-                            <Stop offset="0%" stopColor="#5da7e6" stopOpacity="0.7" />
-                            <Stop offset="35%" stopColor="#7dc4c0" stopOpacity="0.5" />
-                            <Stop offset="70%" stopColor="#a0ddd0" stopOpacity="0.25" />
+                        <RadialGradient id="blob2" cx="50%" cy="50%" rx="50%" ry="50%">
+                            <Stop offset="0%" stopColor={colors[1]} stopOpacity="0.7" />
+                            <Stop offset="35%" stopColor={colors[1]} stopOpacity="0.45" />
+                            <Stop offset="70%" stopColor={colors[1]} stopOpacity="0.15" />
                             <Stop offset="100%" stopColor={CREAM} stopOpacity="0" />
                         </RadialGradient>
 
-                        {/* Soft blue blob - right side */}
-                        <RadialGradient
-                            id="blueBlob"
-                            cx="50%"
-                            cy="50%"
-                            rx="50%"
-                            ry="50%"
-                        >
-                            <Stop offset="0%" stopColor="#60a2ee" stopOpacity="0.6" />
-                            <Stop offset="40%" stopColor="#80c0f0" stopOpacity="0.4" />
-                            <Stop offset="75%" stopColor="#b0e0f8" stopOpacity="0.15" />
+                        <RadialGradient id="blob3" cx="50%" cy="50%" rx="50%" ry="50%">
+                            <Stop offset="0%" stopColor={colors[2]} stopOpacity="0.6" />
+                            <Stop offset="40%" stopColor={colors[2]} stopOpacity="0.35" />
+                            <Stop offset="75%" stopColor={colors[2]} stopOpacity="0.12" />
                             <Stop offset="100%" stopColor={CREAM} stopOpacity="0" />
                         </RadialGradient>
 
-                        {/* Chartreuse accent */}
-                        <RadialGradient
-                            id="chartreuseAccent"
-                            cx="50%"
-                            cy="50%"
-                            rx="50%"
-                            ry="50%"
-                        >
-                            <Stop offset="0%" stopColor="#d9e811" stopOpacity="0.65" />
-                            <Stop offset="50%" stopColor="#e0f040" stopOpacity="0.35" />
+                        <RadialGradient id="blob4" cx="50%" cy="50%" rx="50%" ry="50%">
+                            <Stop offset="0%" stopColor={ACCENT_COLOR} stopOpacity="0.65" />
+                            <Stop offset="40%" stopColor={ACCENT_COLOR} stopOpacity="0.35" />
+                            <Stop offset="75%" stopColor={ACCENT_COLOR} stopOpacity="0.12" />
                             <Stop offset="100%" stopColor={CREAM} stopOpacity="0" />
                         </RadialGradient>
                     </Defs>
@@ -78,43 +72,40 @@ export default function OrganicGradientBackground({ children }: OrganicGradientB
                     {/* Background cream */}
                     <Rect x="0" y="0" width={SCREEN_WIDTH} height={SCREEN_HEIGHT} fill={CREAM} />
 
-                    {/* DEBUG: Solid ellipse to test if SVG is rendering */}
-                    {/* <Ellipse cx={SCREEN_WIDTH * 0.5} cy={SCREEN_HEIGHT * 0.8} rx={200} ry={200} fill="#a8d94a" /> */}
-
-                    {/* Main green blob - large, centered at bottom */}
+                    {/* Blob 1 — large, centered */}
                     <Ellipse
                         cx={SCREEN_WIDTH * 0.4}
                         cy={SCREEN_HEIGHT * 0.4}
                         rx={SCREEN_WIDTH * 0.9}
                         ry={SCREEN_HEIGHT * 0.55}
-                        fill="url(#greenBlob)"
+                        fill="url(#blob1)"
                     />
 
-                    {/* Teal blob - offset left */}
+                    {/* Blob 2 — offset left */}
                     <Ellipse
                         cx={SCREEN_WIDTH * 0.25}
                         cy={SCREEN_HEIGHT * 0.88}
                         rx={SCREEN_WIDTH * 0.6}
                         ry={SCREEN_HEIGHT * 0.4}
-                        fill="url(#tealBlob)"
+                        fill="url(#blob2)"
                     />
 
-                    {/* Blue blob - offset right */}
+                    {/* Blob 3 — offset right */}
                     <Ellipse
                         cx={SCREEN_WIDTH * 0.75}
                         cy={SCREEN_HEIGHT * 0.85}
                         rx={SCREEN_WIDTH * 0.55}
                         ry={SCREEN_HEIGHT * 0.38}
-                        fill="url(#blueBlob)"
+                        fill="url(#blob3)"
                     />
 
-                    {/* Chartreuse accent - bottom center, smaller */}
+                    {/* Blob 4 — light blue accent, bottom center */}
                     <Ellipse
                         cx={SCREEN_WIDTH * 0.45}
                         cy={SCREEN_HEIGHT * 1.0}
                         rx={SCREEN_WIDTH * 0.5}
                         ry={SCREEN_HEIGHT * 0.35}
-                        fill="url(#chartreuseAccent)"
+                        fill="url(#blob4)"
                     />
                 </Svg>
             </View>
