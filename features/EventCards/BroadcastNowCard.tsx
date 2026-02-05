@@ -3,43 +3,24 @@ import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeS
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
-import { startBroadcast } from "@/features/Broadcast/broadcastSlice";
-import type { Friend } from "@/features/Contacts/types";
-import { useGetFriendsMutation } from "@/services/contactsApi";
-import { useBroadcastNowMutation } from "@/services/meetingApi";
+import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
-import { RootState } from "@/types/redux";
-import { determineTargetType } from "@/utils/broadcastUtils";
-import { getDisplayNameList } from "@/utils/nameStringUtils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
-import { useDispatch, useSelector } from "react-redux";
 
 export default function BroadcastNowCard(): React.JSX.Element {
-    const dispatch = useDispatch();
-    const userId: string = useSelector((state: RootState) => state.auth.user.id);
-    const [broadcastNow] = useBroadcastNowMutation();
-    const [isStarting, setIsStarting] = useState(false);
+    const {
+        selectedVibe,
+        selectedFriendIds,
+        friends,
+        isStarting,
+        setSelectedVibe,
+        setSelectedFriendIds,
+        handleStartBroadcast,
+    } = useBroadcastSettings();
+
     const strings = eventCardText.broadcast_now_card;
-    const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
-
-
-    const [friends, setFriends] = useState<Friend[]>([]);
-    const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
-    const [getFriends] = useGetFriendsMutation();
-
-    useEffect(() => {
-        const fetchFriends = async () => {
-            try {
-                const friendsResult = await getFriends({ id: userId }).unwrap();
-                setFriends(friendsResult || []);
-            } catch (error) {
-                console.error("Error fetching friends:", error);
-            }
-        };
-        fetchFriends();
-    }, [userId]);
 
     const pulseOpacity = useSharedValue(1);
 
@@ -68,30 +49,14 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     const getMainText = () => {
-        const selectedFriends = friends.filter(friend =>
-            selectedFriendIds.includes(friend.id)
-        );
-        const displayNames = getDisplayNameList(selectedFriends);
-        //return `Share with ${displayNames}`;
         return 'Enter call me mode'
     }
 
-    const handleStartBroadcast = async () => {
+    const onStartBroadcast = async () => {
         try {
-            setIsStarting(true);
-            const targetType = determineTargetType(selectedFriendIds);
- 
-            await broadcastNow({
-                userId,
-                targetUserIds: selectedFriendIds.length > 0 ? selectedFriendIds : undefined,
-                targetType,
-                intentLabel: selectedVibe,
-            }).unwrap();
-
-            dispatch(startBroadcast());
+            await handleStartBroadcast();
         } catch (error) {
             alert('Failed to start broadcast. Please try again.');
-            setIsStarting(false);
         }
     };
 
@@ -111,7 +76,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
             <Animated.View style={[animatedCardStyle]}>
                 <EventCard
                     backgroundColor={BOLD_BLUE}
-                    onPress={handleStartBroadcast}
+                    onPress={onStartBroadcast}
                     disabled={isStarting}
                 >
                     <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>

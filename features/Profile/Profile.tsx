@@ -1,51 +1,36 @@
 import BroadcastToggle from "@/components/BroadcastToggle";
 import { CustomFonts } from "@/constants/theme";
-import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
-import { useDispatch, useSelector } from "react-redux";
-import { endBroadcast, startBroadcast } from "../Broadcast/broadcastSlice";
+import { useSelector } from "react-redux";
+import { BroadcastSettingsProvider, useBroadcastSettings } from "../Broadcast/BroadcastSettingsContext";
 import TodayList from "../Today/TodayList";
 
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
-export default function Profile(): React.JSX.Element {
-    const dispatch = useDispatch();
+function ProfileContent(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
-    const userId = useSelector((state: RootState) => state.auth.user.id);
-    const [broadcastNow] = useBroadcastNowMutation();
-    const [broadcastEnd] = useBroadcastEndMutation();
-    const [isCustomizing, setIsCustomizing] = useState(false);
+    const { handleStartBroadcast, handleEndBroadcast } = useBroadcastSettings();
 
     const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Loyal';}
 
-    const handleCustomizeBroadcast = useCallback(() => {
-        setIsCustomizing(true);
-        // User can customize their broadcast settings here
+    const onCustomizeBroadcast = useCallback(() => {
+        // User can customize their broadcast settings in BroadcastNowCard during countdown
     }, []);
 
-    const handleStartBroadcast = useCallback(async () => {
-        setIsCustomizing(false);
-        dispatch(startBroadcast());
+    const onStartBroadcast = useCallback(async () => {
         try {
-            await broadcastNow({ userId });
+            await handleStartBroadcast();
         } catch (error) {
-            console.error("Error starting broadcast:", error);
-            dispatch(endBroadcast());
+            // Error already logged in context
         }
-    }, [dispatch, broadcastNow, userId]);
+    }, [handleStartBroadcast]);
 
-    const handleEndBroadcast = useCallback(async () => {
-        setIsCustomizing(false);
-        dispatch(endBroadcast());
-        try {
-            await broadcastEnd({ userId });
-        } catch (error) {
-            console.error("Error ending broadcast:", error);
-        }
-    }, [dispatch, broadcastEnd, userId]);
+    const onEndBroadcast = useCallback(async () => {
+        await handleEndBroadcast();
+    }, [handleEndBroadcast]);
 
     return (
         <View style={styles.container}>
@@ -55,14 +40,22 @@ export default function Profile(): React.JSX.Element {
                 </View>
                 <View style={styles.toggleContainer}>
                     <BroadcastToggle
-                        onCustomizeBroadcast={handleCustomizeBroadcast}
-                        onStartBroadcast={handleStartBroadcast}
-                        onEndBroadcast={handleEndBroadcast}
+                        onCustomizeBroadcast={onCustomizeBroadcast}
+                        onStartBroadcast={onStartBroadcast}
+                        onEndBroadcast={onEndBroadcast}
                     />
                 </View>
             </View>
             <TodayList />
         </View>
+    );
+}
+
+export default function Profile(): React.JSX.Element {
+    return (
+        <BroadcastSettingsProvider>
+            <ProfileContent />
+        </BroadcastSettingsProvider>
     );
 }
 
