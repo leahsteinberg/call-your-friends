@@ -1,5 +1,5 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
-import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE } from '@/styles/styles';
+import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE, TRANSPARENT_CREAM } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated, {
@@ -224,7 +224,7 @@ EventCard.LiveTitle = function LiveTitle({
   color = CREAM,
   animated = false,
 }: TitleProps) {
-  const fontSize = size === 'large' ? 24 : size === 'medium' ? 20 : 16;
+  const fontSize = size === 'extralarge' ? 30 : size === 'large' ? 27 : size === 'medium' ? 20 : 16;
   const Component = animated ? Animated.Text : Text;
 
   return (
@@ -594,6 +594,7 @@ const styles = StyleSheet.create({
   },
   liveTitleText: {
     //color: CREAM,
+    marginVertical: 15,
     fontFamily: CustomFonts.awalierbold,
     letterSpacing: 1,
     flexShrink: 1,
@@ -672,18 +673,15 @@ const styles = StyleSheet.create({
   pillWrapper: {
     alignItems: 'center',
     marginBottom: 8,
-
   },
   pill: {
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: CREAM,
-    //backgroundColor: CREAM,
+    backgroundColor: TRANSPARENT_CREAM,
   },
   pillText: {
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: CustomFonts.ztnaturebold,
     fontWeight: '700',
     letterSpacing: 1,

@@ -45,7 +45,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const showAnimatedDots = !hasAcceptedUsers;
 
     const titleText = strings.mainText!(displayNames);
-    // const titleText = `Call me mode`;
+    // const titleText = `You're in call me mode`;
 
     const handleCancelMeeting = async () => {
         try {
@@ -88,21 +88,24 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                     />
                 </EventCard.Decoration>
             }
+                    <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>
+                        CALL ME MODE
+                    </EventCard.Pill>
+            <EventCard.Header spacing="center" align="center">
 
-            <EventCard.Header spacing="between" align="start">
+
                 <EventCard.Row gap={0}>
-                    <EventCard.LiveTitle justification="center">
+                    <EventCard.LiveTitle size="large">
                         {titleText}
                         {/* {`You're in call me mode`} */}
                     </EventCard.LiveTitle>
                 </EventCard.Row>
-                
             </EventCard.Header>
 
             <EventCard.Body>
-                <EventCard.Description>
+                {/* <EventCard.Description>
                     {strings.title!(displayNames)}
-                </EventCard.Description>
+                </EventCard.Description> */}
 
                 {/* Show target users badge if broadcast is directed to specific friends */}
                 {hasTargetUsers && (
