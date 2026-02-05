@@ -67,9 +67,7 @@ export default function BroadcastToggle({
                 setCountdown((prev) => {
                     if (prev <= 1) {
                         clearInterval(countdownRef.current!);
-                        setLocalState('broadcasting');
-                        onStartBroadcast();
-                        return COUNTDOWN_SECONDS;
+                        return 0;
                     }
                     return prev - 1;
                 });
@@ -86,7 +84,15 @@ export default function BroadcastToggle({
                 clearInterval(countdownRef.current);
             }
         };
-    }, [localState, onStartBroadcast]);
+    }, [localState]);
+
+    // Trigger broadcast start when countdown reaches 0
+    useEffect(() => {
+        if (countdown === 0 && localState === 'customizing') {
+            setLocalState('broadcasting');
+            onStartBroadcast();
+        }
+    }, [countdown, localState, onStartBroadcast]);
 
     // Pulse animation for broadcasting state
     useAnimatedReaction(
