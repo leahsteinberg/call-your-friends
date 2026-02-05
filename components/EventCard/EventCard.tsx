@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     backgroundColor: NEUMORPHIC.backgroundTint,
     borderWidth: 1,
     borderColor: NEUMORPHIC.borderColor,
-    overflow: 'hidden',
+    overflow: 'visible',
     ...Platform.select({
       web: {
         // On web, apply both shadows directly to container (cleaner than separate layers)
