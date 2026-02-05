@@ -17,7 +17,7 @@ import Animated, {
 // ============================================
 const NEUMORPHIC = {
   // Shadow colors for the raised effect
-  lightShadow: 'rgba(255, 255, 255, 0.7)',
+  lightShadow: CREAM,//'rgba(255, 255, 255, 0.7)',
   darkShadow: 'rgba(0, 0, 0, 0.25)',
   // Background tint (medium transparency with dark tint)
   backgroundTint: 'rgba(0, 0, 0, 0.08)',
@@ -32,12 +32,6 @@ const NEUMORPHIC = {
 // ============================================
 // ROOT COMPONENT
 // ============================================
-interface PillConfig {
-  text: string;
-  backgroundColor?: string;
-  textColor?: string;
-}
-
 interface EventCardProps {
   children: React.ReactNode;
   backgroundColor?: string; // Now optional - defaults to transparent neumorphic
@@ -46,7 +40,6 @@ interface EventCardProps {
   disabled?: boolean;
   hasBanner?: boolean;
   variant?: 'solid' | 'neumorphic'; // Allow switching between old and new style
-  pill?: PillConfig;
 }
 
 export function EventCard({
@@ -57,7 +50,6 @@ export function EventCard({
   disabled,
   hasBanner = false,
   variant = 'neumorphic',
-  pill,
 }: EventCardProps) {
   const GestureWrapper = gesture || React.Fragment;
   const pressed = useSharedValue(0);
@@ -102,23 +94,11 @@ export function EventCard({
     pressed.value = withTiming(0, { duration: 150 });
   };
 
-  const renderPill = () => {
-    if (!pill) return null;
-    return (
-      <View style={styles.pillContainer}>
-        <View style={[styles.pill, { backgroundColor: pill.backgroundColor ?? BURGUNDY }]}>
-          <Text style={[styles.pillText, { color: pill.textColor ?? CREAM }]}>{pill.text}</Text>
-        </View>
-      </View>
-    );
-  };
-
   // Use solid variant (original style)
   if (variant === 'solid') {
     const Wrapper = onPress ? TouchableOpacity : View;
     return (
       <View style={styles.outerContainer}>
-        {renderPill()}
         <GestureWrapper>
           <View style={[styles.cardContainer, { backgroundColor }, bannerRadiusOverride]}>
             <Wrapper
@@ -137,7 +117,6 @@ export function EventCard({
   // Neumorphic variant (new transparent style)
   return (
     <View style={styles.outerContainer}>
-      {renderPill()}
       <GestureWrapper>
         <View style={[styles.neumorphicWrapper, bannerRadiusOverride]}>
           {/* Light shadow layer (top-left) */}
@@ -375,7 +354,7 @@ EventCard.Row = function Row({ children, gap = 4 }: { children: React.ReactNode;
 };
 
 // ============================================
-// PILL COMPONENT (centered on top edge of card)
+// PILL COMPONENT (top center inside the card)
 // ============================================
 interface PillProps {
   children: React.ReactNode;
@@ -389,7 +368,7 @@ EventCard.Pill = function Pill({
   textColor = CREAM,
 }: PillProps) {
   return (
-    <View style={styles.pillContainer}>
+    <View style={styles.pillWrapper}>
       <View style={[styles.pill, { backgroundColor }]}>
         <Text style={[styles.pillText, { color: textColor }]}>{children}</Text>
       </View>
@@ -657,18 +636,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 10,
   },
-  pillContainer: {
-    position: 'absolute',
-    top: -14,
-    left: 0,
-    right: 0,
+  pillWrapper: {
     alignItems: 'center',
-    zIndex: 20,
+    marginBottom: 8,
+
   },
   pill: {
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 14,
+    borderWidth: 1,
+    borderColor: CREAM,
+    //backgroundColor: CREAM,
   },
   pillText: {
     fontSize: 12,
