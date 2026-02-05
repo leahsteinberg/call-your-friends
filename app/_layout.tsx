@@ -60,7 +60,13 @@ export default function RootLayout() {
         'ZTNature-light': require('../assets/images/fonts/ZTNature-Light.otf'),
         'ZTNature-lightitalic': require('../assets/images/fonts/ZTNature-LightItalic.otf'),
         'ZTNature-extralight': require('../assets/images/fonts/ZTNature-ExtraLight.otf'),
-
+        'Birchie': require('../assets/images/fonts/Birchie.otf'),
+        'Awelier-regular': require('../assets/images/fonts/Awelier-Regular.otf'),
+        'Awelier-light': require('../assets/images/fonts/Awelier-Light.otf'),
+        'Palatino-regular': require('../assets/images/fonts/Palatino-Regular.ttf'),
+        'Palatino-bold': require('../assets/images/fonts/Palatino-Bold.ttf'),
+        'Palatino-bolditalic': require('../assets/images/fonts/Palatino-BoldItalic.ttf'),
+        'Palatino-italic': require('../assets/images/fonts/Palatino-Italic.ttf'),
     });
 
     useEffect(() => {

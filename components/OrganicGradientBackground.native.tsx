@@ -132,15 +132,15 @@ const organicShader = Skia.RuntimeEffect.Make(`
 
         // ---- Blob 1: Green — large, centered at bottom middle ----
         float3 col1 = hsl2rgb(float3(mod(0.25 + huePhase1, 1.0), min(0.75 + satBoost, 1.0), 0.58));
-        float  g1   = ellipseGrad(uv, float2(0.5, .45), float2(0.9, 0.60), rotPhase1);
+        float  g1   = ellipseGrad(uv, float2(0.5, .25), float2(0.9, 0.60), rotPhase1);
 
         // ---- Blob 2: Teal — offset left ----
         float3 col2 = hsl2rgb(float3(mod(0.48 + huePhase2, 1.0), min(0.60 + satBoost, 1.0), 0.55));
-        float  g2   = ellipseGrad(uv, float2(0.35, .45), float2(0.65, 0.45), rotPhase2);
+        float  g2   = ellipseGrad(uv, float2(0.35, .25), float2(0.65, 0.45), rotPhase2);
 
         // ---- Blob 3: Blue — offset right ----
         float3 col3 = hsl2rgb(float3(mod(0.56 + huePhase3, 1.0), min(0.70 + satBoost, 1.0), 0.52));
-        float  g3   = ellipseGrad(uv, float2(0.65, .45), float2(0.60, 0.42), rotPhase3);
+        float  g3   = ellipseGrad(uv, float2(0.65, .25), float2(0.60, 0.42), rotPhase3);
 
         // ---- Composite: layer blobs onto cream ----
         float3 result = cream;

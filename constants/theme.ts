@@ -54,6 +54,8 @@ export const Fonts = Platform.select({
 
 // Custom fonts - these work across all platforms (iOS, Android, Web)
 export const CustomFonts = {
+  awalierregular: 'Awelier-regular',
+  awalierlight: 'Awelier-light',
   catamaran: 'Catamaran',
   clockwise: 'Clockwise',
   santaAna: 'SantaAna',
@@ -66,9 +68,11 @@ export const CustomFonts = {
   ztnaturelight: 'ZTNature-light',
   ztnatureextralight: 'ZTNature-extralight',
   ztnaturelightitalic: 'ZTNature-lightitalic',
-
-
-
+  birchie: 'Birchie',
+  palatinoregular: 'Palatino-regular',
+  palatinobold: 'Palatino-bold',
+  palatinobolditalic: 'Palatino-bolditalic',
+  palatinoitalic: 'Palatino-italic',
 
   perfectbarista: 'perfectbarista',
 } as const;
