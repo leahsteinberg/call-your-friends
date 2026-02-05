@@ -3,20 +3,25 @@ import { useIsBroadcasting } from '@/hooks/useIsBroadcasting';
 import { CREAM } from '@/styles/styles';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
     interpolate,
     interpolateColor,
     runOnJS,
+    useAnimatedProps,
     useAnimatedStyle,
+    useDerivedValue,
     useSharedValue,
     withRepeat,
     withSequence,
     withSpring,
     withTiming,
 } from 'react-native-reanimated';
+import Svg, { Circle } from 'react-native-svg';
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 type BroadcastState = 'off' | 'customizing' | 'broadcasting';
 
@@ -27,12 +32,24 @@ interface BroadcastToggleProps {
 }
 
 // Generous liquid glass sizing
-const TRACK_WIDTH = 130;
-const TRACK_HEIGHT = 60;
-const THUMB_SIZE = 52;
+const TRACK_WIDTH = 90;
+const TRACK_HEIGHT = 52;
+const THUMB_SIZE = 44;
 const THUMB_MARGIN = 4;
-const TEXT_HEIGHT = 22;
 const COUNTDOWN_SECONDS = 10;
+
+// Progress ring sizing
+const RING_SIZE = THUMB_SIZE - 8;
+const RING_STROKE_WIDTH = 3;
+const RING_RADIUS = (RING_SIZE - RING_STROKE_WIDTH) / 2;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+
+// Slower spring config
+const SLOW_SPRING = {
+    damping: 20,
+    stiffness: 80,
+    mass: 1,
+};
 
 export default function BroadcastToggle({
     onCustomizeBroadcast,
@@ -41,7 +58,6 @@ export default function BroadcastToggle({
 }: BroadcastToggleProps): React.JSX.Element {
     const isBroadcasting = useIsBroadcasting();
     const [localState, setLocalState] = useState<BroadcastState>(isBroadcasting ? 'broadcasting' : 'off');
-    const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
     const countdownRef = useRef<NodeJS.Timeout | null>(null);
 
     // Animation values
@@ -49,68 +65,71 @@ export default function BroadcastToggle({
     const thumbScale = useSharedValue(1);
     const pulseScale = useSharedValue(1);
     const pulseOpacity = useSharedValue(0);
+    const countdownProgress = useSharedValue(0); // 0 to 1 for the ring
+
+    // For text animation - only animate when fully broadcasting
+    const isFullyOn = useSharedValue(isBroadcasting ? 1 : 0);
 
     // Sync with external broadcasting state
     useEffect(() => {
         if (isBroadcasting && localState !== 'broadcasting') {
             setLocalState('broadcasting');
-            progress.value = withSpring(1, { damping: 15, stiffness: 120 });
+            progress.value = withSpring(1, SLOW_SPRING);
+            isFullyOn.value = withTiming(1, { duration: 400 });
         } else if (!isBroadcasting && localState === 'broadcasting') {
             setLocalState('off');
-            progress.value = withSpring(0, { damping: 15, stiffness: 120 });
+            progress.value = withSpring(0, SLOW_SPRING);
+            isFullyOn.value = withTiming(0, { duration: 400 });
         }
     }, [isBroadcasting]);
 
-    // Handle countdown timer
+    // Handle countdown timer with progress ring
     useEffect(() => {
         if (localState === 'customizing') {
-            setCountdown(COUNTDOWN_SECONDS);
-            countdownRef.current = setInterval(() => {
-                setCountdown((prev) => {
-                    if (prev <= 1) {
-                        clearInterval(countdownRef.current!);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
+            // Reset and animate the progress ring over COUNTDOWN_SECONDS
+            countdownProgress.value = 0;
+            countdownProgress.value = withTiming(1, {
+                duration: COUNTDOWN_SECONDS * 1000,
+                easing: Easing.linear,
+            });
+
+            // Set a timeout to transition to broadcasting
+            countdownRef.current = setTimeout(() => {
+                setLocalState('broadcasting');
+                isFullyOn.value = withTiming(1, { duration: 400 });
+                onStartBroadcast();
+            }, COUNTDOWN_SECONDS * 1000);
         } else {
             if (countdownRef.current) {
-                clearInterval(countdownRef.current);
+                clearTimeout(countdownRef.current);
                 countdownRef.current = null;
             }
+            // Reset progress ring
+            countdownProgress.value = withTiming(0, { duration: 200 });
         }
 
         return () => {
             if (countdownRef.current) {
-                clearInterval(countdownRef.current);
+                clearTimeout(countdownRef.current);
             }
         };
-    }, [localState]);
-
-    // Trigger broadcast start when countdown reaches 0
-    useEffect(() => {
-        if (countdown === 0 && localState === 'customizing') {
-            setLocalState('broadcasting');
-            onStartBroadcast();
-        }
-    }, [countdown, localState, onStartBroadcast]);
+    }, [localState, onStartBroadcast]);
 
     // Pulse animation for broadcasting state
     useEffect(() => {
         if (localState === 'broadcasting') {
             pulseScale.value = withRepeat(
                 withSequence(
-                    withTiming(1.15, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
-                    withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) })
+                    withTiming(1.12, { duration: 1400, easing: Easing.inOut(Easing.ease) }),
+                    withTiming(1, { duration: 1400, easing: Easing.inOut(Easing.ease) })
                 ),
                 -1,
                 false
             );
             pulseOpacity.value = withRepeat(
                 withSequence(
-                    withTiming(0.5, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
-                    withTiming(0, { duration: 1200, easing: Easing.inOut(Easing.ease) })
+                    withTiming(0.4, { duration: 1400, easing: Easing.inOut(Easing.ease) }),
+                    withTiming(0, { duration: 1400, easing: Easing.inOut(Easing.ease) })
                 ),
                 -1,
                 false
@@ -124,14 +143,15 @@ export default function BroadcastToggle({
     const handleToggle = useCallback(() => {
         if (localState === 'off') {
             setLocalState('customizing');
-            progress.value = withSpring(1, { damping: 15, stiffness: 120, mass: 0.8 });
+            progress.value = withSpring(1, SLOW_SPRING);
             onCustomizeBroadcast();
         } else if (localState === 'customizing' || localState === 'broadcasting') {
             if (localState === 'broadcasting') {
                 onEndBroadcast();
             }
             setLocalState('off');
-            progress.value = withSpring(0, { damping: 15, stiffness: 120, mass: 0.8 });
+            progress.value = withSpring(0, SLOW_SPRING);
+            isFullyOn.value = withTiming(0, { duration: 400 });
         }
     }, [localState, onCustomizeBroadcast, onEndBroadcast]);
 
@@ -149,12 +169,12 @@ export default function BroadcastToggle({
         const backgroundColor = interpolateColor(
             progress.value,
             [0, 1],
-            ['rgba(100, 100, 120, 0.2)', 'rgba(255, 255, 255, 0.35)']
+            ['rgba(80, 80, 100, 0.15)', 'rgba(255, 255, 255, 0.3)']
         );
         const borderColor = interpolateColor(
             progress.value,
             [0, 1],
-            ['rgba(255, 255, 255, 0.1)', 'rgba(255, 255, 255, 0.5)']
+            ['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.45)']
         );
         return {
             backgroundColor,
@@ -164,7 +184,7 @@ export default function BroadcastToggle({
 
     // Inner glow intensity
     const innerGlowStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(progress.value, [0, 1], [0.2, 0.6]);
+        const opacity = interpolate(progress.value, [0, 1], [0.15, 0.5]);
         return { opacity };
     });
 
@@ -183,18 +203,24 @@ export default function BroadcastToggle({
         };
     });
 
-    // Thumb glow - brighter when on
+    // Thumb - darker/more transparent when off, bright when on
     const thumbGlowStyle = useAnimatedStyle(() => {
-        const shadowOpacity = interpolate(progress.value, [0, 1], [0.15, 0.35]);
         const backgroundColor = interpolateColor(
             progress.value,
             [0, 1],
-            ['rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.98)']
+            ['rgba(180, 180, 190, 0.5)', 'rgba(255, 255, 255, 0.98)']
         );
+        const shadowOpacity = interpolate(progress.value, [0, 1], [0.08, 0.3]);
         return {
             backgroundColor,
             shadowOpacity,
         };
+    });
+
+    // Thumb highlight - faded when off
+    const thumbHighlightStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(progress.value, [0, 1], [0.3, 0.7]);
+        return { opacity };
     });
 
     // Pulse ring for broadcasting
@@ -205,19 +231,30 @@ export default function BroadcastToggle({
         };
     });
 
-    // Text animations - slide up/down
-    const onTextStyle = useAnimatedStyle(() => {
-        const translateY = interpolate(progress.value, [0, 1], [TEXT_HEIGHT, 0]);
-        const opacity = interpolate(progress.value, [0, 0.5, 1], [0, 0.3, 1]);
+    // Progress ring stroke animation
+    const strokeDashoffset = useDerivedValue(() => {
+        return RING_CIRCUMFERENCE * (1 - countdownProgress.value);
+    });
+
+    const progressRingProps = useAnimatedProps(() => {
+        return {
+            strokeDashoffset: strokeDashoffset.value,
+        };
+    });
+
+    // Text animation - only when fully on (after countdown)
+    const modeOnStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(isFullyOn.value, [0, 1], [16, 0]);
+        const opacity = interpolate(isFullyOn.value, [0, 0.5, 1], [0, 0.3, 1]);
         return {
             transform: [{ translateY }],
             opacity,
         };
     });
 
-    const offTextStyle = useAnimatedStyle(() => {
-        const translateY = interpolate(progress.value, [0, 1], [0, -TEXT_HEIGHT]);
-        const opacity = interpolate(progress.value, [0, 0.5, 1], [1, 0.3, 0]);
+    const modeOffStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(isFullyOn.value, [0, 1], [0, -16]);
+        const opacity = interpolate(isFullyOn.value, [0, 0.5, 1], [1, 0.3, 0]);
         return {
             transform: [{ translateY }],
             opacity,
@@ -225,22 +262,26 @@ export default function BroadcastToggle({
     });
 
     // Dynamic blur intensity - more blur when off
-    const blurIntensity = localState === 'off' ? 50 : localState === 'customizing' ? 30 : 15;
+    const blurIntensity = localState === 'off' ? 50 : localState === 'customizing' ? 25 : 12;
 
-    // Status text below toggle
-    const getStatusText = () => {
-        switch (localState) {
-            case 'off':
-                return '';
-            case 'customizing':
-                return `Starting in ${countdown}s`;
-            case 'broadcasting':
-                return '';
-        }
-    };
+    // Show progress ring only during customizing state
+    const showProgressRing = localState === 'customizing';
 
     return (
         <View style={styles.container}>
+            {/* Side label - always visible */}
+            <View style={styles.sideLabelContainer}>
+                <Text style={styles.callMeText}>CALL ME</Text>
+                <View style={styles.modeTextMask}>
+                    <Animated.Text style={[styles.modeText, modeOnStyle]}>
+                        MODE ON
+                    </Animated.Text>
+                    <Animated.Text style={[styles.modeText, styles.modeOffText, modeOffStyle]}>
+                        MODE OFF
+                    </Animated.Text>
+                </View>
+            </View>
+
             <GestureDetector gesture={tapGesture}>
                 <View style={styles.toggleWrapper}>
                     {/* Outer shadow for neumorphic depth */}
@@ -264,49 +305,95 @@ export default function BroadcastToggle({
                         {/* Inner highlight for glass depth */}
                         <Animated.View style={[styles.innerGlow, innerGlowStyle]} />
 
-                        {/* Text labels with slide animation */}
-                        <View style={styles.textContainer}>
-                            <View style={styles.textMask}>
-                                <Animated.Text style={[styles.labelText, styles.onText, onTextStyle]}>
-                                    On
-                                </Animated.Text>
-                                <Animated.Text style={[styles.labelText, styles.offText, offTextStyle]}>
-                                    Off
-                                </Animated.Text>
-                            </View>
-                        </View>
-
                         {/* Thumb */}
                         <Animated.View style={[styles.thumbOuter, thumbAnimatedStyle]}>
                             <Animated.View style={[styles.thumb, thumbGlowStyle]}>
                                 {/* Inner thumb highlight */}
-                                <View style={styles.thumbHighlight} />
+                                <Animated.View style={[styles.thumbHighlight, thumbHighlightStyle]} />
+
+                                {/* Progress ring - transparent showing background */}
+                                {showProgressRing && (
+                                    <View style={styles.progressRingContainer}>
+                                        <Svg width={RING_SIZE} height={RING_SIZE}>
+                                            {/* Background circle - very subtle */}
+                                            <Circle
+                                                cx={RING_SIZE / 2}
+                                                cy={RING_SIZE / 2}
+                                                r={RING_RADIUS}
+                                                stroke="rgba(0, 0, 0, 0.1)"
+                                                strokeWidth={RING_STROKE_WIDTH}
+                                                fill="transparent"
+                                            />
+                                            {/* Animated progress circle */}
+                                            <AnimatedCircle
+                                                cx={RING_SIZE / 2}
+                                                cy={RING_SIZE / 2}
+                                                r={RING_RADIUS}
+                                                stroke="rgba(0, 0, 0, 0.4)"
+                                                strokeWidth={RING_STROKE_WIDTH}
+                                                fill="transparent"
+                                                strokeDasharray={RING_CIRCUMFERENCE}
+                                                animatedProps={progressRingProps}
+                                                strokeLinecap="round"
+                                                rotation="-90"
+                                                origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
+                                            />
+                                        </Svg>
+                                    </View>
+                                )}
                             </Animated.View>
                         </Animated.View>
                     </Animated.View>
                 </View>
             </GestureDetector>
-
-            {/* Status text */}
-            {getStatusText() !== '' && (
-                <Animated.Text style={styles.statusText}>{getStatusText()}</Animated.Text>
-            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
+    sideLabelContainer: {
+        marginRight: 12,
+        alignItems: 'flex-end',
+    },
+    callMeText: {
+        fontSize: 14,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontWeight: '700',
+        color: CREAM,
+        letterSpacing: 1,
+    },
+    modeTextMask: {
+        height: 16,
+        overflow: 'hidden',
+        position: 'relative',
+    },
+    modeText: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        fontSize: 11,
+        fontFamily: CustomFonts.ztnaturemedium,
+        fontWeight: '500',
+        color: CREAM,
+        letterSpacing: 0.5,
+        textAlign: 'right',
+    },
+    modeOffText: {
+        color: 'rgba(255, 255, 255, 0.6)',
+    },
     toggleWrapper: {
-        padding: 10,
+        padding: 8,
         position: 'relative',
     },
     outerShadow: {
         position: 'absolute',
-        top: 10,
-        left: 10,
+        top: 8,
+        left: 8,
         width: TRACK_WIDTH,
         height: TRACK_HEIGHT,
         borderRadius: TRACK_HEIGHT / 2,
@@ -314,25 +401,25 @@ const styles = StyleSheet.create({
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.2,
-                shadowRadius: 12,
+                shadowOffset: { width: 0, height: 5 },
+                shadowOpacity: 0.18,
+                shadowRadius: 10,
             },
             android: {
-                elevation: 8,
+                elevation: 6,
             },
         }),
     },
     pulseRing: {
         position: 'absolute',
-        top: 10,
-        left: 10,
+        top: 8,
+        left: 8,
         width: TRACK_WIDTH,
         height: TRACK_HEIGHT,
         borderRadius: TRACK_HEIGHT / 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        borderWidth: 2,
-        borderColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        borderWidth: 1.5,
+        borderColor: 'rgba(255, 255, 255, 0.4)',
     },
     track: {
         width: TRACK_WIDTH,
@@ -346,37 +433,9 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         borderRadius: TRACK_HEIGHT / 2,
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.25)',
-        borderTopColor: 'rgba(255, 255, 255, 0.5)',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderTopColor: 'rgba(255, 255, 255, 0.4)',
         borderBottomColor: 'transparent',
-    },
-    textContainer: {
-        position: 'absolute',
-        left: THUMB_SIZE + THUMB_MARGIN + 6,
-        right: THUMB_SIZE + THUMB_MARGIN + 6,
-        height: TEXT_HEIGHT,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    textMask: {
-        height: TEXT_HEIGHT,
-        overflow: 'hidden',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    labelText: {
-        position: 'absolute',
-        fontSize: 15,
-        fontFamily: CustomFonts.ztnaturebold,
-        fontWeight: '700',
-        letterSpacing: 1,
-        textTransform: 'uppercase',
-    },
-    onText: {
-        color: CREAM,
-    },
-    offText: {
-        color: 'rgba(255, 255, 255, 0.5)',
     },
     thumbOuter: {
         position: 'absolute',
@@ -394,32 +453,29 @@ const styles = StyleSheet.create({
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.25,
-                shadowRadius: 6,
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 5,
             },
             android: {
-                elevation: 6,
+                elevation: 5,
             },
         }),
     },
     thumbHighlight: {
         position: 'absolute',
         top: 3,
-        left: 6,
-        right: 6,
-        height: THUMB_SIZE / 2 - 6,
+        left: 5,
+        right: 5,
+        height: THUMB_SIZE / 2 - 5,
         borderRadius: THUMB_SIZE / 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: 'rgba(255, 255, 255, 0.6)',
         borderTopWidth: 1,
-        borderTopColor: 'rgba(255, 255, 255, 0.9)',
+        borderTopColor: 'rgba(255, 255, 255, 0.8)',
     },
-    statusText: {
-        marginTop: 6,
-        fontSize: 12,
-        fontFamily: CustomFonts.ztnaturemedium,
-        color: CREAM,
-        textAlign: 'center',
-        letterSpacing: 0.5,
+    progressRingContainer: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
