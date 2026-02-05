@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
     },
     greetingText: {
-        paddingTop: 20,
+        paddingTop: 30,
+        paddingLeft: 20,
         color: CREAM,
         fontFamily: CustomFonts.awalierregular,
         letterSpacing: 3,

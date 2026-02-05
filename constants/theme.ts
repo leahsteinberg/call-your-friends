@@ -56,6 +56,10 @@ export const Fonts = Platform.select({
 export const CustomFonts = {
   awalierregular: 'Awelier-regular',
   awalierlight: 'Awelier-light',
+  awalierblack: 'Awelier-black',
+  awalierbold: 'Awelier-bold',
+  awalierextrabold: 'Awelier-extrabold',
+  awaliermedium: 'Awelier-medium',
   catamaran: 'Catamaran',
   clockwise: 'Clockwise',
   santaAna: 'SantaAna',

@@ -40,6 +40,8 @@ interface EventCardProps {
   disabled?: boolean;
   hasBanner?: boolean;
   variant?: 'solid' | 'neumorphic'; // Allow switching between old and new style
+  showTint?: boolean;   // Neumorphic background tint (default true)
+  showBorder?: boolean; // Neumorphic border (default true)
 }
 
 export function EventCard({
@@ -50,6 +52,8 @@ export function EventCard({
   disabled,
   hasBanner = false,
   variant = 'neumorphic',
+  showTint = true,
+  showBorder = true,
 }: EventCardProps) {
   const GestureWrapper = gesture || React.Fragment;
   const pressed = useSharedValue(0);
@@ -141,7 +145,12 @@ export function EventCard({
             onPressIn={onPress ? handlePressIn : undefined}
             onPressOut={onPress ? handlePressOut : undefined}
             disabled={disabled}
-            style={[styles.neumorphicContainer, bannerRadiusOverride]}
+            style={[
+              styles.neumorphicContainer,
+              bannerRadiusOverride,
+              !showTint && { backgroundColor: 'transparent' },
+              !showBorder && { borderWidth: 0 },
+            ]}
           >
             <Animated.View style={[styles.neumorphicContent, animatedContent]}>
               {children}
@@ -197,13 +206,29 @@ EventCard.Title = function Title({
   children,
   size = 'large',
   color = CREAM,
-  animated = false
+  animated = false,
 }: TitleProps) {
   const fontSize = size === 'large' ? 24 : size === 'medium' ? 20 : 16;
   const Component = animated ? Animated.Text : Text;
 
   return (
     <Component style={[styles.titleText, { fontSize, color }]}>
+      {children}
+    </Component>
+  );
+};
+
+EventCard.LiveTitle = function LiveTitle({
+  children,
+  size = 'large',
+  color = CREAM,
+  animated = false,
+}: TitleProps) {
+  const fontSize = size === 'large' ? 24 : size === 'medium' ? 20 : 16;
+  const Component = animated ? Animated.Text : Text;
+
+  return (
+    <Component style={[styles.liveTitleText, { fontSize, color }]}>
       {children}
     </Component>
   );
@@ -566,6 +591,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: CustomFonts.ztnaturebold,
     flexShrink: 1,
+  },
+  liveTitleText: {
+    //color: CREAM,
+    fontFamily: CustomFonts.awalierbold,
+    letterSpacing: 1,
+    flexShrink: 1,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   descriptionText: {
     fontFamily: CustomFonts.ztnaturemedium,

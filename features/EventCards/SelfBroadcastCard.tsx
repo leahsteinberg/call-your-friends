@@ -3,7 +3,6 @@ import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
-import { DEV_FLAG } from "@/environment";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
@@ -46,7 +45,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     const showAnimatedDots = !hasAcceptedUsers;
 
     const titleText = strings.mainText!(displayNames);
-
+    // const titleText = `Call me mode`;
 
     const handleCancelMeeting = async () => {
         try {
@@ -78,7 +77,7 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
     };
 
     return (
-        <EventCard backgroundColor={BOLD_BLUE}>
+        <EventCard backgroundColor={BOLD_BLUE} showTint={false} showBorder={false}>
             {/* Vibe badge in top-right corner */}
             
             {selectedVibe &&
@@ -92,29 +91,12 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
 
             <EventCard.Header spacing="between" align="start">
                 <EventCard.Row gap={0}>
-                    <EventCard.Title>
+                    <EventCard.LiveTitle justification="center">
                         {titleText}
-                    </EventCard.Title>
-                    {/* {showAnimatedDots && (
-                        <AnimatedText
-                            text="..."
-                            style={styles.animatedDots}
-                            duration={300}
-                            staggerDelay={500}
-                            inline={true}
-                        />
-                    )} */}
+                        {/* {`You're in call me mode`} */}
+                    </EventCard.LiveTitle>
                 </EventCard.Row>
-                <EventCard.Button
-                    onPress={handleCancelMeeting}
-                    loading={isEnding}
-                    variant="secondary"
-                    size="small"
-                >
-                    <Text style={styles.endBroadcastButtonText}>
-                        {strings.acceptButtonText!()}
-                    </Text>
-                </EventCard.Button>
+                
             </EventCard.Header>
 
             <EventCard.Body>
@@ -138,10 +120,16 @@ export default function SelfBroadcastCard({ meeting }: SelfBroadcastCardProps): 
                         </View>
                     </View>
                 )}
-
-                {DEV_FLAG && (
-                    <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-                )}
+                <EventCard.Button
+                    onPress={handleCancelMeeting}
+                    loading={isEnding}
+                    variant="secondary"
+                    size="small"
+                >
+                    <Text style={styles.endBroadcastButtonText}>
+                        {strings.acceptButtonText!()}
+                    </Text>
+                </EventCard.Button>
             </EventCard.Body>
         </EventCard>
     );

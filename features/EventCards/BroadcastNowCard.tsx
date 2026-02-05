@@ -73,7 +73,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
         );
         const displayNames = getDisplayNameList(selectedFriends);
         //return `Share with ${displayNames}`;
-        return 'Call Me'
+        return 'Enter call me mode'
     }
 
     const handleStartBroadcast = async () => {
@@ -115,7 +115,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     disabled={isStarting}
                 >
                     <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>
-                        TAP TO START
+                        TAP TO BEGIN
                     </EventCard.Pill>
                     <EventCard.Header>
                         <EventCard.Row gap={0}>
