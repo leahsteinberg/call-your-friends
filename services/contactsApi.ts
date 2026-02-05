@@ -67,6 +67,13 @@ export const contactsApi = createApi({
                 method: 'POST',
                 body: { userId, userToId },
             })
+        }),
+        removeInvite: builder.mutation({
+            query: ({inviteId}) => ({
+                url: '/api/remove-invite',
+                method: 'POST',
+                body: { inviteId },
+            })
         })
     })
 });
@@ -81,12 +88,13 @@ const {
     useGetFriendInvitesMutation,
     useAcceptFriendRequestMutation,
     useUserCalledMutation,
+    useRemoveInviteMutation,
     } = contactsApi;
 
 export {
     useAcceptFriendRequestMutation, useAcceptInviteSignInMutation,
     useAcceptInviteSignUpMutation,
     useCreateInviteMutation, useGetFriendInvitesMutation, useGetFriendsMutation,
-    useGetSentInvitesMutation, useUserByPhoneMutation, useUserCalledMutation
+    useGetSentInvitesMutation, useRemoveInviteMutation, useUserByPhoneMutation, useUserCalledMutation
 };
 

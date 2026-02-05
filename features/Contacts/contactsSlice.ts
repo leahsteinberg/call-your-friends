@@ -17,9 +17,12 @@ export const contactsSlice = createSlice({
         setSentInvites: (state, action: PayloadAction<SentInvite[]>) => {
             state.sentInvites = action.payload;
         },
+        removeSentInvite: (state, action: PayloadAction<string>) => {
+            state.sentInvites = state.sentInvites.filter((invite) => invite.id !== action.payload);
+        },
     }
 });
 
-export const { addSentInvite, setSentInvites } = contactsSlice.actions;
+export const { addSentInvite, setSentInvites, removeSentInvite } = contactsSlice.actions;
 
 export default contactsSlice.reducer;
