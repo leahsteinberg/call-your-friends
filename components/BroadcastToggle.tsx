@@ -36,7 +36,7 @@ const TRACK_WIDTH = 90;
 const TRACK_HEIGHT = 52;
 const THUMB_SIZE = 44;
 const THUMB_MARGIN = 4;
-const COUNTDOWN_SECONDS = 10;
+const COUNTDOWN_SECONDS = 1;
 
 // Progress ring sizing
 const RING_SIZE = THUMB_SIZE - 8;
@@ -266,13 +266,18 @@ export default function BroadcastToggle({
             {/* Side label - always visible */}
             <View style={styles.sideLabelContainer}>
                 <Text style={styles.callMeText}>CALL ME</Text>
-                <View style={styles.modeTextMask}>
-                    <Animated.Text style={[styles.modeText, modeOnStyle]}>
-                        MODE ON
-                    </Animated.Text>
-                    <Animated.Text style={[styles.modeText, styles.modeOffText, modeOffStyle]}>
-                        MODE OFF
-                    </Animated.Text>
+
+                <View style={styles.modeTextLine}>
+                    <Text style={[styles.modeText, modeOnStyle ]}>
+                        {`MODE `}
+                        {localState === 'broadcasting' && <Animated.Text style={[modeOnStyle ]}>
+                            {`ON`}
+                        </Animated.Text>}
+                        {localState !== 'broadcasting' && <Animated.Text style={[styles.modeOffText, modeOffStyle]}>
+                            {`OFF`}
+                        </Animated.Text>}
+                    </Text>
+                    
                 </View>
             </View>
 
@@ -352,8 +357,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     sideLabelContainer: {
-        marginRight: 12,
-        alignItems: 'flex-end',
+        alignItems: 'center',
     },
     callMeText: {
         fontSize: 14,
@@ -361,19 +365,25 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: CREAM,
         letterSpacing: 1,
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
-    modeTextMask: {
-        height: 16,
-        overflow: 'hidden',
-        position: 'relative',
+    maybeText: {
+        fontSize: 12,
+        fontFamily: CustomFonts.ztnaturemedium,
+        fontWeight: '700',
+        color: CREAM,
+        letterSpacing: 1,
+    },
+    modeTextLine: {
+        alignItems: 'center',
     },
     modeText: {
-        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
-        fontSize: 11,
-        fontFamily: CustomFonts.ztnaturemedium,
+        fontSize: 14,
+        fontFamily: CustomFonts.ztnaturebold,
         fontWeight: '500',
         color: CREAM,
         letterSpacing: 0.5,
