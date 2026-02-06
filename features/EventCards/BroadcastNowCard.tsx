@@ -6,7 +6,6 @@ import { eventCardText } from "@/constants/event_card_strings";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import React, { useEffect } from "react";
-import { View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 export default function BroadcastNowCard(): React.JSX.Element {
@@ -65,50 +64,49 @@ export default function BroadcastNowCard(): React.JSX.Element {
     };
 
     return (
-        <View style={{ position: 'relative' }}>
-            <FriendBadgeSelector
-                friends={friends}
-                onSelectFriends={handleFriendsSelect}
-                position="bottom-right"
-                selectedFriendIds={selectedFriendIds}
-            />
+        <Animated.View style={[animatedCardStyle]}>
+            <EventCard
+                backgroundColor={BOLD_BLUE}
+                onPress={onStartBroadcast}
+                disabled={isStarting}
+            >
+                <EventCard.Decoration position="bottom-right">
+                    <FriendBadgeSelector
+                        friends={friends}
+                        onSelectFriends={handleFriendsSelect}
+                        selectedFriendIds={selectedFriendIds}
+                    />
+                </EventCard.Decoration>
 
-            <Animated.View style={[animatedCardStyle]}>
-                <EventCard
-                    backgroundColor={BOLD_BLUE}
-                    onPress={onStartBroadcast}
-                    disabled={isStarting}
-                >
-                    <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>
-                        TAP TO BEGIN
-                    </EventCard.Pill>
-                    <EventCard.Header>
-                        <EventCard.Row gap={0}>
-                            <EventCard.Title>{getMainText()}</EventCard.Title>
-                            {isStarting && (
-                                <AnimatedText
-                                    text="..."
-                                    style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
-                                    duration={300}
-                                    staggerDelay={500}
-                                />
-                            )}
-                        </EventCard.Row>
-                    </EventCard.Header>
-
-                    {!isStarting && (
-                        <EventCard.Body>
-                            <EventCard.Description>
-                                {strings.title()}
-                            </EventCard.Description>
-                            <VibeButton
-                                selectedVibe={selectedVibe}
-                                onVibeSelect={handleVibeSelect}
+                <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>
+                    TAP TO BEGIN
+                </EventCard.Pill>
+                <EventCard.Header>
+                    <EventCard.Row gap={0}>
+                        <EventCard.Title>{getMainText()}</EventCard.Title>
+                        {isStarting && (
+                            <AnimatedText
+                                text="..."
+                                style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
+                                duration={300}
+                                staggerDelay={500}
                             />
-                        </EventCard.Body>
-                    )}
-                </EventCard>
-            </Animated.View>
-        </View>
+                        )}
+                    </EventCard.Row>
+                </EventCard.Header>
+
+                {!isStarting && (
+                    <EventCard.Body>
+                        <EventCard.Description>
+                            {strings.title()}
+                        </EventCard.Description>
+                        <VibeButton
+                            selectedVibe={selectedVibe}
+                            onVibeSelect={handleVibeSelect}
+                        />
+                    </EventCard.Body>
+                )}
+            </EventCard>
+        </Animated.View>
     );
 }
