@@ -6,9 +6,19 @@ import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { FriendProps } from "./types";
+
+// Neumorphic styling constants (matching EventCard)
+const NEUMORPHIC = {
+  lightShadow: CREAM,
+  darkShadow: 'rgba(0, 0, 0, 0.25)',
+  backgroundTint: 'rgba(0, 0, 0, 0.08)',
+  borderColor: 'rgba(255, 255, 255, 0.15)',
+  shadowOffset: 4,
+  shadowBlur: 8,
+};
 
 export default function Friend({ item, onCallIntentChange }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
@@ -87,7 +97,6 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
 
   return (
     <View style={styles.outerContainer} key={item.index}>
-
       <View style={styles.container}>
 
         {/* Header with avatar, name, and call now button */}
@@ -140,18 +149,29 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
     },
     container: {
-      backgroundColor: BOLD_BLUE,
+      backgroundColor: 'rgba(30, 60, 114, 0.75)',
       borderRadius: 20,
       padding: 18,
-      overflow: 'hidden',
+      overflow: 'visible',
       minHeight: CARD_MIN_HEIGHT,
-    },
-    circleContainerRelative: {
-      alignSelf: 'flex-start',
-      marginTop: -110,
-      marginLeft: -80,
-      marginBottom: -30,
-      zIndex: -1,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.25)',
+      ...Platform.select({
+        ios: {
+          shadowColor: NEUMORPHIC.darkShadow,
+          shadowOffset: { width: 4, height: 4 },
+          shadowOpacity: 1,
+          shadowRadius: 10,
+        },
+        android: {
+          elevation: 8,
+        },
+        web: {
+          boxShadow: `-${NEUMORPHIC.shadowOffset}px -${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur}px ${NEUMORPHIC.lightShadow}, ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur * 1.5}px ${NEUMORPHIC.darkShadow}`,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        },
+      }),
     },
     header: {
       flexDirection: 'row',

@@ -1,13 +1,23 @@
 import { CustomFonts } from "@/constants/theme";
 import { useAcceptFriendRequestMutation, useRemoveInviteMutation } from "@/services/contactsApi";
-import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, ORANGE, PALE_BLUE } from "@/styles/styles";
+import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { Trash2 } from "lucide-react-native";
 import React, { useRef, useState } from "react";
-import { ActivityIndicator, Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { FriendRequestProps } from "./types";
+
+// Neumorphic styling constants (matching EventCard)
+const NEUMORPHIC = {
+  lightShadow: CREAM,
+  darkShadow: 'rgba(0, 0, 0, 0.25)',
+  backgroundTint: 'rgba(0, 0, 0, 0.08)',
+  borderColor: 'rgba(255, 255, 255, 0.15)',
+  shadowOffset: 4,
+  shadowBlur: 8,
+};
 
 interface FriendRequestPropsExtended extends FriendRequestProps {
   onRemove?: (id: string) => void;
@@ -104,7 +114,7 @@ export default function FriendRequest({ item, onRemove }: FriendRequestPropsExte
                   disabled={isAccepting}
                 >
                   {isAccepting ? (
-                    <ActivityIndicator size="small" color={CHOCOLATE_COLOR} />
+                    <ActivityIndicator size="small" color={CREAM} />
                   ) : (
                     <Text style={styles.acceptButtonText}>Accept</Text>
                   )}
@@ -127,12 +137,31 @@ export default function FriendRequest({ item, onRemove }: FriendRequestPropsExte
 const styles = StyleSheet.create({
     swipeableWrapper: {
       marginHorizontal: 10,
-      marginBottom: 8,
+      marginBottom: 12,
+      position: 'relative',
     },
     container: {
-      backgroundColor: PALE_BLUE,
-      borderRadius: 8,
-      padding: 12,
+      backgroundColor: 'rgba(255, 140, 66, 0.8)',
+      borderRadius: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.3)',
+      ...Platform.select({
+        ios: {
+          shadowColor: NEUMORPHIC.darkShadow,
+          shadowOffset: { width: 4, height: 4 },
+          shadowOpacity: 1,
+          shadowRadius: 10,
+        },
+        android: {
+          elevation: 8,
+        },
+        web: {
+          boxShadow: `-${NEUMORPHIC.shadowOffset}px -${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur}px ${NEUMORPHIC.lightShadow}, ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur * 1.5}px ${NEUMORPHIC.darkShadow}`,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        },
+      }),
     },
     header: {
       flexDirection: 'row',
@@ -143,7 +172,7 @@ const styles = StyleSheet.create({
     name: {
       fontSize: 20,
       fontWeight: '600',
-      color: ORANGE,
+      color: CREAM,
       fontFamily: CustomFonts.ztnaturebold,
       flexShrink: 1,
     },
@@ -152,28 +181,34 @@ const styles = StyleSheet.create({
       alignItems: 'center',
     },
     acceptButton: {
-      paddingHorizontal: 12,
-      paddingVertical: 6,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: 'rgba(255, 255, 255, 0.3)',
     },
     acceptButtonText: {
-      color: CHOCOLATE_COLOR,
-      fontSize: 12,
+      color: CREAM,
+      fontSize: 13,
       fontWeight: '600',
       fontFamily: CustomFonts.ztnaturebold,
     },
     acceptedLabel: {
-      paddingHorizontal: 12,
-      paddingVertical: 6,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+      borderRadius: 12,
     },
     acceptedText: {
       color: BRIGHT_GREEN,
-      fontSize: 12,
+      fontSize: 13,
       fontWeight: '600',
       fontFamily: CustomFonts.ztnaturebold,
     },
     subtitle: {
       fontSize: 14,
-      color: BRIGHT_BLUE,
+      color: 'rgba(255, 255, 255, 0.7)',
       fontFamily: CustomFonts.ztnatureregular,
     },
     deleteAction: {
@@ -181,8 +216,8 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       width: 80,
-      borderTopRightRadius: 8,
-      borderBottomRightRadius: 8,
+      borderTopRightRadius: 16,
+      borderBottomRightRadius: 16,
     },
     deleteIconContainer: {
       justifyContent: 'center',

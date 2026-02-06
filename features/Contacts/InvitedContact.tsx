@@ -1,14 +1,24 @@
 import { CustomFonts } from "@/constants/theme";
 import { useRemoveInviteMutation } from "@/services/contactsApi";
-import { BOLD_BLUE, BRIGHT_BLUE, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BRIGHT_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { Trash2 } from "lucide-react-native";
 import React, { useRef } from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 import { useDispatch } from "react-redux";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import { removeSentInvite } from "./contactsSlice";
 import { InvitedContactProps } from "./types";
+
+// Neumorphic styling constants (matching EventCard)
+const NEUMORPHIC = {
+  lightShadow: CREAM,
+  darkShadow: 'rgba(0, 0, 0, 0.25)',
+  backgroundTint: 'rgba(0, 0, 0, 0.08)',
+  borderColor: 'rgba(255, 255, 255, 0.15)',
+  shadowOffset: 4,
+  shadowBlur: 8,
+};
 
 export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
   const dispatch = useDispatch();
@@ -82,18 +92,37 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
 const styles = StyleSheet.create({
   swipeableWrapper: {
     marginHorizontal: 10,
-    marginBottom: 8,
+    marginBottom: 12,
+    position: 'relative',
   },
   container: {
-    backgroundColor: PALE_BLUE,
-    borderRadius: 8,
-    padding: 12,
+    backgroundColor: 'rgba(200, 215, 235, 0.75)',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    ...Platform.select({
+      ios: {
+        shadowColor: NEUMORPHIC.darkShadow,
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 8,
+      },
+      web: {
+        boxShadow: `-${NEUMORPHIC.shadowOffset}px -${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur}px ${NEUMORPHIC.lightShadow}, ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowOffset}px ${NEUMORPHIC.shadowBlur * 1.5}px ${NEUMORPHIC.darkShadow}`,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+      },
+    }),
   },
   header: {
     marginBottom: 4,
   },
   mainText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     color: BOLD_BLUE,
     fontFamily: CustomFonts.ztnaturebold,
@@ -108,8 +137,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
+    borderTopRightRadius: 16,
+    borderBottomRightRadius: 16,
   },
   deleteIconContainer: {
     justifyContent: 'center',
