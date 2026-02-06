@@ -83,19 +83,19 @@ const styles = StyleSheet.create({
     },
     greetingContainer: {
         flex: 1,
+        //backgroundColor: 'red',
     },
     greetingText: {
-        paddingTop: 30,
-        paddingLeft: 20,
+        paddingTop: 10,
+        //paddingLeft: 20,
         color: CREAM,
         fontFamily: CustomFonts.awalierregular,
         letterSpacing: 3,
-        fontSize: 50,
+        fontSize: 35,
         fontWeight: '600',
     },
     toggleContainer: {
-        paddingTop: 35,
-        paddingRight: 10,
+        //paddingTop: 35,
     },
     component: {
 

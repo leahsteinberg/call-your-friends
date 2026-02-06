@@ -1,6 +1,6 @@
 import { CustomFonts } from '@/constants/theme';
 import { useIsBroadcasting } from '@/hooks/useIsBroadcasting';
-import { CREAM } from '@/styles/styles';
+import { BOLD_BLUE, CREAM } from '@/styles/styles';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -32,11 +32,11 @@ interface BroadcastToggleProps {
 }
 
 // Generous liquid glass sizing
-const TRACK_WIDTH = 90;
-const TRACK_HEIGHT = 52;
-const THUMB_SIZE = 44;
+const TRACK_WIDTH = 55;
+const TRACK_HEIGHT = 35;
+const THUMB_SIZE = TRACK_HEIGHT- 8;
 const THUMB_MARGIN = 4;
-const COUNTDOWN_SECONDS = 1;
+const COUNTDOWN_SECONDS = 10;
 
 // Progress ring sizing
 const RING_SIZE = THUMB_SIZE - 8;
@@ -256,7 +256,7 @@ export default function BroadcastToggle({
     });
 
     // Dynamic blur intensity - more blur when off
-    const blurIntensity = localState === 'off' ? 50 : localState === 'customizing' ? 25 : 12;
+    const blurIntensity = localState === 'off' ? 10 : localState === 'customizing' ? 5 : 0;
 
     // Show progress ring only during customizing state
     const showProgressRing = localState === 'customizing';
@@ -280,7 +280,7 @@ export default function BroadcastToggle({
                         {Platform.OS !== 'web' && (
                             <BlurView
                                 intensity={blurIntensity}
-                                tint="light"
+                                tint="regular"
                                 style={StyleSheet.absoluteFill}
                             />
                         )}
@@ -347,7 +347,7 @@ export default function BroadcastToggle({
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column-reverse',
+        flexDirection: 'column',
     },
     toggleContainer: {
         flexDirection: 'row',
@@ -356,7 +356,9 @@ const styles = StyleSheet.create({
     sideLabelContainer: {
         alignItems: 'center',
         borderRadius: 20,
-        paddingLeft: 5,
+        //paddingLeft: 10,
+        //padding: 5,
+        //backgroundColor: CREAM+`80`,
     },
     labelRow: {
         flexDirection: 'row',
@@ -366,6 +368,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: CustomFonts.ztnaturemedium,
         fontWeight: '700',
+        color: BOLD_BLUE,
         color: CREAM,
         letterSpacing: 1,
     },
@@ -373,6 +376,7 @@ const styles = StyleSheet.create({
         width: 34,
         height: 18,
         position: 'relative',
+
     },
     onOffText: {
         position: 'absolute',
@@ -385,7 +389,10 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
     },
     offText: {
-        color: 'rgba(255, 255, 255, 0.6)',
+        //color: BOLD_BLUE,
+        fontFamily: CustomFonts.ztnatureregular,
+
+        color: 'grey',
     },
     toggleWrapper: {
         padding: 8,
@@ -443,6 +450,8 @@ const styles = StyleSheet.create({
         top: THUMB_MARGIN,
         width: THUMB_SIZE,
         height: THUMB_SIZE,
+        backgroundColor: 'transparent',
+
     },
     thumbShadowLight: {
         position: 'absolute',
@@ -452,7 +461,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         ...Platform.select({
             ios: {
-                shadowColor: 'rgba(255, 255, 255, 0.8)',
+                shadowColor: 'rgba(255, 255, 255, 0.)',
                 shadowOffset: { width: -3, height: -3 },
                 shadowOpacity: 1,
                 shadowRadius: 4,
@@ -484,7 +493,9 @@ const styles = StyleSheet.create({
         width: THUMB_SIZE,
         height: THUMB_SIZE,
         borderRadius: THUMB_SIZE / 2,
-        backgroundColor: 'rgba(240, 240, 245, 0.95)',
+        //backgroundColor: 'rgba(240, 240, 245, 0.1)',
+        //backgroundColor: 'transparent',
+
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
