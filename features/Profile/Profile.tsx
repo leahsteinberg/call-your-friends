@@ -1,5 +1,6 @@
 import BroadcastToggle from "@/components/BroadcastToggle";
 import { CustomFonts } from "@/constants/theme";
+import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useCallback } from "react";
@@ -13,6 +14,7 @@ const safePadding = Platform.OS === 'ios' ? 60 : 10;
 function ProfileContent(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
     const { handleStartBroadcast, handleEndBroadcast } = useBroadcastSettings();
+    const { isLoading: meetingsLoading } = useProcessedMeetings();
 
     const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Loyal';}
 
@@ -39,11 +41,13 @@ function ProfileContent(): React.JSX.Element {
                     <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 </View>
                 <View style={styles.toggleContainer}>
-                    <BroadcastToggle
-                        onCustomizeBroadcast={onCustomizeBroadcast}
-                        onStartBroadcast={onStartBroadcast}
-                        onEndBroadcast={onEndBroadcast}
-                    />
+                    {!meetingsLoading && (
+                        <BroadcastToggle
+                            onCustomizeBroadcast={onCustomizeBroadcast}
+                            onStartBroadcast={onStartBroadcast}
+                            onEndBroadcast={onEndBroadcast}
+                        />
+                    )}
                 </View>
             </View>
             <TodayList />

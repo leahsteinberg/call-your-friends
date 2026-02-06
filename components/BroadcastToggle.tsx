@@ -217,12 +217,6 @@ export default function BroadcastToggle({
         };
     });
 
-    // Thumb highlight - faded when off
-    const thumbHighlightStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(progress.value, [0, 1], [0.3, 0.7]);
-        return { opacity };
-    });
-
     // Pulse ring for broadcasting
     const pulseRingStyle = useAnimatedStyle(() => {
         return {
@@ -305,12 +299,14 @@ export default function BroadcastToggle({
                         {/* Inner highlight for glass depth */}
                         <Animated.View style={[styles.innerGlow, innerGlowStyle]} />
 
-                        {/* Thumb */}
+                        {/* Thumb with neumorphic shadows */}
                         <Animated.View style={[styles.thumbOuter, thumbAnimatedStyle]}>
+                            {/* Light shadow (top-left) */}
+                            <View style={styles.thumbShadowLight} />
+                            {/* Dark shadow (bottom-right) */}
+                            <View style={styles.thumbShadowDark} />
+                            {/* Main thumb */}
                             <Animated.View style={[styles.thumb, thumbGlowStyle]}>
-                                {/* Inner thumb highlight */}
-                                <Animated.View style={[styles.thumbHighlight, thumbHighlightStyle]} />
-
                                 {/* Progress ring - transparent showing background */}
                                 {showProgressRing && (
                                     <View style={styles.progressRingContainer}>
@@ -443,35 +439,51 @@ const styles = StyleSheet.create({
         width: THUMB_SIZE,
         height: THUMB_SIZE,
     },
+    thumbShadowLight: {
+        position: 'absolute',
+        width: THUMB_SIZE,
+        height: THUMB_SIZE,
+        borderRadius: THUMB_SIZE / 2,
+        backgroundColor: 'transparent',
+        ...Platform.select({
+            ios: {
+                shadowColor: 'rgba(255, 255, 255, 0.8)',
+                shadowOffset: { width: -3, height: -3 },
+                shadowOpacity: 1,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 2,
+            },
+        }),
+    },
+    thumbShadowDark: {
+        position: 'absolute',
+        width: THUMB_SIZE,
+        height: THUMB_SIZE,
+        borderRadius: THUMB_SIZE / 2,
+        backgroundColor: 'transparent',
+        ...Platform.select({
+            ios: {
+                shadowColor: 'rgba(0, 0, 0, 0.35)',
+                shadowOffset: { width: 3, height: 3 },
+                shadowOpacity: 1,
+                shadowRadius: 5,
+            },
+            android: {
+                elevation: 6,
+            },
+        }),
+    },
     thumb: {
         width: THUMB_SIZE,
         height: THUMB_SIZE,
         borderRadius: THUMB_SIZE / 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        backgroundColor: 'rgba(240, 240, 245, 0.95)',
         justifyContent: 'center',
         alignItems: 'center',
-        ...Platform.select({
-            ios: {
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.2,
-                shadowRadius: 5,
-            },
-            android: {
-                elevation: 5,
-            },
-        }),
-    },
-    thumbHighlight: {
-        position: 'absolute',
-        top: 3,
-        left: 5,
-        right: 5,
-        height: THUMB_SIZE / 2 - 5,
-        borderRadius: THUMB_SIZE / 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.6)',
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255, 255, 255, 0.8)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.2)',
     },
     progressRingContainer: {
         position: 'absolute',
