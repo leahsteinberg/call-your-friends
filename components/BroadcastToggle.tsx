@@ -263,16 +263,7 @@ export default function BroadcastToggle({
 
     return (
         <View style={styles.container}>
-            {/* Side label - always visible */}
-            <View style={styles.sideLabelContainer}>
-                <View style={styles.labelRow}>
-                    <Text style={styles.callMeText}>CALL ME MODE</Text>
-                    <View style={styles.onOffContainer}>
-                        <Animated.Text style={[styles.onOffText, modeOnStyle]}> ON</Animated.Text>
-                        <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}> OFF</Animated.Text>
-                    </View>
-                </View>
-            </View>
+            
             <View style={styles.toggleContainer}>
             <GestureDetector gesture={tapGesture}>
                 <View style={styles.toggleWrapper}>
@@ -341,22 +332,31 @@ export default function BroadcastToggle({
                 </View>
             </GestureDetector>
             </View>
+            <View style={styles.sideLabelContainer}>
+                <View style={styles.labelRow}>
+                    <Text style={styles.callMeText}>CALL ME MODE</Text>
+                    <View style={styles.onOffContainer}>
+                        <Animated.Text style={[styles.onOffText, modeOnStyle]}> ON</Animated.Text>
+                        <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}> OFF</Animated.Text>
+                    </View>
+                </View>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
-        alignItems: 'center',
+        flexDirection: 'column-reverse',
     },
     toggleContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
     },
     sideLabelContainer: {
         alignItems: 'center',
+        borderRadius: 20,
+        paddingLeft: 5,
     },
     labelRow: {
         flexDirection: 'row',
