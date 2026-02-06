@@ -255,6 +255,15 @@ export default function BroadcastToggle({
         };
     });
 
+    const onOffText = () => {
+        return (
+            <View style={styles.onOffContainer}>
+                <Animated.Text style={[styles.onText, modeOnStyle]}>ON</Animated.Text>
+                <Animated.Text style={[styles.offText, modeOffStyle]}>OFF</Animated.Text>
+            </View>
+        )
+    }
+
     // Dynamic blur intensity - more blur when off
     const blurIntensity = localState === 'off' ? 50 : localState === 'customizing' ? 25 : 12;
 
@@ -265,22 +274,15 @@ export default function BroadcastToggle({
         <View style={styles.container}>
             {/* Side label - always visible */}
             <View style={styles.sideLabelContainer}>
-                <Text style={styles.callMeText}>CALL ME</Text>
+                <Text style={styles.callMeText}>{`CALL ME MODE `}
+                {onOffText()}
 
+                </Text>
                 <View style={styles.modeTextLine}>
-                    <Text style={[styles.modeText, modeOnStyle ]}>
-                        {`MODE `}
-                        {localState === 'broadcasting' && <Animated.Text style={[modeOnStyle ]}>
-                            {`ON`}
-                        </Animated.Text>}
-                        {localState !== 'broadcasting' && <Animated.Text style={[styles.modeOffText, modeOffStyle]}>
-                            {`OFF`}
-                        </Animated.Text>}
-                    </Text>
-                    
+                    {/* <Text style={styles.modeText}>MODE</Text> */}
                 </View>
             </View>
-
+            <View style={styles.toggleContainer}>
             <GestureDetector gesture={tapGesture}>
                 <View style={styles.toggleWrapper}>
                     {/* Outer shadow for neumorphic depth */}
@@ -347,14 +349,20 @@ export default function BroadcastToggle({
                     </Animated.View>
                 </View>
             </GestureDetector>
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    toggleContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     sideLabelContainer: {
         alignItems: 'center',
@@ -376,21 +384,44 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
     },
     modeTextLine: {
-        alignItems: 'center',
+        //flexDirection: 'row',
+        //alignItems: 'center',
     },
     modeText: {
-        top: 0,
-        left: 0,
-        right: 0,
         fontSize: 14,
         fontFamily: CustomFonts.ztnaturebold,
         fontWeight: '500',
         color: CREAM,
         letterSpacing: 0.5,
-        textAlign: 'right',
     },
-    modeOffText: {
+    onOffContainer: {
+        width: 34,
+        height: 18,
+        position: 'relative',
+        //backgroundColor: 'red',
+        // justifyContent: 'flex-end',
+        //alignItems: 'flex-end',
+        //overflow: 'hidden',
+    },
+    onText: {
+        //position: 'absolute',
+        // top: 0,
+        // left: 0,
+        fontSize: 14,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontWeight: '500',
+        color: CREAM,
+        letterSpacing: 0.5,
+    },
+    offText: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        fontSize: 14,
+        fontFamily: CustomFonts.ztnaturebold,
+        fontWeight: '500',
         color: 'rgba(255, 255, 255, 0.6)',
+        letterSpacing: 0.5,
     },
     toggleWrapper: {
         padding: 8,
