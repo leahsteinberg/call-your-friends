@@ -255,15 +255,6 @@ export default function BroadcastToggle({
         };
     });
 
-    const onOffText = () => {
-        return (
-            <View style={styles.onOffContainer}>
-                <Animated.Text style={[styles.onText, modeOnStyle]}>ON</Animated.Text>
-                <Animated.Text style={[styles.offText, modeOffStyle]}>OFF</Animated.Text>
-            </View>
-        )
-    }
-
     // Dynamic blur intensity - more blur when off
     const blurIntensity = localState === 'off' ? 50 : localState === 'customizing' ? 25 : 12;
 
@@ -274,12 +265,12 @@ export default function BroadcastToggle({
         <View style={styles.container}>
             {/* Side label - always visible */}
             <View style={styles.sideLabelContainer}>
-                <Text style={styles.callMeText}>{`CALL ME MODE `}
-                {onOffText()}
-
-                </Text>
-                <View style={styles.modeTextLine}>
-                    {/* <Text style={styles.modeText}>MODE</Text> */}
+                <View style={styles.labelRow}>
+                    <Text style={styles.callMeText}>CALL ME MODE</Text>
+                    <View style={styles.onOffContainer}>
+                        <Animated.Text style={[styles.onOffText, modeOnStyle]}> ON</Animated.Text>
+                        <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}> OFF</Animated.Text>
+                    </View>
                 </View>
             </View>
             <View style={styles.toggleContainer}>
@@ -367,46 +358,26 @@ const styles = StyleSheet.create({
     sideLabelContainer: {
         alignItems: 'center',
     },
+    labelRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     callMeText: {
         fontSize: 14,
-        fontFamily: CustomFonts.ztnaturebold,
-        fontWeight: '700',
-        color: CREAM,
-        letterSpacing: 1,
-        // alignItems: 'center',
-        // justifyContent: 'center',
-    },
-    maybeText: {
-        fontSize: 12,
         fontFamily: CustomFonts.ztnaturemedium,
         fontWeight: '700',
         color: CREAM,
         letterSpacing: 1,
     },
-    modeTextLine: {
-        //flexDirection: 'row',
-        //alignItems: 'center',
-    },
-    modeText: {
-        fontSize: 14,
-        fontFamily: CustomFonts.ztnaturebold,
-        fontWeight: '500',
-        color: CREAM,
-        letterSpacing: 0.5,
-    },
     onOffContainer: {
         width: 34,
         height: 18,
         position: 'relative',
-        //backgroundColor: 'red',
-        // justifyContent: 'flex-end',
-        //alignItems: 'flex-end',
-        //overflow: 'hidden',
     },
-    onText: {
-        //position: 'absolute',
-        // top: 0,
-        // left: 0,
+    onOffText: {
+        position: 'absolute',
+        top: 0.5,
+        left: 0,
         fontSize: 14,
         fontFamily: CustomFonts.ztnaturebold,
         fontWeight: '500',
@@ -414,14 +385,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
     },
     offText: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        fontSize: 14,
-        fontFamily: CustomFonts.ztnaturebold,
-        fontWeight: '500',
         color: 'rgba(255, 255, 255, 0.6)',
-        letterSpacing: 0.5,
     },
     toggleWrapper: {
         padding: 8,
