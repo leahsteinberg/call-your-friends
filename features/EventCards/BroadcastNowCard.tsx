@@ -1,10 +1,9 @@
-import AnimatedText from "@/components/AnimationComponents/AnimatedText";
 import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import { EventCard } from "@/components/EventCard/EventCard";
-import { eventCardText } from "@/constants/event_card_strings";
+import GoButton from "@/components/GoButton";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
-import { BOLD_BLUE, CREAM } from "@/styles/styles";
+import { BOLD_BLUE } from "@/styles/styles";
 import React, { useEffect } from "react";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
@@ -18,8 +17,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
         setSelectedFriendIds,
         handleStartBroadcast,
     } = useBroadcastSettings();
-
-    const strings = eventCardText.broadcast_now_card;
 
     const pulseOpacity = useSharedValue(1);
 
@@ -47,10 +44,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
         setSelectedVibe(vibeId);
     };
 
-    const getMainText = () => {
-        return 'Enter call me mode'
-    }
-
     const onStartBroadcast = async () => {
         try {
             await handleStartBroadcast();
@@ -70,7 +63,23 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 onPress={onStartBroadcast}
                 disabled={isStarting}
             >
-                <EventCard.Decoration position="bottom-right">
+
+
+                <GoButton
+                    onPress={onStartBroadcast}
+                    disabled={isStarting}
+                    text={isStarting ? "Starting..." : "Call Me"}
+                />
+
+                {!isStarting && (
+                    <EventCard.Body>
+                        <VibeButton
+                            selectedVibe={selectedVibe}
+                            onVibeSelect={handleVibeSelect}
+                        />
+                    </EventCard.Body>
+                )}
+            <EventCard.Decoration position="bottom-right">
                     <FriendBadgeSelector
                         friends={friends}
                         onSelectFriends={handleFriendsSelect}
@@ -78,34 +87,6 @@ export default function BroadcastNowCard(): React.JSX.Element {
                     />
                 </EventCard.Decoration>
 
-                <EventCard.Pill backgroundColor={'transparent'} textColor={CREAM}>
-                    TAP TO BEGIN
-                </EventCard.Pill>
-                <EventCard.Header>
-                    <EventCard.Row gap={0}>
-                        <EventCard.Title>{getMainText()}</EventCard.Title>
-                        {isStarting && (
-                            <AnimatedText
-                                text="..."
-                                style={{ fontSize: 28, color: CREAM, fontWeight: '600' }}
-                                duration={300}
-                                staggerDelay={500}
-                            />
-                        )}
-                    </EventCard.Row>
-                </EventCard.Header>
-
-                {!isStarting && (
-                    <EventCard.Body>
-                        <EventCard.Description>
-                            {strings.title()}
-                        </EventCard.Description>
-                        <VibeButton
-                            selectedVibe={selectedVibe}
-                            onVibeSelect={handleVibeSelect}
-                        />
-                    </EventCard.Body>
-                )}
             </EventCard>
         </Animated.View>
     );
