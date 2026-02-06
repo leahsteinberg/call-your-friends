@@ -1,5 +1,6 @@
 import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
+import CurvedCutoutBand from "@/components/CurvedCutoutBand";
 import { EventCard } from "@/components/EventCard/EventCard";
 import GoButton from "@/components/GoButton";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
@@ -86,6 +87,13 @@ export default function BroadcastNowCard(): React.JSX.Element {
                         selectedFriendIds={selectedFriendIds}
                     />
                 </EventCard.Decoration>
+
+                <CurvedCutoutBand
+                    cardHeight={180}
+                    onIcon1Press={() => console.log('Icon 1 pressed')}
+                    onIcon2Press={() => console.log('Icon 2 pressed')}
+                    onIcon3Press={() => console.log('Icon 3 pressed')}
+                />
 
             </EventCard>
         </Animated.View>
