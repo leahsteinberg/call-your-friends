@@ -2,7 +2,7 @@ import {
     Canvas,
     Fill,
     Shader,
-    Skia
+    Skia,
 } from "@shopify/react-native-skia";
 import React, { useEffect, useMemo } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";

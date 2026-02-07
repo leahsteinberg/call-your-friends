@@ -13,14 +13,14 @@ const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
 function ProfileContent(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
-    const { handleStartBroadcast, handleEndBroadcast } = useBroadcastSettings();
+    const { handleStartBroadcast, handleEndBroadcast, setIsCustomizing } = useBroadcastSettings();
     const { isLoading: meetingsLoading } = useProcessedMeetings();
 
     const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Loyal';}
 
     const onCustomizeBroadcast = useCallback(() => {
-        // User can customize their broadcast settings in BroadcastNowCard during countdown
-    }, []);
+        setIsCustomizing(true);
+    }, [setIsCustomizing]);
 
     const onStartBroadcast = useCallback(async () => {
         try {

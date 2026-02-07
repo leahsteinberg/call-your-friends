@@ -1,7 +1,8 @@
 import { CREAM } from '@/styles/styles';
 import { MessageCircle, Share2 } from 'lucide-react-native';
-import React from 'react';
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 interface CurvedCutoutBandProps {
@@ -10,6 +11,7 @@ interface CurvedCutoutBandProps {
     onIcon3Press?: () => void;
     bandColor?: string;
     iconColor?: string;
+    visible?: boolean;
 }
 
 const BAND_WIDTH = 44;
@@ -17,12 +19,16 @@ const CURVE_DEPTH = 30;
 const ICON_SIZE = 18;
 const ICON_BUTTON_SIZE = 32;
 
+// How far the band shifts when customizing (left and up)
+const SHIFT_AMOUNT = 30;
+
 export default function CurvedCutoutBand({
     onIcon1Press,
     onIcon2Press,
     onIcon3Press,
     bandColor = 'rgba(255, 255, 255, 0.15)',
     iconColor = CREAM,
+    visible = false,
 }: CurvedCutoutBandProps): React.JSX.Element {
     // Symmetrical L-shaped band around the bottom-right corner
     // Both arms extend the same distance from the corner
@@ -30,6 +36,24 @@ export default function CurvedCutoutBand({
     const svgSize = armLength + BAND_WIDTH; // Square SVG for symmetry
     const svgWidth = svgSize;
     const svgHeight = svgSize;
+
+    // Animation: slide left and up when customizing, back to default when not
+    const slideProgress = useSharedValue(0);
+
+    useEffect(() => {
+        slideProgress.value = withSpring(visible ? 1 : 0, {
+            damping: 18,
+            stiffness: 90,
+            mass: 1,
+        });
+    }, [visible]);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateX: -slideProgress.value * SHIFT_AMOUNT },
+            { translateY: -slideProgress.value * SHIFT_AMOUNT },
+        ],
+    }));
 
     // SVG path for L-shaped band with curved tapered edges
     const createLShapePath = () => {
@@ -40,7 +64,7 @@ export default function CurvedCutoutBand({
         // The band has:
         // - Rounded bottom-right corner (matching card)
         // - S-curve at top: single cubic bezier - concave start, convex end approaching card edge vertically
-        // - Gentle sloping curve at left (horizontal) where it meets card edge
+        // - S-curve at left: mirror of top curve
         // - Concave curve at inner corner
         // Going clockwise from top-right:
         return `
@@ -58,7 +82,7 @@ export default function CurvedCutoutBand({
     };
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, animatedStyle]}>
             {/* SVG curved background */}
             <Svg
                 width={svgWidth}
@@ -72,16 +96,7 @@ export default function CurvedCutoutBand({
             </Svg>
 
             {/* Icon buttons - arranged along the L-shape */}
-            <View style={styles.iconsContainer}>
-                {/* Icon on the vertical part (right side) */}
-                {/* <TouchableOpacity
-                    style={[styles.iconButton, styles.iconTop]}
-                    onPress={onIcon1Press}
-                    activeOpacity={0.7}
-                >
-                    <Heart size={ICON_SIZE} color={iconColor} />
-                </TouchableOpacity> */}
-
+            <Animated.View style={styles.iconsContainer}>
                 {/* Icon at the corner */}
                 <TouchableOpacity
                     style={[styles.iconButton, styles.iconCorner]}
@@ -99,8 +114,8 @@ export default function CurvedCutoutBand({
                 >
                     <Share2 size={ICON_SIZE} color={iconColor} />
                 </TouchableOpacity>
-            </View>
-        </View>
+            </Animated.View>
+        </Animated.View>
     );
 }
 
@@ -109,9 +124,8 @@ const SVG_SIZE = 100 + BAND_WIDTH; // armLength + BAND_WIDTH = 144
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        right: 0,
-        top: 0,
-        bottom: 0,
+        right: -30,
+        bottom: -30,
         width: SVG_SIZE,
     },
     svgBackground: {

@@ -14,10 +14,12 @@ interface BroadcastSettingsContextType {
     selectedFriendIds: string[];
     friends: Friend[];
     isStarting: boolean;
+    isCustomizing: boolean;
 
     // Actions
     setSelectedVibe: (vibe: string | null) => void;
     setSelectedFriendIds: (ids: string[]) => void;
+    setIsCustomizing: (value: boolean) => void;
     handleStartBroadcast: () => Promise<void>;
     handleEndBroadcast: () => Promise<void>;
     refetchFriends: () => Promise<void>;
@@ -46,6 +48,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
     const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isStarting, setIsStarting] = useState(false);
+    const [isCustomizing, setIsCustomizing] = useState(false);
 
     // API mutations
     const [broadcastNow] = useBroadcastNowMutation();
@@ -89,6 +92,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
             }).unwrap();
 
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            setIsCustomizing(false);
             dispatch(startBroadcast());
         } catch (error) {
             console.error("Error starting broadcast:", error);
@@ -99,6 +103,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
     }, [userId, selectedFriendIds, selectedVibe, broadcastNow, dispatch]);
 
     const handleEndBroadcast = useCallback(async () => {
+        setIsCustomizing(false);
         dispatch(endBroadcast());
         try {
             await broadcastEnd({ userId }).unwrap();
@@ -112,8 +117,10 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
         selectedFriendIds,
         friends,
         isStarting,
+        isCustomizing,
         setSelectedVibe,
         setSelectedFriendIds,
+        setIsCustomizing,
         handleStartBroadcast,
         handleEndBroadcast,
         refetchFriends,

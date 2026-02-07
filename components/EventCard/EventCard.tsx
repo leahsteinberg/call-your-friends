@@ -487,11 +487,13 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginHorizontal: 10,
     marginTop: 10,
+    overflow: 'hidden',
+    borderRadius: 20,
+
   },
   // Original solid card styles
   cardContainer: {
     borderRadius: 20,
-    overflow: 'visible',
     minHeight: CARD_MIN_HEIGHT,
     ...Platform.select({
       ios: {

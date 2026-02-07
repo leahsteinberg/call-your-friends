@@ -146,9 +146,7 @@ export default function BroadcastToggle({
             progress.value = withSpring(1, SLOW_SPRING);
             onCustomizeBroadcast();
         } else if (localState === 'customizing' || localState === 'broadcasting') {
-            if (localState === 'broadcasting') {
-                onEndBroadcast();
-            }
+            onEndBroadcast();
             setLocalState('off');
             progress.value = withSpring(0, SLOW_SPRING);
             isFullyOn.value = withTiming(0, { duration: 400 });

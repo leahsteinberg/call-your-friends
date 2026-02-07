@@ -13,6 +13,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
         selectedFriendIds,
         friends,
         isStarting,
+        isCustomizing,
         setSelectedVibe,
         setSelectedFriendIds,
         handleStartBroadcast,
@@ -88,6 +89,7 @@ export default function BroadcastNowCard(): React.JSX.Element {
                 </EventCard.Decoration> */}
 
                 <CurvedCutoutBand
+                    visible={isCustomizing}
                     onIcon1Press={() => console.log('Icon 1 pressed')}
                     onIcon2Press={() => console.log('Icon 2 pressed')}
                     onIcon3Press={() => console.log('Icon 3 pressed')}
