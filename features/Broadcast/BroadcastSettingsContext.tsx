@@ -3,6 +3,7 @@ import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
+import * as Haptics from "expo-haptics";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "./broadcastSlice";
@@ -87,6 +88,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
                 intentLabel: selectedVibe,
             }).unwrap();
 
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             dispatch(startBroadcast());
         } catch (error) {
             console.error("Error starting broadcast:", error);

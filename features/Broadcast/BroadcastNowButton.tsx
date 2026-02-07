@@ -2,6 +2,7 @@ import { CustomFonts } from '@/constants/theme';
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
+import * as Haptics from "expo-haptics";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +22,7 @@ export default function BroadcastNowButton(): React.JSX.Element {
             dispatch(startBroadcast());
             try {
                 await broadcastNow({ userId });
-                // RTK Query will auto-refresh via cache invalidation
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             } catch (error) {
                 console.error("Error broadcasting:", error);
                 dispatch(endBroadcast());

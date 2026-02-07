@@ -6,6 +6,7 @@ import { CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
 import { getDisplayNameList } from "@/utils/nameStringUtils";
+import * as Haptics from "expo-haptics";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
@@ -92,6 +93,7 @@ export default function MiniBroadcastButton({
                 targetType,
             }).unwrap();
 
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             dispatch(startBroadcast());
             setIsActive(true);
         } catch (error) {
