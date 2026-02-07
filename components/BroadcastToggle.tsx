@@ -3,7 +3,7 @@ import { useIsBroadcasting } from '@/hooks/useIsBroadcasting';
 import { BOLD_BLUE, CREAM } from '@/styles/styles';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
@@ -215,6 +215,11 @@ export default function BroadcastToggle({
         };
     });
 
+    // Gradient image fades in when toggle is on
+    const gradientImageStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(progress.value, [0.3, 1], [0, 1], 'clamp'),
+    }));
+
     // Pulse ring for broadcasting
     const pulseRingStyle = useAnimatedStyle(() => {
         return {
@@ -294,6 +299,11 @@ export default function BroadcastToggle({
                             <View style={styles.thumbShadowDark} />
                             {/* Main thumb */}
                             <Animated.View style={[styles.thumb, thumbGlowStyle]}>
+                                {/* Gradient background image */}
+                                <Animated.Image
+                                    source={require('@/assets/images/gradient-fast-1.png')}
+                                    style={[styles.thumbGradientImage, gradientImageStyle]}
+                                />
                                 {/* Progress ring - transparent showing background */}
                                 {showProgressRing && (
                                     <View style={styles.progressRingContainer}>
@@ -491,13 +501,17 @@ const styles = StyleSheet.create({
         width: THUMB_SIZE,
         height: THUMB_SIZE,
         borderRadius: THUMB_SIZE / 2,
-        //backgroundColor: 'rgba(240, 240, 245, 0.1)',
-        //backgroundColor: 'transparent',
-
+        overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.2)',
+    },
+    thumbGradientImage: {
+        ...StyleSheet.absoluteFillObject,
+        width: THUMB_SIZE,
+        height: THUMB_SIZE,
+        borderRadius: THUMB_SIZE / 2,
     },
     progressRingContainer: {
         position: 'absolute',

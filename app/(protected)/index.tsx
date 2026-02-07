@@ -1,13 +1,13 @@
 import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
-import CaptureGradients from '@/scripts/CaptureGradients';
+import Profile from '@/features/Profile/Profile';
 import { StyleSheet, View } from 'react-native';
 
 export default function Index(){
     return (
         <View style={styles.container}>
           <FullScreenStylingWrapper showGradientBackground>
-           <CaptureGradients/>
-            {/* <Profile/> */}
+           {/* <CaptureGradients/> */}
+            <Profile/>
           </FullScreenStylingWrapper>
         </View>
     )

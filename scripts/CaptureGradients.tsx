@@ -190,9 +190,9 @@ export default function CaptureGradients(): React.JSX.Element {
             try {
                 const image = await ref.current?.makeImageSnapshotAsync();
                 if (image) {
-                    const base64 = image.encodeToBase64();
-                    const file = new File(dir.uri + capture.name + ".png");
-                    file.write(base64);
+                    const bytes = image.encodeToBytes();
+                    const file = new File(dir, capture.name + ".png");
+                    file.write(bytes);
                     console.log(`Saved: ${file.uri}`);
                 }
             } catch (e) {
