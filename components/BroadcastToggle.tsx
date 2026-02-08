@@ -343,10 +343,13 @@ export default function BroadcastToggle({
                 </View>
             </GestureDetector>
             <View style={styles.labelContainer}>
-                <Text style={styles.callMeText}>CALL ME{'\n'}MODE</Text>
-                <View style={styles.onOffContainer}>
-                    <Animated.Text style={[styles.onOffText, modeOnStyle]}>ON</Animated.Text>
-                    <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}>OFF</Animated.Text>
+                <Text style={styles.callMeText}>CALL ME</Text>
+                <View style={styles.modeRow}>
+                    <Text style={styles.callMeText}>MODE </Text>
+                    <View style={styles.onOffContainer}>
+                        <Animated.Text style={[styles.onOffText, modeOnStyle]}>ON</Animated.Text>
+                        <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}>OFF</Animated.Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -364,6 +367,10 @@ const styles = StyleSheet.create({
     labelContainer: {
         marginLeft: 2,
     },
+    modeRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     callMeText: {
         fontSize: 11,
         fontFamily: CustomFonts.ztnaturemedium,
@@ -372,7 +379,9 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
     },
     onOffContainer: {
+        width: 28,
         height: 16,
+        marginTop: 1,
     },
     onOffText: {
         position: 'absolute',
