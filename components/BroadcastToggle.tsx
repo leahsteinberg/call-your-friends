@@ -70,6 +70,9 @@ export default function BroadcastToggle({
     // For text animation - only animate when fully broadcasting
     const isFullyOn = useSharedValue(isBroadcasting ? 1 : 0);
 
+    // Gradient thumb image opacity (animated independently with slow fade)
+    const gradientOpacity = useSharedValue(isBroadcasting ? 1 : 0);
+
     // Sync with external broadcasting state
     useEffect(() => {
         if (isBroadcasting && localState !== 'broadcasting') {
@@ -215,10 +218,12 @@ export default function BroadcastToggle({
         };
     });
 
-    // Gradient image fades in when toggle is on
-    const gradientImageStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(progress.value, [0.3, 1], [0, 1], 'clamp'),
-    }));
+    // Gradient image: 0 when off, 0.3 when customizing, 1.0 when broadcasting
+    const gradientImageStyle = useAnimatedStyle(() => {
+        const base = interpolate(progress.value, [0, 1], [0, 0.3], 'clamp');
+        const full = interpolate(isFullyOn.value, [0, 1], [0, 0.7], 'clamp');
+        return { opacity: base + full };
+    });
 
     // Pulse ring for broadcasting
     const pulseRingStyle = useAnimatedStyle(() => {
@@ -266,7 +271,7 @@ export default function BroadcastToggle({
 
     return (
         <View style={styles.container}>
-            
+
             <View style={styles.toggleContainer}>
             <GestureDetector gesture={tapGesture}>
                 <View style={styles.toggleWrapper}>
@@ -376,7 +381,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: CustomFonts.ztnaturemedium,
         fontWeight: '700',
-        color: BOLD_BLUE,
         color: CREAM,
         letterSpacing: 1,
     },
