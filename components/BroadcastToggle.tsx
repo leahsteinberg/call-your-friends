@@ -14,6 +14,7 @@ import Animated, {
     useAnimatedStyle,
     useDerivedValue,
     useSharedValue,
+    withDelay,
     withRepeat,
     withSequence,
     withSpring,
@@ -118,21 +119,26 @@ export default function BroadcastToggle({
         };
     }, [localState, onStartBroadcast]);
 
-    // Pulse animation for broadcasting state
+    // Ripple animation for broadcasting state
     useEffect(() => {
         if (localState === 'broadcasting') {
+            // Scale: grow out, quick snap back, hold for pause
             pulseScale.value = withRepeat(
                 withSequence(
-                    withTiming(1.12, { duration: 1400, easing: Easing.inOut(Easing.ease) }),
-                    withTiming(1, { duration: 1400, easing: Easing.inOut(Easing.ease) })
+                    withTiming(1.25, { duration: 1600, easing: Easing.out(Easing.ease) }),
+                    withTiming(1, { duration: 50 }),
+                    withTiming(1, { duration: 400 }),
                 ),
                 -1,
                 false
             );
+            // Opacity: quick appear, fade out during growth, hold at 0 for pause
             pulseOpacity.value = withRepeat(
                 withSequence(
-                    withTiming(0.4, { duration: 1400, easing: Easing.inOut(Easing.ease) }),
-                    withTiming(0, { duration: 1400, easing: Easing.inOut(Easing.ease) })
+                    withTiming(0.5, { duration: 50 }),
+                    withTiming(0, { duration: 1550, easing: Easing.in(Easing.ease) }),
+                    withTiming(0, { duration: 50 }),
+                    withTiming(0, { duration: 400 }),
                 ),
                 -1,
                 false
@@ -270,18 +276,18 @@ export default function BroadcastToggle({
     const showProgressRing = localState === 'customizing';
 
     return (
-        <View style={styles.container}>
-            <GestureDetector gesture={tapGesture}>
-                <View style={styles.toggleWrapper}>
-                    {/* Outer shadow for neumorphic depth */}
-                    <View style={styles.outerShadow} />
+        <View style={styles.outerWrapper}>
+            {/* Pulse ring around the whole container */}
+            {localState === 'broadcasting' && (
+                <Animated.View style={[styles.pulseRing, pulseRingStyle]} />
+            )}
+            <View style={styles.container}>
+                <GestureDetector gesture={tapGesture}>
+                    <View style={styles.toggleWrapper}>
+                        {/* Outer shadow for neumorphic depth */}
+                        <View style={styles.outerShadow} />
 
-                    {/* Pulse ring for broadcasting state */}
-                    {localState === 'broadcasting' && (
-                        <Animated.View style={[styles.pulseRing, pulseRingStyle]} />
-                    )}
-
-                    {/* Main track with blur */}
+                        {/* Main track with blur */}
                     <Animated.View style={[styles.track, trackAnimatedStyle]}>
                         {Platform.OS !== 'web' && (
                             <BlurView
@@ -353,10 +359,14 @@ export default function BroadcastToggle({
                 </View>
             </View>
         </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    outerWrapper: {
+        position: 'relative',
+    },
     container: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -421,15 +431,11 @@ const styles = StyleSheet.create({
         }),
     },
     pulseRing: {
-        position: 'absolute',
-        top: 8,
-        left: 8,
-        width: TRACK_WIDTH,
-        height: TRACK_HEIGHT,
-        borderRadius: TRACK_HEIGHT / 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 40,
+        backgroundColor: 'rgba(255, 255, 255, 0.15)',
         borderWidth: 1.5,
-        borderColor: 'rgba(255, 255, 255, 0.4)',
+        borderColor: 'rgba(255, 255, 255, 0.3)',
     },
     track: {
         width: TRACK_WIDTH,
