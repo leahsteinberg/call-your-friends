@@ -1,9 +1,9 @@
 import { CustomFonts } from '@/constants/theme';
 import { useIsBroadcasting } from '@/hooks/useIsBroadcasting';
-import { BOLD_BLUE, CREAM } from '@/styles/styles';
+import { CREAM } from '@/styles/styles';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
@@ -170,12 +170,12 @@ export default function BroadcastToggle({
         const backgroundColor = interpolateColor(
             progress.value,
             [0, 1],
-            ['rgba(80, 80, 100, 0.15)', 'rgba(255, 255, 255, 0.3)']
+            ['rgba(80, 80, 100, 0.15)', 'rgba(80, 80, 100, 0.15)']
         );
         const borderColor = interpolateColor(
             progress.value,
             [0, 1],
-            ['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.45)']
+            ['rgba(255, 255, 255, 0.08)','rgba(255, 255, 255, 0.08)']
         );
         return {
             backgroundColor,
@@ -271,8 +271,6 @@ export default function BroadcastToggle({
 
     return (
         <View style={styles.container}>
-
-            <View style={styles.toggleContainer}>
             <GestureDetector gesture={tapGesture}>
                 <View style={styles.toggleWrapper}>
                     {/* Outer shadow for neumorphic depth */}
@@ -344,14 +342,11 @@ export default function BroadcastToggle({
                     </Animated.View>
                 </View>
             </GestureDetector>
-            </View>
-            <View style={styles.sideLabelContainer}>
-                <View style={styles.labelRow}>
-                    <Text style={styles.callMeText}>CALL ME MODE</Text>
-                    <View style={styles.onOffContainer}>
-                        <Animated.Text style={[styles.onOffText, modeOnStyle]}> ON</Animated.Text>
-                        <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}> OFF</Animated.Text>
-                    </View>
+            <View style={styles.labelContainer}>
+                <Text style={styles.callMeText}>CALL ME{'\n'}MODE</Text>
+                <View style={styles.onOffContainer}>
+                    <Animated.Text style={[styles.onOffText, modeOnStyle]}>ON</Animated.Text>
+                    <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}>OFF</Animated.Text>
                 </View>
             </View>
         </View>
@@ -360,50 +355,36 @@ export default function BroadcastToggle({
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
-    },
-    toggleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    sideLabelContainer: {
-        alignItems: 'center',
-        borderRadius: 20,
-        //paddingLeft: 10,
-        //padding: 5,
-        //backgroundColor: CREAM+`80`,
-    },
-    labelRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        backgroundColor: CREAM,
+        borderRadius: 40,
+        paddingRight: 12,
+    },
+    labelContainer: {
+        marginLeft: 2,
     },
     callMeText: {
-        fontSize: 14,
+        fontSize: 11,
         fontFamily: CustomFonts.ztnaturemedium,
         fontWeight: '700',
-        color: CREAM,
-        letterSpacing: 1,
+        color: 'black',
+        letterSpacing: 0.5,
     },
     onOffContainer: {
-        width: 34,
-        height: 18,
-        position: 'relative',
-
+        height: 16,
     },
     onOffText: {
         position: 'absolute',
-        top: 0.5,
         left: 0,
-        fontSize: 14,
+        fontSize: 12,
         fontFamily: CustomFonts.ztnaturebold,
         fontWeight: '500',
-        color: CREAM,
+        color: 'black',
         letterSpacing: 0.5,
     },
     offText: {
-        //color: BOLD_BLUE,
         fontFamily: CustomFonts.ztnatureregular,
-
         color: 'grey',
     },
     toggleWrapper: {
