@@ -5,6 +5,7 @@ import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
+import AvatarPicker from "./AvatarPicker";
 import UserSignalSettings from "./UserSignalSettings";
 
 export default function Settings(): React.JSX.Element {
@@ -14,6 +15,7 @@ export default function Settings(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
+                <AvatarPicker />
                 {/* <Text style={styles.title}>Settings</Text> */}
                 <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
                 <UserSignalSettings/>

@@ -18,6 +18,7 @@ import { contactsApi } from '@/services/contactsApi';
 import { meetingApi } from '@/services/meetingApi';
 import { notificationApi } from '@/services/notificationApi';
 import { offerApi } from '@/services/offersApi';
+import { profileApi } from '@/services/profileApi';
 import { userSignalsApi } from '@/services/userSignalsApi';
 
 const persistConfig = {
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   [meetingApi.reducerPath]: meetingApi.reducer,
   [offerApi.reducerPath]: offerApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
+  [profileApi.reducerPath]: profileApi.reducer,
   [userSignalsApi.reducerPath]: userSignalsApi.reducer,
   auth: authReducer,
   broadcast: broadcastReducer,
@@ -60,6 +62,7 @@ export const store = configureStore({
     .concat(meetingApi.middleware)
     .concat(offerApi.middleware)
     .concat(notificationApi.middleware)
+    .concat(profileApi.middleware)
     .concat(userSignalsApi.middleware)
 });
 
