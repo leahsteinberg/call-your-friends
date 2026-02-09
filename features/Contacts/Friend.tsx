@@ -9,12 +9,12 @@ import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withSequence,
-    withTiming,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { FriendProps } from "./types";
@@ -182,8 +182,8 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
               <Text style={styles.name}>{item.name}</Text>
               {isBroadcasting && (
                 <View style={styles.broadcastingRow}>
-                  <Text style={styles.wantsCallsText}>{item.name} wants calls</Text>
                   <Animated.View style={[styles.greenDot, greenDotStyle]} />
+                  <Text style={styles.wantsCallsText}>{item.name} wants calls</Text>
                 </View>
               )}
               {item.hasIncomingCallIntent &&
