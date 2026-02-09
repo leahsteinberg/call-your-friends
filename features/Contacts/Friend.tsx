@@ -5,6 +5,7 @@ import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/service
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
+import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -102,9 +103,19 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
         {/* Header with avatar, name, and call now button */}
         <View style={styles.header}>
           <View style={styles.leftSection}>
-            {/* Avatar circle with first initial */}
+            {/* Avatar circle with image or first initial */}
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarText}>{firstInitial}</Text>
+              {item.avatarUrl ? (
+                <Image
+                  source={{ uri: item.avatarUrl }}
+                  style={styles.avatarImage}
+                  contentFit="cover"
+                  transition={200}
+                  recyclingKey={item.id}
+                />
+              ) : (
+                <Text style={styles.avatarText}>{firstInitial}</Text>
+              )}
             </View>
 
             <View style={styles.nameContainer}>
@@ -194,6 +205,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       borderWidth: 2,
       borderColor: CORNFLOWER_BLUE,
+      overflow: 'hidden',
+    },
+    avatarImage: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
     },
     avatarText: {
       fontSize: 20,

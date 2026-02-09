@@ -1,6 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
 import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { Image } from "expo-image";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -45,9 +46,19 @@ function AvatarItem({ friend, index, expanded, avatarSpacing, avatarSize, nameOp
   return (
     <Animated.View key={friend.id} style={[styles.avatarItem, animatedStyle]}>
       <Animated.View style={[styles.avatar, animatedAvatarStyle]}>
-        <Text style={styles.avatarText}>
-          {friend.name.charAt(0).toUpperCase()}
-        </Text>
+        {friend.avatarUrl ? (
+          <Image
+            source={{ uri: friend.avatarUrl }}
+            style={styles.avatarImage}
+            contentFit="cover"
+            transition={200}
+            recyclingKey={friend.id}
+          />
+        ) : (
+          <Text style={styles.avatarText}>
+            {friend.name.charAt(0).toUpperCase()}
+          </Text>
+        )}
       </Animated.View>
       <Animated.View style={animatedNameStyle}>
         {expanded && (
@@ -215,6 +226,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 2,
     borderColor: CORNFLOWER_BLUE,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   avatarText: {
     fontSize: 16,

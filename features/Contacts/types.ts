@@ -14,6 +14,7 @@ export interface Friend extends BaseEntity {
   phoneNumber: string;
   email?: string;
   userId: string;
+  avatarUrl?: string;
   isBroadcastingToMe?: boolean;
   hasOutgoingCallIntent?: boolean;
   hasIncomingCallIntent?: boolean;
@@ -100,6 +101,7 @@ export interface FriendProps {
     phoneNumber: string;
     id: string;
     index?: number;
+    avatarUrl?: string;
     isBroadcastingToMe?: boolean;
     hasOutgoingCallIntent?: boolean;
     hasIncomingCallIntent?: boolean;

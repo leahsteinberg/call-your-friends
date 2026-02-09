@@ -1,6 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { Image } from "expo-image";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -258,9 +259,19 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
                       {/* Avatar */}
                       <View style={styles.friendAvatar}>
-                        <Text style={styles.friendAvatarText}>
-                          {item.name.charAt(0).toUpperCase()}
-                        </Text>
+                        {item.avatarUrl ? (
+                          <Image
+                            source={{ uri: item.avatarUrl }}
+                            style={styles.friendAvatarImage}
+                            contentFit="cover"
+                            transition={200}
+                            recyclingKey={item.id}
+                          />
+                        ) : (
+                          <Text style={styles.friendAvatarText}>
+                            {item.name.charAt(0).toUpperCase()}
+                          </Text>
+                        )}
                       </View>
 
                       {/* Name */}
@@ -387,6 +398,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderWidth: 2,
     borderColor: CORNFLOWER_BLUE,
+    overflow: 'hidden',
+  },
+  friendAvatarImage: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
   friendAvatarText: {
     fontSize: 14,
