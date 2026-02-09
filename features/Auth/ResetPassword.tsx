@@ -13,10 +13,10 @@ const safePadding = Platform.OS === 'ios' ? 60 : 10;
 const OTP_LENGTH = 6;
 
 const ERROR_MESSAGES: Record<string, string> = {
-    OTP_EXPIRED: 'Your code has expired. Please request a new one.',
-    INVALID_OTP: 'Invalid code. Please check and try again.',
-    USER_NOT_FOUND: 'No account found with this email address.',
-    TOO_MANY_ATTEMPTS: 'Too many attempts. Please wait a few minutes and try again.',
+    OTP_EXPIRED: 'Your code has expired. Tap "Resend code" to get a new one.',
+    INVALID_OTP: 'That code doesn\'t match. Please double-check and try again.',
+    USER_NOT_FOUND: 'We couldn\'t find an account with that email address.',
+    TOO_MANY_ATTEMPTS: 'Too many attempts. Please wait a few minutes before trying again.',
 };
 
 export function ResetPassword() {
@@ -114,9 +114,11 @@ export function ResetPassword() {
             console.error('Reset password error:', error);
             const code = error.data?.code;
             if (error.status === 'FETCH_ERROR') {
-                setErrorMessage('Network error. Please check your connection and try again.');
+                setErrorMessage('Can\'t reach our servers. Check your internet connection and try again.');
             } else if (code && ERROR_MESSAGES[code]) {
                 setErrorMessage(ERROR_MESSAGES[code]);
+            } else if (error.status === 500) {
+                setErrorMessage('Something went wrong on our end. Please try again in a moment.');
             } else {
                 setErrorMessage('Something went wrong. Please try again.');
             }
@@ -138,9 +140,9 @@ export function ResetPassword() {
             if (code === 'TOO_MANY_ATTEMPTS') {
                 setErrorMessage(ERROR_MESSAGES.TOO_MANY_ATTEMPTS);
             } else if (error.status === 'FETCH_ERROR') {
-                setErrorMessage('Network error. Please check your connection and try again.');
+                setErrorMessage('Can\'t reach our servers. Check your internet connection and try again.');
             } else {
-                setErrorMessage('Failed to resend code. Please try again.');
+                setErrorMessage('Couldn\'t resend the code. Please try again.');
             }
         } finally {
             setIsResending(false);
@@ -275,6 +277,7 @@ export function ResetPassword() {
                             title={isLoading ? 'Resetting...' : 'Reset Password'}
                             onPressQuery={handleSubmit}
                             isDisabled={isButtonDisabled()}
+                            isLoading={isLoading}
                         />
                     </View>
 

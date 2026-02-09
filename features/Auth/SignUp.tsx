@@ -39,13 +39,25 @@ export function SignUp()  {
         } catch (error: any) {
             console.error("Sign up error:", error);
 
-            // Provide user-friendly error messages
             if (error.status === 409) {
-                setErrorMessage("An account with this email already exists. Please sign in instead.");
+                setErrorMessage("An account with this email already exists. Try signing in instead.");
             } else if (error.status === 400) {
-                setErrorMessage(error.data?.message || "Invalid information provided. Please check your details.");
+                const msg = error.data?.message;
+                if (msg?.toLowerCase().includes('email')) {
+                    setErrorMessage("Please enter a valid email address.");
+                } else if (msg?.toLowerCase().includes('phone')) {
+                    setErrorMessage("Please enter a valid 10-digit phone number.");
+                } else if (msg?.toLowerCase().includes('password')) {
+                    setErrorMessage("Password must be at least 8 characters.");
+                } else {
+                    setErrorMessage(msg || "Some of the info doesn't look right. Please check your details.");
+                }
+            } else if (error.status === 429) {
+                setErrorMessage("Too many attempts. Please wait a minute and try again.");
             } else if (error.status === 'FETCH_ERROR') {
-                setErrorMessage("Network error. Please check your connection and try again.");
+                setErrorMessage("Can't reach our servers. Check your internet connection and try again.");
+            } else if (error.status === 500) {
+                setErrorMessage("Something went wrong on our end. Please try again in a moment.");
             } else {
                 setErrorMessage(error.data?.message || "Sign up failed. Please try again.");
             }
@@ -125,6 +137,7 @@ export function SignUp()  {
                             title={isLoading ? "Creating account..." : "Sign Up"}
                             onPressQuery={(e: any) => handleAuthQuery(e, phoneSignUpUser)}
                             isDisabled={isSignupButtonDisabled()}
+                            isLoading={isLoading}
                         />
                     </View>
 

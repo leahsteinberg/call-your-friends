@@ -32,11 +32,15 @@ export function ForgotPassword() {
 
             const code = error.data?.code;
             if (error.status === 'FETCH_ERROR') {
-                setErrorMessage("Network error. Please check your connection and try again.");
+                setErrorMessage("Can't reach our servers. Check your internet connection and try again.");
             } else if (code === 'USER_NOT_FOUND') {
-                setErrorMessage("No account found with this email address.");
+                setErrorMessage("We couldn't find an account with that email. Check for typos or sign up.");
             } else if (code === 'TOO_MANY_ATTEMPTS') {
-                setErrorMessage("Too many attempts. Please wait a few minutes and try again.");
+                setErrorMessage("Too many attempts. Please wait a few minutes before trying again.");
+            } else if (error.status === 400) {
+                setErrorMessage("Please enter a valid email address.");
+            } else if (error.status === 500) {
+                setErrorMessage("Something went wrong on our end. Please try again in a moment.");
             } else {
                 setErrorMessage("Something went wrong. Please try again.");
             }
@@ -103,6 +107,7 @@ export function ForgotPassword() {
                             title={isLoading ? "Sending..." : "Send Code"}
                             onPressQuery={handleSubmit}
                             isDisabled={isButtonDisabled()}
+                            isLoading={isLoading}
                         />
                     </View>
 

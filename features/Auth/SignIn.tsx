@@ -36,13 +36,16 @@ export function SignIn()  {
         } catch (error: any) {
             console.error("Sign in error:", error);
 
-            // Provide user-friendly error messages
             if (error.status === 401) {
-                setErrorMessage("Invalid email or password. Please try again.");
+                setErrorMessage("Incorrect email or password. Double-check and try again.");
             } else if (error.status === 404) {
-                setErrorMessage("Account not found. Please check your email or sign up.");
+                setErrorMessage("We couldn't find an account with that email. Want to sign up instead?");
+            } else if (error.status === 429) {
+                setErrorMessage("Too many sign-in attempts. Please wait a minute and try again.");
             } else if (error.status === 'FETCH_ERROR') {
-                setErrorMessage("Network error. Please check your connection and try again.");
+                setErrorMessage("Can't reach our servers. Check your internet connection and try again.");
+            } else if (error.status === 500) {
+                setErrorMessage("Something went wrong on our end. Please try again in a moment.");
             } else {
                 setErrorMessage(error.data?.message || "Sign in failed. Please try again.");
             }
@@ -106,6 +109,7 @@ export function SignIn()  {
                             title={isLoading ? "Signing in..." : "Sign In"}
                             onPressQuery={(e: any) => handleAuthQuery(e, signInUser)}
                             isDisabled={isSigninButtonDisabled()}
+                            isLoading={isLoading}
                         />
                     </View>
 
