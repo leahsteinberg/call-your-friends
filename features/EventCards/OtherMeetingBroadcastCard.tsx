@@ -75,7 +75,10 @@ export default function OtherMeetingBroadcastCard({ meeting }: OtherMeetingBroad
             }
 
             <EventCard.Header spacing="between" align="start">
-                <EventCard.Title>{titleText}</EventCard.Title>
+                <EventCard.Row>
+                    <EventCard.Avatar user={meeting.userFrom} />
+                    <EventCard.Title>{titleText}</EventCard.Title>
+                </EventCard.Row>
 
                 <EventCard.Button
                     onPress={handleCancelMeeting}

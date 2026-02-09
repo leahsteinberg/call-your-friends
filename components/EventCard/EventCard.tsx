@@ -1,5 +1,6 @@
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
-import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE, TRANSPARENT_CREAM } from '@/styles/styles';
+import { BOLD_BLUE, BOLD_BROWN, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE, TRANSPARENT_CREAM } from '@/styles/styles';
+import { Image } from 'expo-image';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Animated, {
@@ -400,6 +401,88 @@ EventCard.Pill = function Pill({
     </View>
   );
 };
+
+// ============================================
+// AVATAR COMPONENT
+// ============================================
+interface AvatarUser {
+  name?: string;
+  avatarUrl?: string;
+  id?: string;
+}
+
+interface AvatarProps {
+  user?: AvatarUser;
+  users?: AvatarUser[];
+  size?: number;
+}
+
+const AVATAR_MAX_STACK = 3;
+
+EventCard.Avatar = function Avatar({ user, users, size = 32 }: AvatarProps) {
+  const userList = users ?? (user ? [user] : []);
+  if (userList.length === 0) return null;
+
+  const displayUsers = userList.slice(0, AVATAR_MAX_STACK);
+  const overlap = size * 0.55;
+
+  return (
+    <View style={[avatarStyles.container, { height: size, marginRight: 10 }]}>
+      {displayUsers.map((u, i) => {
+        const initial = u.name?.charAt(0).toUpperCase() ?? '?';
+        return (
+          <View
+            key={u.id ?? i}
+            style={[
+              avatarStyles.circle,
+              {
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                marginLeft: i === 0 ? 0 : -overlap,
+                zIndex: displayUsers.length - i,
+              },
+            ]}
+          >
+            {u.avatarUrl ? (
+              <Image
+                source={{ uri: u.avatarUrl }}
+                style={{ width: size, height: size, borderRadius: size / 2 }}
+                contentFit="cover"
+                transition={200}
+                recyclingKey={u.id}
+              />
+            ) : (
+              <Text style={[avatarStyles.initial, { fontSize: size * 0.45 }]}>
+                {initial}
+              </Text>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+const avatarStyles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  circle: {
+    backgroundColor: CREAM,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: CORNFLOWER_BLUE,
+    overflow: 'hidden',
+  },
+  initial: {
+    fontWeight: '600',
+    color: BOLD_BLUE,
+    fontFamily: CustomFonts.ztnaturebold,
+  },
+});
 
 // ============================================
 // BANNER COMPONENT (slides out from under card)

@@ -146,7 +146,18 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 hasBanner={canShowBanner && isBannerVisible}
             >
                 <EventCard.Header spacing="between" align="start">
-                    {getMainDisplayText()}
+                    <EventCard.Row>
+                        {meetingCardState === OTHER_ACCEPTED && (
+                            <EventCard.Avatar user={meeting.userFrom} />
+                        )}
+                        {meetingCardState === SELF_ACCEPTED && meeting.acceptedUsers && (
+                            <EventCard.Avatar users={meeting.acceptedUsers} />
+                        )}
+                        {meetingCardState === SELF_OPEN && meeting.targetUsers && (
+                            <EventCard.Avatar users={meeting.targetUsers} />
+                        )}
+                        {getMainDisplayText()}
+                    </EventCard.Row>
                     {cancelButton()}
                 </EventCard.Header>
                 <EventCard.Body>

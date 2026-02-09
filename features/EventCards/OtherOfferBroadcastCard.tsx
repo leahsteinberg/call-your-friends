@@ -106,6 +106,7 @@ export default function OtherOfferBroadcastCard({ offer }: OtherOfferBroadcastCa
             }
             
             <EventCard.Header>
+                <EventCard.Avatar user={offer.meeting?.userFrom} />
                 <EventCard.Title>
                     {strings.nameText!(getFromName())}
                     {targetUserName && ` → ${targetUserName}`}

@@ -5,6 +5,7 @@ export interface User extends BaseEntity {
   email?: string;
   name?: string;
   phoneNumber?: string;
+  avatarUrl?: string;
 }
 
 export interface AuthState {

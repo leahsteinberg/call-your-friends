@@ -54,6 +54,7 @@ export interface MeetingType extends MeetingEvent {
     targetUser?: {
         name?: string;
         id?: string;
+        avatarUrl?: string;
     };
 
     // NEW: Multiple target users support
@@ -61,6 +62,7 @@ export interface MeetingType extends MeetingEvent {
     targetUsers?: Array<{
         name?: string;
         id?: string;
+        avatarUrl?: string;
     }>;
     acceptedUserIds: string[];
     suggestionReason?: string;

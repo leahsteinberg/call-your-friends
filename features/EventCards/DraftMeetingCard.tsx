@@ -84,11 +84,16 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
             <EventCard.Header spacing="between" align="start">
-                <EventCard.Title>
-                    {(isSystemPattern && meeting.title)
-                        ? meeting.title
-                        : `Talk with ${targetNames} ${displayTimeDifference(meeting.scheduledFor)}?`}
-                </EventCard.Title>
+                <EventCard.Row>
+                    {meeting.targetUsers && meeting.targetUsers.length > 0 && (
+                        <EventCard.Avatar users={meeting.targetUsers} />
+                    )}
+                    <EventCard.Title>
+                        {(isSystemPattern && meeting.title)
+                            ? meeting.title
+                            : `Talk with ${targetNames} ${displayTimeDifference(meeting.scheduledFor)}?`}
+                    </EventCard.Title>
+                </EventCard.Row>
 
                 <EventCard.Actions layout="horizontal" spacing={8}>
                     <EventCard.Button

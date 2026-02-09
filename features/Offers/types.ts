@@ -16,16 +16,19 @@ export interface ProcessedOfferType extends OfferType {
         userFrom?: {
             name?: string;
             id?: string;
+            avatarUrl?: string;
         };
         // DEPRECATED: Keep for backwards compatibility
         targetUser?: {
             name?: string;
             id?: string;
+            avatarUrl?: string;
         };
         // NEW: Multiple target users support
         targetUsers?: Array<{
             name?: string;
             id?: string;
+            avatarUrl?: string;
         }>;
         broadcastMetadata?: BroadcastMetadata;
     };

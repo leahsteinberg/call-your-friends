@@ -79,10 +79,13 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     return (
         <EventCard backgroundColor={PALE_BLUE}>
             <EventCard.Header spacing="between" align="start">
-                <EventCard.Title>
-                    {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
-                    {targetUserName && ` → ${targetUserName}`}
-                </EventCard.Title>
+                <EventCard.Row>
+                    <EventCard.Avatar user={offer.meeting?.userFrom} />
+                    <EventCard.Title>
+                        {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
+                        {targetUserName && ` → ${targetUserName}`}
+                    </EventCard.Title>
+                </EventCard.Row>
 
                 {offer.offerState === OPEN_OFFER_STATE && (
                     <EventCard.Actions layout="horizontal" spacing={8}>
