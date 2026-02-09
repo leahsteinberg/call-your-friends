@@ -3,8 +3,10 @@ import CurvedCutoutBand from "@/components/CurvedCutoutBand";
 import { EventCard } from "@/components/EventCard/EventCard";
 import GoButton from "@/components/GoButton";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
-import { BOLD_BLUE } from "@/styles/styles";
+import { CREAM } from "@/styles/styles";
+import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect } from "react";
+import { StyleSheet } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 export default function BroadcastNowCard(): React.JSX.Element {
@@ -60,11 +62,16 @@ export default function BroadcastNowCard(): React.JSX.Element {
     return (
         <Animated.View style={[animatedCardStyle]}>
             <EventCard
-                backgroundColor={BOLD_BLUE}
+                backgroundColor="transparent"
                 onPress={onStartBroadcast}
                 disabled={isStarting}
+                variant="solid"
             >
-
+                <LinearGradient
+                    colors={[CREAM, CREAM + '80', CREAM + '00']}
+                    locations={[0, 0.67, 1]}
+                    style={gradientStyles.background}
+                />
 
                 <GoButton
                     onPress={onStartBroadcast}
@@ -99,3 +106,13 @@ export default function BroadcastNowCard(): React.JSX.Element {
         </Animated.View>
     );
 }
+
+const gradientStyles = StyleSheet.create({
+    background: {
+        position: 'absolute',
+        top: -20,
+        left: -20,
+        right: -20,
+        bottom: -20,
+    },
+});

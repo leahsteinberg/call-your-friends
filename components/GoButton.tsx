@@ -30,7 +30,9 @@ export default function GoButton({
                 disabled={disabled}
                 activeOpacity={0.8}
             >
-                <Text style={styles.buttonText}>{text}</Text>
+                <Text style={styles.buttonText}>CALL</Text>
+                <Text style={styles.buttonText}>ME</Text>
+
             </TouchableOpacity>
         </View>
     );
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         fontSize: 32,
-        fontFamily: CustomFonts.awalierextrabold,
+        fontFamily: CustomFonts.ztnaturebold,
         color: CREAM,
         letterSpacing: 2,
         textAlign: 'center',
