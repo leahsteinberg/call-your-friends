@@ -1,5 +1,7 @@
 import { WebLayout } from '@/components/WebLayout';
+import { updateUser } from '@/features/Auth/authSlice';
 import { setBroadcastState } from '@/features/Broadcast/broadcastSlice';
+import { useGetProfileQuery } from '@/services/profileApi';
 import { useIsUserBroadcastingQuery } from '@/services/meetingApi';
 import { RootState } from '@/types';
 import { useFonts } from 'expo-font';
@@ -27,11 +29,23 @@ const InitialLayout = () => {
    { skip: !isAuthenticated || !userId }
  );
 
+ // Refresh user profile on app startup
+ const { data: profileData, isSuccess: isProfileSuccess } = useGetProfileQuery(
+   { userId },
+   { skip: !isAuthenticated || !userId }
+ );
+
  useEffect(() => {
    if (isSuccess && broadcastStatus !== undefined) {
      dispatch(setBroadcastState(broadcastStatus.isBroadcasting));
    }
  }, [isSuccess, broadcastStatus, dispatch]);
+
+ useEffect(() => {
+   if (isProfileSuccess && profileData) {
+     dispatch(updateUser(profileData));
+   }
+ }, [isProfileSuccess, profileData, dispatch]);
 
 
   return (

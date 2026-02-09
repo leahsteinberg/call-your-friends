@@ -13,12 +13,15 @@ import {
     Text,
     View,
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '@/features/Auth/authSlice';
 
 export default function AvatarPicker(): React.JSX.Element {
+    const dispatch = useDispatch();
     const userId = useSelector((state: RootState) => state.auth.user.id);
     const userName = useSelector((state: RootState) => state.auth.user.name);
-    const [avatarUri, setAvatarUri] = useState<string | null>(null);
+    const existingAvatarUrl = useSelector((state: RootState) => state.auth.user.avatarUrl);
+    const [avatarUri, setAvatarUri] = useState<string | null>(existingAvatarUrl ?? null);
     const [uploadAvatar, { isLoading: isUploading }] = useUploadAvatarMutation();
 
     const firstInitial = userName ? userName.charAt(0).toUpperCase() : '?';
@@ -39,11 +42,14 @@ export default function AvatarPicker(): React.JSX.Element {
             if (asset.base64) {
                 const mimeType = asset.mimeType ?? 'image/jpeg';
                 try {
-                    await uploadAvatar({
+                    const result = await uploadAvatar({
                         userId,
                         imageBase64: asset.base64,
                         mimeType,
                     }).unwrap();
+                    if (result?.avatarUrl) {
+                        dispatch(updateUser({ avatarUrl: result.avatarUrl }));
+                    }
                 } catch {
                     Alert.alert('Upload failed', 'Your photo was saved locally but could not be uploaded.');
                 }

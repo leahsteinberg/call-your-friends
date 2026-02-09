@@ -69,6 +69,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const fetchFriendInvites = async () => {
         const friendInvitesResult = await getFriendInvites({ id: userFromId });
+        console.log("got friendfriendInvitesResult", friendInvitesResult);
         if (friendInvitesResult && friendInvitesResult.data) {
             setFriendRequests(friendInvitesResult.data);
         }

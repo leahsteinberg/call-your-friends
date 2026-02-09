@@ -8,6 +8,7 @@ export interface RootState {
       email?: string;
       name?: string;
       phoneNumber?: string;
+      avatarUrl?: string;
     };
     isAuthenticated: boolean;
     loading: boolean;

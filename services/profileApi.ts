@@ -22,15 +22,21 @@ export const profileApi = createApi({
             }),
             providesTags: ['Profile'],
         }),
+        getProfile: builder.query({
+            query: ({ userId }) => `/api/get-profile/${userId}`,
+            providesTags: ['Profile'],
+        }),
     })
 });
 
 const {
     useUploadAvatarMutation,
     useGetAvatarQuery,
+    useGetProfileQuery,
 } = profileApi;
 
 export {
     useGetAvatarQuery,
+    useGetProfileQuery,
     useUploadAvatarMutation,
 };
