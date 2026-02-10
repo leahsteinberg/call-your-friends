@@ -24,6 +24,8 @@ export function usePushNotifications() {
 
     // Handle navigation based on notification screen
     const handleNavigate = (payload: PushPayload) => {
+        console.log("handleNavigate", payload);
+
         if (!payload.screen) {
             return;
         }

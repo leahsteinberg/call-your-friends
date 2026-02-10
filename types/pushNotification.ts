@@ -17,7 +17,7 @@ export interface PushPayload {
 // Screen name mapping for navigation
 export const NOTIFICATION_SCREENS: Record<string, string> = {
     Home: '/(protected)',
-    OfferDetail: '/(protected)/offer',
-    MeetingDetail: '/(protected)/meeting',
-    Suggestions: '/(protected)/suggestions',
+    OfferDetail: '/(protected)',
+    MeetingDetail: '/(protected)',
+    Suggestions: '/(protected)',
 };
