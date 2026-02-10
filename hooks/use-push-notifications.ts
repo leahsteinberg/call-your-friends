@@ -61,6 +61,8 @@ export function usePushNotifications() {
 
             case 'silent':
                 // Background update, no action needed
+                invalidateCaches();
+
                 break;
 
             default:
