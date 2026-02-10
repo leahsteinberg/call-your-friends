@@ -1,6 +1,6 @@
 import { CustomFonts } from '@/constants/theme';
 import { CORNFLOWER_BLUE, CREAM } from '@/styles/styles';
-import { Eye, EyeOff } from 'lucide-react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -68,9 +68,9 @@ export default function UserEmailPasswordInput({ onChangeEmail, onChangePassword
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
                     {showPassword ? (
-                        <EyeOff size={20} color={CORNFLOWER_BLUE} />
+                        <IconSymbol name="eye.slash" size={20} color={CORNFLOWER_BLUE} />
                     ) : (
-                        <Eye size={20} color={CORNFLOWER_BLUE} />
+                        <IconSymbol name="eye" size={20} color={CORNFLOWER_BLUE} />
                     )}
                 </TouchableOpacity>
             </View>

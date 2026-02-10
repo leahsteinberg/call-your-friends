@@ -1,0 +1,43 @@
+import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
+import { useAcceptOfferMutation } from "@/services/offersApi";
+import { RootState } from "@/types/redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { displayTimeRemaining } from "../Meetings/meetingsUtils";
+import type { ProcessedOfferType } from "../Offers/types";
+
+interface UnclaimedBroadcastTileProps {
+    offer: ProcessedOfferType;
+}
+
+export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTileProps): React.JSX.Element {
+    const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const [acceptOffer] = useAcceptOfferMutation();
+    const [isAccepting, setIsAccepting] = useState(false);
+
+    const handleClaim = async () => {
+        try {
+            setIsAccepting(true);
+            await acceptOffer({ userId, offerId: offer.id }).unwrap();
+        } catch (error) {
+            console.error("Error claiming broadcast:", error);
+            alert('Failed to claim broadcast. Please try again.');
+            setIsAccepting(false);
+        }
+    };
+
+    const scheduledEnd = offer.meeting?.scheduledEnd || '';
+    const timeText = scheduledEnd ? displayTimeRemaining(scheduledEnd) : '';
+
+    return (
+        <BroadcastTile
+            user={offer.meeting?.userFrom}
+            vibe={offer.meeting?.intentLabel}
+            timeRemainingText={timeText}
+            actionLabel="Claim"
+            actionIcon="hand.raised.fill"
+            onAction={handleClaim}
+            isLoading={isAccepting}
+        />
+    );
+}

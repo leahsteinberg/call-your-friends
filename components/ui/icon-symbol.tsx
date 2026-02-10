@@ -7,8 +7,10 @@ import {
   ChevronUp,
   Eye,
   EyeOff,
+  Hand,
   Heart,
   MessageCircle,
+  Phone,
   Share2,
   Trash2,
   X,
@@ -29,6 +31,8 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'square.and.arrow.up': Share2,
   'chevron.down': ChevronDown,
   'chevron.up': ChevronUp,
+  'phone.fill': Phone,
+  'hand.raised.fill': Hand,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
@@ -54,7 +58,6 @@ export function IconSymbol({
   style?: StyleProp<ViewStyle>;
   weight?: string;
 }) {
-  console.log("lucide - name", name);
   const LucideIcon = MAPPING[name];
   if (!LucideIcon) return null;
 

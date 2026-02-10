@@ -1,7 +1,7 @@
 import { useCreateMeetingMutation } from "@/services/meetingApi";
 import { BRIGHT_GREEN, CREAM, DARK_GREEN, LIGHT_BEIGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { Check, ChevronDown, ChevronUp } from "lucide-react-native";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Animated, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -113,7 +113,7 @@ export default function MeetingCreator({refreshMeetings, onSuccess}: {refreshMee
                         { opacity: successOpacity }
                     ]}
                 >
-                    <Check color={BRIGHT_GREEN} size={48} strokeWidth={3} />
+                    <IconSymbol name="checkmark" color={BRIGHT_GREEN} size={48} strokeWidth={3} />
                     <Text style={styles.successText}>Meeting Created!</Text>
                 </Animated.View>
             )}
@@ -126,8 +126,8 @@ export default function MeetingCreator({refreshMeetings, onSuccess}: {refreshMee
                 <Text style={styles.title}>When are you free to chat?</Text>
                 {shouldUseCollapsible && (
                     isExpanded ?
-                        <ChevronDown color={DARK_GREEN} size={24} /> :
-                        <ChevronUp color={DARK_GREEN} size={24} />
+                        <IconSymbol name="chevron.down" color={DARK_GREEN} size={24} /> :
+                        <IconSymbol name="chevron.up" color={DARK_GREEN} size={24} />
                 )}
             </TouchableOpacity>
 

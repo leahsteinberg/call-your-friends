@@ -5,7 +5,7 @@ import { CORNFLOWER_BLUE, CREAM, ORANGE, PALE_BLUE } from '@/styles/styles';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Eye, EyeOff } from 'lucide-react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import EntryButton from './EntryButton';
 import MessageDisplay from './MessageDisplay';
 
@@ -234,9 +234,9 @@ export function ResetPassword() {
                                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                             >
                                 {showPassword ? (
-                                    <EyeOff size={20} color={CORNFLOWER_BLUE} />
+                                    <IconSymbol name="eye.slash" size={20} color={CORNFLOWER_BLUE} />
                                 ) : (
-                                    <Eye size={20} color={CORNFLOWER_BLUE} />
+                                    <IconSymbol name="eye" size={20} color={CORNFLOWER_BLUE} />
                                 )}
                             </TouchableOpacity>
                         </View>
@@ -263,9 +263,9 @@ export function ResetPassword() {
                                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                             >
                                 {showConfirmPassword ? (
-                                    <EyeOff size={20} color={CORNFLOWER_BLUE} />
+                                    <IconSymbol name="eye.slash" size={20} color={CORNFLOWER_BLUE} />
                                 ) : (
-                                    <Eye size={20} color={CORNFLOWER_BLUE} />
+                                    <IconSymbol name="eye" size={20} color={CORNFLOWER_BLUE} />
                                 )}
                             </TouchableOpacity>
                         </View>

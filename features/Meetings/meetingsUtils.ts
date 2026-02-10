@@ -96,6 +96,23 @@ export const displayTimeDifference = (dateTime: string): string => {
 
 
 
+export const displayTimeRemaining = (scheduledEnd: string): string => {
+    const endDate = new Date(scheduledEnd);
+    const now = new Date();
+    const diffMs = endDate.getTime() - now.getTime();
+    if (diffMs <= 0) return 'ending soon';
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    if (diffMinutes < 60) {
+        return `for ${diffMinutes} more min`;
+    }
+    const diffHours = Math.floor(diffMinutes / 60);
+    const remainingMin = diffMinutes % 60;
+    if (remainingMin === 0) {
+        return `for ${diffHours} more hr`;
+    }
+    return `for ${diffHours}hr ${remainingMin}min more`;
+};
+
 export const dateObjToMinutesString = (dateObj: Date): string => {
     //console.log(dateObj.toDateString())
     const isoStringFull = dateObj.toISOString();

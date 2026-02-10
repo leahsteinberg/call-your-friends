@@ -8,6 +8,7 @@ import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
 import { BroadcastSettingsProvider, useBroadcastSettings } from "../Broadcast/BroadcastSettingsContext";
+import BroadcastList from "../Today/BroadcastList";
 import TodayList from "../Today/TodayList";
 
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
@@ -67,6 +68,7 @@ function ProfileContent(): React.JSX.Element {
                     )}
                 </View>
             </View>
+            <BroadcastList/>
             <TodayList />
         </View>
     );

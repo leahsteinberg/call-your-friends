@@ -1,4 +1,4 @@
-import { Check, X } from 'lucide-react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { isPhoneNumberValid } from '../Contacts/contactsUtils';
@@ -20,11 +20,11 @@ export default function PhoneNumberValidity({phoneNumber}) {
     
     const renderPhoneNumberValid = () => {
         setIsPhoneNumberValid(true);
-        return (<Check color="green" size={iconSize} />);
+        return (<IconSymbol name="checkmark" color="green" size={iconSize} />);
     }
     const renderPhoneNumberInvalid = () =>  {
         setIsPhoneNumberValid(false);
-        return (<X color="red" size={iconSize} />);
+        return (<IconSymbol name="xmark" color="red" size={iconSize} />);
     }
     
 

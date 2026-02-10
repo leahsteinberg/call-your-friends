@@ -1,7 +1,7 @@
 import { CustomFonts } from "@/constants/theme";
 import { useRemoveInviteMutation } from "@/services/contactsApi";
 import { BOLD_BLUE, BRIGHT_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
-import { Trash2 } from "lucide-react-native";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import React, { useRef } from "react";
 import { Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
@@ -57,7 +57,7 @@ export default function InvitedContact({ contact }: InvitedContactProps): React.
         activeOpacity={0.8}
       >
         <Animated.View style={[styles.deleteIconContainer, { transform: [{ scale }] }]}>
-          <Trash2 size={24} color="#FFFFFF" />
+          <IconSymbol name="trash" size={24} color="#FFFFFF" />
         </Animated.View>
       </TouchableOpacity>
     );

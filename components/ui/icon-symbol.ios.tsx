@@ -7,12 +7,16 @@ export function IconSymbol({
   color,
   style,
   weight = 'regular',
+  fill: _fill,
+  strokeWidth: _strokeWidth,
 }: {
   name: SymbolViewProps['name'];
   size?: number;
   color: string;
   style?: StyleProp<ViewStyle>;
   weight?: SymbolWeight;
+  fill?: string;
+  strokeWidth?: number;
 }) {
   return (
     <SymbolView

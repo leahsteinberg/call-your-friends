@@ -2,7 +2,7 @@ import { CustomFonts } from "@/constants/theme";
 import { useAcceptFriendRequestMutation, useRemoveInviteMutation } from "@/services/contactsApi";
 import { BRIGHT_BLUE, BRIGHT_GREEN, CHOCOLATE_COLOR, CREAM, ORANGE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { Trash2 } from "lucide-react-native";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import React, { useRef, useState } from "react";
 import { ActivityIndicator, Animated, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
@@ -78,7 +78,7 @@ export default function FriendRequest({ item, onRemove }: FriendRequestPropsExte
         activeOpacity={0.8}
       >
         <Animated.View style={[styles.deleteIconContainer, { transform: [{ scale }] }]}>
-          <Trash2 size={24} color="#FFFFFF" />
+          <IconSymbol name="trash" size={24} color="#FFFFFF" />
         </Animated.View>
       </TouchableOpacity>
     );

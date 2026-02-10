@@ -1,5 +1,5 @@
 import { CREAM } from '@/styles/styles';
-import { MessageCircle, Share2 } from 'lucide-react-native';
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import React, { useEffect } from 'react';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
@@ -103,7 +103,7 @@ export default function CurvedCutoutBand({
                     onPress={onIcon2Press}
                     activeOpacity={0.7}
                 >
-                    <MessageCircle size={ICON_SIZE} color={iconColor} />
+                    <IconSymbol name="message" size={ICON_SIZE} color={iconColor} />
                 </TouchableOpacity>
 
                 {/* Icon on the horizontal part (bottom) */}
@@ -112,7 +112,7 @@ export default function CurvedCutoutBand({
                     onPress={onIcon3Press}
                     activeOpacity={0.7}
                 >
-                    <Share2 size={ICON_SIZE} color={iconColor} />
+                    <IconSymbol name="square.and.arrow.up" size={ICON_SIZE} color={iconColor} />
                 </TouchableOpacity>
             </Animated.View>
         </Animated.View>
