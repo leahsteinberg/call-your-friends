@@ -1,7 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
-import { CREAM } from "@/styles/styles";
+import { BOLD_GREEN, CREAM, ORANGE } from "@/styles/styles";
 import * as Haptics from "expo-haptics";
-import { Heart } from "lucide-react-native";
 import React, { useCallback, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -13,6 +12,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { IconSymbol } from "../ui/icon-symbol";
 
 const ICON_SIZE = 24;
 const GROWING_SCALE = [1.3, 1.1, 1.15, 1.3];
@@ -118,19 +118,21 @@ export default function TalkSoonButton({
       >
         <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
           {/* Outline layer - always visible */}
-          <Heart
-            size={ICON_SIZE}
-            color={CREAM}
-            fill="transparent"
-            strokeWidth={2}
-          />
+          <IconSymbol
+               name="heart"
+               size={ICON_SIZE}
+               color={ORANGE}
+               fill="transparent"
+               strokeWidth={2}
+            />
           {/* Fill layer - animated opacity */}
           <Animated.View style={[styles.fillLayer, fillAnimatedStyle]}>
-            <Heart
-              size={ICON_SIZE}
-              color="transparent"
-              fill={CREAM}
-              strokeWidth={0}
+            <IconSymbol
+               name="heart.fill"
+               size={ICON_SIZE}
+               fill={BOLD_GREEN}
+               color={BOLD_GREEN}
+               strokeWidth={1}
             />
           </Animated.View>
         </Animated.View>

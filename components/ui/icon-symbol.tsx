@@ -54,6 +54,7 @@ export function IconSymbol({
   style?: StyleProp<ViewStyle>;
   weight?: string;
 }) {
+  console.log("lucide - name", name);
   const LucideIcon = MAPPING[name];
   if (!LucideIcon) return null;
 
