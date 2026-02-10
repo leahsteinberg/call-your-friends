@@ -51,6 +51,8 @@ export function usePushNotifications() {
         switch (payload.action) {
             case 'navigate':
                 handleNavigate(payload);
+                invalidateCaches();
+
                 break;
 
             case 'refresh':
