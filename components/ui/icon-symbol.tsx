@@ -1,41 +1,69 @@
-// Fallback for using MaterialIcons on Android and web.
+// Fallback for using lucide-react-native on Android and web.
+// On iOS, icon-symbol.ios.tsx uses native SF Symbols via expo-symbols.
 
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SymbolWeight, SymbolViewProps } from 'expo-symbols';
-import { ComponentProps } from 'react';
-import { OpaqueColorValue, type StyleProp, type TextStyle } from 'react-native';
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+  Heart,
+  MessageCircle,
+  Share2,
+  Trash2,
+  X,
+} from 'lucide-react-native';
+import React from 'react';
+import { type StyleProp, type ViewStyle } from 'react-native';
 
-type IconMapping = Record<SymbolViewProps['name'], ComponentProps<typeof MaterialIcons>['name']>;
-type IconSymbolName = keyof typeof MAPPING;
+// SF Symbol name → Lucide component
+const MAPPING: Record<string, React.ComponentType<any>> = {
+  'eye': Eye,
+  'eye.slash': EyeOff,
+  'checkmark': Check,
+  'xmark': X,
+  'trash': Trash2,
+  'heart': Heart,
+  'heart.fill': Heart,
+  'message': MessageCircle,
+  'square.and.arrow.up': Share2,
+  'chevron.down': ChevronDown,
+  'chevron.up': ChevronUp,
+};
+
+export type IconSymbolName = keyof typeof MAPPING;
 
 /**
- * Add your SF Symbols to Material Icons mappings here.
- * - see Material Icons in the [Icons Directory](https://icons.expo.fyi).
- * - see SF Symbols in the [SF Symbols](https://developer.apple.com/sf-symbols/) app.
- */
-const MAPPING = {
-  'house.fill': 'home',
-  'paperplane.fill': 'send',
-  'chevron.left.forwardslash.chevron.right': 'code',
-  'chevron.right': 'chevron-right',
-} as IconMapping;
-
-/**
- * An icon component that uses native SF Symbols on iOS, and Material Icons on Android and web.
- * This ensures a consistent look across platforms, and optimal resource usage.
- * Icon `name`s are based on SF Symbols and require manual mapping to Material Icons.
+ * Cross-platform icon component.
+ * Uses SF Symbols on iOS (via icon-symbol.ios.tsx) and lucide-react-native elsewhere.
+ * Icon names follow SF Symbol naming conventions.
  */
 export function IconSymbol({
   name,
   size = 24,
   color,
+  fill,
+  strokeWidth,
   style,
 }: {
   name: IconSymbolName;
   size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<TextStyle>;
-  weight?: SymbolWeight;
+  color: string;
+  fill?: string;
+  strokeWidth?: number;
+  style?: StyleProp<ViewStyle>;
+  weight?: string;
 }) {
-  return <MaterialIcons color={color} size={size} name={MAPPING[name]} style={style} />;
+  const LucideIcon = MAPPING[name];
+  if (!LucideIcon) return null;
+
+  return (
+    <LucideIcon
+      size={size}
+      color={color}
+      fill={fill}
+      strokeWidth={strokeWidth}
+      style={style}
+    />
+  );
 }
