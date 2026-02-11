@@ -3,10 +3,10 @@ import { useIsBroadcasting, useIsClaimedBroadcasting } from '@/hooks/useIsBroadc
 import { CREAM } from '@/styles/styles';
 import { RootState } from '@reduxjs/toolkit/query';
 import { BlurView } from 'expo-blur';
-import { Image } from "expo-image";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+
 
 import Animated, {
     Easing,
@@ -24,6 +24,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 import { useSelector } from 'react-redux';
+import Avatar from './Avatar/Avatar';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -318,12 +319,13 @@ export default function BroadcastToggle({
                             <Animated.View style={[styles.thumb, thumbGlowStyle]}>
                                 {/* Gradient background image */}
                                 {avatarUrl ? (
-                                    <Image
-                                        source={{ uri: avatarUrl }}
-                                        style={[styles.avatar]}
-                                        contentFit="cover"
-                                        transition={200}
-                                    />
+                                    <Avatar
+                                        avatarUrl={avatarUrl}
+                                    >
+                                        <Avatar.Greyscale intensity={!!isFullyOn ? 0 : 1}/>
+                                    </Avatar>
+                                        
+                
                                 ) : (
                                     <Animated.Image
                                         source={require('@/assets/images/gradient-fast-1.png')}

@@ -1,14 +1,14 @@
+import Avatar from "@/components/Avatar/Avatar";
 import TalkSoonButton from "@/components/CardActionDecorations/TalkSoonButton";
 import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
-import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Animated, {
+import {
   Easing,
   useAnimatedStyle,
   useSharedValue,
@@ -101,33 +101,11 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
     console.log(`Calling ${item.name} at ${item.phoneNumber}`);
   };
 
-  // Get first initial for avatar
-  const firstInitial = item.name.charAt(0).toUpperCase();
-
-  // Pulse animation for broadcasting avatar
-  const pulseScale = useSharedValue(1);
-  const pulseOpacity = useSharedValue(0);
+  // Green dot animation for broadcasting
   const dotScale = useSharedValue(1);
 
   useEffect(() => {
     if (isBroadcasting) {
-      pulseScale.value = withRepeat(
-        withSequence(
-          withTiming(1.35, { duration: 1600, easing: Easing.out(Easing.ease) }),
-          withTiming(1, { duration: 50 }),
-          withTiming(1, { duration: 400 }),
-        ),
-        -1, false
-      );
-      pulseOpacity.value = withRepeat(
-        withSequence(
-          withTiming(0.5, { duration: 50 }),
-          withTiming(0, { duration: 1550, easing: Easing.in(Easing.ease) }),
-          withTiming(0, { duration: 50 }),
-          withTiming(0, { duration: 400 }),
-        ),
-        -1, false
-      );
       dotScale.value = withRepeat(
         withSequence(
           withTiming(1.4, { duration: 800, easing: Easing.inOut(Easing.ease) }),
@@ -136,16 +114,9 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
         -1, false
       );
     } else {
-      pulseScale.value = withTiming(1, { duration: 300 });
-      pulseOpacity.value = withTiming(0, { duration: 300 });
       dotScale.value = withTiming(1, { duration: 300 });
     }
   }, [isBroadcasting]);
-
-  const avatarPulseStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulseScale.value }],
-    opacity: pulseOpacity.value,
-  }));
 
   const greenDotStyle = useAnimatedStyle(() => ({
     transform: [{ scale: dotScale.value }],
@@ -158,34 +129,18 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
         {/* Header with avatar, name, and call now button */}
         <View style={styles.header}>
           <View style={styles.leftSection}>
-            {/* Avatar circle with pulse ring when broadcasting */}
-            <View style={styles.avatarWrapper}>
-              {isBroadcasting && (
-                <Animated.View style={[styles.avatarPulseRing, avatarPulseStyle]} />
-              )}
-              <View style={styles.avatarCircle}>
-                {item.avatarUrl ? (
-                  <Image
-                    source={{ uri: item.avatarUrl }}
-                    style={styles.avatarImage}
-                    contentFit="cover"
-                    transition={200}
-                    recyclingKey={item.id}
-                  />
-                ) : (
-                  <Text style={styles.avatarText}>{firstInitial}</Text>
-                )}
-              </View>
-            </View>
+            <Avatar name={item.name} avatarUrl={item.avatarUrl} size={48}>
+              <Avatar.PulseRing active={!!isBroadcasting} />
+            </Avatar>
 
             <View style={styles.nameContainer}>
               <Text style={styles.name}>{item.name}</Text>
-              {isBroadcasting && (
+              {/* {isBroadcasting && (
                 <View style={styles.broadcastingRow}>
                   <Animated.View style={[styles.greenDot, greenDotStyle]} />
                   <Text style={styles.wantsCallsText}>{item.name} wants calls</Text>
                 </View>
-              )}
+              )} */}
               {item.hasIncomingCallIntent &&
                 <Text style={styles.broadcastingText}>They want to call you!</Text>
               }
@@ -258,44 +213,6 @@ const styles = StyleSheet.create({
       flex: 1,
       gap: 12,
     },
-    avatarWrapper: {
-      position: 'relative',
-      width: 48,
-      height: 48,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    avatarPulseRing: {
-      position: 'absolute',
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      backgroundColor: 'rgba(255, 255, 255, 0.15)',
-      borderWidth: 1.5,
-      borderColor: 'rgba(255, 255, 255, 0.3)',
-    },
-    avatarCircle: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-      backgroundColor: CREAM,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderWidth: 2,
-      borderColor: CORNFLOWER_BLUE,
-      overflow: 'hidden',
-    },
-    avatarImage: {
-      width: 48,
-      height: 48,
-      borderRadius: 24,
-    },
-    avatarText: {
-      fontSize: 20,
-      fontWeight: '600',
-      color: BOLD_BLUE,
-      fontFamily: CustomFonts.ztnaturebold,
-    },
     nameContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -346,6 +263,5 @@ const styles = StyleSheet.create({
     actionsSection: {
       backgroundColor: 'red',
       //marginLeft: 'auto',
-      justifyContent: 'end',
     },
 });

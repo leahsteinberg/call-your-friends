@@ -1,19 +1,13 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
-import { Image } from "expo-image";
-import React, { useEffect, useState } from "react";
+import { BOLD_BLUE, CREAM } from "@/styles/styles";
+import React from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Svg, { Circle } from "react-native-svg";
 import { VIBE_WORDS } from "../CardActionDecorations/VibeButton";
 
 const TILE_WIDTH = 140;
 const AVATAR_SIZE = 48;
-const RING_PADDING = 4;
-const RING_SIZE = AVATAR_SIZE + RING_PADDING * 2;
-const RING_STROKE_WIDTH = 3;
-const RING_RADIUS = (RING_SIZE - RING_STROKE_WIDTH) / 2;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 interface BroadcastTileUser {
     name?: string;
@@ -35,14 +29,6 @@ interface BroadcastTileProps {
     isSecondaryLoading?: boolean;
 }
 
-/** Returns fraction of an hour remaining (0–1). >=60min returns 1. */
-function getTimeFraction(scheduledEnd: string): number {
-    const diffMs = new Date(scheduledEnd).getTime() - Date.now();
-    if (diffMs <= 0) return 0;
-    const diffMin = diffMs / (1000 * 60);
-    return Math.min(diffMin / 60, 1);
-}
-
 export function BroadcastTile({
     user,
     vibe,
@@ -57,23 +43,7 @@ export function BroadcastTile({
     isSecondaryLoading = false,
 }: BroadcastTileProps): React.JSX.Element {
     const name = user?.name || 'Someone';
-    const firstInitial = name.charAt(0).toUpperCase();
     const vibePhrase = VIBE_WORDS.find(w => w.id === vibe)?.text || null;
-    // Live countdown ring fraction
-    const [fraction, setFraction] = useState(() =>
-        scheduledEnd ? getTimeFraction(scheduledEnd) : 1
-    );
-
-    useEffect(() => {
-        if (!scheduledEnd) return;
-        setFraction(getTimeFraction(scheduledEnd));
-        const interval = setInterval(() => {
-            setFraction(getTimeFraction(scheduledEnd));
-        }, 10_000); // update every 10s
-        return () => clearInterval(interval);
-    }, [scheduledEnd]);
-
-    const strokeDashoffset = RING_CIRCUMFERENCE * (1 - fraction);
 
     return (
         <View style={styles.tile}>
@@ -94,47 +64,9 @@ export function BroadcastTile({
                 </TouchableOpacity>
             )}
             {/* Avatar with countdown ring */}
-            <View style={styles.avatarRingWrapper}>
-                <Svg width={RING_SIZE} height={RING_SIZE} style={styles.ringSvg}>
-                    {/* Background track */}
-                    <Circle
-                        cx={RING_SIZE / 2}
-                        cy={RING_SIZE / 2}
-                        r={RING_RADIUS}
-                        stroke="rgba(0, 0, 0, 0.08)"
-                        strokeWidth={RING_STROKE_WIDTH}
-                        fill="transparent"
-                    />
-                    {/* Countdown arc */}
-                    <Circle
-                        cx={RING_SIZE / 2}
-                        cy={RING_SIZE / 2}
-                        r={RING_RADIUS}
-                        stroke={CORNFLOWER_BLUE}
-                        strokeWidth={RING_STROKE_WIDTH}
-                        fill="transparent"
-                        strokeDasharray={RING_CIRCUMFERENCE}
-                        strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round"
-                        rotation={-90}
-                        origin={`${RING_SIZE / 2}, ${RING_SIZE / 2}`}
-                    />
-                </Svg>
-                <View style={styles.avatarContainer}>
-                    {user?.avatarUrl ? (
-                        <Image
-                            source={{ uri: user.avatarUrl }}
-                            style={styles.avatar}
-                            contentFit="cover"
-                            transition={200}
-                        />
-                    ) : (
-                        <View style={styles.avatarPlaceholder}>
-                            <Text style={styles.avatarInitial}>{firstInitial}</Text>
-                        </View>
-                    )}
-                </View>
-            </View>
+            <Avatar name={name} avatarUrl={user?.avatarUrl} size={AVATAR_SIZE}>
+                <Avatar.TimerRing scheduledEnd={scheduledEnd} />
+            </Avatar>
 
             {/* Name */}
             <Text style={styles.name} numberOfLines={1}>{name}</Text>
@@ -183,37 +115,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'rgba(255, 255, 255, 0.15)',
-    },
-    avatarRingWrapper: {
-        width: RING_SIZE,
-        height: RING_SIZE,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    ringSvg: {
-        position: 'absolute',
-    },
-    avatarContainer: {
-    },
-    avatar: {
-        width: AVATAR_SIZE,
-        height: AVATAR_SIZE,
-        borderRadius: AVATAR_SIZE / 2,
-    },
-    avatarPlaceholder: {
-        width: AVATAR_SIZE,
-        height: AVATAR_SIZE,
-        borderRadius: AVATAR_SIZE / 2,
-        backgroundColor: CREAM,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: CORNFLOWER_BLUE,
-    },
-    avatarInitial: {
-        fontSize: 20,
-        fontFamily: CustomFonts.ztnaturebold,
-        color: BOLD_BLUE,
     },
     name: {
         fontSize: 15,

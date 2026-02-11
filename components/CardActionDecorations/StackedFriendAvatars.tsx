@@ -1,7 +1,7 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
-import { Image } from "expo-image";
+import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -20,21 +20,13 @@ interface AvatarItemProps {
   index: number;
   expanded: boolean;
   avatarSpacing: any;
-  avatarSize: any;
   nameOpacity: any;
   nameHeight: any;
 }
 
-function AvatarItem({ friend, index, expanded, avatarSpacing, avatarSize, nameOpacity, nameHeight }: AvatarItemProps) {
+function AvatarItem({ friend, index, expanded, avatarSpacing, nameOpacity, nameHeight }: AvatarItemProps) {
   const animatedStyle = useAnimatedStyle(() => ({
     marginLeft: index === 0 ? 0 : avatarSpacing.value,
-
-  }));
-
-  const animatedAvatarStyle = useAnimatedStyle(() => ({
-    width: avatarSize.value,
-    height: avatarSize.value,
-    borderRadius: avatarSize.value / 2,
   }));
 
   const animatedNameStyle = useAnimatedStyle(() => ({
@@ -45,21 +37,7 @@ function AvatarItem({ friend, index, expanded, avatarSpacing, avatarSize, nameOp
 
   return (
     <Animated.View key={friend.id} style={[styles.avatarItem, animatedStyle]}>
-      <Animated.View style={[styles.avatar, animatedAvatarStyle]}>
-        {friend.avatarUrl ? (
-          <Image
-            source={{ uri: friend.avatarUrl }}
-            style={styles.avatarImage}
-            contentFit="cover"
-            transition={200}
-            recyclingKey={friend.id}
-          />
-        ) : (
-          <Text style={styles.avatarText}>
-            {friend.name.charAt(0).toUpperCase()}
-          </Text>
-        )}
-      </Animated.View>
+      <Avatar name={friend.name} avatarUrl={friend.avatarUrl} size={AVATAR_SIZE} />
       <Animated.View style={animatedNameStyle}>
         {expanded && (
           <Text style={styles.friendNameText} numberOfLines={1}>
@@ -76,20 +54,13 @@ interface ExtraBadgeProps {
   extraCount: number;
   expanded: boolean;
   avatarSpacing: any;
-  avatarSize: any;
   nameOpacity: any;
   nameHeight: any;
 }
 
-function ExtraBadge({ extraCount, expanded, avatarSpacing, avatarSize, nameOpacity, nameHeight }: ExtraBadgeProps) {
+function ExtraBadge({ extraCount, expanded, avatarSpacing, nameOpacity, nameHeight }: ExtraBadgeProps) {
   const animatedStyle = useAnimatedStyle(() => ({
     marginLeft: avatarSpacing.value,
-  }));
-
-  const animatedBadgeStyle = useAnimatedStyle(() => ({
-    width: avatarSize.value,
-    height: avatarSize.value,
-    borderRadius: avatarSize.value / 2,
   }));
 
   const animatedNameStyle = useAnimatedStyle(() => ({
@@ -100,9 +71,9 @@ function ExtraBadge({ extraCount, expanded, avatarSpacing, avatarSize, nameOpaci
 
   return (
     <Animated.View style={[styles.avatarItem, animatedStyle]}>
-      <Animated.View style={[styles.extraBadge, animatedBadgeStyle]}>
+      <View style={styles.extraBadge}>
         <Text style={styles.extraText}>+{extraCount}</Text>
-      </Animated.View>
+      </View>
       <Animated.View style={animatedNameStyle}>
         {expanded && (
           <Text style={styles.friendNameText} numberOfLines={1}>
@@ -150,7 +121,6 @@ export default function StackedFriendAvatars({
 
   // Animation values
   const avatarSpacing = useSharedValue(expanded ? EXPANDED_SPACING : OVERLAP_OFFSET);
-  const avatarSize = useSharedValue(expanded ? 48 : AVATAR_SIZE);
   const nameOpacity = useSharedValue(expanded ? 1 : 0);
   const nameHeight = useSharedValue(expanded ? 20 : 0);
 
@@ -162,14 +132,12 @@ export default function StackedFriendAvatars({
     if (expanded) {
       // Expand animation - spread apart
       avatarSpacing.value = withTiming(EXPANDED_SPACING, { duration, easing });
-      avatarSize.value = withTiming(48, { duration, easing });
       nameOpacity.value = withTiming(1, { duration: duration + 50, easing });
       nameHeight.value = withTiming(20, { duration, easing });
     } else {
       // Collapse animation - overlap
       nameOpacity.value = withTiming(0, { duration: duration - 50, easing });
       avatarSpacing.value = withTiming(OVERLAP_OFFSET, { duration, easing });
-      avatarSize.value = withTiming(AVATAR_SIZE, { duration, easing });
       nameHeight.value = withTiming(0, { duration, easing });
     }
   }, [expanded]);
@@ -184,7 +152,6 @@ export default function StackedFriendAvatars({
             index={index}
             expanded={expanded}
             avatarSpacing={avatarSpacing}
-            avatarSize={avatarSize}
             nameOpacity={nameOpacity}
             nameHeight={nameHeight}
           />
@@ -196,7 +163,6 @@ export default function StackedFriendAvatars({
             extraCount={extraCount}
             expanded={expanded}
             avatarSpacing={avatarSpacing}
-            avatarSize={avatarSize}
             nameOpacity={nameOpacity}
             nameHeight={nameHeight}
           />
@@ -220,25 +186,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     maxWidth: 60,
   },
-  avatar: {
-    backgroundColor: PALE_BLUE,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: CORNFLOWER_BLUE,
-    overflow: 'hidden',
-  },
-  avatarImage: {
-    width: '100%',
-    height: '100%',
-  },
-  avatarText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: BOLD_BLUE,
-    fontFamily: CustomFonts.ztnaturebold,
-  },
   extraBadge: {
+    width: AVATAR_SIZE,
+    height: AVATAR_SIZE,
+    borderRadius: AVATAR_SIZE / 2,
     backgroundColor: CORNFLOWER_BLUE,
     justifyContent: 'center',
     alignItems: 'center',
