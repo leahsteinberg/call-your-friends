@@ -1,27 +1,46 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
-import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import { BlurView } from "expo-blur";
-import React, { useRef } from "react";
-import { Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useRef, useState } from "react";
+import { Keyboard, Platform, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 interface FriendsSearchBarProps {
     query: string;
     onChangeQuery: (text: string) => void;
 }
 
+const TAB_BAR_OFFSET = 108;
+
 export default function FriendsSearchBar({ query, onChangeQuery }: FriendsSearchBarProps): React.JSX.Element {
-    const insets = useSafeAreaInsets();
     const inputRef = useRef<TextInput>(null);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    useEffect(() => {
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+        const showSub = Keyboard.addListener(showEvent, (e) => {
+            setKeyboardHeight(e.endCoordinates.height);
+        });
+        const hideSub = Keyboard.addListener(hideEvent, () => {
+            setKeyboardHeight(0);
+        });
+
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
+    }, []);
 
     const handleClear = () => {
         onChangeQuery('');
         inputRef.current?.blur();
     };
 
+    const bottomOffset = keyboardHeight > 0 ? keyboardHeight + 8 : TAB_BAR_OFFSET;
+
     return (
-        <View style={[styles.wrapper, { bottom: 108 }]}>
+        <View style={[styles.wrapper, { bottom: bottomOffset }]}>
             {Platform.OS !== 'web' ? (
                 <BlurView intensity={40} tint="light" style={styles.blurFill}>
                     <View style={styles.inputRow}>
