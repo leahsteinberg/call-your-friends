@@ -44,9 +44,11 @@ function ProfileContent(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
+            <View style={styles.titleContainer}>
+                <Text style={styles.titleText}>Loyal</Text>
+            </View>
             <View style={styles.headerContainer}>
                 <View style={styles.greetingContainer}>
-
                     <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 </View>
                 <View style={styles.toggleContainer}>
@@ -83,6 +85,16 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-between',
         flex: 1,
+    },
+    titleContainer: {
+        justifyContent: 'center',
+        marginBottom: 10,
+    },
+    titleText: {
+        textAlign: 'center',
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 35,
+        color: CREAM,
     },
     headerContainer: {
         flexDirection: 'row',
@@ -121,7 +133,7 @@ const styles = StyleSheet.create({
         color: CREAM,
         fontFamily: CustomFonts.awalierregular,
         letterSpacing: 3,
-        fontSize: 35,
+        fontSize: 20,
         fontWeight: '600',
         flexShrink: 1,
     },
