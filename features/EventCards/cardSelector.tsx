@@ -15,7 +15,6 @@ import DraftMeetingCard from "./DraftMeetingCard";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
 import OtherMeetingBroadcastCard from "./OtherMeetingBroadcastCard";
-import OtherBroadcastCard from "./OtherOfferBroadcastCard";
 import SelfBroadcastCard from "./SelfBroadcastCard";
 
 interface CardSelectorProps {
@@ -78,7 +77,7 @@ export function selectOfferCard(
 ): React.JSX.Element {
     if (isBroadcastOffer(offer)) {
         // Other's broadcast in offer state
-        return <OtherBroadcastCard offer={offer} />;
+        return <></>;
     }
 
     // Regular meeting offer

@@ -93,8 +93,8 @@ export function BroadcastTile({
                     <ActivityIndicator size="small" color={CREAM} />
                 ) : (
                     <View style={styles.actionRow}>
-                        <IconSymbol name={actionIcon as any} size={14} color={CREAM} />
                         <Text style={styles.actionText}>{actionLabel}</Text>
+                        <IconSymbol name={actionIcon as any} size={14} color={CREAM} />
                     </View>
                 )}
             </TouchableOpacity>

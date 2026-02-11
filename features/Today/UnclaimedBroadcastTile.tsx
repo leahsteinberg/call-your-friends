@@ -37,8 +37,8 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             vibe={offer.meeting?.intentLabel}
             timeRemainingText={timeText}
             scheduledEnd={scheduledEnd || undefined}
-            actionLabel={"Claim"}
-            actionIcon="hand.raised.fill"
+            actionLabel={"Talk Now"}
+            actionIcon="message.fill"
             onAction={handleClaim}
             isLoading={isAccepting}
             hasAction={!hasClaimedOtherBroadcast}

@@ -29,6 +29,7 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'heart': Heart,
   'heart.fill': Heart,
   'message': MessageCircle,
+  'message.fill': MessageCircle,
   'square.and.arrow.up': Share2,
   'chevron.down': ChevronDown,
   'chevron.up': ChevronUp,
