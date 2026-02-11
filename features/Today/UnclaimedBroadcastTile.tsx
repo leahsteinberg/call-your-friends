@@ -42,7 +42,7 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             onAction={handleClaim}
             isLoading={isAccepting}
             hasAction={!hasClaimedOtherBroadcast}
-            
+            backgroundColor="transparent"
         />
     );
 }

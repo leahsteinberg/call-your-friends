@@ -28,6 +28,7 @@ interface BroadcastTileProps {
     onSecondaryAction?: () => void;
     isSecondaryLoading?: boolean;
     avatarChildren?: React.ReactNode;
+    backgroundColor?: string;
 }
 
 export function BroadcastTile({
@@ -43,12 +44,12 @@ export function BroadcastTile({
     onSecondaryAction,
     isSecondaryLoading = false,
     avatarChildren,
+    backgroundColor = CREAM,
 }: BroadcastTileProps): React.JSX.Element {
     const name = user?.name || 'Someone';
     const vibePhrase = VIBE_WORDS.find(w => w.id === vibe)?.text || null;
-
     return (
-        <View style={styles.tile}>
+        <View style={[styles.tile, {backgroundColor}]}>
             {/* Secondary action - X in top right */}
             {onSecondaryAction && (
                 <TouchableOpacity
@@ -96,7 +97,7 @@ export function BroadcastTile({
                     <ActivityIndicator size="small" color={CREAM} />
                 ) : (
                     <View style={styles.actionRow}>
-                        <IconSymbol name={actionIcon as any} size={14} color={CREAM} />
+                        <IconSymbol name={actionIcon as any} size={14} color={'black'} />
                         <Text style={styles.actionText}>{actionLabel}</Text>
                     </View>
                 )}
@@ -125,6 +126,7 @@ const styles = StyleSheet.create({
         color: 'black',
         textAlign: 'center',
         marginBottom: 2,
+        marginTop: 2,
     },
     vibe: {
         fontSize: 12,

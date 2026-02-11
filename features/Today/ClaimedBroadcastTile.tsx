@@ -57,6 +57,7 @@ export default function ClaimedBroadcastTile({ meeting }: ClaimedBroadcastTilePr
             onAction={handleCallNow}
             onSecondaryAction={handleUnclaim}
             isSecondaryLoading={isCanceling}
+            backgroundColor="transparent"
         />
     );
 }

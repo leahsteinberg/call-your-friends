@@ -18,7 +18,7 @@ export default function StartBroadcastTile(): React.JSX.Element {
 
     return (
         <BroadcastTile
-            user={{ name: user.name, avatarUrl: user.avatarUrl, id: user.id }}
+            user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
             timeRemainingText=""
             actionLabel="Call Me"
             actionIcon="phone.arrow.down.left"

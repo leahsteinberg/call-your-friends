@@ -41,7 +41,7 @@ export default function SelfBroadcastTile({ meeting }: SelfBroadcastTileProps): 
 
     return (
         <BroadcastTile
-            user={{ name: user.name, avatarUrl: user.avatarUrl, id: user.id }}
+            user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
             vibe={meeting.intentLabel}
             timeRemainingText={timeText}
             scheduledEnd={meeting.scheduledEnd || undefined}

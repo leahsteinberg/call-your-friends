@@ -249,21 +249,21 @@ interface MiniAvatarProps {
 
 function MiniAvatar({ name, avatarUrl }: MiniAvatarProps): React.JSX.Element {
     const { size } = useAvatarContext();
-    const miniSize = Math.round(size * 0.45);
+    const miniSize = Math.round(size * 0.5);
     const initial = name?.charAt(0).toUpperCase() ?? '?';
 
     return (
         <View
             style={{
                 position: 'absolute',
-                bottom: -2,
-                right: -2,
+                bottom: -6,
+                right: -6,
                 width: miniSize,
                 height: miniSize,
                 borderRadius: miniSize / 2,
                 backgroundColor: CREAM,
                 borderWidth: 1.5,
-                borderColor: CORNFLOWER_BLUE,
+                borderColor: CREAM,
                 justifyContent: 'center',
                 alignItems: 'center',
                 overflow: 'hidden',
@@ -305,8 +305,8 @@ const styles = StyleSheet.create({
         backgroundColor: CREAM,
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,
-        borderColor: CORNFLOWER_BLUE,
+        // borderWidth: 2,
+        // borderColor: 'red',
         overflow: 'hidden',
     },
     initial: {
