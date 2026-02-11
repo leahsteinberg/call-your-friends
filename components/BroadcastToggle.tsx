@@ -89,7 +89,7 @@ export default function BroadcastToggle({
             progress.value = withSpring(0, SLOW_SPRING);
             isFullyOn.value = withTiming(0, { duration: 400 });
         }
-    }, [isBroadcasting]);
+    }, [isBroadcasting, isClaimedBroadcasting]);
 
     // Handle countdown timer with progress ring
     useEffect(() => {
