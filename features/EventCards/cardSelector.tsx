@@ -14,7 +14,6 @@ import type { ProcessedOfferType } from "../Offers/types";
 import DraftMeetingCard from "./DraftMeetingCard";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
-import OtherMeetingBroadcastCard from "./OtherMeetingBroadcastCard";
 import SelfBroadcastCard from "./SelfBroadcastCard";
 
 interface CardSelectorProps {
@@ -57,7 +56,7 @@ export function selectMeetingCard(
             return <SelfBroadcastCard meeting={meeting} />
         } else {
             // Other's broadcast that user accepted
-            return <OtherMeetingBroadcastCard meeting={meeting}  />
+            return <></>;
         }
     }
     // Regular meeting (self-created or accepted other's meeting)
