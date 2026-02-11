@@ -17,6 +17,8 @@ const AVATAR_SIZE = 38;
 
 function ProfileContent(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
+    const user = useSelector((state: RootState) => state.auth.user)
+    console.log("user object - ", user);
     const avatarUrl = useSelector((state: RootState) => state.auth.user.avatarUrl);
     const { handleStartBroadcast, handleEndBroadcast, setIsCustomizing, isCustomizing } = useBroadcastSettings();
     const { isLoading: meetingsLoading } = useProcessedMeetings();

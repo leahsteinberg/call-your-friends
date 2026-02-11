@@ -1,7 +1,7 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CREAM } from "@/styles/styles";
+import { CREAM } from "@/styles/styles";
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { VIBE_WORDS } from "../CardActionDecorations/VibeButton";
@@ -93,8 +93,8 @@ export function BroadcastTile({
                     <ActivityIndicator size="small" color={CREAM} />
                 ) : (
                     <View style={styles.actionRow}>
-                        <Text style={styles.actionText}>{actionLabel}</Text>
                         <IconSymbol name={actionIcon as any} size={14} color={CREAM} />
+                        <Text style={styles.actionText}>{actionLabel}</Text>
                     </View>
                 )}
             </TouchableOpacity>
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     actionButton: {
-        backgroundColor: BOLD_BLUE,
+        //backgroundColor: BOLD_BLUE,
         borderRadius: 14,
         paddingVertical: 7,
         paddingHorizontal: 14,

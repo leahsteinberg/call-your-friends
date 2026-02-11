@@ -23,7 +23,11 @@ export const profileApi = createApi({
             providesTags: ['Profile'],
         }),
         getProfile: builder.query({
-            query: ({ userId }) => `/api/get-profile/${userId}`,
+            query: ({ userId }) => ({
+                url: '/api/get-profile',
+                method: 'POST',
+                body: { userId },
+            }),
             providesTags: ['Profile'],
         }),
     })
