@@ -3,9 +3,11 @@ import { useIsBroadcasting, useIsClaimedBroadcasting } from '@/hooks/useIsBroadc
 import { CREAM } from '@/styles/styles';
 import { RootState } from '@reduxjs/toolkit/query';
 import { BlurView } from 'expo-blur';
+import { Image } from "expo-image";
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+
 import Animated, {
     Easing,
     interpolate,
@@ -59,6 +61,8 @@ export default function BroadcastToggle({
     onEndBroadcast,
 }: BroadcastToggleProps): React.JSX.Element {
     const userId = useSelector((state: RootState)=> state.auth.user.id);
+    const avatarUrl = useSelector((state: RootState)=> state.auth.user.avatarUrl);
+    console.log("avatarUrl", avatarUrl)
     const isBroadcasting = useIsBroadcasting();
     const isClaimedBroadcasting = useIsClaimedBroadcasting(userId);
 
@@ -313,10 +317,19 @@ export default function BroadcastToggle({
                             {/* Main thumb */}
                             <Animated.View style={[styles.thumb, thumbGlowStyle]}>
                                 {/* Gradient background image */}
-                                <Animated.Image
-                                    source={require('@/assets/images/gradient-fast-1.png')}
-                                    style={[styles.thumbGradientImage, gradientImageStyle]}
-                                />
+                                {avatarUrl ? (
+                                    <Image
+                                        source={{ uri: avatarUrl }}
+                                        style={[styles.avatar]}
+                                        contentFit="cover"
+                                        transition={200}
+                                    />
+                                ) : (
+                                    <Animated.Image
+                                        source={require('@/assets/images/gradient-fast-1.png')}
+                                        style={[styles.thumbGradientImage, gradientImageStyle]}
+                                    />
+                                )}
                                 {/* Progress ring - transparent showing background */}
                                 {showProgressRing && (
                                     <View style={styles.progressRingContainer}>
@@ -500,6 +513,11 @@ const styles = StyleSheet.create({
                 elevation: 6,
             },
         }),
+    },
+    avatar: {
+        width: THUMB_SIZE,
+        height: THUMB_SIZE,
+        borderRadius: THUMB_SIZE / 2,
     },
     thumb: {
         width: THUMB_SIZE,

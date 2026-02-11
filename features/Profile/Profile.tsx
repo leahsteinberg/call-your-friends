@@ -3,7 +3,6 @@ import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { Image } from "expo-image";
 import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
@@ -44,18 +43,7 @@ function ProfileContent(): React.JSX.Element {
         <View style={styles.container}>
             <View style={styles.headerContainer}>
                 <View style={styles.greetingContainer}>
-                    {avatarUrl ? (
-                        <Image
-                            source={{ uri: avatarUrl }}
-                            style={styles.avatar}
-                            contentFit="cover"
-                            transition={200}
-                        />
-                    ) : (
-                        <View style={styles.avatarPlaceholder}>
-                            <Text style={styles.avatarInitial}>{firstInitial}</Text>
-                        </View>
-                    )}
+
                     <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 </View>
                 <View style={styles.toggleContainer}>

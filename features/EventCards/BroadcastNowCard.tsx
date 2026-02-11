@@ -1,3 +1,4 @@
+import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
 import VibeButton from "@/components/CardActionDecorations/VibeButton";
 import CurvedCutoutBand from "@/components/CurvedCutoutBand";
 import { EventCard } from "@/components/EventCard/EventCard";
@@ -87,13 +88,13 @@ export default function BroadcastNowCard(): React.JSX.Element {
                         />
                     </EventCard.Body>
                 )}
-            {/* <EventCard.Decoration position="bottom-right">
+            <EventCard.Decoration position="bottom-right">
                     <FriendBadgeSelector
                         friends={friends}
                         onSelectFriends={handleFriendsSelect}
                         selectedFriendIds={selectedFriendIds}
                     />
-                </EventCard.Decoration> */}
+                </EventCard.Decoration>
 
                 <CurvedCutoutBand
                     visible={isCustomizing}
