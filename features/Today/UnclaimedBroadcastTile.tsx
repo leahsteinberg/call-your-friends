@@ -1,4 +1,5 @@
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
+import { useHasClaimedBroadcast } from "@/hooks/useIsBroadcasting";
 import { useAcceptOfferMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
@@ -14,6 +15,7 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [acceptOffer] = useAcceptOfferMutation();
     const [isAccepting, setIsAccepting] = useState(false);
+    const hasClaimedOtherBroadcast = useHasClaimedBroadcast(userId);
 
     const handleClaim = async () => {
         try {
@@ -34,10 +36,12 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             user={offer.meeting?.userFrom}
             vibe={offer.meeting?.intentLabel}
             timeRemainingText={timeText}
-            actionLabel="Claim"
+            actionLabel={"Claim"}
             actionIcon="hand.raised.fill"
             onAction={handleClaim}
             isLoading={isAccepting}
+            hasAction={!hasClaimedOtherBroadcast}
+            
         />
     );
 }

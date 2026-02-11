@@ -12,11 +12,23 @@ export const isActiveClaimedSelfBroadcastMeeting = (userId: string) => {
     return (m: ProcessedMeetingType) => {
         const isSelfMeeting = m.userFromId === userId;
         const now = Date.now();
-        const isClaimedBroadcast  = m.meetingState === ACCEPTED_MEETING_STATE &&
+        const isClaimedBroadcast  = isSelfMeeting && m.meetingState === ACCEPTED_MEETING_STATE &&
             m.timeType === IMMEDIATE_TIME_TYPE &&
             new Date(m.scheduledEnd).getTime() > now;
 
         return isClaimedBroadcast;
+    }
+};
+
+export const isActiveClaimedOtherBroadcastMeeting = (userId: string) => {
+    return (m: ProcessedMeetingType) => {
+        const isOtherMeeting = m.userFromId !== userId;
+        const now = Date.now();
+        const isOtherClaimedBroadcast  = isOtherMeeting && m.meetingState === ACCEPTED_MEETING_STATE &&
+            m.timeType === IMMEDIATE_TIME_TYPE &&
+            new Date(m.scheduledEnd).getTime() > now;
+
+        return isOtherClaimedBroadcast;
     }
 };
 

@@ -1,6 +1,6 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CREAM, CORNFLOWER_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import { Image } from "expo-image";
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -18,6 +18,7 @@ interface BroadcastTileProps {
     user?: BroadcastTileUser;
     vibe?: string;
     timeRemainingText: string;
+    hasAction?: boolean,
     actionLabel: string;
     actionIcon: string;
     onAction: () => void;
@@ -34,6 +35,7 @@ export function BroadcastTile({
     actionLabel,
     actionIcon,
     onAction,
+    hasAction = true,
     isLoading = false,
     secondaryActionLabel,
     onSecondaryAction,
@@ -74,6 +76,7 @@ export function BroadcastTile({
             <Text style={styles.timeRemaining}>{timeRemainingText}</Text>
 
             {/* Primary action button */}
+            {hasAction &&  <View>
             <TouchableOpacity
                 style={styles.actionButton}
                 onPress={onAction}
@@ -105,6 +108,8 @@ export function BroadcastTile({
                     )}
                 </TouchableOpacity>
             )}
+            </View>
+            }
         </View>
     );
 }

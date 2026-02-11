@@ -1,4 +1,4 @@
-import { isActiveClaimedSelfBroadcastMeeting, isActiveOpenBroadcastMeeting } from "@/features/Meetings/meetingsFilters";
+import { isActiveClaimedOtherBroadcastMeeting, isActiveClaimedSelfBroadcastMeeting, isActiveOpenBroadcastMeeting } from "@/features/Meetings/meetingsFilters";
 import { useProcessedMeetings } from './useProcessedMeetings';
 
 
@@ -14,5 +14,12 @@ export function useIsClaimedBroadcasting(userId: string) {
     const filterClaimedBroadcast = isActiveClaimedSelfBroadcastMeeting(userId);
     const claimedBroadcastMeetings = meetings.filter(filterClaimedBroadcast);
     
+    return claimedBroadcastMeetings.length > 0;
+}
+
+export function useHasClaimedBroadcast(userId: string) {
+    const { meetings, isLoading: meetingsLoading, refetch: refetchMeetings } = useProcessedMeetings();
+    const filterClaimedBroadcast = isActiveClaimedOtherBroadcastMeeting(userId);
+    const claimedBroadcastMeetings = meetings.filter(filterClaimedBroadcast);
     return claimedBroadcastMeetings.length > 0;
 }

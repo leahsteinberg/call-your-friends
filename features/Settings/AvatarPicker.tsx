@@ -31,8 +31,9 @@ export default function AvatarPicker(): React.JSX.Element {
             mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 0.8,
+            quality: 0.7,
             base64: true,
+            exif: false,
         });
 
         if (!result.canceled && result.assets[0]) {
