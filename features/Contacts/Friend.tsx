@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 10,
     },
     container: {
-      backgroundColor: 'rgba(30, 60, 114, 0.75)',
+      backgroundColor: CREAM,//'rgba(30, 60, 114, 0.75)',
       borderRadius: 20,
       padding: 18,
       overflow: 'visible',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     name: {
       fontSize: 22,
       fontWeight: '600',
-      color: CREAM,
+      color: 'black',
       fontFamily: CustomFonts.ztnaturebold,
       marginBottom: 2,
     },
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     },
     broadcastingText: {
       fontSize: 14,
-      color: CREAM,
+      color: 'black',
       fontFamily: CustomFonts.ztnatureregular,
     },
     callNowButton: {
@@ -344,7 +344,8 @@ const styles = StyleSheet.create({
       fontFamily: CustomFonts.ztnaturemedium,
     },
     actionsSection: {
-      marginLeft: 'auto',
-      justifyContent: 'center',
+      backgroundColor: 'red',
+      //marginLeft: 'auto',
+      justifyContent: 'end',
     },
 });
