@@ -240,12 +240,59 @@ function Greyscale({ intensity = 1 }: GreyscaleProps): React.JSX.Element | null 
 }
 
 // ============================================
+// MINI AVATAR
+// ============================================
+interface MiniAvatarProps {
+    name?: string;
+    avatarUrl?: string;
+}
+
+function MiniAvatar({ name, avatarUrl }: MiniAvatarProps): React.JSX.Element {
+    const { size } = useAvatarContext();
+    const miniSize = Math.round(size * 0.45);
+    const initial = name?.charAt(0).toUpperCase() ?? '?';
+
+    return (
+        <View
+            style={{
+                position: 'absolute',
+                bottom: -2,
+                right: -2,
+                width: miniSize,
+                height: miniSize,
+                borderRadius: miniSize / 2,
+                backgroundColor: CREAM,
+                borderWidth: 1.5,
+                borderColor: CORNFLOWER_BLUE,
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'hidden',
+            }}
+        >
+            {avatarUrl ? (
+                <Image
+                    source={{ uri: avatarUrl }}
+                    style={{ width: miniSize, height: miniSize, borderRadius: miniSize / 2 }}
+                    contentFit="cover"
+                    transition={200}
+                />
+            ) : (
+                <Text style={{ fontSize: miniSize * 0.42, fontWeight: '600', color: BOLD_BLUE, fontFamily: CustomFonts.ztnaturebold }}>
+                    {initial}
+                </Text>
+            )}
+        </View>
+    );
+}
+
+// ============================================
 // COMPOSE & EXPORT
 // ============================================
 const Avatar = Object.assign(AvatarComponent, {
     TimerRing,
     PulseRing,
     Greyscale,
+    MiniAvatar,
 });
 
 export default Avatar;

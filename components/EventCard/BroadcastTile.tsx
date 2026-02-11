@@ -27,6 +27,7 @@ interface BroadcastTileProps {
     isLoading?: boolean;
     onSecondaryAction?: () => void;
     isSecondaryLoading?: boolean;
+    avatarChildren?: React.ReactNode;
 }
 
 export function BroadcastTile({
@@ -41,6 +42,7 @@ export function BroadcastTile({
     isLoading = false,
     onSecondaryAction,
     isSecondaryLoading = false,
+    avatarChildren,
 }: BroadcastTileProps): React.JSX.Element {
     const name = user?.name || 'Someone';
     const vibePhrase = VIBE_WORDS.find(w => w.id === vibe)?.text || null;
@@ -66,6 +68,7 @@ export function BroadcastTile({
             {/* Avatar with countdown ring */}
             <Avatar name={name} avatarUrl={user?.avatarUrl} size={AVATAR_SIZE}>
                 <Avatar.TimerRing scheduledEnd={scheduledEnd} />
+                {avatarChildren}
             </Avatar>
 
             {/* Name */}

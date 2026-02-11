@@ -4,7 +4,7 @@ import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
@@ -12,20 +12,42 @@ import { isActiveOpenBroadcastMeeting } from "../Meetings/meetingsFilters";
 import type { ProcessedMeetingType } from "../Meetings/types";
 import type { ProcessedOfferType } from "../Offers/types";
 import ClaimedBroadcastTile from "./ClaimedBroadcastTile";
+import SelfBroadcastTile from "./SelfBroadcastTile";
+import SelfClaimedBroadcastTile from "./SelfClaimedBroadcastTile";
+import StartBroadcastTile from "./StartBroadcastTile";
 import UnclaimedBroadcastTile from "./UnclaimedBroadcastTile";
 
 type BroadcastItem =
+    | { id: string; type: 'self'; data: ProcessedMeetingType | null }
     | { id: string; type: 'offer'; data: ProcessedOfferType }
     | { id: string; type: 'meeting'; data: ProcessedMeetingType };
 
-export default function BroadcastList(): React.JSX.Element | null {
+export default function BroadcastList(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
+    const isBroadcasting: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
     const [items, setItems] = useState<BroadcastItem[]>([]);
 
     const { meetings } = useProcessedMeetings();
     const { offers } = useProcessedOffers();
 
+    // Find the user's own active broadcast meeting
+    const selfBroadcastMeeting = useMemo(() =>
+        meetings.find((m: ProcessedMeetingType) =>
+            isBroadcastMeeting(m) &&
+            m.userFromId === userId &&
+            m.meetingState !== PAST_MEETING_STATE
+        ) || null,
+        [meetings, userId]
+    );
+
     useEffect(() => {
+        // Self tile is always first
+        const selfItem: BroadcastItem = {
+            id: 'self-broadcast',
+            type: 'self' as const,
+            data: selfBroadcastMeeting,
+        };
+
         // Claimed broadcasts: broadcast meetings created by others that this user accepted
         const claimedMeetings: BroadcastItem[] = meetings
             .filter((m: ProcessedMeetingType) =>
@@ -50,12 +72,21 @@ export default function BroadcastList(): React.JSX.Element | null {
                 data: o,
             }));
 
-        setItems([...claimedMeetings, ...unclaimedOffers]);
-    }, [meetings, offers, userId]);
-
-    if (items.length === 0) return null;
+        setItems([selfItem, ...claimedMeetings, ...unclaimedOffers]);
+    }, [meetings, offers, userId, selfBroadcastMeeting]);
 
     const renderItem = ({ item }: { item: BroadcastItem }) => {
+        if (item.type === 'self') {
+            const meeting = item.data as ProcessedMeetingType | null;
+            if (!isBroadcasting || !meeting) {
+                return <StartBroadcastTile />;
+            }
+            const hasAcceptedUsers = (meeting.acceptedUsers?.length ?? 0) > 0;
+            if (hasAcceptedUsers) {
+                return <SelfClaimedBroadcastTile meeting={meeting} />;
+            }
+            return <SelfBroadcastTile meeting={meeting} />;
+        }
         if (item.type === 'offer') {
             return <UnclaimedBroadcastTile offer={item.data as ProcessedOfferType} />;
         }
