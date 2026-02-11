@@ -11,6 +11,7 @@ import {
   Heart,
   MessageCircle,
   Phone,
+  Search,
   Share2,
   Trash2,
   X,
@@ -33,6 +34,7 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'chevron.up': ChevronUp,
   'phone.fill': Phone,
   'hand.raised.fill': Hand,
+  'magnifyingglass': Search,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;

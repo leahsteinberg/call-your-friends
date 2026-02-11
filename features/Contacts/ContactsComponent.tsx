@@ -13,9 +13,31 @@ import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
 import ContactsLoader from "./ContactsLoader";
 import ContactsSelector from "./ContactsSelector";
+import FriendsSearchBar from "./FriendsSearchBar";
 import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, FriendRequest, ProcessedSentInvite } from "./types";
+
+/** Fuzzy match: checks if all chars of query appear in order within target. */
+function fuzzyMatch(target: string, query: string): boolean {
+    const t = target.toLowerCase();
+    const q = query.toLowerCase();
+    let ti = 0;
+    for (let qi = 0; qi < q.length; qi++) {
+        const found = t.indexOf(q[qi], ti);
+        if (found === -1) return false;
+        ti = found + 1;
+    }
+    return true;
+}
+
+function filterFriends(friends: Friend[], query: string): Friend[] {
+    if (!query.trim()) return friends;
+    return friends.filter(f =>
+        fuzzyMatch(f.name, query) ||
+        fuzzyMatch(f.phoneNumber, query)
+    );
+}
 
 
 export default function ContactsComponent(): React.JSX.Element {
@@ -27,6 +49,7 @@ export default function ContactsComponent(): React.JSX.Element {
 
     const [friends, setFriends] = useState<Friend[]>([]);
     const [getFriends] = useGetFriendsMutation();
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [getFriendInvites] = useGetFriendInvitesMutation();
@@ -109,14 +132,15 @@ export default function ContactsComponent(): React.JSX.Element {
                     <ContactsLoader />
                 ) : (
                     <ContactsList
-                        friends={friends}
-                        friendRequests={friendRequests}
-                        sentInvites={processedSentInvites}
+                        friends={filterFriends(friends, searchQuery)}
+                        friendRequests={searchQuery ? [] : friendRequests}
+                        sentInvites={searchQuery ? [] : processedSentInvites}
                         onRefresh={handleRefresh}
                         refreshing={refreshing}
                         onCallIntentChange={fetchFriends}
                     />
                 )}
+                <FriendsSearchBar query={searchQuery} onChangeQuery={setSearchQuery} />
             </View>
             {
                 Platform.OS !== 'web' ?
