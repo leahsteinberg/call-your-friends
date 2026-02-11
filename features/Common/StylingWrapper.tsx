@@ -1,10 +1,11 @@
 const isIos = Platform.OS === 'ios';
 import OrganicGradientBackground from "@/components/OrganicGradientBackground";
-import { useIsBroadcasting } from "@/hooks/useIsBroadcasting";
+import { useIsBroadcasting, useIsClaimedBroadcasting } from "@/hooks/useIsBroadcasting";
 import { APP_BACKGROUND_COLOR } from "@/styles/styles";
 import React from 'react';
 
 import { Platform, StyleSheet, View } from 'react-native';
+import { useSelector } from "react-redux";
 const safePadding = Platform.OS === 'ios' ? 45 : 10;
 
 interface StylingWrapperProps {
@@ -14,25 +15,15 @@ interface StylingWrapperProps {
 
 
 export const FullScreenStylingWrapper: React.FC<StylingWrapperProps> = ({children, showGradientBackground = false}) => {
-  
+  const userId = useSelector((state: RootState)=> state.auth.user.id);
   const isBroadcasting = useIsBroadcasting();
-  const x = true;
-  if (x) {
-  //if (showGradientBackground && isIos) {
-    return (
-              <OrganicGradientBackground mode={isBroadcasting ? "fast" : "slow"}>
-                  <View style={styles.padding}/>
-                  {children}
-              </OrganicGradientBackground>
-          );
-        }
-
-    // return (
-    //     <View style={styles.container}>
-    //       <View style={styles.padding}/>
-    //        {children}
-    //     </View>
-    // )
+  const isClaimedBroadcasting = useIsClaimedBroadcasting(userId);
+  return (
+      <OrganicGradientBackground mode={(isBroadcasting || isClaimedBroadcasting) ? "fast" : "slow"}>
+          <View style={styles.padding}/>
+          {children}
+      </OrganicGradientBackground>
+  );
 }
 
 const styles = StyleSheet.create({

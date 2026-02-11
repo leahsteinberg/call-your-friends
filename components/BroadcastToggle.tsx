@@ -1,6 +1,7 @@
 import { CustomFonts } from '@/constants/theme';
-import { useIsBroadcasting } from '@/hooks/useIsBroadcasting';
+import { useIsBroadcasting, useIsClaimedBroadcasting } from '@/hooks/useIsBroadcasting';
 import { CREAM } from '@/styles/styles';
+import { RootState } from '@reduxjs/toolkit/query';
 import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
@@ -14,13 +15,13 @@ import Animated, {
     useAnimatedStyle,
     useDerivedValue,
     useSharedValue,
-    withDelay,
     withRepeat,
     withSequence,
     withSpring,
-    withTiming,
+    withTiming
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
+import { useSelector } from 'react-redux';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -57,8 +58,11 @@ export default function BroadcastToggle({
     onStartBroadcast,
     onEndBroadcast,
 }: BroadcastToggleProps): React.JSX.Element {
+    const userId = useSelector((state: RootState)=> state.auth.user.id);
     const isBroadcasting = useIsBroadcasting();
-    const [localState, setLocalState] = useState<BroadcastState>(isBroadcasting ? 'broadcasting' : 'off');
+    const isClaimedBroadcasting = useIsClaimedBroadcasting(userId);
+
+    const [localState, setLocalState] = useState<BroadcastState>((isBroadcasting || isClaimedBroadcasting) ? 'broadcasting' : 'off');
     const countdownRef = useRef<NodeJS.Timeout | null>(null);
 
     // Animation values
@@ -69,14 +73,14 @@ export default function BroadcastToggle({
     const countdownProgress = useSharedValue(0); // 0 to 1 for the ring
 
     // For text animation - only animate when fully broadcasting
-    const isFullyOn = useSharedValue(isBroadcasting ? 1 : 0);
+    const isFullyOn = useSharedValue((isBroadcasting || isClaimedBroadcasting) ? 1 : 0);
 
     // Gradient thumb image opacity (animated independently with slow fade)
     const gradientOpacity = useSharedValue(isBroadcasting ? 1 : 0);
 
     // Sync with external broadcasting state
     useEffect(() => {
-        if (isBroadcasting && localState !== 'broadcasting') {
+        if ((isBroadcasting || isClaimedBroadcasting) && localState !== 'broadcasting') {
             setLocalState('broadcasting');
             progress.value = withSpring(1, SLOW_SPRING);
             isFullyOn.value = withTiming(1, { duration: 400 });
