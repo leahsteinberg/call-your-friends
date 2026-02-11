@@ -7,6 +7,7 @@ import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
 import { BroadcastSettingsProvider, useBroadcastSettings } from "../Broadcast/BroadcastSettingsContext";
+import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import BroadcastList from "../Today/BroadcastList";
 import TodayList from "../Today/TodayList";
 
@@ -17,7 +18,7 @@ const AVATAR_SIZE = 38;
 function ProfileContent(): React.JSX.Element {
     const userName = useSelector((state: RootState) => state.auth.user.name);
     const avatarUrl = useSelector((state: RootState) => state.auth.user.avatarUrl);
-    const { handleStartBroadcast, handleEndBroadcast, setIsCustomizing } = useBroadcastSettings();
+    const { handleStartBroadcast, handleEndBroadcast, setIsCustomizing, isCustomizing } = useBroadcastSettings();
     const { isLoading: meetingsLoading } = useProcessedMeetings();
 
     const firstInitial = userName ? userName.charAt(0).toUpperCase() : '?';
@@ -56,6 +57,7 @@ function ProfileContent(): React.JSX.Element {
                     )}
                 </View>
             </View>
+            {isCustomizing && <BroadcastNowCard />}
             <BroadcastList/>
             <TodayList />
         </View>

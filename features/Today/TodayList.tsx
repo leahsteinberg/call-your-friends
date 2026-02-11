@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-import BroadcastNowCard from "../EventCards/BroadcastNowCard";
+
 import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import { ProcessedMeetingType } from "../Meetings/types";
@@ -146,24 +146,7 @@ export default function TodayList(): React.JSX.Element {
         index,
     });
 
-    // Render header: BroadcastNowCard when not broadcasting
-    const renderListHeader = () => {
-        // Hide BroadcastNowCard when:
-        // 1. User has their own active broadcast (SelfBroadcastCard exists)
-        // 2. User has accepted another user's broadcast (OtherMeetingBroadcastCard exists)
-        if (!hasSelfBroadcastMeeting && !hasAcceptedOtherBroadcast) {
-            return (
-                // <Animated.View
-                //     key="broadcast-now-card"
-                //     exiting={ZoomOut.duration(300)}
-                //     layout={Layout.springify()}
-                // >
-                    <BroadcastNowCard />
-                // </Animated.View>
-            );
-        }
-        return null;
-    };
+    const renderListHeader = () => null;
 
     // Render empty state inside the list
     const renderEmptyComponent = () => {
