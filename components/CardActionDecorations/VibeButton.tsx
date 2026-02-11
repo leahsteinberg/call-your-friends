@@ -4,9 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-
 // Tapback word options
-const VIBE_WORDS = [
+export const VIBE_WORDS = [
     { id: 'hi', text: 'Just Saying Hi!', label: 'Just Saying Hi' },
     { id: 'catchup', text: 'Catch Up', label: 'Catch up' },
     { id: 'miss', text: 'Miss You!', label: 'Miss you' },

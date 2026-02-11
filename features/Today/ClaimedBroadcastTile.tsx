@@ -51,10 +51,10 @@ export default function ClaimedBroadcastTile({ meeting }: ClaimedBroadcastTilePr
             user={meeting.userFrom}
             vibe={meeting.intentLabel}
             timeRemainingText={timeText}
+            scheduledEnd={meeting.scheduledEnd || undefined}
             actionLabel="Call Now"
             actionIcon="phone.fill"
             onAction={handleCallNow}
-            secondaryActionLabel="Unclaim"
             onSecondaryAction={handleUnclaim}
             isSecondaryLoading={isCanceling}
         />
