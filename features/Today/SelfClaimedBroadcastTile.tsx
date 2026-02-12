@@ -44,7 +44,7 @@ export default function SelfClaimedBroadcastTile({ meeting }: SelfClaimedBroadca
     return (
         <BroadcastTile
             user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
-            vibe={meeting.intentLabel}
+
             timeRemainingText={timeText}
             scheduledEnd={meeting.scheduledEnd || undefined}
             actionLabel="End"
@@ -52,7 +52,10 @@ export default function SelfClaimedBroadcastTile({ meeting }: SelfClaimedBroadca
             onAction={handleEnd}
             isLoading={isEnding}
             avatarChildren={
-                claimer && <Avatar.MiniAvatar name={claimer.name} avatarUrl={claimer.avatarUrl} />
+                <>
+                    <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
+                    {claimer && <Avatar.MiniAvatar name={claimer.name} avatarUrl={claimer.avatarUrl} />}
+                </>
             }
         />
     );

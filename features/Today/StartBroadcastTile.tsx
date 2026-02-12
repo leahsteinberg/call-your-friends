@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { RootState } from "@/types/redux";
@@ -6,7 +7,7 @@ import { useSelector } from "react-redux";
 
 export default function StartBroadcastTile(): React.JSX.Element {
     const user = useSelector((state: RootState) => state.auth.user);
-    const { handleStartBroadcast, isStarting } = useBroadcastSettings();
+    const { handleStartBroadcast, isStarting, selectedVibe, setSelectedVibe } = useBroadcastSettings();
 
     const handleStart = async () => {
         try {
@@ -24,6 +25,12 @@ export default function StartBroadcastTile(): React.JSX.Element {
             actionIcon="phone.arrow.down.left"
             onAction={handleStart}
             isLoading={isStarting}
+            avatarChildren={
+                <Avatar.SpeechBubble
+                    selectedVibe={selectedVibe}
+                    onVibeSelect={setSelectedVibe}
+                />
+            }
         />
     );
 }

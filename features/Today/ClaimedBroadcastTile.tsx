@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
@@ -49,7 +50,7 @@ export default function ClaimedBroadcastTile({ meeting }: ClaimedBroadcastTilePr
     return (
         <BroadcastTile
             user={meeting.userFrom}
-            vibe={meeting.intentLabel}
+
             timeRemainingText={timeText}
             scheduledEnd={meeting.scheduledEnd || undefined}
             actionLabel="Call Now"
@@ -58,6 +59,9 @@ export default function ClaimedBroadcastTile({ meeting }: ClaimedBroadcastTilePr
             onSecondaryAction={handleUnclaim}
             isSecondaryLoading={isCanceling}
             backgroundColor="transparent"
+            avatarChildren={
+                <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
+            }
         />
     );
 }

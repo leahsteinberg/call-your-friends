@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
@@ -42,13 +43,15 @@ export default function SelfBroadcastTile({ meeting }: SelfBroadcastTileProps): 
     return (
         <BroadcastTile
             user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
-            vibe={meeting.intentLabel}
             timeRemainingText={timeText}
             scheduledEnd={meeting.scheduledEnd || undefined}
             actionLabel="End"
             actionIcon="xmark"
             onAction={handleEnd}
             isLoading={isEnding}
+            avatarChildren={
+                <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
+            }
         />
     );
 }

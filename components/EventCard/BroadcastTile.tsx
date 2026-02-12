@@ -4,7 +4,7 @@ import { CustomFonts } from "@/constants/theme";
 import { CREAM } from "@/styles/styles";
 import React from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { VIBE_WORDS } from "../CardActionDecorations/VibeButton";
+
 
 const TILE_WIDTH = 140;
 const AVATAR_SIZE = 48;
@@ -17,7 +17,6 @@ interface BroadcastTileUser {
 
 interface BroadcastTileProps {
     user?: BroadcastTileUser;
-    vibe?: string;
     timeRemainingText: string;
     scheduledEnd?: string;
     hasAction?: boolean,
@@ -33,7 +32,6 @@ interface BroadcastTileProps {
 
 export function BroadcastTile({
     user,
-    vibe,
     timeRemainingText,
     scheduledEnd,
     actionLabel,
@@ -47,7 +45,6 @@ export function BroadcastTile({
     backgroundColor = CREAM,
 }: BroadcastTileProps): React.JSX.Element {
     const name = user?.name || 'Someone';
-    const vibePhrase = VIBE_WORDS.find(w => w.id === vibe)?.text || null;
     return (
         <View style={[styles.tile, {backgroundColor}]}>
             {/* Secondary action - X in top right */}
@@ -74,13 +71,6 @@ export function BroadcastTile({
 
             {/* Name */}
             <Text style={styles.name} numberOfLines={1}>{name}</Text>
-
-            {/* Vibe */}
-            {vibe ? (
-                <Text style={styles.vibe} numberOfLines={1}>{vibePhrase}</Text>
-            ) : (
-                <View style={styles.vibeSpacer} />
-            )}
 
             {/* Time remaining */}
             {/* <Text style={styles.timeRemaining}>{timeRemainingText}</Text> */}
@@ -127,25 +117,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 2,
         marginTop: 2,
-    },
-    vibe: {
-        fontSize: 12,
-        fontFamily: CustomFonts.ztnaturemedium,
-        color: 'black',
-        opacity: 0.8,
-        textAlign: 'center',
-        marginBottom: 2,
-    },
-    vibeSpacer: {
-       // height: 16,
-    },
-    timeRemaining: {
-        fontSize: 8,
-        fontFamily: CustomFonts.ztnaturelight,
-        color: 'black',
-        opacity: 0.6,
-        textAlign: 'center',
-        marginBottom: 10,
     },
     actionButton: {
         //backgroundColor: BOLD_BLUE,

@@ -1,8 +1,9 @@
+import { VIBE_WORDS } from "@/components/CardActionDecorations/VibeButton";
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { Image } from "expo-image";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, {
     Easing,
     useAnimatedStyle,
@@ -286,6 +287,196 @@ function MiniAvatar({ name, avatarUrl }: MiniAvatarProps): React.JSX.Element {
 }
 
 // ============================================
+// SPEECH BUBBLE (Vibe Status)
+// ============================================
+interface SpeechBubbleProps {
+    selectedVibe?: string | null;
+    onVibeSelect?: (vibeId: string | null) => void;
+    displayOnly?: boolean;
+}
+
+function SpeechBubble({
+    selectedVibe = null,
+    onVibeSelect,
+    displayOnly = false,
+}: SpeechBubbleProps): React.JSX.Element | null {
+    const { size } = useAvatarContext();
+    const [showModal, setShowModal] = useState(false);
+
+    const vibeWord = selectedVibe ? VIBE_WORDS.find(w => w.id === selectedVibe) : null;
+    const hasVibe = !!vibeWord;
+
+    // In display-only mode with no vibe, don't render
+    if (displayOnly && !hasVibe) return null;
+
+    const handlePress = () => {
+        if (!displayOnly) {
+            setShowModal(true);
+        }
+    };
+
+    const handleVibeSelect = (vibeId: string | null) => {
+        onVibeSelect?.(vibeId);
+        setShowModal(false);
+    };
+
+    const tailSize = 6;
+
+    return (
+        <>
+            <TouchableOpacity
+                onPress={handlePress}
+                activeOpacity={displayOnly ? 1 : 0.7}
+                disabled={displayOnly}
+                style={{
+                    position: 'absolute',
+                    top: -size * 0.15,
+                    left: -size * 0.25,
+                    zIndex: 10,
+                }}
+            >
+                {/* Bubble body */}
+                <View style={{
+                    backgroundColor: hasVibe ? PALE_BLUE : CREAM,
+                    borderRadius: 10,
+                    paddingHorizontal: hasVibe ? 6 : 5,
+                    paddingVertical: hasVibe ? 3 : 4,
+                    minWidth: 22,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 1 },
+                    shadowOpacity: 0.15,
+                    shadowRadius: 2,
+                    elevation: 3,
+                }}>
+                    {hasVibe ? (
+                        <Text style={{
+                            fontSize: 9,
+                            fontFamily: CustomFonts.ztnaturebold,
+                            color: BURGUNDY,
+                            fontWeight: '700',
+                        }}>
+                            {vibeWord.label}
+                        </Text>
+                    ) : (
+                        <Text style={{
+                            fontSize: 12,
+                            fontWeight: '700',
+                            color: CORNFLOWER_BLUE,
+                        }}>
+                            +
+                        </Text>
+                    )}
+                </View>
+                {/* Speech bubble tail */}
+                <View style={{
+                    position: 'absolute',
+                    bottom: -tailSize + 1,
+                    right: 4,
+                    width: 0,
+                    height: 0,
+                    borderLeftWidth: tailSize,
+                    borderRightWidth: 0,
+                    borderTopWidth: tailSize,
+                    borderLeftColor: 'transparent',
+                    borderRightColor: 'transparent',
+                    borderTopColor: hasVibe ? PALE_BLUE : CREAM,
+                }} />
+            </TouchableOpacity>
+
+            {/* Vibe selection modal */}
+            {!displayOnly && (
+                <Modal
+                    visible={showModal}
+                    transparent
+                    animationType="fade"
+                    onRequestClose={() => setShowModal(false)}
+                >
+                    <TouchableWithoutFeedback onPress={() => setShowModal(false)}>
+                        <View style={speechBubbleStyles.modalOverlay}>
+                            <View style={speechBubbleStyles.modalContainer}>
+                                {VIBE_WORDS.map((word) => (
+                                    <TouchableOpacity
+                                        key={word.id}
+                                        style={speechBubbleStyles.vibeOption}
+                                        onPress={() => handleVibeSelect(word.id)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={speechBubbleStyles.vibeOptionText}>{word.text}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                                <View style={speechBubbleStyles.separator} />
+                                <TouchableOpacity
+                                    style={speechBubbleStyles.noneButton}
+                                    onPress={() => handleVibeSelect(null)}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={speechBubbleStyles.noneButtonText}>None</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            )}
+        </>
+    );
+}
+
+const speechBubbleStyles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: CREAM,
+        borderRadius: 30,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 10,
+        gap: 8,
+    },
+    vibeOption: {
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        backgroundColor: PALE_BLUE,
+    },
+    vibeOptionText: {
+        color: BURGUNDY,
+        fontSize: 13,
+        fontWeight: '600',
+    },
+    separator: {
+        width: 40,
+        height: 1,
+        backgroundColor: BURGUNDY,
+        opacity: 0.15,
+    },
+    noneButton: {
+        width: 60,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    noneButtonText: {
+        color: BURGUNDY,
+        fontSize: 14,
+        fontWeight: '600',
+    },
+});
+
+// ============================================
 // COMPOSE & EXPORT
 // ============================================
 const Avatar = Object.assign(AvatarComponent, {
@@ -293,6 +484,7 @@ const Avatar = Object.assign(AvatarComponent, {
     PulseRing,
     Greyscale,
     MiniAvatar,
+    SpeechBubble,
 });
 
 export default Avatar;

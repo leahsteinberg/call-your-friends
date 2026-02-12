@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useHasClaimedBroadcast } from "@/hooks/useIsBroadcasting";
 import { useAcceptOfferMutation } from "@/services/offersApi";
@@ -34,7 +35,6 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
     return (
         <BroadcastTile
             user={offer.meeting?.userFrom}
-            vibe={offer.meeting?.intentLabel}
             timeRemainingText={timeText}
             scheduledEnd={scheduledEnd || undefined}
             actionLabel={"Talk Now"}
@@ -43,6 +43,9 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             isLoading={isAccepting}
             hasAction={!hasClaimedOtherBroadcast}
             backgroundColor="transparent"
+            avatarChildren={
+                <Avatar.SpeechBubble selectedVibe={offer.meeting?.intentLabel} displayOnly />
+            }
         />
     );
 }
