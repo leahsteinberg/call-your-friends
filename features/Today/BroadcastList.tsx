@@ -22,12 +22,12 @@ type BroadcastItem =
     | { id: string; type: 'offer'; data: ProcessedOfferType }
     | { id: string; type: 'meeting'; data: ProcessedMeetingType };
 
-export default function BroadcastList(): React.JSX.Element {
+export default function BroadcastList(): React.JSX.Element | null {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const isBroadcasting: boolean = useSelector((state: RootState) => state.broadcast.isBroadcasting);
     const [items, setItems] = useState<BroadcastItem[]>([]);
 
-    const { meetings } = useProcessedMeetings();
+    const { meetings, isLoading: meetingsLoading } = useProcessedMeetings();
     const { offers } = useProcessedOffers();
 
     // Find the user's own active broadcast meeting
@@ -92,6 +92,10 @@ export default function BroadcastList(): React.JSX.Element {
         }
         return <ClaimedBroadcastTile meeting={item.data as ProcessedMeetingType} />;
     };
+
+    if (meetingsLoading) {
+        return null;
+    }
 
     return (
         <View style={styles.container}>
