@@ -10,14 +10,16 @@ import { ProcessedOfferType } from "../features/Offers/types";
  * @param forceReprocess - Counter to trigger reprocessing (e.g., for updating time-based fields)
  * @returns Object containing processed offers, loading state, and refetch function
  */
-export function useProcessedOffers(forceReprocess = 0) {
+const DEFAULT_POLL_INTERVAL = 30_000; // 30 seconds
+
+export function useProcessedOffers(forceReprocess = 0, pollingInterval = DEFAULT_POLL_INTERVAL) {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
     const {
         data: rawOffers = [],
         isLoading,
         refetch
-    } = useGetOffersQuery({ userId });
+    } = useGetOffersQuery({ userId }, { pollingInterval });
 
     const [processedOffers, setProcessedOffers] = useState<ProcessedOfferType[]>([]);
 

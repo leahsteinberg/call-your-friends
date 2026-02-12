@@ -11,7 +11,9 @@ import { ProcessedMeetingType } from "../features/Meetings/types";
  * Custom hook that fetches, processes, and manages meetings data
  * @returns Object containing processed meetings, loading state, and refetch function
  */
-export function useProcessedMeetings() {
+const DEFAULT_POLL_INTERVAL = 30_000; // 30 seconds
+
+export function useProcessedMeetings(pollingInterval = DEFAULT_POLL_INTERVAL) {
     const dispatch = useDispatch();
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
 
@@ -19,7 +21,7 @@ export function useProcessedMeetings() {
         data: rawMeetings = [],
         isLoading,
         refetch
-    } = useGetMeetingsQuery({ userFromId: userId });
+    } = useGetMeetingsQuery({ userFromId: userId }, { pollingInterval });
 
     const [processedMeetings, setProcessedMeetings] = useState<ProcessedMeetingType[]>([]);
 
