@@ -14,7 +14,6 @@ import type { ProcessedOfferType } from "../Offers/types";
 import DraftMeetingCard from "./DraftMeetingCard";
 import MeetingCard from "./MeetingCard";
 import OfferCard from "./OfferCard";
-import SelfBroadcastCard from "./SelfBroadcastCard";
 
 interface CardSelectorProps {
     userId: string;
@@ -53,7 +52,7 @@ export function selectMeetingCard(
             if (meeting.meetingState === PAST_MEETING_STATE) {
                 return <></>;
             }
-            return <SelfBroadcastCard meeting={meeting} />
+            return <></>;
         } else {
             // Other's broadcast that user accepted
             return <></>;
