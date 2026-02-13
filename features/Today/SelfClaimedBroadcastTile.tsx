@@ -44,12 +44,11 @@ export default function SelfClaimedBroadcastTile({ meeting }: SelfClaimedBroadca
     return (
         <BroadcastTile
             user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
-
-            timeRemainingText={timeText}
+            //timeRemainingText={timeText}
             scheduledEnd={meeting.scheduledEnd || undefined}
-            actionLabel="End"
-            actionIcon="xmark"
-            onAction={handleEnd}
+            //actionLabel="End"
+            //actionIcon="xmark"
+            onSecondaryAction={handleEnd}
             isLoading={isEnding}
             avatarChildren={
                 <>

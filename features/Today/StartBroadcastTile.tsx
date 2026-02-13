@@ -20,9 +20,9 @@ export default function StartBroadcastTile(): React.JSX.Element {
 
     return (
         <BroadcastTile
-            user={{ name: "Me", avatarUrl: user.avatarUrl, id: user.id }}
+            user={{ name: "You", avatarUrl: user.avatarUrl, id: user.id }}
             timeRemainingText=""
-            actionLabel="Call Me"
+            actionLabel="Start"
             actionIcon="phone.arrow.down.left"
             onAction={handleStart}
             isLoading={isStarting}
@@ -37,7 +37,7 @@ export default function StartBroadcastTile(): React.JSX.Element {
                     friends={friends}
                     onSelectFriends={setSelectedFriendIds}
                     selectedFriendIds={selectedFriendIds}
-                    position="below-left"
+                    //position="below-left"
                 />
             }
         />

@@ -11,7 +11,7 @@ interface StackedFriendAvatarsProps {
   expanded?: boolean;
 }
 
-const AVATAR_SIZE = 40; // ~15% smaller than Friend.tsx's 48px
+const AVATAR_SIZE = 30; // ~15% smaller than Friend.tsx's 48px
 const MAX_VISIBLE_AVATARS = 4;
 
 // Separate component for each avatar to ensure stable hook calls
@@ -37,8 +37,14 @@ function AvatarItem({ friend, index, expanded, avatarSpacing, nameOpacity, nameH
 
   return (
     <Animated.View key={friend.id} style={[styles.avatarItem, animatedStyle]}>
-      <Avatar name={friend.name} avatarUrl={friend.avatarUrl} size={AVATAR_SIZE} />
-      <Animated.View style={animatedNameStyle}>
+      <Avatar
+        name={friend.name}
+        avatarUrl={friend.avatarUrl}
+        size={AVATAR_SIZE}
+        borderColor={CREAM}
+        borderWidth={1.5}
+      />
+            <Animated.View style={animatedNameStyle}>
         {expanded && (
           <Text style={styles.friendNameText} numberOfLines={1}>
             {friend.name}

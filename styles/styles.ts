@@ -48,3 +48,9 @@ export const BOLD_BROWN = "#431515";
 
 export const APP_BACKGROUND_COLOR = CREAM;
 export const APP_HEADER_TEXT_COLOR = BOLD_BROWN;
+
+
+export const FUN_PURPLE = '#8B5CF6';
+export const FUN_BLUE = '#3B82F6';
+export const FUN_PINK = '#EC4899';
+export const FUN_LIGHT_BLUE = '#7DD3FC';

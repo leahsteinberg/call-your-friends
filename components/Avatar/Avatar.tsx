@@ -1,6 +1,6 @@
 import { VIBE_WORDS } from "@/components/CardActionDecorations/VibeButton";
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, FUN_PURPLE, PALE_BLUE } from "@/styles/styles";
 import { Image } from "expo-image";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
@@ -35,10 +35,13 @@ interface AvatarProps {
     avatarUrl?: string;
     size?: number;
     children?: React.ReactNode;
+    borderColor?: string;
+    borderWidth?: number;
 }
 
-function AvatarComponent({ name, avatarUrl, size = 48, children }: AvatarProps): React.JSX.Element {
+function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, borderWidth }: AvatarProps): React.JSX.Element {
     const initial = name?.charAt(0).toUpperCase() ?? '?';
+    const hasBorder = borderColor !== undefined && borderWidth !== undefined && borderWidth > 0;
 
     return (
         <AvatarContext.Provider value={{ size }}>
@@ -50,6 +53,7 @@ function AvatarComponent({ name, avatarUrl, size = 48, children }: AvatarProps):
                             width: size,
                             height: size,
                             borderRadius: size / 2,
+                            ...(hasBorder && { borderWidth, borderColor }),
                         },
                     ]}
                 >
@@ -448,14 +452,15 @@ function SpeechBubble({
                 disabled={displayOnly}
                 style={{
                     position: 'absolute',
-                    top: -size * 0.3,
-                    left: -size * 0.35,
+                    top: -size * (hasVibe ? 0.08 : .12),
+                    left: -size * (hasVibe ? 0.2 : 0.1),
+                    transform: [{rotate: '-15deg'}],
                     zIndex: 10,
                 }}
             >
                 {/* Bubble body */}
                 <View style={{
-                    backgroundColor: hasVibe ? PALE_BLUE : CREAM,
+                    backgroundColor: hasVibe ? CREAM: FUN_PURPLE,
                     borderRadius: 10,
                     paddingHorizontal: hasVibe ? 6 : 5,
                     paddingVertical: hasVibe ? 3 : 4,
@@ -470,7 +475,7 @@ function SpeechBubble({
                 }}>
                     {hasVibe ? (
                         <Text style={{
-                            fontSize: 9,
+                            fontSize: 10,
                             fontFamily: CustomFonts.ztnaturebold,
                             color: BURGUNDY,
                             fontWeight: '700',
@@ -479,11 +484,11 @@ function SpeechBubble({
                         </Text>
                     ) : (
                         <Text style={{
-                            fontSize: 12,
+                            fontSize: 14,
                             fontWeight: '700',
-                            color: CORNFLOWER_BLUE,
+                            color: CREAM,
                         }}>
-                            +
+                            {` + `}
                         </Text>
                     )}
                 </View>
@@ -492,15 +497,15 @@ function SpeechBubble({
                     position: 'absolute',
                     bottom: -tailSize + 1,
                     right: 4,
-                    left: 4,
+                    left: hasVibe ? 15 : 10,
                     width: 0,
-                    height: -10,
+                    height: -15,
                     borderLeftWidth: tailSize,
                     borderRightWidth: 0,
                     borderTopWidth: tailSize,
                     borderLeftColor: 'transparent',
                     borderRightColor: 'transparent',
-                    borderTopColor: hasVibe ? PALE_BLUE : CREAM,
+                    borderTopColor: hasVibe ? CREAM : FUN_PURPLE,
                 }} />
             </TouchableOpacity>
 

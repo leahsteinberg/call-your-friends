@@ -7,7 +7,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 
 
 const TILE_WIDTH = 140;
-const AVATAR_SIZE = 48;
+const AVATAR_SIZE = 70;
 
 interface BroadcastTileUser {
     name?: string;
@@ -75,7 +75,10 @@ export function BroadcastTile({
 
             {/* Time remaining */}
             {/* <Text style={styles.timeRemaining}>{timeRemainingText}</Text> */}
-
+                        
+            {/* Footer content */}
+            {footer}
+            
             {/* Primary action button */}
             {hasAction &&  <View>
             <TouchableOpacity
@@ -97,8 +100,7 @@ export function BroadcastTile({
             </View>
             }
 
-            {/* Footer content */}
-            {footer}
+
         </View>
     );
 }
@@ -119,13 +121,13 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         color: 'black',
         textAlign: 'center',
-        marginBottom: 2,
+        //marginBottom: 2,
         marginTop: 2,
     },
     actionButton: {
         //backgroundColor: BOLD_BLUE,
         borderRadius: 14,
-        paddingVertical: 7,
+        //paddingVertical: 7,
         paddingHorizontal: 14,
         minWidth: 100,
         alignItems: 'center',

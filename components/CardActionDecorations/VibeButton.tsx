@@ -6,7 +6,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "
 
 // Tapback word options
 export const VIBE_WORDS = [
-    { id: 'hi', text: 'Just Saying Hi!', label: 'Just Saying Hi' },
+    { id: 'hi', text: 'Hi!', label: 'Hi!' },
     { id: 'catchup', text: 'Catch Up', label: 'Catch up' },
     { id: 'miss', text: 'Miss You!', label: 'Miss you' },
     { id: 'yap', text: 'Yap Time', label: 'Yap' },

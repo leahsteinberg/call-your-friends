@@ -1,6 +1,6 @@
 import { CustomFonts } from "@/constants/theme";
 import type { Friend } from "@/features/Contacts/types";
-import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, FUN_PINK, PALE_BLUE } from "@/styles/styles";
 import { Image } from "expo-image";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
@@ -294,8 +294,9 @@ export default FriendBadgeSelector;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    zIndex: 10,
+    backgroundColor: FUN_PINK,
+    //: 'absolute',
+    //zIndex: 10,
   },
   containerRelative: {
     // No position styling for relative layout
@@ -306,8 +307,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   friendsBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    //paddingHorizontal: 14,
+    //paddingVertical: 8,
     //borderRadius: 20,
     //backgroundColor: CREAM,
     // shadowColor: '#000',
