@@ -5,6 +5,7 @@ import { Image } from "expo-image";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import AddFriendsIcon from "./AddFriendsIcon";
 import StackedFriendAvatars from "./StackedFriendAvatars";
 
 interface FriendBadgeSelectorProps {
@@ -193,15 +194,14 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         activeOpacity={0.7}
       >
           <View style={styles.badgeWithAvatars}>
-            {showStackedAvatars && (
+            {showStackedAvatars ? (
               <StackedFriendAvatars
                 selectedFriends={selectedFriends}
                 expanded={showSelector}
               />
+            ) : (
+              <AddFriendsIcon />
             )}
-            <View style={styles.friendsBadge}>
-              <Text style={styles.badgeText}>{getButtonText()}</Text>
-            </View>
           </View>
       </TouchableOpacity>
 
@@ -308,16 +308,16 @@ const styles = StyleSheet.create({
   friendsBadge: {
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: CREAM,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    //borderRadius: 20,
+    //backgroundColor: CREAM,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 4,
+    // elevation: 5,
   },
   badgeText: {
     fontSize: 13,
