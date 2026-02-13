@@ -44,7 +44,10 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             hasAction={!hasClaimedOtherBroadcast}
             backgroundColor="transparent"
             avatarChildren={
-                <Avatar.SpeechBubble selectedVibe={offer.meeting?.intentLabel} displayOnly />
+                <>
+                    <Avatar.SpeechBubble selectedVibe={offer.meeting?.intentLabel} displayOnly />
+                    <Avatar.TimerRing scheduledEnd={offer.meeting?.scheduledEnd} />
+                </>
             }
         />
     );

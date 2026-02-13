@@ -1,4 +1,5 @@
 import Avatar from "@/components/Avatar/Avatar";
+import StackedFriendAvatars from "@/components/CardActionDecorations/StackedFriendAvatars";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
@@ -39,6 +40,7 @@ export default function SelfBroadcastTile({ meeting }: SelfBroadcastTileProps): 
     };
 
     const timeText = meeting.scheduledEnd ? displayTimeRemaining(meeting.scheduledEnd) : '';
+    const targetUsers = meeting.targetUsers || [];
 
     return (
         <BroadcastTile
@@ -50,7 +52,19 @@ export default function SelfBroadcastTile({ meeting }: SelfBroadcastTileProps): 
             onAction={handleEnd}
             isLoading={isEnding}
             avatarChildren={
-                <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
+                <>
+                    <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
+                    {/* <Avatar.TimerRing scheduledEnd={meeting.scheduledEnd} /> */}
+                    <Avatar.GradientRing/>
+                </>
+            }
+            footer={
+                targetUsers.length > 0 ? (
+                    <StackedFriendAvatars
+                        selectedFriends={targetUsers as any}
+                        expanded={false}
+                    />
+                ) : undefined
             }
         />
     );

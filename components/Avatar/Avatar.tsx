@@ -12,7 +12,7 @@ import Animated, {
     withSequence,
     withTiming,
 } from "react-native-reanimated";
-import Svg, { Circle } from "react-native-svg";
+import Svg, { Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 // ============================================
 // CONTEXT
@@ -79,6 +79,9 @@ interface TimerRingProps {
     strokeWidth?: number;
     trackColor?: string;
     padding?: number;
+    gradient?: boolean;
+    gradientColors?: string[];
+    gradientSpeed?: number;
 }
 
 function getTimeFraction(scheduledEnd: string): number {
@@ -94,8 +97,12 @@ function TimerRing({
     strokeWidth = 3,
     trackColor = "rgba(0, 0, 0, 0.08)",
     padding = 4,
+    gradient = false,
+    gradientColors = DEFAULT_GRADIENT_COLORS,
+    gradientSpeed = 3000,
 }: TimerRingProps): React.JSX.Element | null {
     const { size } = useAvatarContext();
+    const rotation = useSharedValue(0);
     const ringSize = size + padding * 2;
     const ringRadius = (ringSize - strokeWidth) / 2;
     const circumference = 2 * Math.PI * ringRadius;
@@ -113,14 +120,36 @@ function TimerRing({
         return () => clearInterval(interval);
     }, [scheduledEnd]);
 
+    useEffect(() => {
+        if (!gradient) return;
+        rotation.value = withRepeat(
+            withTiming(360, { duration: gradientSpeed, easing: Easing.linear }),
+            -1,
+            false
+        );
+    }, [gradient, gradientSpeed]);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${rotation.value}deg` }],
+    }));
+
     const strokeDashoffset = circumference * (1 - fraction);
 
-    return (
-        <Svg
-            width={ringSize}
-            height={ringSize}
-            style={{ position: 'absolute' }}
-        >
+    const stops = gradient
+        ? gradientColors.map((c, i) => ({ offset: i / (gradientColors.length - 1), color: c }))
+        : [];
+
+    const svgContent = (
+        <Svg width={ringSize} height={ringSize}>
+            {gradient && (
+                <Defs>
+                    <LinearGradient id="timerGradient" x1="0" y1="0" x2="1" y2="1">
+                        {stops.map((s, i) => (
+                            <Stop key={i} offset={`${s.offset}`} stopColor={s.color} />
+                        ))}
+                    </LinearGradient>
+                </Defs>
+            )}
             {/* Background track */}
             <Circle
                 cx={ringSize / 2}
@@ -135,7 +164,7 @@ function TimerRing({
                 cx={ringSize / 2}
                 cy={ringSize / 2}
                 r={ringRadius}
-                stroke={color}
+                stroke={gradient ? "url(#timerGradient)" : color}
                 strokeWidth={strokeWidth}
                 fill="transparent"
                 strokeDasharray={circumference}
@@ -145,6 +174,95 @@ function TimerRing({
                 origin={`${ringSize / 2}, ${ringSize / 2}`}
             />
         </Svg>
+    );
+
+    if (gradient) {
+        return (
+            <Animated.View
+                style={[{ position: 'absolute', width: ringSize, height: ringSize }, animatedStyle]}
+            >
+                {svgContent}
+            </Animated.View>
+        );
+    }
+
+    return (
+        <Animated.View style={{ position: 'absolute', width: ringSize, height: ringSize }}>
+            {svgContent}
+        </Animated.View>
+    );
+}
+
+// ============================================
+// GRADIENT RING
+// ============================================
+const DEFAULT_GRADIENT_COLORS = [CORNFLOWER_BLUE, '#A855F7', '#EC4899'];
+
+interface GradientRingProps {
+    colors?: string[];
+    strokeWidth?: number;
+    padding?: number;
+    speed?: number; // rotation duration in ms
+}
+
+function GradientRing({
+    colors = DEFAULT_GRADIENT_COLORS,
+    strokeWidth = 3,
+    padding = 4,
+    speed = 3000,
+}: GradientRingProps): React.JSX.Element {
+    const { size } = useAvatarContext();
+    const rotation = useSharedValue(0);
+    const ringSize = size + padding * 2;
+    const ringRadius = (ringSize - strokeWidth) / 2;
+
+    useEffect(() => {
+        rotation.value = withRepeat(
+            withTiming(360, { duration: speed, easing: Easing.linear }),
+            -1,
+            false
+        );
+    }, [speed]);
+
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ rotate: `${rotation.value}deg` }],
+    }));
+
+    // Distribute stops evenly
+    const stops = colors.map((color, i) => ({
+        offset: i / (colors.length - 1),
+        color,
+    }));
+
+    return (
+        <Animated.View
+            style={[
+                {
+                    position: 'absolute',
+                    width: ringSize,
+                    height: ringSize,
+                },
+                animatedStyle,
+            ]}
+        >
+            <Svg width={ringSize} height={ringSize}>
+                <Defs>
+                    <LinearGradient id="gradientRing" x1="0" y1="0" x2="1" y2="1">
+                        {stops.map((s, i) => (
+                            <Stop key={i} offset={`${s.offset}`} stopColor={s.color} />
+                        ))}
+                    </LinearGradient>
+                </Defs>
+                <Circle
+                    cx={ringSize / 2}
+                    cy={ringSize / 2}
+                    r={ringRadius}
+                    stroke="url(#gradientRing)"
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                />
+            </Svg>
+        </Animated.View>
     );
 }
 
@@ -330,8 +448,8 @@ function SpeechBubble({
                 disabled={displayOnly}
                 style={{
                     position: 'absolute',
-                    top: -size * 0.15,
-                    left: -size * 0.25,
+                    top: -size * 0.3,
+                    left: -size * 0.35,
                     zIndex: 10,
                 }}
             >
@@ -341,7 +459,7 @@ function SpeechBubble({
                     borderRadius: 10,
                     paddingHorizontal: hasVibe ? 6 : 5,
                     paddingVertical: hasVibe ? 3 : 4,
-                    minWidth: 22,
+                    minWidth: 10,
                     alignItems: 'center',
                     justifyContent: 'center',
                     shadowColor: '#000',
@@ -374,8 +492,9 @@ function SpeechBubble({
                     position: 'absolute',
                     bottom: -tailSize + 1,
                     right: 4,
+                    left: 4,
                     width: 0,
-                    height: 0,
+                    height: -10,
                     borderLeftWidth: tailSize,
                     borderRightWidth: 0,
                     borderTopWidth: tailSize,
@@ -481,6 +600,7 @@ const speechBubbleStyles = StyleSheet.create({
 // ============================================
 const Avatar = Object.assign(AvatarComponent, {
     TimerRing,
+    GradientRing,
     PulseRing,
     Greyscale,
     MiniAvatar,

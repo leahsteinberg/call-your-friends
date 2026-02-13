@@ -28,6 +28,7 @@ interface BroadcastTileProps {
     isSecondaryLoading?: boolean;
     avatarChildren?: React.ReactNode;
     backgroundColor?: string;
+    footer?: React.ReactNode;
 }
 
 export function BroadcastTile({
@@ -43,6 +44,7 @@ export function BroadcastTile({
     isSecondaryLoading = false,
     avatarChildren,
     backgroundColor = CREAM,
+    footer,
 }: BroadcastTileProps): React.JSX.Element {
     const name = user?.name || 'Someone';
     return (
@@ -65,7 +67,6 @@ export function BroadcastTile({
             )}
             {/* Avatar with countdown ring */}
             <Avatar name={name} avatarUrl={user?.avatarUrl} size={AVATAR_SIZE}>
-                <Avatar.TimerRing scheduledEnd={scheduledEnd} />
                 {avatarChildren}
             </Avatar>
 
@@ -95,6 +96,9 @@ export function BroadcastTile({
 
             </View>
             }
+
+            {/* Footer content */}
+            {footer}
         </View>
     );
 }

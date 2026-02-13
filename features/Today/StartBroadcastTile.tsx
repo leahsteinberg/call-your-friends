@@ -1,4 +1,5 @@
 import Avatar from "@/components/Avatar/Avatar";
+import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { RootState } from "@/types/redux";
@@ -7,7 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function StartBroadcastTile(): React.JSX.Element {
     const user = useSelector((state: RootState) => state.auth.user);
-    const { handleStartBroadcast, isStarting, selectedVibe, setSelectedVibe } = useBroadcastSettings();
+    const { handleStartBroadcast, isStarting, selectedVibe, setSelectedVibe, friends, selectedFriendIds, setSelectedFriendIds } = useBroadcastSettings();
 
     const handleStart = async () => {
         try {
@@ -29,6 +30,14 @@ export default function StartBroadcastTile(): React.JSX.Element {
                 <Avatar.SpeechBubble
                     selectedVibe={selectedVibe}
                     onVibeSelect={setSelectedVibe}
+                />
+            }
+            footer={
+                <FriendBadgeSelector
+                    friends={friends}
+                    onSelectFriends={setSelectedFriendIds}
+                    selectedFriendIds={selectedFriendIds}
+                    position="below-left"
                 />
             }
         />
