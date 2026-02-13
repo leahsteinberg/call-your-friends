@@ -77,28 +77,30 @@ export function BroadcastTile({
             {/* <Text style={styles.timeRemaining}>{timeRemainingText}</Text> */}
                         
             {/* Footer content */}
-            {footer}
-            
-            {/* Primary action button */}
-            {hasAction &&  <View>
-            <TouchableOpacity
-                style={styles.actionButton}
-                onPress={onAction}
-                disabled={isLoading}
-                activeOpacity={0.7}
-            >
-                {isLoading ? (
-                    <ActivityIndicator size="small" color={CREAM} />
-                ) : (
-                    <View style={styles.actionRow}>
-                        <IconSymbol name={actionIcon as any} size={14} color={'black'} />
-                        <Text style={styles.actionText}>{actionLabel}</Text>
-                    </View>
-                )}
-            </TouchableOpacity>
+            <View style={styles.footer}>
+                {footer}
 
+                {/* Primary action button */}
+                {hasAction &&  <View>
+                <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={onAction}
+                    disabled={isLoading}
+                    activeOpacity={0.7}
+                >
+                    {isLoading ? (
+                        <ActivityIndicator size="small" color={CREAM} />
+                    ) : (
+                        <View style={styles.actionRow}>
+                            <IconSymbol name={actionIcon as any} size={!!actionLabel ? 14: 30} color={'black'} fill="transparent" />
+                            {!!actionLabel && <Text style={styles.actionText}>{actionLabel}</Text>}
+                        </View>
+                    )}
+                </TouchableOpacity>
+
+                </View>
+                }
             </View>
-            }
 
 
         </View>
@@ -121,15 +123,10 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         color: 'black',
         textAlign: 'center',
-        //marginBottom: 2,
         marginTop: 2,
     },
     actionButton: {
-        //backgroundColor: BOLD_BLUE,
         borderRadius: 14,
-        //paddingVertical: 7,
-        paddingHorizontal: 14,
-        minWidth: 100,
         alignItems: 'center',
     },
     actionRow: {
@@ -154,4 +151,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    footer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 15
+    }
 });

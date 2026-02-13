@@ -22,8 +22,8 @@ export default function StartBroadcastTile(): React.JSX.Element {
         <BroadcastTile
             user={{ name: "You", avatarUrl: user.avatarUrl, id: user.id }}
             timeRemainingText=""
-            actionLabel="Start"
-            actionIcon="phone.arrow.down.left"
+            // actionLabel="Start"
+            actionIcon="paperplane"
             onAction={handleStart}
             isLoading={isStarting}
             avatarChildren={

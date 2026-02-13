@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Phone,
   Search,
+  Send,
   Share2,
   Trash2,
   X,
@@ -36,6 +37,7 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'phone.fill': Phone,
   'hand.raised.fill': Hand,
   'magnifyingglass': Search,
+  'paperplane': Send,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
