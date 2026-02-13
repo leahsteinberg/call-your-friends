@@ -1,10 +1,13 @@
 import type { Friend } from "@/features/Contacts/types";
+import { isActiveClaimedSelfBroadcastMeeting, isActiveOpenBroadcastMeeting } from "@/features/Meetings/meetingsFilters";
+import type { ProcessedMeetingType } from "@/features/Meetings/types";
+import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useGetFriendsMutation } from "@/services/contactsApi";
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
 import * as Haptics from "expo-haptics";
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast, startBroadcast } from "./broadcastSlice";
 
@@ -15,6 +18,11 @@ interface BroadcastSettingsContextType {
     friends: Friend[];
     isStarting: boolean;
     isCustomizing: boolean;
+
+    // Self-broadcast derived state
+    selfBroadcastMeeting: ProcessedMeetingType | undefined;
+    isSelfBroadcastClaimed: boolean;
+    hasUnclaimedSelfBroadcast: boolean;
 
     // Actions
     setSelectedVibe: (vibe: string | null) => void;
@@ -54,6 +62,32 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
     const [broadcastNow] = useBroadcastNowMutation();
     const [broadcastEnd] = useBroadcastEndMutation();
     const [getFriends] = useGetFriendsMutation();
+
+    // Derive self-broadcast state from meetings
+    const { meetings } = useProcessedMeetings();
+
+    const selfBroadcastMeeting = useMemo(() => {
+        // Find user's own active open broadcast
+        const openBroadcast = meetings.find(
+            m => m.userFromId === userId && isActiveOpenBroadcastMeeting(m)
+        );
+        if (openBroadcast) return openBroadcast;
+
+        // Or find user's own claimed broadcast
+        const claimedFilter = isActiveClaimedSelfBroadcastMeeting(userId);
+        return meetings.find(claimedFilter);
+    }, [meetings, userId]);
+
+    const isSelfBroadcastClaimed = useMemo(() => {
+        const claimedFilter = isActiveClaimedSelfBroadcastMeeting(userId);
+        return meetings.some(claimedFilter);
+    }, [meetings, userId]);
+
+    const hasUnclaimedSelfBroadcast = useMemo(() => {
+        return meetings.some(
+            m => m.userFromId === userId && isActiveOpenBroadcastMeeting(m)
+        );
+    }, [meetings, userId]);
 
     // Fetch friends on mount
     useEffect(() => {
@@ -118,6 +152,9 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
         friends,
         isStarting,
         isCustomizing,
+        selfBroadcastMeeting,
+        isSelfBroadcastClaimed,
+        hasUnclaimedSelfBroadcast,
         setSelectedVibe,
         setSelectedFriendIds,
         setIsCustomizing,

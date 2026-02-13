@@ -3,7 +3,7 @@ import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { Linking, Platform, View } from "react-native";
+import { Linking, Platform } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeRemaining } from "../Meetings/meetingsUtils";
@@ -59,10 +59,10 @@ export default function ClaimedBroadcastTile({ meeting }: ClaimedBroadcastTilePr
             isSecondaryLoading={isCanceling}
             backgroundColor="transparent"
             avatarChildren={
-                <View>
+                <>
                     <Avatar.SpeechBubble selectedVibe={meeting.intentLabel} displayOnly />
                     <Avatar.TimerRing scheduledEnd={meeting.scheduledEnd} />
-                </View>
+                </>
             }
         />
     );

@@ -1,5 +1,6 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
+import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { useHasClaimedBroadcast } from "@/hooks/useIsBroadcasting";
 import { useAcceptOfferMutation } from "@/services/offersApi";
 import { RootState } from "@/types/redux";
@@ -17,10 +18,15 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
     const [acceptOffer] = useAcceptOfferMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const hasClaimedOtherBroadcast = useHasClaimedBroadcast(userId);
+    const { hasUnclaimedSelfBroadcast, isSelfBroadcastClaimed, handleEndBroadcast } = useBroadcastSettings();
 
     const handleClaim = async () => {
         try {
             setIsAccepting(true);
+            // Auto-end own unclaimed broadcast before claiming another's
+            if (hasUnclaimedSelfBroadcast) {
+                await handleEndBroadcast();
+            }
             await acceptOffer({ userId, offerId: offer.id }).unwrap();
         } catch (error) {
             console.error("Error claiming broadcast:", error);
@@ -41,7 +47,7 @@ export default function UnclaimedBroadcastTile({ offer }: UnclaimedBroadcastTile
             actionIcon="message.fill"
             onAction={handleClaim}
             isLoading={isAccepting}
-            hasAction={!hasClaimedOtherBroadcast}
+            hasAction={!hasClaimedOtherBroadcast && !isSelfBroadcastClaimed}
             backgroundColor="transparent"
             avatarChildren={
                 <>
