@@ -7,7 +7,6 @@ import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
 import { BroadcastSettingsProvider, useBroadcastSettings } from "../Broadcast/BroadcastSettingsContext";
-import BroadcastNowCard from "../EventCards/BroadcastNowCard";
 import BroadcastList from "../Today/BroadcastList";
 import TodayList from "../Today/TodayList";
 
@@ -61,7 +60,6 @@ function ProfileContent(): React.JSX.Element {
                     )}
                 </View>
             </View>
-            {isCustomizing && <BroadcastNowCard />}
             <BroadcastList/>
             <TodayList />
         </View>
