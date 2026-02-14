@@ -2,8 +2,8 @@ import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM } from "@/styles/styles";
+import { DRAFT_MEETING_STATE, PAST_MEETING_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
@@ -35,7 +35,9 @@ export default function BroadcastList(): React.JSX.Element | null {
         meetings.find((m: ProcessedMeetingType) =>
             isBroadcastMeeting(m) &&
             m.userFromId === userId &&
-            m.meetingState !== PAST_MEETING_STATE
+            m.meetingState !== PAST_MEETING_STATE &&
+            m.meetingState !== DRAFT_MEETING_STATE
+
         ) || null,
         [meetings, userId]
     );
@@ -53,7 +55,8 @@ export default function BroadcastList(): React.JSX.Element | null {
             .filter((m: ProcessedMeetingType) =>
                 isBroadcastMeeting(m) &&
                 m.userFromId !== userId &&
-                m.meetingState !== PAST_MEETING_STATE
+                m.meetingState !== PAST_MEETING_STATE &&
+                m.meetingState !== DRAFT_MEETING_STATE
             )
             .map((m: ProcessedMeetingType) => ({
                 id: `meeting-${m.id}`,
