@@ -1,4 +1,4 @@
-import AnimatedText from "@/components/AnimationComponents/AnimatedText";
+import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
 import MeetingActionBanner from "@/components/MeetingActionBanner/MeetingActionBanner";
 import { eventCardText } from "@/constants/event_card_strings";
@@ -9,7 +9,7 @@ import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
 import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
-import { getDisplayDate } from "@/utils/timeStringUtils";
+import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,9 @@ export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
 export const SELF_OPEN: MeetingCardState = "SELF_OPEN" as const;
 export const SELF_ACCEPTED: MeetingCardState = "SELF_ACCEPTED" as const;
 export const OTHER_ACCEPTED: MeetingCardState = "OTHER_ACCEPTED" as const;
+
+const AVATAR_SIZE = 52;
+const AVATAR_OVERLAP = AVATAR_SIZE * 0.35;
 
 interface MeetingCardProps {
     meeting: ProcessedMeetingType;
@@ -39,61 +42,39 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const hasAcceptedUsers = meeting.acceptedUserIds.length !== 0;
     const meetingCardState = selfCreatedMeeting ? (hasAcceptedUsers ? SELF_ACCEPTED : SELF_OPEN) : (OTHER_ACCEPTED);
 
-    const getOtherAcceptedMeetingTitle = () => {
-        const name = meeting.userFrom?.name;
-            return (
-                <EventCard.Title>
-                    {name ? `Accepted a meeting created by ${name}` : 'Accepted meeting'}
-                </EventCard.Title>
-            );
+    // Get the relevant users for avatars
+    const getAvatarUsers = () => {
+        if (meetingCardState === OTHER_ACCEPTED && meeting.userFrom) {
+            return [meeting.userFrom];
+        }
+        if (meetingCardState === SELF_ACCEPTED && meeting.acceptedUsers) {
+            return meeting.acceptedUsers;
+        }
+        if (meetingCardState === SELF_OPEN && meeting.targetUsers) {
+            return meeting.targetUsers;
+        }
+        return [];
     };
 
-    const getSelfOpenMeetingTitle = () => {
-        const targetNames = getTargetUserNames(meeting);
-            if (targetNames) {
-                return (
-                    <EventCard.Title>
-                        We'll see if {targetNames} is free {displayTimeDifference(meeting.scheduledFor)}
-                    </EventCard.Title>
-                );
-            }
-            return (
-                <EventCard.Row gap={0}>
-                    <EventCard.Title>
-                        {eventCardText.meeting_self_open.title()}{'\n'}
-                        {displayTimeDifference(meeting.scheduledFor)}
-                    </EventCard.Title>
-                    <AnimatedText
-                        text="..."
-                        style={{ fontSize: 28, fontFamily: CustomFonts.ztnaturebold, color: CREAM, fontWeight: '600' }}
-                        duration={300}
-                        staggerDelay={500}
-                        inline={true}
-                    />
-                </EventCard.Row>
-            );
-    }
+    const avatarUsers = getAvatarUsers();
 
-    const getSelfAcceptedMeetingTitle = () => {
-        const names = getDisplayNameList(meeting.acceptedUsers || []);
-        return (
-            <EventCard.Title>
-                {eventCardText.meeting_self_accepted.title(names)}{displayTimeDifference(meeting.scheduledFor)}
-            </EventCard.Title>
-        );
-
-    }
-
-    const getMainDisplayText = () => {
+    const getContextText = () => {
         switch (meetingCardState) {
-            case SELF_ACCEPTED:
-                return getSelfAcceptedMeetingTitle();
-
-            case SELF_OPEN:
-                return getSelfOpenMeetingTitle();
-
-            case OTHER_ACCEPTED:
-                return getOtherAcceptedMeetingTitle();
+            case SELF_ACCEPTED: {
+                const names = getDisplayNameList(meeting.acceptedUsers || []);
+                return `${eventCardText.meeting_self_accepted.title(names)}${displayTimeDifference(meeting.scheduledFor)}`;
+            }
+            case SELF_OPEN: {
+                const targetNames = getTargetUserNames(meeting);
+                if (targetNames) {
+                    return `We'll see if ${targetNames} is free ${displayTimeDifference(meeting.scheduledFor)}`;
+                }
+                return `${eventCardText.meeting_self_open.title()} ${displayTimeDifference(meeting.scheduledFor)}`;
+            }
+            case OTHER_ACCEPTED: {
+                const name = meeting.userFrom?.name;
+                return name ? `Accepted a meeting created by ${name}` : 'Accepted meeting';
+            }
         }
     };
 
@@ -102,14 +83,12 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             setIsCanceling(true);
             dispatch(deleteMeetingOptimistic(meeting.id));
             try {
-                const response = await cancelMeeting({
+                await cancelMeeting({
                     meetingId: meeting.id,
                     userId
                 }).unwrap();
-                // Success - optimistic update already applied
                 setIsCanceling(false);
             } catch (apiError) {
-                // ROLLBACK - restore the meeting to UI
                 dispatch(addMeetingRollback(meeting));
                 throw apiError;
             }
@@ -120,24 +99,14 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
         }
     };
 
-    const cancelButton = () => {
-        return (
-            <EventCard.Button
-                onPress={handleCancelMeeting}
-                loading={isCanceling}
-                variant="primary"
-                size="small"
-            >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-            </EventCard.Button>
-        );
-    };
-
-
     // Banner is visible when meeting is ≤30 mins away or happening
     const isBannerVisible = isMeetingActionable(meeting.scheduledFor, meeting.scheduledEnd);
-    // Banner only applies to accepted meetings (not SELF_OPEN)
     const canShowBanner = meetingCardState !== SELF_OPEN;
+
+    const isLightBg = meetingCardState === SELF_OPEN;
+    const timeColor = isLightBg ? '#262626' : CREAM;
+    const textColor = isLightBg ? '#262626' : CREAM;
+    const mutedColor = isLightBg ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)';
 
     return (
         <View>
@@ -145,30 +114,50 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}
                 hasBanner={canShowBanner && isBannerVisible}
             >
-                <EventCard.Header spacing="between" align="start">
-                    <EventCard.Row>
-                        {meetingCardState === OTHER_ACCEPTED && (
-                            <EventCard.Avatar user={meeting.userFrom} />
-                        )}
-                        {meetingCardState === SELF_ACCEPTED && meeting.acceptedUsers && (
-                            <EventCard.Avatar users={meeting.acceptedUsers} />
-                        )}
-                        {meetingCardState === SELF_OPEN && meeting.targetUsers && (
-                            <EventCard.Avatar users={meeting.targetUsers} />
-                        )}
-                        {getMainDisplayText()}
-                    </EventCard.Row>
-                    {cancelButton()}
-                </EventCard.Header>
-                <EventCard.Body>
-                    <EventCard.Description>
-                        {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
-                    </EventCard.Description>
+                {/* Hero row: Avatars + Time */}
+                <View style={styles.heroRow}>
+                    <View style={styles.avatarRow}>
+                        {avatarUsers.map((user, i) => (
+                            <View
+                                key={user.id ?? i}
+                                style={[
+                                    i > 0 && { marginLeft: -AVATAR_OVERLAP },
+                                    { zIndex: avatarUsers.length - i },
+                                ]}
+                            >
+                                <Avatar name={user.name} avatarUrl={user.avatarUrl} size={AVATAR_SIZE} />
+                            </View>
+                        ))}
+                    </View>
+                    <Text style={[styles.heroTime, { color: timeColor }]}>
+                        {formatTimeOnly(meeting.scheduledFor)}
+                    </Text>
+                </View>
 
-                    {DEV_FLAG && (
-                        <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
-                    )}
-                </EventCard.Body>
+                {/* Context text */}
+                <Text style={[styles.contextText, { color: textColor }]} numberOfLines={2}>
+                    {getContextText()}
+                </Text>
+
+                {/* Footer: date + cancel */}
+                <View style={styles.footerRow}>
+                    <Text style={[styles.dateText, { color: mutedColor }]}>
+                        {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
+                    </Text>
+
+                    <EventCard.Button
+                        onPress={handleCancelMeeting}
+                        loading={isCanceling}
+                        variant="primary"
+                        size="small"
+                    >
+                        <Text style={styles.cancelButtonText}>Cancel</Text>
+                    </EventCard.Button>
+                </View>
+
+                {DEV_FLAG && (
+                    <Text style={styles.debugText}>ID: {meeting.id.substring(0, 4)}</Text>
+                )}
             </EventCard>
 
             {canShowBanner && (
@@ -183,6 +172,38 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 }
 
 const styles = StyleSheet.create({
+    heroRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 12,
+    },
+    avatarRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    heroTime: {
+        fontSize: 28,
+        fontWeight: '700',
+        fontFamily: CustomFonts.ztnaturebold,
+        letterSpacing: -0.5,
+    },
+    contextText: {
+        fontSize: 15,
+        fontFamily: CustomFonts.ztnaturemedium,
+        lineHeight: 20,
+        marginBottom: 10,
+    },
+    footerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    dateText: {
+        fontSize: 13,
+        fontFamily: CustomFonts.ztnatureregular,
+        flex: 1,
+    },
     cancelButtonText: {
         color: PALE_BLUE,
         fontSize: 12,

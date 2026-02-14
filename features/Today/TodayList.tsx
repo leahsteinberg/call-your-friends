@@ -1,11 +1,11 @@
 import { CustomFonts } from "@/constants/theme";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
-import { DARK_GREEN } from "@/styles/styles";
+import { BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types";
 import { DRAFT_MEETING_STATE, PAST_MEETING_STATE } from "@/types/meetings-offers";
 import React, { useEffect, useState } from "react";
-import { FlatList, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { Platform, RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -16,16 +16,69 @@ import { ProcessedOfferType } from "../Offers/types";
 import TodayListLoader from "./LoadingAnimations/TodayListLoader";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
-function isToday(dateString: string): boolean {
-    const itemDate = new Date(dateString);
-    const today = new Date();
+// ============================================
+// DAY GROUPING HELPERS
+// ============================================
 
+function sameDay(a: Date, b: Date): boolean {
     return (
-        itemDate.getFullYear() === today.getFullYear() &&
-        itemDate.getMonth() === today.getMonth() &&
-        itemDate.getDate() === today.getDate()
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
     );
 }
+
+function getDayLabel(date: Date): string {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (sameDay(date, today)) return "Today";
+    if (sameDay(date, tomorrow)) return "Tomorrow";
+    if (sameDay(date, yesterday)) return "Yesterday";
+
+    return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+    });
+}
+
+function getDateKey(dateString: string): string {
+    const d = new Date(dateString);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
+
+interface TodaySection {
+    title: string;
+    data: TodayItem[];
+}
+
+function groupByDay(items: TodayItem[]): TodaySection[] {
+    const groupMap = new Map<string, TodayItem[]>();
+    const groupOrder: string[] = [];
+
+    items.forEach(item => {
+        const key = getDateKey(item.scheduledFor);
+        if (!groupMap.has(key)) {
+            groupMap.set(key, []);
+            groupOrder.push(key);
+        }
+        groupMap.get(key)!.push(item);
+    });
+
+    return groupOrder.map(key => {
+        const data = groupMap.get(key)!;
+        const date = new Date(data[0].scheduledFor);
+        return { title: getDayLabel(date), data };
+    });
+}
+
+// ============================================
+// MAIN COMPONENT
+// ============================================
 
 export default function TodayList(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
@@ -69,9 +122,7 @@ export default function TodayList(): React.JSX.Element {
     useEffect(() => {
         const processData = async () => {
             try {
-                // Filter for today and combine
                 const todayMeetings: TodayItem[] = meetings
-                    // .filter((meeting:ProcessedMeetingType )=> isToday(meeting.scheduledFor))
                     .map((meeting: ProcessedMeetingType) => ({
                         id: `meeting-${meeting.id}`,
                         type: 'meeting' as const,
@@ -82,7 +133,6 @@ export default function TodayList(): React.JSX.Element {
 
                     console.log("raw meetings", todayMeetings)
                 const todayOffers: TodayItem[] = offers
-                    // .filter((offer: ProcessedOfferType) => isToday(offer.scheduledFor))
                     .map((offer: ProcessedOfferType) => ({
                         id: `offer-${offer.id}`,
                         type: 'offer' as const,
@@ -93,7 +143,6 @@ export default function TodayList(): React.JSX.Element {
                     console.log("raw offers", todayOffers);
                 // Combine and sort by time
                 const combined = sortTodayItemsWithBroadcastPriority([...todayOffers, ...todayMeetings], userId)
-                
 
                 setTodayItems(combined);
             } catch (error) {
@@ -121,13 +170,7 @@ export default function TodayList(): React.JSX.Element {
             if (isBroadcastMeeting(meeting) && meeting.userFromId === userId && meeting.meetingState !== PAST_MEETING_STATE) {
                 return (
                     <View>
-                    {/* <Animated.View
-                        key={`self-broadcast-${meeting.id}`}
-                        entering={ZoomIn.duration(300).easing(Easing.inOut(Easing.ease))}
-                        layout={Layout.duration(300).easing(Easing.inOut(Easing.ease))}
-                    > */}
                         {card}
-                    {/* </Animated.View> */}
                     </View>
                 );
             }
@@ -139,14 +182,11 @@ export default function TodayList(): React.JSX.Element {
         }
     };
 
-    // Provide estimated item height to prevent layout shifts
-    const getItemLayout = (_data: ArrayLike<TodayItem> | null | undefined, index: number) => ({
-        length: 150, // Estimated average height of cards
-        offset: 150 * index,
-        index,
-    });
-
-    const renderListHeader = () => null;
+    const renderSectionHeader = ({ section }: { section: TodaySection }) => (
+        <View style={styles.sectionHeaderContainer}>
+            <Text style={styles.sectionHeaderText}>{section.title}</Text>
+        </View>
+    );
 
     // Render empty state inside the list
     const renderEmptyComponent = () => {
@@ -155,25 +195,26 @@ export default function TodayList(): React.JSX.Element {
         }
         return null;
     };
+
     if (isLoading) {
         return (
             <View style={styles.container}>
-                <TodayListLoader
-                />
+                <TodayListLoader />
             </View>
         );
     }
 
+    const sections = groupByDay(todayItems);
+
     return (
         <View style={styles.container}>
-            {/* <Text style={styles.headerText}>Today</Text> */}
-            <FlatList
+            <SectionList
                 style={Platform.OS !== 'web' ? { overflow: 'visible' } : undefined}
-                data={todayItems}
+                sections={sections}
                 renderItem={renderItem}
+                renderSectionHeader={renderSectionHeader}
                 keyExtractor={(item) => item.id}
-                getItemLayout={getItemLayout}
-                ListHeaderComponent={renderListHeader}
+                stickySectionHeadersEnabled={true}
                 ListEmptyComponent={renderEmptyComponent}
                 refreshControl={
                     <RefreshControl
@@ -195,19 +236,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginHorizontal: 15,
-        // marginVertical: 8,
     },
-    headerText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: DARK_GREEN,
-        //marginBottom: 12,
-        fontFamily: CustomFonts.ztnaturemedium,
-        position: 'relative', // Create stacking context
-        zIndex: 100, // High z-index to sit above FlatList
-        //backgroundColor: CREAM, // Opaque background to hide content underneath
-        // paddingBottom: 4, // Extra padding so background extends a bit
-
+    sectionHeaderContainer: {
+        backgroundColor: CREAM,
+        paddingTop: 16,
+        paddingBottom: 8,
+        paddingHorizontal: 4,
+    },
+    sectionHeaderText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: BURGUNDY,
+        fontFamily: CustomFonts.ztnaturebold,
+        letterSpacing: 0.5,
+        textTransform: 'uppercase',
+        opacity: 0.5,
     },
     listContent: {
         paddingBottom: 16,

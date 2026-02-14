@@ -19,3 +19,16 @@ export function getDisplayDate(scheduledFor: string, displayScheduledFor: string
 
     return displayScheduledFor;
 }
+
+/**
+ * Format a date to show only the time portion (e.g., "3:30 PM").
+ * Used in event cards where the day is already shown in the section header.
+ */
+export function formatTimeOnly(dateTime: string): string {
+    const date = new Date(dateTime);
+    return date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    });
+}

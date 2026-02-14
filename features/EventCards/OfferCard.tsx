@@ -1,3 +1,4 @@
+import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
@@ -7,13 +8,15 @@ import { CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
-import { getDisplayDate } from "@/utils/timeStringUtils";
+import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
+
+const AVATAR_SIZE = 52;
 
 interface OfferCardProps {
     offer: ProcessedOfferType;
@@ -27,16 +30,13 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
 
-
     const offerId = offer.id;
 
     const handleAcceptOffer = async () => {
         try {
             setIsAccepting(true)
             await acceptOffer({ userId, offerId }).unwrap();
-            // RTK Query will auto-refresh via cache invalidation
             setIsRejecting(false)
-
         } catch (error) {
             console.error("Error accepting offer:", error);
             alert('Failed to accept offer. Please try again.');
@@ -47,20 +47,14 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const handleRejectOffer = async () => {
         try {
             setIsRejecting(true);
-
-            // Optimistic update FIRST - remove from UI immediately
             dispatch(deleteOfferOptimistic(offerId));
-
             try {
                 await rejectOffer({ userId, offerId }).unwrap();
-                // Success - optimistic update already applied
                 setIsRejecting(false);
             } catch (apiError) {
-                // ROLLBACK - restore the offer to UI
                 dispatch(addOfferRollback(offer));
                 throw apiError;
             }
-
         } catch (error) {
             console.error("Error rejecting offer:", error);
             alert('Failed to reject offer. The item has been restored.');
@@ -68,27 +62,47 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         }
     };
 
-    // Get the name from the offer
     const getFromName = () => {
         return offer.meeting?.userFrom?.name || 'Unknown';
     };
 
     const strings = eventCardText.open_offer;
     const targetUserName = offer.meeting ? getTargetUserNames(offer.meeting) : null;
+    const fromUser = offer.meeting?.userFrom;
 
     return (
         <EventCard backgroundColor={PALE_BLUE}>
-            <EventCard.Header spacing="between" align="start">
-                <EventCard.Row>
-                    <EventCard.Avatar user={offer.meeting?.userFrom} />
-                    <EventCard.Title>
-                        {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
-                        {targetUserName && ` → ${targetUserName}`}
-                    </EventCard.Title>
-                </EventCard.Row>
+            {/* Hero row: Avatar + Time */}
+            <View style={styles.heroRow}>
+                <View style={styles.avatarRow}>
+                    {fromUser && (
+                        <Avatar name={fromUser.name} avatarUrl={fromUser.avatarUrl} size={AVATAR_SIZE} />
+                    )}
+                </View>
+                <Text style={styles.heroTime}>
+                    {formatTimeOnly(offer.scheduledFor)}
+                </Text>
+            </View>
+
+            {/* Context: who wants to talk */}
+            <Text style={styles.contextText}>
+                {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
+                {targetUserName && ` \u2192 ${targetUserName}`}
+            </Text>
+
+            {/* Description */}
+            <Text style={styles.descriptionText}>
+                {strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}
+            </Text>
+
+            {/* Footer: date + actions */}
+            <View style={styles.footerRow}>
+                <Text style={styles.dateText}>
+                    {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
+                </Text>
 
                 {offer.offerState === OPEN_OFFER_STATE && (
-                    <EventCard.Actions layout="horizontal" spacing={8}>
+                    <View style={styles.actionsRow}>
                         <EventCard.Button
                             onPress={handleAcceptOffer}
                             loading={isAccepting}
@@ -110,31 +124,65 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                                 {strings.rejectButtonText!()}
                             </Text>
                         </EventCard.Button>
-                    </EventCard.Actions>
+                    </View>
                 )}
-            </EventCard.Header>
+            </View>
 
-            <EventCard.Body>
-                <EventCard.Description>
-                    {strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}
-                </EventCard.Description>
-
-                <EventCard.Description>
-                    {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
-                </EventCard.Description>
-
-                {DEV_FLAG && (
-                    <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
-                )}
-            </EventCard.Body>
+            {DEV_FLAG && (
+                <Text style={styles.debugText}>ID: {offer.id.substring(0, 4)}</Text>
+            )}
         </EventCard>
     );
 }
 
 const styles = StyleSheet.create({
+    heroRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 12,
+    },
+    avatarRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    heroTime: {
+        fontSize: 28,
+        fontWeight: '700',
+        color: '#262626',
+        fontFamily: CustomFonts.ztnaturebold,
+        letterSpacing: -0.5,
+    },
+    contextText: {
+        fontSize: 15,
+        fontFamily: CustomFonts.ztnaturemedium,
+        color: '#262626',
+        lineHeight: 20,
+        marginBottom: 4,
+    },
+    descriptionText: {
+        fontSize: 14,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: 'rgba(0,0,0,0.5)',
+        marginBottom: 10,
+    },
+    footerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    dateText: {
+        fontSize: 13,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: 'rgba(0,0,0,0.5)',
+        flex: 1,
+    },
+    actionsRow: {
+        flexDirection: 'row',
+        gap: 8,
+    },
     acceptButtonText: {
         color: CREAM,
-        //backgroundColor: CHOCOLATE_COLOR,
         fontSize: 12,
         fontWeight: '600',
         fontFamily: CustomFonts.ztnaturemedium,
