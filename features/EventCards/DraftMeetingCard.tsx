@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
+import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
 const AVATAR_OVERLAP = AVATAR_SIZE * 0.35;
@@ -123,6 +124,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 </Text>
 
                 <View style={styles.actionsRow}>
+                    <NewTimeButton meetingId={meeting.id} />
                     <EventCard.Button
                         onPress={handleAcceptSuggestion}
                         loading={isAccepting}

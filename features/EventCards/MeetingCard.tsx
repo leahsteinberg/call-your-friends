@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import NewTimeButton from "./NewTimeButton";
 
 export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
 export const SELF_OPEN: MeetingCardState = "SELF_OPEN" as const;
@@ -139,20 +140,23 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     {getContextText()}
                 </Text>
 
-                {/* Footer: date + cancel */}
+                {/* Footer: date + actions */}
                 <View style={styles.footerRow}>
                     <Text style={[styles.dateText, { color: mutedColor }]}>
                         {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
                     </Text>
 
-                    <EventCard.Button
-                        onPress={handleCancelMeeting}
-                        loading={isCanceling}
-                        variant="primary"
-                        size="small"
-                    >
-                        <Text style={styles.cancelButtonText}>Cancel</Text>
-                    </EventCard.Button>
+                    <View style={styles.actionsRow}>
+                        <NewTimeButton meetingId={meeting.id} textColor={textColor} />
+                        <EventCard.Button
+                            onPress={handleCancelMeeting}
+                            loading={isCanceling}
+                            variant="primary"
+                            size="small"
+                        >
+                            <Text style={styles.cancelButtonText}>Cancel</Text>
+                        </EventCard.Button>
+                    </View>
                 </View>
 
                 {DEV_FLAG && (
@@ -198,6 +202,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    actionsRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     dateText: {
         fontSize: 13,

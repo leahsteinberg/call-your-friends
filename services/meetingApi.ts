@@ -134,11 +134,20 @@ export const meetingApi = createApi({
             }),
             invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
+        suggestNewTime: builder.mutation({
+            query: ({ meetingId, userId, modifier }: { meetingId: string; userId: string; modifier: 'tomorrow' | 'later_today' | 'next_week' }) => ({
+                url: '/api/suggest-new-time',
+                method: 'POST',
+                body: { meetingId, userId, modifier },
+            }),
+            invalidatesTags: ['Meeting', 'BroadcastStatus'],
+            onQueryStarted: invalidateOffersOnSuccess,
+        }),
     })
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation, useSuggestNewTimeMutation } = meetingApi;
 
-export { useAcceptSuggestionMutation, useBroadcastEndMutation, useBroadcastNowMutation, useCancelMeetingMutation, useCreateMeetingMutation, useDismissSuggestionMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery };
+export { useAcceptSuggestionMutation, useBroadcastEndMutation, useBroadcastNowMutation, useCancelMeetingMutation, useCreateMeetingMutation, useDismissSuggestionMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery, useSuggestNewTimeMutation };
 

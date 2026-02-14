@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
+import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
 
@@ -101,31 +102,34 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                     {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
                 </Text>
 
-                {offer.offerState === OPEN_OFFER_STATE && (
-                    <View style={styles.actionsRow}>
-                        <EventCard.Button
-                            onPress={handleAcceptOffer}
-                            loading={isAccepting}
-                            variant="primary"
-                            size="small"
-                        >
-                            <Text style={styles.acceptButtonText}>
-                                {strings.acceptButtonText!()}
-                            </Text>
-                        </EventCard.Button>
+                <View style={styles.actionsRow}>
+                    <NewTimeButton meetingId={offer.meetingId} textColor="#262626" />
+                    {offer.offerState === OPEN_OFFER_STATE && (
+                        <>
+                            <EventCard.Button
+                                onPress={handleAcceptOffer}
+                                loading={isAccepting}
+                                variant="primary"
+                                size="small"
+                            >
+                                <Text style={styles.acceptButtonText}>
+                                    {strings.acceptButtonText!()}
+                                </Text>
+                            </EventCard.Button>
 
-                        <EventCard.Button
-                            onPress={handleRejectOffer}
-                            loading={isRejecting}
-                            variant="danger"
-                            size="small"
-                        >
-                            <Text style={styles.rejectButtonText}>
-                                {strings.rejectButtonText!()}
-                            </Text>
-                        </EventCard.Button>
-                    </View>
-                )}
+                            <EventCard.Button
+                                onPress={handleRejectOffer}
+                                loading={isRejecting}
+                                variant="danger"
+                                size="small"
+                            >
+                                <Text style={styles.rejectButtonText}>
+                                    {strings.rejectButtonText!()}
+                                </Text>
+                            </EventCard.Button>
+                        </>
+                    )}
+                </View>
             </View>
 
             {DEV_FLAG && (
