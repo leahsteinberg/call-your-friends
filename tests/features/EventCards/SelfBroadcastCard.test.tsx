@@ -1,12 +1,10 @@
+import SelfBroadcastCard from '@/features/EventCards/SelfBroadcastCard_DEPRECATED';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import SelfBroadcastCard from '@/features/EventCards/SelfBroadcastCard';
 import {
   createBroadcastMeeting,
   createMockUsers,
-  createMockMutation,
-  mockSliceActions,
-  mockAlert,
+  mockAlert
 } from './eventCardTestUtils';
 
 // Mock Redux
