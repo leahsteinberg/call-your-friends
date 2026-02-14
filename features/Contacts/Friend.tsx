@@ -261,7 +261,6 @@ const styles = StyleSheet.create({
       fontFamily: CustomFonts.ztnaturemedium,
     },
     actionsSection: {
-      backgroundColor: 'red',
-      //marginLeft: 'auto',
+      marginLeft: 'auto',
     },
 });

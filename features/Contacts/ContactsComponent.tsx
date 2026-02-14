@@ -1,5 +1,4 @@
 import { CustomFonts } from "@/constants/theme";
-import { DEV_FLAG } from "@/environment";
 import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
 import { usePostSignOutMutation } from "@/services/authApi";
@@ -7,14 +6,13 @@ import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMu
 import { APP_HEADER_TEXT_COLOR, CORNFLOWER_BLUE } from "@/styles/styles";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../../types/redux";
 import ContactsList from "./ContactsList";
 import ContactsLoader from "./ContactsLoader";
 import ContactsSelector from "./ContactsSelector";
 import FriendsSearchBar from "./FriendsSearchBar";
-import InvitePhoneNumber from "./InvitePhoneNumber";
 import { setSentInvites } from "./contactsSlice";
 import { Friend, FriendRequest, ProcessedSentInvite } from "./types";
 
@@ -122,31 +120,24 @@ export default function ContactsComponent(): React.JSX.Element {
                     <Text style={styles.signOutText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
-            { DEV_FLAG &&
-                <View style={styles.inviteComponent}>
-                    <InvitePhoneNumber />
-                </View>
-            }
             <View style={styles.listComponent}>
                 {isLoading ? (
                     <ContactsLoader />
                 ) : (
-                    <ContactsList
-                        friends={filterFriends(friends, searchQuery)}
-                        friendRequests={searchQuery ? [] : friendRequests}
-                        sentInvites={searchQuery ? [] : processedSentInvites}
-                        onRefresh={handleRefresh}
-                        refreshing={refreshing}
-                        onCallIntentChange={fetchFriends}
-                    />
+                    <>
+                        <ContactsList
+                            friends={filterFriends(friends, searchQuery)}
+                            friendRequests={searchQuery ? [] : friendRequests}
+                            sentInvites={searchQuery ? [] : processedSentInvites}
+                            onRefresh={handleRefresh}
+                            refreshing={refreshing}
+                            onCallIntentChange={fetchFriends}
+                        />
+                        <FriendsSearchBar query={searchQuery} onChangeQuery={setSearchQuery} />
+                    </>
                 )}
-                <FriendsSearchBar query={searchQuery} onChangeQuery={setSearchQuery} />
             </View>
-            {
-                Platform.OS !== 'web' ?
-                <ContactsSelector /> :
-                <></>
-            }
+            <ContactsSelector />
         </View>
     );
 }
@@ -186,10 +177,5 @@ const styles = StyleSheet.create({
     listComponent: {
         flex: 1,
         //flexGrow: 1,
-    },
-    inviteComponent: {
-        //flex: 'auto',
-        flexShrink: 0,
-        //flex: 1,
     },
 });

@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import { BOLD_GREEN, CREAM, ORANGE } from "@/styles/styles";
+import { CREAM } from "@/styles/styles";
 import * as Haptics from "expo-haptics";
 import React, { useCallback, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
@@ -121,7 +121,7 @@ export default function TalkSoonButton({
           <IconSymbol
                name="heart"
                size={ICON_SIZE}
-               color={ORANGE}
+               color={'black'}
                fill="transparent"
                strokeWidth={2}
             />
@@ -130,8 +130,8 @@ export default function TalkSoonButton({
             <IconSymbol
                name="heart.fill"
                size={ICON_SIZE}
-               fill={BOLD_GREEN}
-               color={BOLD_GREEN}
+               fill={'black'}
+               color={'black'}
                strokeWidth={1}
             />
           </Animated.View>
@@ -147,7 +147,7 @@ export default function TalkSoonButton({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   button: {
     width: 44,
