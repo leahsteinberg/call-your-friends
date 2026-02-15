@@ -8,26 +8,91 @@ import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 
-type PresetModifier = "later_today" | "tomorrow" | "next_week";
+interface Option {
+    modifier: string;
+    label: string;
+}
 
-const PRESET_OPTIONS: { modifier: PresetModifier; label: string }[] = [
-    { modifier: "later_today", label: "Later today" },
-    { modifier: "tomorrow", label: "Tomorrow" },
-    { modifier: "next_week", label: "Next week" },
-];
+/**
+ * Returns 3 preset modifier options whose wording is relative to how far away
+ * the meeting is.  All options are phrased relative to the meeting time, not
+ * relative to "now", so the backend AI has clear guidance.
+ *
+ * Buckets (measured in whole calendar days from today to the meeting day):
+ *   0      → meeting is today
+ *   1      → meeting is tomorrow
+ *   2-6    → meeting is later this week / a few days out
+ *   7-13   → meeting is next week
+ *   14+    → meeting is two+ weeks out
+ */
+function getPresetOptions(scheduledFor: string): Option[] {
+    const now = new Date();
+    const meetingDate = new Date(scheduledFor);
+
+    // Strip time so we compare whole calendar days
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const meetingMidnight = new Date(meetingDate.getFullYear(), meetingDate.getMonth(), meetingDate.getDate());
+    const daysOut = Math.round((meetingMidnight.getTime() - todayMidnight.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (daysOut <= 0) {
+        // Meeting is today
+        return [
+            { modifier: "later today",   label: "Later today" },
+            { modifier: "tomorrow",       label: "Tomorrow" },
+            { modifier: "next week",      label: "Next week" },
+        ];
+    }
+
+    if (daysOut === 1) {
+        // Meeting is tomorrow
+        return [
+            { modifier: "later that day",  label: "Later that day" },
+            { modifier: "the day after",   label: "Day after" },
+            { modifier: "next week",       label: "Next week" },
+        ];
+    }
+
+    if (daysOut < 7) {
+        // Meeting is a few days out (this week)
+        return [
+            { modifier: "a day later",         label: "A day later" },
+            { modifier: "later that week",      label: "Later that week" },
+            { modifier: "the following week",   label: "Following week" },
+        ];
+    }
+
+    if (daysOut < 14) {
+        // Meeting is next week
+        return [
+            { modifier: "a day later",         label: "A day later" },
+            { modifier: "later that week",      label: "Later that week" },
+            { modifier: "the week after",       label: "Week after" },
+        ];
+    }
+
+    // Meeting is two or more weeks out
+    return [
+        { modifier: "a day later",       label: "A day later" },
+        { modifier: "a week later",      label: "A week later" },
+        { modifier: "two weeks later",   label: "Two weeks later" },
+    ];
+}
 
 interface NewTimeButtonProps {
     meetingId: string;
+    scheduledFor: string;
     /** Text color for the trigger button label. Defaults to CREAM. */
     textColor?: string;
 }
 
-export default function NewTimeButton({ meetingId, textColor = CREAM }: NewTimeButtonProps): React.JSX.Element {
+export default function NewTimeButton({ meetingId, scheduledFor, textColor = CREAM }: NewTimeButtonProps): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);
     const [suggestNewTime] = useSuggestNewTimeMutation();
     const [isLoading, setIsLoading] = useState(false);
     const [customText, setCustomText] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
+
+    const presetOptions = getPresetOptions(scheduledFor);
 
     const handleSuggest = async (modifier: string) => {
         if (!modifier.trim()) return;
@@ -68,8 +133,8 @@ export default function NewTimeButton({ meetingId, textColor = CREAM }: NewTimeB
             modalWidth={200}
             modalMaxHeight={300}
         >
-            {/* Preset options */}
-            {PRESET_OPTIONS.map(({ modifier, label }) => (
+            {/* Dynamic preset options */}
+            {presetOptions.map(({ modifier, label }) => (
                 <TouchableOpacity
                     key={modifier}
                     style={styles.optionRow}
@@ -84,11 +149,11 @@ export default function NewTimeButton({ meetingId, textColor = CREAM }: NewTimeB
             {/* Divider */}
             <View style={styles.divider} />
 
-            {/* Custom text input */}
+            {/* Free-text input for custom modifier */}
             <View style={styles.inputRow}>
                 <TextInput
                     style={styles.textInput}
-                    placeholder="e.g. Friday evening"
+                    placeholder="anything else..."
                     placeholderTextColor="rgba(0,0,0,0.35)"
                     value={customText}
                     onChangeText={setCustomText}

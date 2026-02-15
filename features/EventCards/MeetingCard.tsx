@@ -147,7 +147,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     </Text>
 
                     <View style={styles.actionsRow}>
-                        <NewTimeButton meetingId={meeting.id} textColor={textColor} />
+                        <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} textColor={textColor} />
                         <EventCard.Button
                             onPress={handleCancelMeeting}
                             loading={isCanceling}

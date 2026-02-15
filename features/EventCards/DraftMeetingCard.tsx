@@ -124,7 +124,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 </Text>
 
                 <View style={styles.actionsRow}>
-                    <NewTimeButton meetingId={meeting.id} />
+                    <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} />
                     <EventCard.Button
                         onPress={handleAcceptSuggestion}
                         loading={isAccepting}

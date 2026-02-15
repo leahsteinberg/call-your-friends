@@ -103,7 +103,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 </Text>
 
                 <View style={styles.actionsRow}>
-                    <NewTimeButton meetingId={offer.meetingId} textColor="#262626" />
+                    <NewTimeButton meetingId={offer.meetingId} scheduledFor={offer.scheduledFor} textColor="#262626" />
                     {offer.offerState === OPEN_OFFER_STATE && (
                         <>
                             <EventCard.Button
