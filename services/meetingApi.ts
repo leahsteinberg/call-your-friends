@@ -135,7 +135,7 @@ export const meetingApi = createApi({
             invalidatesTags: ['Meeting', 'BroadcastStatus'],
         }),
         suggestNewTime: builder.mutation({
-            query: ({ meetingId, userId, modifier }: { meetingId: string; userId: string; modifier: 'tomorrow' | 'later_today' | 'next_week' }) => ({
+            query: ({ meetingId, userId, modifier }: { meetingId: string; userId: string; modifier: string }) => ({
                 url: '/api/suggest-new-time',
                 method: 'POST',
                 body: { meetingId, userId, modifier },
