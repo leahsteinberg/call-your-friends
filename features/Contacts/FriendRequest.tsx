@@ -52,7 +52,7 @@ export default function FriendRequest({ item, onRemove }: FriendRequestPropsExte
 
   return (
     <UserCard onSwipeDelete={handleDelete}>
-      <UserCard.Avatar name={item.userFrom.name} size={48} />
+      <UserCard.Avatar name={item.userFrom.name} avatarUrl={item.userFrom.avatarUrl} size={48} />
 
       <UserCard.Content>
         <UserCard.Title>{item.userFrom.name}</UserCard.Title>

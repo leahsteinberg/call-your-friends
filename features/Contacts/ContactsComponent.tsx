@@ -110,6 +110,8 @@ export default function ContactsComponent(): React.JSX.Element {
         };
         loadInitialData();
     }, [])
+    console.log("friend Requests", friendRequests);
+    console.log("SENTTT friend Requests", processedSentInvites);
 
 
     return (
