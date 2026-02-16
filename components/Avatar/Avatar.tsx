@@ -6,6 +6,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import Animated, {
     Easing,
+    SharedValue,
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
@@ -37,9 +38,10 @@ interface AvatarProps {
     children?: React.ReactNode;
     borderColor?: string;
     borderWidth?: number;
+    contentPosition?: string;
 }
 
-function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, borderWidth }: AvatarProps): React.JSX.Element {
+function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, borderWidth, contentPosition }: AvatarProps): React.JSX.Element {
     const initial = name?.charAt(0).toUpperCase() ?? '?';
     const hasBorder = borderColor !== undefined && borderWidth !== undefined && borderWidth > 0;
 
@@ -62,6 +64,7 @@ function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, bo
                             source={{ uri: avatarUrl }}
                             style={{ width: size, height: size, borderRadius: size / 2 }}
                             contentFit="cover"
+                            contentPosition={contentPosition || "center"}
                             transition={200}
                         />
                     ) : (
@@ -340,23 +343,36 @@ function PulseRing({
 // GREYSCALE
 // ============================================
 interface GreyscaleProps {
-    intensity?: number;
+    intensity?: number | SharedValue<number>;
 }
 
-function Greyscale({ intensity = 1 }: GreyscaleProps): React.JSX.Element | null {
+function Greyscale({ intensity = 1 }: GreyscaleProps): React.JSX.Element {
     const { size } = useAvatarContext();
-    if (intensity <= 0) return null;
+    const isShared = typeof intensity !== 'number';
+    const fallback = useSharedValue(isShared ? 0 : intensity);
+
+    useEffect(() => {
+        if (!isShared) {
+            fallback.value = intensity as number;
+        }
+    }, [intensity]);
+
+    const animatedStyle = useAnimatedStyle(() => {
+        const val = isShared ? (intensity as SharedValue<number>).value : fallback.value;
+        return {
+            opacity: val * 0.5,
+        };
+    });
 
     return (
-        <View
-            style={{
+        <Animated.View
+            style={[{
                 position: 'absolute',
                 width: size,
                 height: size,
                 borderRadius: size / 2,
                 backgroundColor: 'grey',
-                opacity: intensity * 0.5,
-            }}
+            }, animatedStyle]}
             pointerEvents="none"
         />
     );

@@ -4,7 +4,6 @@ import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import React, { useState } from "react";
-import { Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { endBroadcast } from "../Broadcast/broadcastSlice";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
@@ -69,7 +68,6 @@ export default function SelfBroadcastTile({ meeting }: SelfBroadcastTileProps): 
                 ) : undefined
             }
         />
-        <Text>{meeting.id}</Text>
         </>
         
     );

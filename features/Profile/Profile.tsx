@@ -43,14 +43,14 @@ function ProfileContent(): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <View style={styles.titleContainer}>
-                <Text style={styles.titleText}>Loyal</Text>
-            </View>
             <View style={styles.headerContainer}>
-                <View style={styles.greetingContainer}>
+                <View style={styles.headerItem}>
                     <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 </View>
-                <View style={styles.toggleContainer}>
+                <View style={styles.headerItem}>
+                    <Text style={styles.titleText}>Loyal</Text>
+                </View>
+                <View style={styles.headerItem}>
                     {!meetingsLoading && (
                         <BroadcastToggle
                             onCustomizeBroadcast={onCustomizeBroadcast}
@@ -84,29 +84,24 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flex: 1,
     },
-    titleContainer: {
-        justifyContent: 'center',
-        marginBottom: 10,
-    },
-    titleText: {
-        textAlign: 'center',
-        fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 35,
-        color: CREAM,
-    },
     headerContainer: {
         flexDirection: 'row',
         zIndex: 99,
         paddingBottom: 8,
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        marginHorizontal: 15,
-    },
-    greetingContainer: {
-        flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
-        gap: 10,
+        //marginHorizontal: 15,
+    },
+    headerItem: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    titleText: {
+        textAlign: 'center',
+        fontFamily: CustomFonts.ztnaturebold,
+        fontSize: 24,
+        color: CREAM,
     },
     avatar: {
         width: AVATAR_SIZE,
@@ -127,14 +122,11 @@ const styles = StyleSheet.create({
         color: CREAM,
     },
     greetingText: {
-        paddingTop: 10,
         color: CREAM,
         fontFamily: CustomFonts.awalierregular,
-        letterSpacing: 3,
-        fontSize: 20,
+        letterSpacing: 2,
+        fontSize: 16,
         fontWeight: '600',
-        flexShrink: 1,
-    },
-    toggleContainer: {
+        textAlign: 'left',
     },
 });

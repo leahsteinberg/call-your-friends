@@ -83,6 +83,9 @@ export default function BroadcastToggle({
     // Gradient thumb image opacity (animated independently with slow fade)
     const gradientOpacity = useSharedValue(isBroadcasting ? 1 : 0);
 
+    // Greyscale intensity: 1 = full grey (off), 0 = full color (broadcasting)
+    const greyscaleIntensity = useSharedValue((isBroadcasting || isClaimedBroadcasting) ? 0 : 1);
+
     // Sync with external broadcasting state
     useEffect(() => {
         if ((isBroadcasting || isClaimedBroadcasting) && localState !== 'broadcasting') {
@@ -127,6 +130,20 @@ export default function BroadcastToggle({
             }
         };
     }, [localState, onStartBroadcast]);
+
+    // Greyscale animation: full grey when off, fade to color during customizing, full color when broadcasting
+    useEffect(() => {
+        if (localState === 'off') {
+            greyscaleIntensity.value = withTiming(1, { duration: 400 });
+        } else if (localState === 'customizing') {
+            greyscaleIntensity.value = withTiming(0, {
+                duration: COUNTDOWN_SECONDS * 1000,
+                easing: Easing.linear,
+            });
+        } else if (localState === 'broadcasting') {
+            greyscaleIntensity.value = withTiming(0, { duration: 200 });
+        }
+    }, [localState]);
 
     // Ripple animation for broadcasting state
     useEffect(() => {
@@ -321,11 +338,11 @@ export default function BroadcastToggle({
                                 {avatarUrl ? (
                                     <Avatar
                                         avatarUrl={avatarUrl}
+                                        size={THUMB_SIZE}
+                                        contentPosition="top"
                                     >
-                                        <Avatar.Greyscale intensity={!!isFullyOn ? 0 : 1}/>
+                                        <Avatar.Greyscale intensity={greyscaleIntensity}/>
                                     </Avatar>
-                                        
-                
                                 ) : (
                                     <Animated.Image
                                         source={require('@/assets/images/gradient-fast-1.png')}
