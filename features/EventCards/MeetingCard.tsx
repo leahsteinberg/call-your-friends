@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import MeetingMediaSection from "./MeetingMediaSection";
 import NewTimeButton from "./NewTimeButton";
 
 export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
@@ -139,6 +140,14 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 <Text style={[styles.contextText, { color: textColor }]} numberOfLines={2}>
                     {getContextText()}
                 </Text>
+
+                {/* Photo + note */}
+                <MeetingMediaSection
+                    meetingId={meeting.id}
+                    photoUrl={meeting.photoUrl}
+                    textContent={meeting.textContent}
+                    scheme={isLightBg ? 'light' : 'dark'}
+                />
 
                 {/* Footer: date + actions */}
                 <View style={styles.footerRow}>

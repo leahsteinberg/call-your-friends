@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
+import MeetingMediaSection from "./MeetingMediaSection";
 import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
@@ -87,7 +88,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
             {/* Context: who wants to talk */}
             <Text style={styles.contextText}>
-                {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor))}
+                {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor ?? offer.scheduledFor))}
                 {targetUserName && ` \u2192 ${targetUserName}`}
             </Text>
 
@@ -95,6 +96,14 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             <Text style={styles.descriptionText}>
                 {strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}
             </Text>
+
+            {/* Photo + note */}
+            <MeetingMediaSection
+                meetingId={offer.meetingId}
+                photoUrl={offer.meeting?.photoUrl}
+                textContent={offer.meeting?.textContent}
+                scheme="light"
+            />
 
             {/* Footer: date + actions */}
             <View style={styles.footerRow}>
