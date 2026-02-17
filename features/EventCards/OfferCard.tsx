@@ -1,16 +1,17 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
-import { CREAM, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { getTargetUserNames } from "@/utils/nameStringUtils";
 import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -74,16 +75,42 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
     return (
         <EventCard backgroundColor={PALE_BLUE}>
-            {/* Hero row: Avatar + Time */}
+            {/* Hero row: Avatar + (Buttons / Time) */}
             <View style={styles.heroRow}>
                 <View style={styles.avatarRow}>
                     {fromUser && (
                         <Avatar name={fromUser.name} avatarUrl={fromUser.avatarUrl} size={AVATAR_SIZE} />
                     )}
                 </View>
-                <Text style={styles.heroTime}>
-                    {formatTimeOnly(offer.scheduledFor)}
-                </Text>
+                <View style={styles.heroRight}>
+                    {offer.offerState === OPEN_OFFER_STATE && (
+                        <View style={styles.iconButtonRow}>
+                            <TouchableOpacity
+                                onPress={handleAcceptOffer}
+                                disabled={isAccepting || isRejecting}
+                                style={[styles.iconButton, styles.iconButtonAccept]}
+                            >
+                                {isAccepting
+                                    ? <ActivityIndicator size="small" color={CREAM} />
+                                    : <IconSymbol name="checkmark" size={14} color={CREAM} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleRejectOffer}
+                                disabled={isAccepting || isRejecting}
+                                style={[styles.iconButton, styles.iconButtonCancel]}
+                            >
+                                {isRejecting
+                                    ? <ActivityIndicator size="small" color="#262626" />
+                                    : <IconSymbol name="xmark" size={14} color="#262626" />
+                                }
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    <Text style={styles.heroTime}>
+                        {formatTimeOnly(offer.scheduledFor)}
+                    </Text>
+                </View>
             </View>
 
             {/* Context: who wants to talk */}
@@ -113,31 +140,6 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 
                 <View style={styles.actionsRow}>
                     <NewTimeButton meetingId={offer.meetingId} scheduledFor={offer.scheduledFor} textColor="#262626" />
-                    {offer.offerState === OPEN_OFFER_STATE && (
-                        <>
-                            <EventCard.Button
-                                onPress={handleAcceptOffer}
-                                loading={isAccepting}
-                                variant="primary"
-                                size="small"
-                            >
-                                <Text style={styles.acceptButtonText}>
-                                    {strings.acceptButtonText!()}
-                                </Text>
-                            </EventCard.Button>
-
-                            <EventCard.Button
-                                onPress={handleRejectOffer}
-                                loading={isRejecting}
-                                variant="danger"
-                                size="small"
-                            >
-                                <Text style={styles.rejectButtonText}>
-                                    {strings.rejectButtonText!()}
-                                </Text>
-                            </EventCard.Button>
-                        </>
-                    )}
                 </View>
             </View>
 
@@ -190,21 +192,30 @@ const styles = StyleSheet.create({
         color: 'rgba(0,0,0,0.5)',
         flex: 1,
     },
-    actionsRow: {
+    heroRight: {
+        alignItems: 'flex-end',
+        gap: 6,
+    },
+    iconButtonRow: {
         flexDirection: 'row',
         gap: 8,
     },
-    acceptButtonText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
+    iconButton: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    rejectButtonText: {
-        fontSize: 12,
-        color: CREAM,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
+    iconButtonAccept: {
+        backgroundColor: BURGUNDY,
+    },
+    iconButtonCancel: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+    },
+    actionsRow: {
+        flexDirection: 'row',
+        gap: 8,
     },
     debugText: {
         fontSize: 10,

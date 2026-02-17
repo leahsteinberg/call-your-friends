@@ -4,14 +4,15 @@ import MeetingActionBanner from "@/components/MeetingActionBanner/MeetingActionB
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
 import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
 import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -116,7 +117,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 backgroundColor={meetingCardState === SELF_OPEN ? PALE_BLUE : BOLD_BLUE}
                 hasBanner={canShowBanner && isBannerVisible}
             >
-                {/* Hero row: Avatars + Time */}
+                {/* Hero row: Avatars + (Cancel button / Time) */}
                 <View style={styles.heroRow}>
                     <View style={styles.avatarRow}>
                         {avatarUsers.map((user, i) => (
@@ -131,9 +132,21 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                             </View>
                         ))}
                     </View>
-                    <Text style={[styles.heroTime, { color: timeColor }]}>
-                        {formatTimeOnly(meeting.scheduledFor)}
-                    </Text>
+                    <View style={styles.heroRight}>
+                        <TouchableOpacity
+                            onPress={handleCancelMeeting}
+                            disabled={isCanceling}
+                            style={[styles.iconButton, styles.iconButtonCancel]}
+                        >
+                            {isCanceling
+                                ? <ActivityIndicator size="small" color={CREAM} />
+                                : <IconSymbol name="xmark" size={14} color={CREAM} />
+                            }
+                        </TouchableOpacity>
+                        <Text style={[styles.heroTime, { color: timeColor }]}>
+                            {formatTimeOnly(meeting.scheduledFor)}
+                        </Text>
+                    </View>
                 </View>
 
                 {/* Context text */}
@@ -157,14 +170,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
                     <View style={styles.actionsRow}>
                         <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} textColor={textColor} />
-                        <EventCard.Button
-                            onPress={handleCancelMeeting}
-                            loading={isCanceling}
-                            variant="primary"
-                            size="small"
-                        >
-                            <Text style={styles.cancelButtonText}>Cancel</Text>
-                        </EventCard.Button>
                     </View>
                 </View>
 
@@ -212,6 +217,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
     },
+    heroRight: {
+        alignItems: 'flex-end',
+        gap: 6,
+    },
+    iconButton: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconButtonCancel: {
+        backgroundColor: BURGUNDY,
+    },
     actionsRow: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -221,12 +240,6 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontFamily: CustomFonts.ztnatureregular,
         flex: 1,
-    },
-    cancelButtonText: {
-        color: PALE_BLUE,
-        fontSize: 12,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
     },
     debugText: {
         fontSize: 10,

@@ -1,15 +1,15 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
-import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
-import { BOLD_BLUE, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayNameList } from "@/utils/nameStringUtils";
 import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
@@ -30,8 +30,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
-
-    const strings = eventCardText.draft_suggestion;
 
     const getTargetNames = (): string => {
         if (meeting.targetUsers && meeting.targetUsers.length > 0) {
@@ -92,7 +90,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
-            {/* Hero row: Avatars + Time */}
+            {/* Hero row: Avatars + (Buttons / Time) */}
             <View style={styles.heroRow}>
                 <View style={styles.avatarRow}>
                     {avatarUsers.map((user, i) => (
@@ -107,9 +105,33 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                         </View>
                     ))}
                 </View>
-                <Text style={styles.heroTime}>
-                    {formatTimeOnly(meeting.scheduledFor)}
-                </Text>
+                <View style={styles.heroRight}>
+                    <View style={styles.iconButtonRow}>
+                        <TouchableOpacity
+                            onPress={handleAcceptSuggestion}
+                            disabled={isAccepting || isDismissing}
+                            style={[styles.iconButton, styles.iconButtonAccept]}
+                        >
+                            {isAccepting
+                                ? <ActivityIndicator size="small" color={CREAM} />
+                                : <IconSymbol name="checkmark" size={14} color={CREAM} />
+                            }
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleDismissSuggestion}
+                            disabled={isAccepting || isDismissing}
+                            style={[styles.iconButton, styles.iconButtonCancel]}
+                        >
+                            {isDismissing
+                                ? <ActivityIndicator size="small" color={CREAM} />
+                                : <IconSymbol name="xmark" size={14} color={CREAM} />
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={styles.heroTime}>
+                        {formatTimeOnly(meeting.scheduledFor)}
+                    </Text>
+                </View>
             </View>
 
             {/* Context text */}
@@ -125,26 +147,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 
                 <View style={styles.actionsRow}>
                     <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} />
-                    <EventCard.Button
-                        onPress={handleAcceptSuggestion}
-                        loading={isAccepting}
-                        variant="primary"
-                        size="small"
-                    >
-                        <Text style={styles.acceptButtonText}>
-                            {strings.acceptButtonText!()}
-                        </Text>
-                    </EventCard.Button>
-                    <EventCard.Button
-                        onPress={handleDismissSuggestion}
-                        loading={isDismissing}
-                        variant="secondary"
-                        size="small"
-                    >
-                        <Text style={styles.dismissButtonText}>
-                            {strings.rejectButtonText!()}
-                        </Text>
-                    </EventCard.Button>
                 </View>
             </View>
 
@@ -193,21 +195,30 @@ const styles = StyleSheet.create({
         color: 'rgba(255,255,255,0.6)',
         flex: 1,
     },
-    actionsRow: {
+    heroRight: {
+        alignItems: 'flex-end',
+        gap: 6,
+    },
+    iconButtonRow: {
         flexDirection: 'row',
         gap: 8,
     },
-    acceptButtonText: {
-        color: CREAM,
-        fontSize: 12,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
+    iconButton: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    dismissButtonText: {
-        fontSize: 12,
-        color: PALE_BLUE,
-        fontWeight: '600',
-        fontFamily: CustomFonts.ztnaturemedium,
+    iconButtonAccept: {
+        backgroundColor: BURGUNDY,
+    },
+    iconButtonCancel: {
+        backgroundColor: 'rgba(255,255,255,0.2)',
+    },
+    actionsRow: {
+        flexDirection: 'row',
+        gap: 8,
     },
     debugText: {
         fontSize: 10,
