@@ -119,18 +119,25 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             >
                 {/* Hero row: Avatars + (Cancel button / Time) */}
                 <View style={styles.heroRow}>
-                    <View style={styles.avatarRow}>
-                        {avatarUsers.map((user, i) => (
-                            <View
-                                key={user.id ?? i}
-                                style={[
-                                    i > 0 && { marginLeft: -AVATAR_OVERLAP },
-                                    { zIndex: avatarUsers.length - i },
-                                ]}
-                            >
-                                <Avatar name={user.name} avatarUrl={user.avatarUrl} size={AVATAR_SIZE} />
-                            </View>
-                        ))}
+                    <View style={styles.avatarSection}>
+                        <View style={styles.avatarRow}>
+                            {avatarUsers.map((user, i) => (
+                                <View
+                                    key={user.id ?? i}
+                                    style={[
+                                        i > 0 && { marginLeft: -AVATAR_OVERLAP },
+                                        { zIndex: avatarUsers.length - i },
+                                    ]}
+                                >
+                                    <Avatar name={user.name} avatarUrl={user.avatarUrl} size={AVATAR_SIZE} />
+                                </View>
+                            ))}
+                        </View>
+                        {avatarUsers.length > 0 && (
+                            <Text style={[styles.avatarName, { color: mutedColor }]} numberOfLines={1}>
+                                {getDisplayNameList(avatarUsers)}
+                            </Text>
+                        )}
                     </View>
                     <View style={styles.heroRight}>
                         <TouchableOpacity
@@ -192,13 +199,20 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 const styles = StyleSheet.create({
     heroRow: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         marginBottom: 12,
+    },
+    avatarSection: {
+        gap: 4,
     },
     avatarRow: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    avatarName: {
+        fontSize: 12,
+        fontFamily: CustomFonts.ztnatureregular,
     },
     heroTime: {
         fontSize: 28,

@@ -77,9 +77,16 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         <EventCard backgroundColor={PALE_BLUE}>
             {/* Hero row: Avatar + (Buttons / Time) */}
             <View style={styles.heroRow}>
-                <View style={styles.avatarRow}>
-                    {fromUser && (
-                        <Avatar name={fromUser.name} avatarUrl={fromUser.avatarUrl} size={AVATAR_SIZE} />
+                <View style={styles.avatarSection}>
+                    <View style={styles.avatarRow}>
+                        {fromUser && (
+                            <Avatar name={fromUser.name} avatarUrl={fromUser.avatarUrl} size={AVATAR_SIZE} />
+                        )}
+                    </View>
+                    {fromUser?.name && (
+                        <Text style={styles.avatarName} numberOfLines={1}>
+                            {fromUser.name}
+                        </Text>
                     )}
                 </View>
                 <View style={styles.heroRight}>
@@ -153,13 +160,21 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
 const styles = StyleSheet.create({
     heroRow: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         marginBottom: 12,
+    },
+    avatarSection: {
+        gap: 4,
     },
     avatarRow: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    avatarName: {
+        fontSize: 12,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: 'rgba(0,0,0,0.5)',
     },
     heroTime: {
         fontSize: 28,

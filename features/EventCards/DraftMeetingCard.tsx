@@ -92,18 +92,25 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         <EventCard backgroundColor={BOLD_BLUE}>
             {/* Hero row: Avatars + (Buttons / Time) */}
             <View style={styles.heroRow}>
-                <View style={styles.avatarRow}>
-                    {avatarUsers.map((user, i) => (
-                        <View
-                            key={user.id ?? i}
-                            style={[
-                                i > 0 && { marginLeft: -AVATAR_OVERLAP },
-                                { zIndex: avatarUsers.length - i },
-                            ]}
-                        >
-                            <Avatar name={user.name} avatarUrl={user.avatarUrl} size={AVATAR_SIZE} />
-                        </View>
-                    ))}
+                <View style={styles.avatarSection}>
+                    <View style={styles.avatarRow}>
+                        {avatarUsers.map((user, i) => (
+                            <View
+                                key={user.id ?? i}
+                                style={[
+                                    i > 0 && { marginLeft: -AVATAR_OVERLAP },
+                                    { zIndex: avatarUsers.length - i },
+                                ]}
+                            >
+                                <Avatar name={user.name} avatarUrl={user.avatarUrl} size={AVATAR_SIZE} />
+                            </View>
+                        ))}
+                    </View>
+                    {avatarUsers.length > 0 && (
+                        <Text style={styles.avatarName} numberOfLines={1}>
+                            {targetNames}
+                        </Text>
+                    )}
                 </View>
                 <View style={styles.heroRight}>
                     <View style={styles.iconButtonRow}>
@@ -162,13 +169,21 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
 const styles = StyleSheet.create({
     heroRow: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'space-between',
         marginBottom: 12,
+    },
+    avatarSection: {
+        gap: 4,
     },
     avatarRow: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    avatarName: {
+        fontSize: 12,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: 'rgba(255,255,255,0.6)',
     },
     heroTime: {
         fontSize: 28,
