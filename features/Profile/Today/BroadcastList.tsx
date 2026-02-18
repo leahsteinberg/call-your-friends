@@ -1,4 +1,9 @@
 import { CustomFonts } from "@/constants/theme";
+import SelfBroadcastTile from "@/features/Broadcast/SelfBroadcastTile";
+import { isBroadcastMeeting } from "@/features/Meetings/meetingHelpers";
+import { isActiveOpenBroadcastMeeting } from "@/features/Meetings/meetingsFilters";
+import type { ProcessedMeetingType } from "@/features/Meetings/types";
+import type { ProcessedOfferType } from "@/features/Offers/types";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { CREAM } from "@/styles/styles";
@@ -7,15 +12,10 @@ import { RootState } from "@/types/redux";
 import React, { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
-import { isActiveOpenBroadcastMeeting } from "../Meetings/meetingsFilters";
-import type { ProcessedMeetingType } from "../Meetings/types";
-import type { ProcessedOfferType } from "../Offers/types";
-import ClaimedBroadcastTile from "./ClaimedBroadcastTile";
-import SelfBroadcastTile from "./SelfBroadcastTile";
-import SelfClaimedBroadcastTile from "./SelfClaimedBroadcastTile";
-import StartBroadcastTile from "./StartBroadcastTile";
-import UnclaimedBroadcastTile from "./UnclaimedBroadcastTile";
+import ClaimedBroadcastTile from "../../Broadcast/ClaimedBroadcastTile";
+import SelfClaimedBroadcastTile from "../../Broadcast/SelfClaimedBroadcastTile";
+import StartBroadcastTile from "../../Broadcast/StartBroadcastTile";
+import UnclaimedBroadcastTile from "../../Broadcast/UnclaimedBroadcastTile";
 
 type BroadcastItem =
     | { id: string; type: 'self'; data: ProcessedMeetingType | null }
@@ -102,7 +102,7 @@ export default function BroadcastList(): React.JSX.Element | null {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.sectionTitle}>Call them now</Text>
+            <Text style={styles.sectionTitle}>Free to talk</Text>
             <FlatList
                 horizontal
                 data={items}

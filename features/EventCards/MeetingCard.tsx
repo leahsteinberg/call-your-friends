@@ -1,10 +1,10 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
 import MeetingActionBanner from "@/components/MeetingActionBanner/MeetingActionBanner";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
-import MeetingMediaSection from "./MeetingMediaSection";
 import NewTimeButton from "./NewTimeButton";
 
 export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
@@ -161,15 +160,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                     {getContextText()}
                 </Text>
 
-                {/* Photo + note */}
-                <MeetingMediaSection
-                    meetingId={meeting.id}
-                    photoUrl={meeting.photoUrl}
-                    textContent={meeting.textContent}
-                    scheme={isLightBg ? 'light' : 'dark'}
-                />
-
-                {/* Footer: date + actions */}
                 <View style={styles.footerRow}>
                     <Text style={[styles.dateText, { color: mutedColor }]}>
                         {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}

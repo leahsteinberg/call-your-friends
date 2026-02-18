@@ -1,8 +1,8 @@
+import { isBroadcastMeeting } from "@/features/Meetings/meetingHelpers";
+import { ProcessedMeetingType } from "@/features/Meetings/types";
+import { isBroadcastOffer } from "@/features/Offers/offerHelpers";
+import { ProcessedOfferType } from "@/features/Offers/types";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
-import { ProcessedMeetingType } from "../Meetings/types";
-import { isBroadcastOffer } from "../Offers/offerHelpers";
-import { ProcessedOfferType } from "../Offers/types";
 
 export type TodayItem = {
     id: string;
@@ -12,18 +12,8 @@ export type TodayItem = {
     data: ProcessedMeetingType | ProcessedOfferType;
 };
 
-/**
- * Pure function to sort today items with custom ordering:
- * 1. Self-created broadcast meetings first
- * 2. Broadcast offers in chronological order (earliest to latest)
- * 3. All other meetings and offers in chronological order (soonest to latest)
- *
- * @param items - Array of TodayItem to sort
- * @param userId - The current user's ID to identify self-created items
- * @returns Sorted array of TodayItem
- */
+
 export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: string): TodayItem[] {
-    // Separate items into three categories
     const selfCreatedBroadcastMeetings: TodayItem[] = [];
     const broadcastOffers: TodayItem[] = [];
     const otherItems: TodayItem[] = [];
@@ -46,7 +36,6 @@ export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: 
         }
     });
 
-    // Sort each category by scheduledFor time (earliest to latest)
     const sortByTime = (a: TodayItem, b: TodayItem) =>
         new Date(a.scheduledFor).getTime() - new Date(b.scheduledFor).getTime();
 
@@ -54,6 +43,5 @@ export function sortTodayItemsWithBroadcastPriority(items: TodayItem[], userId: 
     broadcastOffers.sort(sortByTime);
     otherItems.sort(sortByTime);
 
-    // Combine in the desired order
     return [...selfCreatedBroadcastMeetings, ...broadcastOffers, ...otherItems];
 }

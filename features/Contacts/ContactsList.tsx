@@ -3,9 +3,9 @@ import { BURGUNDY } from "@/styles/styles";
 import React from "react";
 import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Friend from "./Friend/Friend";
-import FriendRequest from "./Friend/FriendRequest";
-import InvitedContact from "./Friend/InvitedContact";
+import Friend from "./FriendCard/Friend";
+import FriendRequest from "./FriendCard/FriendRequest";
+import InvitedContact from "./FriendCard/InvitedContact";
 import { ContactsListProps, Friend as FriendType } from "./types";
 
 interface ContactsListPropsExtended extends ContactsListProps {

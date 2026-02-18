@@ -1,3 +1,4 @@
+import Avatar from '@/components/Avatar/Avatar';
 import { CustomFonts } from '@/constants/theme';
 import { useIsBroadcasting, useIsClaimedBroadcasting } from '@/hooks/useIsBroadcasting';
 import { CREAM } from '@/styles/styles';
@@ -6,7 +7,6 @@ import { BlurView } from 'expo-blur';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-
 
 import Animated, {
     Easing,
@@ -24,7 +24,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 import { useSelector } from 'react-redux';
-import Avatar from './Avatar/Avatar';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -387,7 +386,7 @@ export default function BroadcastToggle({
             <View style={styles.labelContainer}>
                 <Text style={styles.callMeText}>CALL ME</Text>
                 <View style={styles.modeRow}>
-                    <Text style={styles.callMeText}>MODE </Text>
+                    {/* <Text style={styles.callMeText}>MODE </Text> */}
                     <View style={styles.onOffContainer}>
                         <Animated.Text style={[styles.onOffText, modeOnStyle]}>ON</Animated.Text>
                         <Animated.Text style={[styles.onOffText, styles.offText, modeOffStyle]}>OFF</Animated.Text>

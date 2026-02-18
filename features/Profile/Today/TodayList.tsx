@@ -1,55 +1,21 @@
 import { CustomFonts } from "@/constants/theme";
+import { selectMeetingCard, selectOfferCard } from "@/features/EventCards/cardSelector";
+import { isBroadcastMeeting } from "@/features/Meetings/meetingHelpers";
+import { ProcessedMeetingType } from "@/features/Meetings/types";
+import { ProcessedOfferType } from "@/features/Offers/types";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useProcessedOffers } from "@/hooks/useProcessedOffers";
 import { BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types";
 import { DRAFT_MEETING_STATE, PAST_MEETING_STATE } from "@/types/meetings-offers";
+import { getDateKey, getDayLabel } from "@/utils/meetingSorterUtils";
 import React, { useEffect, useState } from "react";
 import { Platform, RefreshControl, SectionList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
-
-import { selectMeetingCard, selectOfferCard } from "../EventCards/cardSelector";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
-import { ProcessedMeetingType } from "../Meetings/types";
-import { ProcessedOfferType } from "../Offers/types";
-import TodayListLoader from "./LoadingAnimations/TodayListLoader";
+import TodayListLoader from "../../../components/LoadingAnimations/TodayListLoader";
 import { sortTodayItemsWithBroadcastPriority, type TodayItem } from "./todayUtils";
 
-// ============================================
-// DAY GROUPING HELPERS
-// ============================================
-
-function sameDay(a: Date, b: Date): boolean {
-    return (
-        a.getFullYear() === b.getFullYear() &&
-        a.getMonth() === b.getMonth() &&
-        a.getDate() === b.getDate()
-    );
-}
-
-function getDayLabel(date: Date): string {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (sameDay(date, today)) return "Today";
-    if (sameDay(date, tomorrow)) return "Tomorrow";
-    if (sameDay(date, yesterday)) return "Yesterday";
-
-    return date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-    });
-}
-
-function getDateKey(dateString: string): string {
-    const d = new Date(dateString);
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
 
 interface TodaySection {
     title: string;

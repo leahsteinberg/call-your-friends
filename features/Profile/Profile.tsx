@@ -1,14 +1,14 @@
-import BroadcastToggle from "@/components/BroadcastToggle";
 import { CustomFonts } from "@/constants/theme";
+import { BroadcastSettingsProvider, useBroadcastSettings } from '@/features/Broadcast/BroadcastSettingsContext';
+import BroadcastToggle from '@/features/Broadcast/BroadcastToggle';
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { BOLD_BLUE, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import React, { useCallback } from "react";
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
-import { BroadcastSettingsProvider, useBroadcastSettings } from "../Broadcast/BroadcastSettingsContext";
-import BroadcastList from "../Today/BroadcastList";
-import TodayList from "../Today/TodayList";
+import BroadcastList from "./Today/BroadcastList";
+import TodayList from "./Today/TodayList";
 
 const safePadding = Platform.OS === 'ios' ? 60 : 10;
 
@@ -94,8 +94,9 @@ const styles = StyleSheet.create({
     },
     headerItem: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        marginLeft: 20,
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
     titleText: {
         textAlign: 'center',
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     },
     greetingText: {
         color: CREAM,
-        fontFamily: CustomFonts.awalierregular,
+        fontFamily: CustomFonts.ztnaturebold,
         letterSpacing: 2,
         fontSize: 16,
         fontWeight: '600',

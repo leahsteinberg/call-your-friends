@@ -1,6 +1,7 @@
 import { CustomFonts } from '@/constants/theme';
+import { updateUser } from '@/features/Auth/authSlice';
 import { useUploadAvatarMutation } from '@/services/profileApi';
-import { APP_HEADER_TEXT_COLOR, CREAM, CORNFLOWER_BLUE, BOLD_BLUE } from '@/styles/styles';
+import { APP_HEADER_TEXT_COLOR, BOLD_BLUE, CORNFLOWER_BLUE, CREAM } from '@/styles/styles';
 import { RootState } from '@/types/redux';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +15,6 @@ import {
     View,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateUser } from '@/features/Auth/authSlice';
 
 export default function AvatarPicker(): React.JSX.Element {
     const dispatch = useDispatch();
@@ -81,7 +81,7 @@ export default function AvatarPicker(): React.JSX.Element {
             </Pressable>
             <View style={styles.textContainer}>
                 <Pressable onPress={pickImage}>
-                    <Text style={styles.tapText}>tap to add your photo or memoji</Text>
+                    <Text style={styles.tapText}>tap to add your photo</Text>
                 </Pressable>
             </View>
         </View>
