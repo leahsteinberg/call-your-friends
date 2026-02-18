@@ -17,8 +17,10 @@ import {
   Plus,
   Search,
   Send,
+  Settings,
   Share2,
   Trash2,
+  Users,
   X,
 } from 'lucide-react-native';
 import React from 'react';
@@ -44,8 +46,10 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'paperplane': Send,
   'pencil': Pencil,
   'plus': Plus,
-  'text.bubble.badge.clock.fill': ClockPlus,
+  'clock.badge.questionmark': ClockPlus,
   'circle-ellipsis': CircleEllipsis,
+  'person.2.fill': Users,
+  'gear': Settings,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;

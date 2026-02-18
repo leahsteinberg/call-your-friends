@@ -1,27 +1,25 @@
-import CloudIcon from "@/assets/images/cloud-icon.svg";
-import SmileyFace from "@/assets/images/smiley-face.svg";
-import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
-import { BOLD_BLUE, BURGUNDY, PALE_BLUE } from "@/styles/styles";
+import { FUN_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
 import { GlassView } from "expo-glass-effect";
 import { Tabs } from "expo-router";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 
 const supportsGlass = false;//isLiquidGlassAvailable();
 console.log("supports glass -", supportsGlass)
 
-const ICON_SIZE = 33;
-const CIRCLE_SIZE = 70;
+const ICON_SIZE = 26;
+const INACTIVE_COLOR = 'grey';//'rgba(254, 251, 234, 0.45)';
 
-function TabLabel({ label, focused }: { label: string; focused: boolean }) {
+function TabLabel({ label, focused, focusedColor }: { label: string; focused: boolean; focusedColor: string }) {
     return (
         <Text
             style={[
                 styles.tabLabel,
-                focused && styles.tabLabelFocused
+                focused && { ...styles.tabLabelFocused, color: focusedColor },
             ]}
         >
             {label}
@@ -29,25 +27,19 @@ function TabLabel({ label, focused }: { label: string; focused: boolean }) {
     );
 }
 
-function TabIcon({
-    Icon,
-    focused,
-    color,
-    width = ICON_SIZE,
-    height = ICON_SIZE
-}: {
-    Icon: any;
+function TabIcon({ name, focused, activeColor }: {
+    name: string;
     focused: boolean;
-    color: string;
-    width?: number;
-    height?: number;
+    activeColor: string;
 }) {
-
-
     return (
-        <View style={styles.iconWrapper}>
-            <Icon width={width} height={height} fill={color} />
-        </View>
+        <IconSymbol
+            name={name as any}
+            size={ICON_SIZE}
+            fill='transparent'
+            color={focused ? activeColor : INACTIVE_COLOR}
+            weight={focused ? 'semibold' : 'regular'}
+        />
     );
 }
 
@@ -58,8 +50,6 @@ const Layout = () => {
         <Tabs
         initialRouteName="index"
         screenOptions={{
-            tabBarActiveTintColor: BURGUNDY,
-            tabBarInactiveTintColor: BOLD_BLUE,
             tabBarStyle: {
               backgroundColor: 'transparent',
               borderTopColor: 'transparent',
@@ -105,14 +95,10 @@ const Layout = () => {
                 options={{
                     title: 'Friends',
                     tabBarLabel: ({ focused }) => (
-                        <TabLabel label="Friends" focused={focused} />
+                        <TabLabel label="Friends" focused={focused} focusedColor={FUN_BLUE} />
                     ),
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabIcon
-                            Icon={SmileyFace}
-                            focused={focused}
-                            color={color}
-                        />
+                    tabBarIcon: ({ focused }) => (
+                        <TabIcon name="person.2.fill" focused={focused} activeColor={FUN_BLUE} />
                     ),
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
@@ -123,15 +109,10 @@ const Layout = () => {
                 options={{
                     title: "Chats",
                     tabBarLabel: ({ focused }) => (
-                        <TabLabel label="Chats" focused={focused} />
+                        <TabLabel label="Chats" focused={focused} focusedColor={FUN_BLUE} />
                     ),
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabIcon                            Icon={SpeechBubbles}
-                            focused={focused}
-                            color={color}
-                            height={ICON_SIZE+ 10}
-                            width={ICON_SIZE+10}
-                        />
+                    tabBarIcon: ({ focused }) => (
+                        <TabIcon name="message.fill" focused={focused} activeColor={FUN_BLUE} />
                     ),
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
@@ -141,18 +122,11 @@ const Layout = () => {
                 name="settings"
                 options={{
                     title: 'Settings',
-                    // href: DEV_FLAG ? undefined : null,// hide behind dev flag
                     tabBarLabel: ({ focused }) => (
-                        <TabLabel label="Settings" focused={focused} />
+                        <TabLabel label="Settings" focused={focused} focusedColor={FUN_BLUE} />
                     ),
-                    tabBarIcon: ({ color, focused }) => (
-                        <TabIcon
-                            Icon={CloudIcon}
-                            focused={focused}
-                            color={color}
-                            height={ICON_SIZE+ 15}
-                            width={ICON_SIZE+15}
-                        />
+                    tabBarIcon: ({ focused }) => (
+                        <TabIcon name="gear" focused={focused} activeColor={FUN_BLUE} />
                     ),
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
@@ -164,31 +138,15 @@ const Layout = () => {
 
 
 const styles = StyleSheet.create({
-    iconWrapper: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: CIRCLE_SIZE,
-        height: CIRCLE_SIZE,
-        margin: 20,
-    },
-    circle: {
-        position: 'absolute',
-        width: CIRCLE_SIZE,
-        height: CIRCLE_SIZE,
-        borderRadius: CIRCLE_SIZE / 2,
-        backgroundColor: PALE_BLUE,
-    },
     tabLabel: {
         fontFamily: CustomFonts.ztnaturebold,
         fontSize: 18,
-        color: BOLD_BLUE,
+        color: INACTIVE_COLOR,
         padding: 5,
     },
     tabLabelFocused: {
-        fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 22,
-        color: BURGUNDY,
-        transform: [{ translateY: -8 }],
+        fontSize: 18,
+        //transform: [{ translateY: -8 }],
     },
 });
 

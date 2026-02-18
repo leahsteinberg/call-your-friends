@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     },
     actionsRow: {
         flexDirection: 'row',
-        gap: 8,
+        //gap: 8,
     },
     debugText: {
         fontSize: 10,
