@@ -17,7 +17,7 @@ export default function Settings(): React.JSX.Element {
             <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 80 }}>
                 <AvatarPicker />
                 {/* <Text style={styles.title}>Settings</Text> */}
-                <Text style={styles.signalsTitle}>Share so Loyal can help you connect</Text>
+                <Text style={styles.signalsTitle}>Share so Call Your Friends can help you connect</Text>
                 <UserSignalSettings/>
             </ScrollView>
             {/* <AddMeetingsButton/> */}

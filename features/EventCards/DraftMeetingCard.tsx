@@ -1,8 +1,8 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";

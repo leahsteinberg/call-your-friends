@@ -23,7 +23,7 @@ function ProfileContent(): React.JSX.Element {
     const { isLoading: meetingsLoading } = useProcessedMeetings();
 
     const firstInitial = userName ? userName.charAt(0).toUpperCase() : '?';
-    const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Loyal';}
+    const getGreetingText = () => {return userName ? `Hi, ${userName}` : 'Call Your Friends';}
 
     const onCustomizeBroadcast = useCallback(() => {
         setIsCustomizing(true);
@@ -48,7 +48,7 @@ function ProfileContent(): React.JSX.Element {
                     <Text style={styles.greetingText}>{getGreetingText()}</Text>
                 </View>
                 <View style={styles.headerItem}>
-                    <Text style={styles.titleText}>Loyal</Text>
+                    <Text style={styles.titleText}>Call Your Friends</Text>
                 </View>
                 <View style={styles.headerItem}>
                     {!meetingsLoading && (
