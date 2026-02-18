@@ -1,3 +1,4 @@
+import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CustomFonts } from '@/constants/theme';
 import {
     useDeleteMeetingPhotoMutation,
@@ -143,6 +144,10 @@ export default function MeetingMediaSection({
                         transition={200}
                     />
                     <View style={styles.photoEditBadge}>
+                        <IconSymbol
+                            name="circle-ellipsis"
+                            fill="transparent"
+                        />
                         <Text style={styles.photoEditBadgeText}>edit</Text>
                     </View>
                 </Pressable>
@@ -185,6 +190,10 @@ export default function MeetingMediaSection({
                     <Text style={[styles.textDisplay, { color: textColor }]} numberOfLines={3}>
                         {textContent}
                     </Text>
+                    <IconSymbol
+                        name="pencil"
+                        fill="transparent"
+                    />
                     <Text style={[styles.editHint, { color: mutedColor }]}>edit</Text>
                 </Pressable>
             ) : (
@@ -220,11 +229,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 8,
         paddingVertical: 3,
-    },
-    photoEditBadgeText: {
-        color: '#fff',
-        fontSize: 11,
-        fontFamily: CustomFonts.ztnatureregular,
     },
     photoLoading: {
         height: 140,

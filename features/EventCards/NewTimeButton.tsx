@@ -1,5 +1,6 @@
 import { EventCard } from "@/components/EventCard/EventCard";
 import ModalSelector from "@/components/ModalSelector/ModalSelector";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
 import { useSuggestNewTimeMutation } from "@/services/meetingApi";
 import { BURGUNDY, CREAM } from "@/styles/styles";
@@ -120,7 +121,11 @@ export default function NewTimeButton({ meetingId, scheduledFor, textColor = CRE
                     variant="ghost"
                     size="small"
                 >
-                    <Text style={[styles.triggerText, { color: textColor }]}>New time</Text>
+                    <IconSymbol
+                        name="clock"
+                        fill="transparent"
+                        style={[styles.triggerText, { color: textColor }]}
+                    />
                 </EventCard.Button>
             )}
             visible={modalOpen}

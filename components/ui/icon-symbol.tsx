@@ -5,11 +5,14 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
+  CircleEllipsis,
+  ClockPlus,
   Eye,
   EyeOff,
   Hand,
   Heart,
   MessageCircle,
+  Pencil,
   Phone,
   Plus,
   Search,
@@ -39,7 +42,10 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'hand.raised.fill': Hand,
   'magnifyingglass': Search,
   'paperplane': Send,
+  'pencil': Pencil,
   'plus': Plus,
+  'clock': ClockPlus,
+  'circle-ellipsis': CircleEllipsis,
 };
 
 export type IconSymbolName = keyof typeof MAPPING;
