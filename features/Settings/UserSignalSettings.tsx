@@ -6,7 +6,7 @@ import { SignalType, TIME_OF_DAY_PREFERENCE_SIGNAL_TYPE, UserSignal, WORK_HOURS_
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "react-redux";
-import CallTimePreferenceCard from "../SignalCards/CallTimePreferenceCard";
+import CallTimePreferenceCard from "./SignalCards/CallTimePreferenceCard";
 
 export default function UserSignalSettings(): React.JSX.Element {
     const userId: string = useSelector((state: RootState) => state.auth.user.id);

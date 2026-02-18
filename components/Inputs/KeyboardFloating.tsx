@@ -11,10 +11,6 @@ interface KeyboardFloatingProps {
     style?: ViewStyle;
 }
 
-/**
- * Absolutely-positioned container that floats above the keyboard when it appears.
- * When the keyboard is hidden, sits at `defaultBottom` from the screen bottom.
- */
 export default function KeyboardFloating({
     children,
     defaultBottom = 108,

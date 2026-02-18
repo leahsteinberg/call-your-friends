@@ -1,8 +1,8 @@
-import { ProcessedMeetingType } from "../Meetings/types";
-import { ProcessedOfferType } from "../Offers/types";
-import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
-import { isBroadcastOffer } from "../Offers/offerHelpers";
 import { PAST_MEETING_STATE } from "@/types/meetings-offers";
+import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
+import { ProcessedMeetingType } from "../Meetings/types";
+import { isBroadcastOffer } from "../Offers/offerHelpers";
+import { ProcessedOfferType } from "../Offers/types";
 
 export type TodayItem = {
     id: string;

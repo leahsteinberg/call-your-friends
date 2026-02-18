@@ -4,21 +4,20 @@ import UserCard from "@/components/UserCard/UserCard";
 import { CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import {
   Easing,
-  useAnimatedStyle,
   useSharedValue,
   withRepeat,
   withSequence,
-  withTiming,
+  withTiming
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-import { FriendProps } from "./types";
+import { FriendProps } from "../types";
 
 export default function Friend({ item, onCallIntentChange }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);

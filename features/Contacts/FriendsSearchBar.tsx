@@ -1,4 +1,4 @@
-import KeyboardFloating from "@/components/KeyboardFloating";
+import KeyboardFloating from "@/components/Inputs/KeyboardFloating";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
 import { BlurView } from "expo-blur";

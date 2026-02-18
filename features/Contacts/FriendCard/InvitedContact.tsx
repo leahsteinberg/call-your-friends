@@ -2,10 +2,10 @@ import UserCard from "@/components/UserCard/UserCard";
 import { useRemoveInviteMutation } from "@/services/contactsApi";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
-import { removeSentInvite } from "./contactsSlice";
-import { formatPhoneNumber } from "./contactsUtils";
-import { InvitedContactProps } from "./types";
+import { displayTimeDifference } from "../../Meetings/meetingsUtils";
+import { removeSentInvite } from "../contactsSlice";
+import { formatPhoneNumber } from "../contactsUtils";
+import { InvitedContactProps } from "../types";
 
 export default function InvitedContact({ contact }: InvitedContactProps): React.JSX.Element {
   const dispatch = useDispatch();

@@ -6,7 +6,7 @@ import { RootState } from "@/types/redux";
 import React, { useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { useSelector } from "react-redux";
-import { FriendRequestProps } from "./types";
+import { FriendRequestProps } from "../types";
 
 interface FriendRequestPropsExtended extends FriendRequestProps {
   onRemove?: (id: string) => void;
