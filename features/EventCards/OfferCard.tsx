@@ -1,20 +1,17 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offersApi";
 import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { getTargetUserNames } from "@/utils/nameStringUtils";
-import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
+import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedOfferType } from "../Offers/types";
 import NewTimeButton from "./NewTimeButton";
 
@@ -64,12 +61,6 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
         }
     };
 
-    const getFromName = () => {
-        return offer.meeting?.userFrom?.name || 'Unknown';
-    };
-
-    const strings = eventCardText.open_offer;
-    const targetUserName = offer.meeting ? getTargetUserNames(offer.meeting) : null;
     const fromUser = offer.meeting?.userFrom;
 
     return (
@@ -115,17 +106,11 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                     <Text style={styles.heroTime}>
                         {formatTimeOnly(offer.scheduledFor)}
                     </Text>
+                    <Text style={styles.timezoneText}>
+                        {formatTimezone(offer.scheduledFor)}
+                    </Text>
                 </View>
             </View>
-
-            <Text style={styles.contextText}>
-                {strings.nameText!(getFromName(), displayTimeDifference(offer.meeting?.scheduledFor ?? offer.scheduledFor))}
-                {targetUserName && ` \u2192 ${targetUserName}`}
-            </Text>
-
-            <Text style={styles.descriptionText}>
-                {strings.mainText!(getFromName(), displayTimeDifference(offer.scheduledFor))}
-            </Text>
 
             <View style={styles.footerRow}>
                 <Text style={styles.dateText}>
@@ -170,18 +155,12 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         letterSpacing: -0.5,
     },
-    contextText: {
-        fontSize: 15,
-        fontFamily: CustomFonts.ztnaturemedium,
-        color: '#262626',
-        lineHeight: 20,
-        marginBottom: 4,
-    },
-    descriptionText: {
-        fontSize: 14,
+    timezoneText: {
+        fontSize: 11,
         fontFamily: CustomFonts.ztnatureregular,
         color: 'rgba(0,0,0,0.5)',
-        marginBottom: 10,
+        letterSpacing: 0.3,
+        marginTop: -4,
     },
     footerRow: {
         flexDirection: 'row',

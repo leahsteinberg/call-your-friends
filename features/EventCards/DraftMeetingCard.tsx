@@ -7,12 +7,11 @@ import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/ser
 import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { getDisplayNameList } from "@/utils/nameStringUtils";
-import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
+import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
 import NewTimeButton from "./NewTimeButton";
 
@@ -81,12 +80,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     };
 
     const targetNames = getTargetNames();
-    const isSystemPattern = meeting.sourceType === "SYSTEM_PATTERN";
     const avatarUsers = meeting.targetUsers && meeting.targetUsers.length > 0 ? meeting.targetUsers : [];
-
-    const contextText = (isSystemPattern && meeting.title)
-        ? meeting.title
-        : `Talk with ${targetNames} ${displayTimeDifference(meeting.scheduledFor)}?`;
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
@@ -138,13 +132,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                     <Text style={styles.heroTime}>
                         {formatTimeOnly(meeting.scheduledFor)}
                     </Text>
+                    <Text style={styles.timezoneText}>
+                        {formatTimezone(meeting.scheduledFor)}
+                    </Text>
                 </View>
             </View>
-
-            {/* Context text */}
-            <Text style={styles.contextText} numberOfLines={2}>
-                {contextText}
-            </Text>
 
             {/* Footer: date + actions */}
             <View style={styles.footerRow}>
@@ -192,12 +184,12 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         letterSpacing: -0.5,
     },
-    contextText: {
-        fontSize: 15,
-        fontFamily: CustomFonts.ztnaturemedium,
-        color: CREAM,
-        lineHeight: 20,
-        marginBottom: 10,
+    timezoneText: {
+        fontSize: 11,
+        fontFamily: CustomFonts.ztnatureregular,
+        color: 'rgba(255,255,255,0.6)',
+        letterSpacing: 0.3,
+        marginTop: -4,
     },
     footerRow: {
         flexDirection: 'row',

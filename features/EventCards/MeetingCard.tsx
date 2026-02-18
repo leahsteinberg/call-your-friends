@@ -2,20 +2,18 @@ import Avatar from "@/components/Avatar/Avatar";
 import { EventCard } from "@/components/EventCard/EventCard";
 import MeetingActionBanner from "@/components/MeetingActionBanner/MeetingActionBanner";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { eventCardText } from "@/constants/event_card_strings";
 import { CustomFonts } from "@/constants/theme";
 import { DEV_FLAG } from "@/environment";
 import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
-import { getDisplayNameList, getTargetUserNames } from "@/utils/nameStringUtils";
-import { formatTimeOnly, getDisplayDate } from "@/utils/timeStringUtils";
+import { getDisplayNameList } from "@/utils/nameStringUtils";
+import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 import NewTimeButton from "./NewTimeButton";
 
@@ -59,26 +57,6 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     };
 
     const avatarUsers = getAvatarUsers();
-
-    const getContextText = () => {
-        switch (meetingCardState) {
-            case SELF_ACCEPTED: {
-                const names = getDisplayNameList(meeting.acceptedUsers || []);
-                return `${eventCardText.meeting_self_accepted.title(names)}${displayTimeDifference(meeting.scheduledFor)}`;
-            }
-            case SELF_OPEN: {
-                const targetNames = getTargetUserNames(meeting);
-                if (targetNames) {
-                    return `We'll see if ${targetNames} is free ${displayTimeDifference(meeting.scheduledFor)}`;
-                }
-                return `${eventCardText.meeting_self_open.title()} ${displayTimeDifference(meeting.scheduledFor)}`;
-            }
-            case OTHER_ACCEPTED: {
-                const name = meeting.userFrom?.name;
-                return name ? `Accepted a meeting created by ${name}` : 'Accepted meeting';
-            }
-        }
-    };
 
     const handleCancelMeeting = async () => {
         try {
@@ -152,13 +130,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                         <Text style={[styles.heroTime, { color: timeColor }]}>
                             {formatTimeOnly(meeting.scheduledFor)}
                         </Text>
+                        <Text style={[styles.timezoneText, { color: mutedColor }]}>
+                            {formatTimezone(meeting.scheduledFor)}
+                        </Text>
                     </View>
                 </View>
-
-                {/* Context text */}
-                <Text style={[styles.contextText, { color: textColor }]} numberOfLines={2}>
-                    {getContextText()}
-                </Text>
 
                 <View style={styles.footerRow}>
                     <Text style={[styles.dateText, { color: mutedColor }]}>
@@ -210,11 +186,11 @@ const styles = StyleSheet.create({
         fontFamily: CustomFonts.ztnaturebold,
         letterSpacing: -0.5,
     },
-    contextText: {
-        fontSize: 15,
-        fontFamily: CustomFonts.ztnaturemedium,
-        lineHeight: 20,
-        marginBottom: 10,
+    timezoneText: {
+        fontSize: 11,
+        fontFamily: CustomFonts.ztnatureregular,
+        letterSpacing: 0.3,
+        marginTop: -4,
     },
     footerRow: {
         flexDirection: 'row',

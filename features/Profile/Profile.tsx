@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     titleText: {
         textAlign: 'center',
         fontFamily: CustomFonts.ztnaturebold,
-        fontSize: 24,
+        fontSize: 22,
         color: CREAM,
     },
     avatar: {

@@ -32,3 +32,12 @@ export function formatTimeOnly(dateTime: string): string {
         hour12: true,
     });
 }
+
+/**
+ * Returns the short timezone abbreviation for a date (e.g., "PST", "EST", "UTC").
+ */
+export function formatTimezone(dateTime: string): string {
+    const date = new Date(dateTime);
+    const parts = Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(date);
+    return parts.find(p => p.type === 'timeZoneName')?.value ?? '';
+}

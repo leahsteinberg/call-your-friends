@@ -2,7 +2,6 @@ import CloudIcon from "@/assets/images/cloud-icon.svg";
 import SmileyFace from "@/assets/images/smiley-face.svg";
 import SpeechBubbles from "@/assets/images/speech-bubbles.svg";
 import { CustomFonts } from "@/constants/theme";
-import { DEV_FLAG } from "@/environment";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { BOLD_BLUE, BURGUNDY, PALE_BLUE } from "@/styles/styles";
 import { BlurView } from "expo-blur";
@@ -142,7 +141,7 @@ const Layout = () => {
                 name="settings"
                 options={{
                     title: 'Settings',
-                    href: DEV_FLAG ? undefined : null,// hide behind dev flag
+                    // href: DEV_FLAG ? undefined : null,// hide behind dev flag
                     tabBarLabel: ({ focused }) => (
                         <TabLabel label="Settings" focused={focused} />
                     ),

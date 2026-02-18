@@ -411,6 +411,7 @@ const styles = StyleSheet.create({
     },
     labelContainer: {
         marginLeft: 2,
+        flexShrink: 1,
     },
     modeRow: {
         flexDirection: 'row',
