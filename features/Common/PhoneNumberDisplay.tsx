@@ -21,12 +21,9 @@ export default function PhoneNumberDisplay({digits}){
 
 const styles = StyleSheet.create({
   container: {
-    //justifyContent: 'center',
-   // backgroundColor: CREAM,
     borderRadius: 10,
     padding: 4,
-
-    alignItems: 'end',
+    alignItems: 'flex-end',
   },
   text: {
     color: MID_BLUE,

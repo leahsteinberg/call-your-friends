@@ -5,8 +5,8 @@ import { FLUSH, PAUSE, PERSIST, persistReducer, PURGE, REGISTER, REHYDRATE } fro
 import persistStore from 'redux-persist/es/persistStore';
 
 // Reducers
+import broadcastReducer from '@/features/Broadcast/broadcastSlice';
 import authReducer from '../features/Auth/authSlice';
-import broadcastReducer from '../features/Broadcast/broadcastSlice';
 import contactsReducer from '../features/Contacts/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
 import userSignalReducer from '../features/Settings/userSignalsSlice';
@@ -72,10 +72,3 @@ export type AppDispatch = typeof store.dispatch;
 setupListeners(store.dispatch);
 
 export const persistor = persistStore(store);
-
-// export type AppThunk<ReturnType = void> = ThunkAction<
-//   ReturnType,
-//   RootState,
-//   unknown,
-//   Action<string>
-// >;

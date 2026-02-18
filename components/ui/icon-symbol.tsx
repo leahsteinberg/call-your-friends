@@ -44,7 +44,7 @@ const MAPPING: Record<string, React.ComponentType<any>> = {
   'paperplane': Send,
   'pencil': Pencil,
   'plus': Plus,
-  'clock': ClockPlus,
+  'text.bubble.badge.clock.fill': ClockPlus,
   'circle-ellipsis': CircleEllipsis,
 };
 

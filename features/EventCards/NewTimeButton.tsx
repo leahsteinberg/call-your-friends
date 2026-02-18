@@ -122,8 +122,9 @@ export default function NewTimeButton({ meetingId, scheduledFor, textColor = CRE
                     size="small"
                 >
                     <IconSymbol
-                        name="clock"
+                        name="clock.badge.questionmark"
                         fill="transparent"
+                        color="black"
                         style={[styles.triggerText, { color: textColor }]}
                     />
                 </EventCard.Button>
