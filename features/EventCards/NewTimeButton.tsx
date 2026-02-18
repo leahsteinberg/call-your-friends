@@ -159,7 +159,7 @@ export default function NewTimeButton({ meetingId, scheduledFor, textColor = CRE
             <View style={styles.inputRow}>
                 <TextInput
                     style={styles.textInput}
-                    placeholder="anything else..."
+                    placeholder="another time?"
                     placeholderTextColor="rgba(0,0,0,0.35)"
                     value={customText}
                     onChangeText={setCustomText}

@@ -7,7 +7,7 @@ import { useAcceptOfferMutation, useRejectOfferMutation } from "@/services/offer
 import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
-import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
+import { formatTimeOnly, formatTimezone } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -113,9 +113,9 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             </View>
 
             <View style={styles.footerRow}>
-                <Text style={styles.dateText}>
+                {/* <Text style={styles.dateText}>
                     {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
-                </Text>
+                </Text> */}
 
                 <View style={styles.actionsRow}>
                     <NewTimeButton meetingId={offer.meetingId} scheduledFor={offer.scheduledFor} textColor="#262626" />
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'flex-start',
         justifyContent: 'space-between',
-        marginBottom: 12,
+        //marginBottom: 12,
     },
     avatarSection: {
         gap: 4,
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     footerRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end',
     },
     dateText: {
         fontSize: 13,

@@ -403,15 +403,14 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     container: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: CREAM,
-        borderRadius: 40,
-        paddingRight: 12,
+        borderRadius: 20,
+        paddingBottom: 6,
     },
     labelContainer: {
-        marginLeft: 2,
-        flexShrink: 1,
+        alignItems: 'center',
     },
     modeRow: {
         flexDirection: 'row',
@@ -423,6 +422,7 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: 'black',
         letterSpacing: 0.5,
+        textAlign: 'center',
     },
     onOffContainer: {
         width: 28,
@@ -432,6 +432,8 @@ const styles = StyleSheet.create({
     onOffText: {
         position: 'absolute',
         left: 0,
+        right: 0,
+        textAlign: 'center',
         fontSize: 12,
         fontFamily: CustomFonts.ztnaturebold,
         fontWeight: '500',

@@ -1,5 +1,5 @@
 import Avatar from '@/components/Avatar/Avatar';
-import { CARD_LOWER_MARGIN, CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
+import { CARD_MIN_HEIGHT, CustomFonts } from '@/constants/theme';
 import { BOLD_BROWN, BURGUNDY, CREAM, PALE_BLUE, TRANSPARENT_CREAM } from '@/styles/styles';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -525,7 +525,7 @@ EventCard.Banner = function Banner({
 // ============================================
 const styles = StyleSheet.create({
   outerContainer: {
-    marginBottom: CARD_LOWER_MARGIN,
+    //marginBottom: CARD_LOWER_MARGIN,
     position: 'relative',
     marginHorizontal: 10,
     marginTop: 10,
@@ -638,7 +638,7 @@ const styles = StyleSheet.create({
   },
   liveTitleText: {
     //color: CREAM,
-    marginVertical: 15,
+    //marginVertical: 15,
     fontFamily: CustomFonts.awalierbold,
     letterSpacing: 1,
     flexShrink: 1,
