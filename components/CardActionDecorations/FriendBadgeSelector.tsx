@@ -1,5 +1,5 @@
 import { CustomFonts } from "@/constants/theme";
-import type { Friend } from "@/features/Contacts/types";
+import type { Friend } from "@/features/Friends/types";
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM, FUN_PINK, PALE_BLUE } from "@/styles/styles";
 import { Image } from "expo-image";
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";

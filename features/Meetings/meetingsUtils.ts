@@ -1,4 +1,4 @@
-import { ProcessedSentInvite, SentInvite } from "../Contacts/types";
+import { ProcessedSentInvite, SentInvite } from "../Friends/types";
 import { MeetingType, ProcessedMeetingType } from "./types";
 
 export const processMeetings = async (meetings: MeetingType[]): Promise<ProcessedMeetingType[]> => {

@@ -1,7 +1,7 @@
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import { isPhoneNumberValid } from '../Contacts/contactsUtils';
+import { isPhoneNumberValid } from '../Friends/contactsUtils';
 
 
 export default function PhoneNumberValidity({phoneNumber}) {

@@ -6,8 +6,8 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../types/redux";
 import PhoneNumberInput from "../Auth/PhoneNumberInput";
-import { isPhoneNumberValid } from "../Contacts/contactsUtils";
 import { addSentInvite } from "./contactsSlice";
+import { isPhoneNumberValid } from "./contactsUtils";
 
 interface InvitePhoneNumberProps {
     onSuccess?: () => void;

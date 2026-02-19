@@ -1,4 +1,4 @@
-import type { Friend } from "@/features/Contacts/types";
+import type { Friend } from "@/features/Friends/types";
 import { isActiveClaimedSelfBroadcastMeeting, isActiveOpenBroadcastMeeting } from "@/features/Meetings/meetingsFilters";
 import type { ProcessedMeetingType } from "@/features/Meetings/types";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";

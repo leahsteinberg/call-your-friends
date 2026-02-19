@@ -3,8 +3,8 @@ import MiniBroadcastButton from "@/components/CardActionDecorations/MiniBroadcas
 import { EventCard } from "@/components/EventCard/EventCard";
 import { CustomFonts } from "@/constants/theme";
 import { User } from "@/features/Auth/types";
-import { Friend } from "@/features/Contacts/types";
 import { MeetingCardState, OTHER_ACCEPTED, SELF_ACCEPTED } from "@/features/EventCards/MeetingCard";
+import { Friend } from "@/features/Friends/types";
 import { ProcessedMeetingType } from "@/features/Meetings/types";
 import { useGetFriendsMutation } from "@/services/contactsApi";
 import { BOLD_BLUE, BURGUNDY, CORNFLOWER_BLUE, CREAM } from "@/styles/styles";

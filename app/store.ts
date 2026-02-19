@@ -7,7 +7,7 @@ import persistStore from 'redux-persist/es/persistStore';
 // Reducers
 import broadcastReducer from '@/features/Broadcast/broadcastSlice';
 import authReducer from '../features/Auth/authSlice';
-import contactsReducer from '../features/Contacts/contactsSlice';
+import contactsReducer from '../features/Friends/contactsSlice';
 import meetingReducer from '../features/Meetings/meetingSlice';
 import userSignalReducer from '../features/Settings/userSignalsSlice';
 

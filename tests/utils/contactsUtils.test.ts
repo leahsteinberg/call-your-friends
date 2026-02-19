@@ -1,10 +1,10 @@
 import {
-  isPhoneNumberValid,
-  cleanPhoneNumber,
-  formatPhoneNumber,
-  pickPhoneNumber,
-  createSmsUrl,
-} from '@/features/Contacts/contactsUtils';
+    cleanPhoneNumber,
+    createSmsUrl,
+    formatPhoneNumber,
+    isPhoneNumberValid,
+    pickPhoneNumber,
+} from '@/features/Friends/contactsUtils';
 import * as Contacts from 'expo-contacts';
 
 describe('contactsUtils', () => {

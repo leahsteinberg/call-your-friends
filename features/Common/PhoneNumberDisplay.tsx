@@ -1,6 +1,6 @@
 import { MID_BLUE } from '@/styles/styles';
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { formatPhoneNumber } from '../Contacts/contactsUtils';
+import { formatPhoneNumber } from '../Friends/contactsUtils';
 
 export default function PhoneNumberDisplay({digits}){
   const makeCall = () => {

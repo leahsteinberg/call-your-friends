@@ -1,6 +1,6 @@
 import Avatar from "@/components/Avatar/Avatar";
 import { CustomFonts } from "@/constants/theme";
-import type { Friend } from "@/features/Contacts/types";
+import type { Friend } from "@/features/Friends/types";
 import { CORNFLOWER_BLUE, CREAM } from "@/styles/styles";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";

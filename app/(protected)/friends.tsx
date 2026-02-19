@@ -1,5 +1,5 @@
 import { FullScreenStylingWrapper } from '@/features/Common/StylingWrapper';
-import ContactsComponent from '@/features/Contacts/ContactsComponent';
+import ContactsComponent from '@/features/Friends/ContactsComponent';
 import { StyleSheet, View } from 'react-native';
 
 export default function Friends(){
