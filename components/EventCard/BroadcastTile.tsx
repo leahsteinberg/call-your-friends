@@ -70,8 +70,8 @@ export function BroadcastTile({
                 {avatarChildren}
             </Avatar>
 
-            {/* Name */}
-            <Text style={styles.name} numberOfLines={1}>{name}</Text>
+            {/* Name
+            <Text style={styles.name} numberOfLines={1}>{name}</Text> */}
 
             {/* Time remaining */}
             {/* <Text style={styles.timeRemaining}>{timeRemainingText}</Text> */}

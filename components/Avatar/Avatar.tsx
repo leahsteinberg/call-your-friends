@@ -72,6 +72,7 @@ function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, bo
                     )}
                 </View>
                 {children}
+                <Text style={styles.name}>{name}</Text>
             </View>
         </AvatarContext.Provider>
     );
@@ -641,6 +642,14 @@ const styles = StyleSheet.create({
         // borderWidth: 2,
         // borderColor: 'red',
         overflow: 'hidden',
+    },
+    name: {
+        fontSize: 15,
+        fontFamily: CustomFonts.ztnaturebold,
+        color: 'black',
+        textAlign: 'center',
+        marginTop: 2,
+
     },
     initial: {
         fontWeight: '600',
