@@ -15,6 +15,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import GroupTag from "./GroupTag";
 import NewTimeButton from "./NewTimeButton";
 
 export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
@@ -137,9 +138,12 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 </View>
 
                 <View style={styles.footerRow}>
-                    <Text style={[styles.dateText, { color: mutedColor }]}>
-                        {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
-                    </Text>
+                    <View style={styles.footerLeft}>
+                        <Text style={[styles.dateText, { color: mutedColor }]}>
+                            {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
+                        </Text>
+                        {meeting.groupName && <GroupTag groupName={meeting.groupName} />}
+                    </View>
 
                     <View style={styles.actionsRow}>
                         <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} textColor={textColor} />
@@ -216,10 +220,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
     },
+    footerLeft: {
+        flex: 1,
+        gap: 4,
+    },
     dateText: {
         fontSize: 13,
         fontFamily: CustomFonts.ztnatureregular,
-        flex: 1,
     },
     debugText: {
         fontSize: 10,

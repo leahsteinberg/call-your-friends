@@ -40,6 +40,7 @@ export const meetingApi = createApi({
                 suggestionReason,
                 minParticipants,
                 maxParticipants,
+                groupId,
             }) => ({
                 url: '/api/create-meeting',
                 method: 'POST',
@@ -57,6 +58,7 @@ export const meetingApi = createApi({
                     ...(suggestionReason && { suggestionReason }),
                     ...(minParticipants !== undefined && { minParticipants }),
                     ...(maxParticipants !== undefined && { maxParticipants }),
+                    ...(groupId && { groupId }),
                 },
             }),
             // Step 3: invalidatesTags tells RTK Query:

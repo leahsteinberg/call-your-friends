@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
+import GroupTag from "./GroupTag";
 import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
@@ -147,12 +148,12 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 {contextText}
             </Text>
 
-            {/* Footer: date + actions */}
+            {/* Footer: group tag + actions */}
             <View style={styles.footerRow}>
-                {/* <Text style={styles.dateText}>
-                    {getDisplayDate(meeting.scheduledFor, meeting.displayScheduledFor)}
-                </Text> */}
-
+                {meeting.groupName
+                    ? <GroupTag groupName={meeting.groupName} />
+                    : <View />
+                }
                 <View style={styles.actionsRow}>
                     <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} />
                 </View>

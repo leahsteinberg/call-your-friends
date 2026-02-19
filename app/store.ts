@@ -15,6 +15,7 @@ import userSignalReducer from '../features/Settings/userSignalsSlice';
 import { authApi } from '@/services/authApi';
 import { callLoggingApi } from '@/services/callLoggingApi';
 import { contactsApi } from '@/services/contactsApi';
+import { groupsApi } from '@/services/groupsApi';
 import { meetingApi } from '@/services/meetingApi';
 import { notificationApi } from '@/services/notificationApi';
 import { offerApi } from '@/services/offersApi';
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
   [authApi.reducerPath]: authApi.reducer,
   [callLoggingApi.reducerPath]: callLoggingApi.reducer,
   [contactsApi.reducerPath]: contactsApi.reducer,
+  [groupsApi.reducerPath]: groupsApi.reducer,
   [meetingApi.reducerPath]: meetingApi.reducer,
   [offerApi.reducerPath]: offerApi.reducer,
   [notificationApi.reducerPath]: notificationApi.reducer,
@@ -59,6 +61,7 @@ export const store = configureStore({
     .concat(authApi.middleware)
     .concat(callLoggingApi.middleware)
     .concat(contactsApi.middleware)
+    .concat(groupsApi.middleware)
     .concat(meetingApi.middleware)
     .concat(offerApi.middleware)
     .concat(notificationApi.middleware)

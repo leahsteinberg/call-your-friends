@@ -74,6 +74,8 @@ export interface MeetingType extends MeetingEvent {
     backupScheduledTimes?: string[]; // Optional list of backup times for DRAFT meetings
     photoUrl?: string | null;
     textContent?: string | null;
+    groupId?: string;
+    groupName?: string;
 }
 
 export interface ProcessedMeetingType extends MeetingType {

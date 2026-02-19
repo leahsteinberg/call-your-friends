@@ -13,6 +13,7 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
+import GroupTag from "./GroupTag";
 import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
@@ -113,10 +114,10 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             </View>
 
             <View style={styles.footerRow}>
-                {/* <Text style={styles.dateText}>
-                    {getDisplayDate(offer.scheduledFor, offer.displayScheduledFor)}
-                </Text> */}
-
+                {offer.meeting?.groupName
+                    ? <GroupTag groupName={offer.meeting.groupName} />
+                    : <View />
+                }
                 <View style={styles.actionsRow}>
                     <NewTimeButton meetingId={offer.meetingId} scheduledFor={offer.scheduledFor} textColor="#262626" />
                 </View>
