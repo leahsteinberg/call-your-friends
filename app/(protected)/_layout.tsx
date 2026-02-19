@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     },
     tabLabelFocused: {
         fontSize: 18,
-        //transform: [{ translateY: -8 }],
+        transform: [{ translateY: -8 }],
     },
 });
 

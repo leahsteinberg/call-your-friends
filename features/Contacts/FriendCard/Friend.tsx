@@ -1,14 +1,16 @@
 import Avatar from "@/components/Avatar/Avatar";
 import TalkSoonButton from "@/components/CardActionDecorations/TalkSoonButton";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import UserCard from "@/components/UserCard/UserCard";
 import { CustomFonts } from "@/constants/theme";
 import { useUserCalledMutation } from "@/services/contactsApi";
 import { useAddUserSignalMutation, useRemoveUserSignalMutation } from "@/services/userSignalsApi";
-import { BURGUNDY, PALE_BLUE } from "@/styles/styles";
+import { BURGUNDY, CREAM, FUN_PURPLE, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { useGroupCreation } from "../GroupCreationContext";
 import {
   Easing,
   useSharedValue,
@@ -21,6 +23,8 @@ import { FriendProps } from "../types";
 
 export default function Friend({ item, onCallIntentChange }: FriendProps): React.JSX.Element {
   const userId = useSelector((state: RootState) => state.auth.user.id);
+  const { isCreating, selectedIds, toggleFriend } = useGroupCreation();
+  const isSelected = selectedIds.has(item.id);
   const isBroadcasting = item.isBroadcastingToMe;
   const [showCallIntentActions, setShowCallIntentActions] = useState(item.hasOutgoingCallIntent ?? false);
   const [addUserSignal, { isLoading: isCallingIntent }] = useAddUserSignalMutation();
@@ -110,17 +114,28 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
       </UserCard.Content>
 
       <UserCard.Actions>
-        {isBroadcasting && (
-          <TouchableOpacity onPress={handleCallNow} style={styles.callNowButton}>
-            <Text style={styles.callNowText}>Call Now</Text>
+        {isCreating ? (
+          <TouchableOpacity
+            onPress={() => toggleFriend(item.id)}
+            style={[styles.checkbox, isSelected && styles.checkboxSelected]}
+          >
+            {isSelected && <IconSymbol name="checkmark" size={13} color={CREAM} />}
           </TouchableOpacity>
+        ) : (
+          <>
+            {isBroadcasting && (
+              <TouchableOpacity onPress={handleCallNow} style={styles.callNowButton}>
+                <Text style={styles.callNowText}>Call Now</Text>
+              </TouchableOpacity>
+            )}
+            <TalkSoonButton
+              isActive={showCallIntentActions}
+              onPress={handleCallIntent}
+              onNeverMind={handleNeverMind}
+              isLoading={isCallingIntent || isUndoing}
+            />
+          </>
         )}
-        <TalkSoonButton
-          isActive={showCallIntentActions}
-          onPress={handleCallIntent}
-          onNeverMind={handleNeverMind}
-          isLoading={isCallingIntent || isUndoing}
-        />
       </UserCard.Actions>
     </UserCard>
   );
@@ -139,5 +154,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     fontFamily: CustomFonts.ztnaturebold,
+  },
+  checkbox: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: FUN_PURPLE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkboxSelected: {
+    backgroundColor: FUN_PURPLE,
+    borderColor: FUN_PURPLE,
   },
 });

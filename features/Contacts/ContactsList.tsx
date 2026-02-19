@@ -5,6 +5,7 @@ import { RefreshControl, SectionList, StyleSheet, Text, View } from "react-nativ
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Friend from "./FriendCard/Friend";
 import FriendRequest from "./FriendCard/FriendRequest";
+import FriendGroupsSection from "./FriendGroupsSection";
 import InvitedContact from "./FriendCard/InvitedContact";
 import { ContactsListProps, Friend as FriendType } from "./types";
 
@@ -61,6 +62,7 @@ export default function ContactsList({ friends, friendRequests, sentInvites, onR
                 style={styles.sectionList}
                 sections={sectionListData}
                 keyExtractor={(item, index) => item.id + index}
+                ListHeaderComponent={<FriendGroupsSection />}
                 renderSectionHeader={({section: {title}}) =>
                     <View style={styles.sectionHeaderContainer}>
                         <Text style={styles.sectionHeader}>{title}</Text>
