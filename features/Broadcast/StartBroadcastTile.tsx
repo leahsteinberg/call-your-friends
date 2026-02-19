@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function StartBroadcastTile(): React.JSX.Element {
     const user = useSelector((state: RootState) => state.auth.user);
-    const { handleStartBroadcast, isStarting, selectedVibe, setSelectedVibe, friends, selectedFriendIds, setSelectedFriendIds } = useBroadcastSettings();
+    const { handleStartBroadcast, isStarting, selectedVibe, setSelectedVibe, friends, groups, selectedFriendIds, setSelectedFriendIds, selectedGroupId, setSelectedGroupId } = useBroadcastSettings();
 
     const handleStart = async () => {
         try {
@@ -35,9 +35,11 @@ export default function StartBroadcastTile(): React.JSX.Element {
             footer={
                 <FriendBadgeSelector
                     friends={friends}
+                    groups={groups}
                     onSelectFriends={setSelectedFriendIds}
+                    onSelectGroup={setSelectedGroupId}
                     selectedFriendIds={selectedFriendIds}
-                    //position="below-left"
+                    selectedGroupId={selectedGroupId}
                 />
             }
         />

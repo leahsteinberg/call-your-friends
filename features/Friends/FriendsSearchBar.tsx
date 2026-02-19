@@ -23,7 +23,7 @@ export default function FriendsSearchBar({ query, onChangeQuery }: FriendsSearch
             {Platform.OS !== 'web' ? (
                 <BlurView intensity={40} tint="light" style={styles.blurFill}>
                     <View style={styles.inputRow}>
-                        <IconSymbol name="magnifyingglass" size={16} color="rgba(0,0,0,0.3)" />
+                        <IconSymbol name="magnifyingglass" size={24} color="rgba(0,0,0,0.3)" fill="transparent"/>
                         <TextInput
                             ref={inputRef}
                             style={styles.input}
@@ -50,7 +50,7 @@ export default function FriendsSearchBar({ query, onChangeQuery }: FriendsSearch
             ) : (
                 <View style={[styles.blurFill, styles.webFallback]}>
                     <View style={styles.inputRow}>
-                        <IconSymbol name="magnifyingglass" size={16} color="rgba(0,0,0,0.3)" />
+                        <IconSymbol name="magnifyingglass" size={16} color="rgba(0,0,0,0.3)"  fill="transparent"/>
                         <TextInput
                             ref={inputRef}
                             style={styles.input}

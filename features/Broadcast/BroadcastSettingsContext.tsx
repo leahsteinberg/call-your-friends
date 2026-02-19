@@ -3,6 +3,8 @@ import { isActiveClaimedSelfBroadcastMeeting, isActiveOpenBroadcastMeeting } fro
 import type { ProcessedMeetingType } from "@/features/Meetings/types";
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { useGetFriendsMutation } from "@/services/contactsApi";
+import type { Group } from "@/services/groupsApi";
+import { useGetGroupsQuery } from "@/services/groupsApi";
 import { useBroadcastEndMutation, useBroadcastNowMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";
 import { determineTargetType } from "@/utils/broadcastUtils";
@@ -15,7 +17,9 @@ interface BroadcastSettingsContextType {
     // State
     selectedVibe: string | null;
     selectedFriendIds: string[];
+    selectedGroupId: string | null;
     friends: Friend[];
+    groups: Group[];
     isStarting: boolean;
     isCustomizing: boolean;
 
@@ -27,6 +31,7 @@ interface BroadcastSettingsContextType {
     // Actions
     setSelectedVibe: (vibe: string | null) => void;
     setSelectedFriendIds: (ids: string[]) => void;
+    setSelectedGroupId: (id: string | null) => void;
     setIsCustomizing: (value: boolean) => void;
     handleStartBroadcast: () => Promise<void>;
     handleEndBroadcast: () => Promise<void>;
@@ -54,9 +59,12 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
     // Shared broadcast settings state
     const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
     const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
     const [friends, setFriends] = useState<Friend[]>([]);
     const [isStarting, setIsStarting] = useState(false);
     const [isCustomizing, setIsCustomizing] = useState(false);
+
+    const { data: groups = [] } = useGetGroupsQuery({ userId });
 
     // API mutations
     const [broadcastNow] = useBroadcastNowMutation();
@@ -121,6 +129,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
             await broadcastNow({
                 userId,
                 targetUserIds: selectedFriendIds.length > 0 ? selectedFriendIds : undefined,
+                groupId: selectedGroupId ?? undefined,
                 targetType,
                 intentLabel: selectedVibe,
             }).unwrap();
@@ -134,7 +143,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
         } finally {
             setIsStarting(false);
         }
-    }, [userId, selectedFriendIds, selectedVibe, broadcastNow, dispatch]);
+    }, [userId, selectedFriendIds, selectedGroupId, selectedVibe, broadcastNow, dispatch]);
 
     const handleEndBroadcast = useCallback(async () => {
         setIsCustomizing(false);
@@ -149,7 +158,9 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
     const value: BroadcastSettingsContextType = {
         selectedVibe,
         selectedFriendIds,
+        selectedGroupId,
         friends,
+        groups,
         isStarting,
         isCustomizing,
         selfBroadcastMeeting,
@@ -157,6 +168,7 @@ export function BroadcastSettingsProvider({ children }: BroadcastSettingsProvide
         hasUnclaimedSelfBroadcast,
         setSelectedVibe,
         setSelectedFriendIds,
+        setSelectedGroupId,
         setIsCustomizing,
         handleStartBroadcast,
         handleEndBroadcast,

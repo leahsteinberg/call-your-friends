@@ -10,7 +10,6 @@ import { RootState } from "@/types/redux";
 import { CALL_INTENT_SIGNAL_TYPE, CallIntentPayload } from "@/types/userSignalsTypes";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { useGroupCreation } from "../GroupCreationContext";
 import {
   Easing,
   useSharedValue,
@@ -19,6 +18,7 @@ import {
   withTiming
 } from "react-native-reanimated";
 import { useSelector } from "react-redux";
+import { useGroupCreation } from "../GroupCreationContext";
 import { FriendProps } from "../types";
 
 export default function Friend({ item, onCallIntentChange }: FriendProps): React.JSX.Element {
@@ -107,9 +107,9 @@ export default function Friend({ item, onCallIntentChange }: FriendProps): React
       </UserCard.Avatar>
 
       <UserCard.Content>
-        <UserCard.Title>{item.name}</UserCard.Title>
+        {/* <UserCard.Title>{item.name}</UserCard.Title> */}
         {item.hasIncomingCallIntent && (
-          <UserCard.Subtitle color="#262626">They want to call you!</UserCard.Subtitle>
+          <UserCard.Subtitle color="#262626">Wants to call you soon</UserCard.Subtitle>
         )}
       </UserCard.Content>
 
