@@ -362,6 +362,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
                         {item.avatarUrl ? (
                           <Image source={{ uri: item.avatarUrl }} style={styles.friendAvatarImage} contentFit="cover" recyclingKey={item.id} />
                         ) : (
+                        // Initials
                           <Text style={styles.friendAvatarText}>{item.name.charAt(0).toUpperCase()}</Text>
                         )}
                       </View>
