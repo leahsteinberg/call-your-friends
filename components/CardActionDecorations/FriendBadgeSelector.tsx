@@ -20,6 +20,7 @@ import {
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import AddFriendsIcon from "./AddFriendsIcon";
 import StackedFriendAvatars from "./StackedFriendAvatars";
+import StackedGroupAvatar from "./StackedGroupAvatar";
 
 interface FriendBadgeSelectorProps {
   friends: Friend[];
@@ -278,10 +279,21 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
 
   if (!friends || friends.length === 0) return null;
 
-  const showStackedAvatars = selectedFriendIds.length > 0 || !!selectedGroupId;
   const selectedFriends = friends.filter(f => selectedFriendIds.includes(f.id));
+  const selectedGroup = selectedGroupId ? groups.find(g => g.id === selectedGroupId) : null;
   const compactGroups = groups.slice(0, MAX_COMPACT_GROUPS);
   const hasMoreToShow = groups.length > MAX_COMPACT_GROUPS || friends.length > 0;
+
+  // Determine what to show in the badge
+  const renderBadgeContent = () => {
+    if (selectedGroup) {
+      return <StackedGroupAvatar group={selectedGroup} />;
+    }
+    if (selectedFriends.length > 0) {
+      return <StackedFriendAvatars selectedFriends={selectedFriends} expanded={showSelector} />;
+    }
+    return <AddFriendsIcon />;
+  };
 
   return (
     <>
@@ -296,11 +308,7 @@ const FriendBadgeSelector = forwardRef<FriendBadgeSelectorRef, FriendBadgeSelect
         activeOpacity={0.7}
       >
         <View style={styles.badgeWithAvatars}>
-          {showStackedAvatars ? (
-            <StackedFriendAvatars selectedFriends={selectedFriends} expanded={showSelector} />
-          ) : (
-            <AddFriendsIcon />
-          )}
+          {renderBadgeContent()}
         </View>
       </TouchableOpacity>
 
