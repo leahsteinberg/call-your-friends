@@ -1,5 +1,5 @@
 import Avatar from "@/components/Avatar/Avatar";
-import FriendBadgeSelector from "@/components/CardActionDecorations/FriendBadgeSelector";
+import FriendBadgeSelector from "@/components/AvatarStack/FriendBadgeSelector";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastSettings } from "@/features/Broadcast/BroadcastSettingsContext";
 import { RootState } from "@/types/redux";

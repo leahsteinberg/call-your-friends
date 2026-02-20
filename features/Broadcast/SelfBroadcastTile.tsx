@@ -1,5 +1,5 @@
 import Avatar from "@/components/Avatar/Avatar";
-import StackedFriendAvatars from "@/components/CardActionDecorations/StackedFriendAvatars";
+import StackedFriendAvatars from "@/components/AvatarStack/StackedFriendAvatars";
 import { BroadcastTile } from "@/components/EventCard/BroadcastTile";
 import { useBroadcastEndMutation } from "@/services/meetingApi";
 import { RootState } from "@/types/redux";

@@ -2,7 +2,7 @@ import Avatar from "@/components/Avatar/Avatar";
 import { CustomFonts } from "@/constants/theme";
 import { AVATAR_STACK_SIZE } from "@/constants/ui_constants";
 import type { Group } from "@/services/groupsApi";
-import { BURGUNDY, CORNFLOWER_BLUE, CREAM, FUN_PURPLE } from "@/styles/styles";
+import { BURGUNDY, CREAM, FUN_PURPLE } from "@/styles/styles";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
