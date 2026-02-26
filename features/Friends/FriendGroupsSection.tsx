@@ -1,16 +1,43 @@
+import Avatar from '@/components/Avatar/Avatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CustomFonts } from '@/constants/theme';
-import { useGetGroupsQuery } from '@/services/groupsApi';
+import { useDeleteGroupMutation, useGetGroupsQuery } from '@/services/groupsApi';
 import { BURGUNDY, CREAM, FUN_PURPLE } from '@/styles/styles';
 import { RootState } from '@/types/redux';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
 export default function FriendGroupsSection() {
     const userId = useSelector((state: RootState) => state.auth.user.id);
     const { data: groups = [] } = useGetGroupsQuery({ userId });
     const [expanded, setExpanded] = useState(false);
+    const [deleteGroup] = useDeleteGroupMutation();
+
+    const handleDeleteGroup = (groupId: string, groupName: string) => {
+        Alert.alert(
+            'Delete Group',
+            `Are you sure you want to delete "${groupName}"?`,
+            [
+                {
+                    text: 'Never mind',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await deleteGroup({ requesterId: userId, groupId }).unwrap();
+                        } catch (error) {
+                            console.error('Error deleting group:', error);
+                            Alert.alert('Error', 'Failed to delete group. Please try again.');
+                        }
+                    },
+                },
+            ]
+        );
+    };
 
     if (groups.length === 0) return null;
 
@@ -27,10 +54,35 @@ export default function FriendGroupsSection() {
             {expanded && (
                 <View style={styles.groupList}>
                     {groups.map(group => (
-                        <View key={group.id} style={styles.groupRow}>
-                            <View style={styles.groupDot} />
-                            <Text style={styles.groupName} numberOfLines={1}>{group.name}</Text>
-                            <Text style={styles.memberCount}>{group.members.length}</Text>
+                        <View key={group.id} style={styles.groupContainer}>
+                            <View style={styles.groupHeader}>
+                                <View style={styles.groupDot} />
+                                <Text style={styles.groupName} numberOfLines={1}>{group.name}</Text>
+                                <Text style={styles.memberCount}>({group.members.length})</Text>
+                                <TouchableOpacity
+                                    onPress={() => handleDeleteGroup(group.id, group.name)}
+                                    style={styles.deleteButton}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                                >
+                                    <IconSymbol name="trash" size={14} color={BURGUNDY} />
+                                </TouchableOpacity>
+                            </View>
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                style={styles.avatarScroll}
+                                contentContainerStyle={styles.avatarScrollContent}
+                            >
+                                {group.members.map(member => (
+                                    <View key={member.id} style={styles.avatarWrapper}>
+                                        <Avatar
+                                            name={member.user.name}
+                                            avatarUrl={member.user.avatarUrl}
+                                            size={40}
+                                        />
+                                    </View>
+                                ))}
+                            </ScrollView>
                         </View>
                     ))}
                 </View>
@@ -63,9 +115,12 @@ const styles = StyleSheet.create({
     groupList: {
         paddingHorizontal: 14,
         paddingBottom: 10,
-        gap: 6,
+        gap: 12,
     },
-    groupRow: {
+    groupContainer: {
+        gap: 8,
+    },
+    groupHeader: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
@@ -86,5 +141,18 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontFamily: CustomFonts.ztnatureregular,
         color: 'rgba(57, 6, 23, 0.5)',
+    },
+    deleteButton: {
+        padding: 4,
+    },
+    avatarScroll: {
+        marginLeft: 14,
+    },
+    avatarScrollContent: {
+        gap: 8,
+        paddingRight: 14,
+    },
+    avatarWrapper: {
+        alignItems: 'center',
     },
 });

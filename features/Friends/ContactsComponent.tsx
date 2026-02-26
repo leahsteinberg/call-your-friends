@@ -1,11 +1,8 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { CustomFonts } from "@/constants/theme";
-import { clearAuth } from "@/features/Auth/authSlice";
 import { processSentInvites } from "@/features/Meetings/meetingsUtils";
-import { usePostSignOutMutation } from "@/services/authApi";
 import { useGetFriendInvitesMutation, useGetFriendsMutation, useGetSentInvitesMutation } from "@/services/contactsApi";
-import { APP_HEADER_TEXT_COLOR, BURGUNDY, CORNFLOWER_BLUE, CREAM, FUN_PURPLE } from "@/styles/styles";
-import { router } from "expo-router";
+import { APP_HEADER_TEXT_COLOR, BURGUNDY, CREAM, FUN_PURPLE } from "@/styles/styles";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,19 +53,6 @@ function ContactsContent(): React.JSX.Element {
 
     const [isLoading, setIsLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [signOut] = usePostSignOutMutation();
-
-    const handleSignOut = async () => {
-        try {
-            await signOut({}).unwrap();
-            dispatch(clearAuth());
-            router.replace('/login');
-        } catch (error) {
-            console.error("Sign out error:", error);
-            dispatch(clearAuth());
-            router.replace('/login');
-        }
-    };
 
     const fetchSentInvites = async () => {
         const sentInvitesResult = await getSentInvites({ id: userFromId });
@@ -143,15 +127,10 @@ function ContactsContent(): React.JSX.Element {
                 ) : (
                     <>
                         <Text style={styles.title}>Friends</Text>
-                        <View style={styles.headerRight}>
-                            <TouchableOpacity onPress={startCreating} style={styles.addGroupButton}>
-                                <IconSymbol name="plus" size={12} color={CREAM} />
-                                <Text style={styles.addGroupText}>Add group</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-                                <Text style={styles.signOutText}>Sign Out</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={startCreating} style={styles.addGroupButton}>
+                            <IconSymbol name="plus" size={12} color={CREAM} />
+                            <Text style={styles.addGroupText}>Add group</Text>
+                        </TouchableOpacity>
                     </>
                 )}
             </View>
@@ -210,11 +189,6 @@ const styles = StyleSheet.create({
         fontSize: 36,
         fontWeight: '600',
     },
-    headerRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-    },
     addGroupButton: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -228,16 +202,6 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontFamily: CustomFonts.ztnaturebold,
         color: CREAM,
-    },
-    signOutButton: {
-        paddingVertical: 8,
-        paddingHorizontal: 8,
-    },
-    signOutText: {
-        fontSize: 16,
-        color: CORNFLOWER_BLUE,
-        fontFamily: CustomFonts.ztnaturebold,
-        textDecorationLine: 'underline',
     },
     // Group creation header
     groupNameInput: {

@@ -22,7 +22,7 @@ const OVERLAP_OFFSET = -(AVATAR_STACK_SIZE * 0.7); // 70% overlap
 export default function StackedGroupAvatar({ group }: StackedGroupAvatarProps): React.JSX.Element {
   const displayMembers = group.members.slice(0, MAX_VISIBLE_MEMBERS);
   const extraCount = group.members.length - MAX_VISIBLE_MEMBERS;
-
+  console.log("Group - stack friends", displayMembers);
   return (
     <View style={styles.container}>
       <View style={styles.avatarRow}>
@@ -35,8 +35,8 @@ export default function StackedGroupAvatar({ group }: StackedGroupAvatarProps): 
             ]}
           >
             <Avatar.MiniAvatar
-              name={member.displayUsername}
-              avatarUrl={member.avatarUrl}
+              name={member.user.name}
+              avatarUrl={member.user.avatarUrl}
             />
           </View>
         ))}

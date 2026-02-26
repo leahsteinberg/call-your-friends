@@ -3,13 +3,17 @@ import { BroadcastSettingsProvider, useBroadcastSettings } from '@/features/Broa
 import BroadcastToggle from '@/features/Broadcast/BroadcastToggle';
 import { useProcessedMeetings } from "@/hooks/useProcessedMeetings";
 import { CREAM } from "@/styles/styles";
+import { RootState } from "@/types";
 import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from 'react-native';
+import { useSelector } from "react-redux";
 import BroadcastList from "./Today/BroadcastList";
 import TodayList from "./Today/TodayList";
 
 function ProfileContent(): React.JSX.Element {
+    const userName = useSelector((state: RootState) => state.auth.user.name);
     const { handleStartBroadcast, handleEndBroadcast, setIsCustomizing, isCustomizing } = useBroadcastSettings();
+    
     const { isLoading: meetingsLoading } = useProcessedMeetings();
 
     const onCustomizeBroadcast = useCallback(() => {
@@ -33,6 +37,7 @@ function ProfileContent(): React.JSX.Element {
             <View style={styles.headerContainer}>
             <View style={styles.titleWrapper}>
                     <Text style={styles.titleText}>Call Your Friends</Text>
+                    <Text style={styles.nameText}>Hi, {userName}</Text>
                 </View>
                 {!meetingsLoading && (
                     <BroadcastToggle
@@ -84,5 +89,8 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: CREAM,
         textAlign: 'right',
+    },
+    nameText: {
+
     },
 });

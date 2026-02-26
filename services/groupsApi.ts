@@ -1,17 +1,29 @@
 import { HOST_WITH_PORT } from '@/environment';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export interface GroupMember {
+// User data nested in GroupMember
+export interface GroupMemberUser {
     id: string;
-    displayUsername: string;
+    name: string;
     avatarUrl?: string;
 }
 
+// Matches Prisma GroupMember model with user relation populated
+export interface GroupMember {
+    id: string;
+    groupId: string;
+    userId: string;
+    user: GroupMemberUser;
+    joinedAt: string; // ISO date string
+}
+
+// Matches Prisma FriendGroup model
 export interface Group {
     id: string;
     name: string;
     ownerId: string;
     members: GroupMember[];
+    createdAt: string; // ISO date string
 }
 
 export const groupsApi = createApi({
