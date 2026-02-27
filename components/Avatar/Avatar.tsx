@@ -40,7 +40,7 @@ function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, bo
 
     return (
         <AvatarContext.Provider value={{ size }}>
-            <View style={{ width: size, height: size, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
                 <View
                     style={[
                         styles.circle,
@@ -65,7 +65,11 @@ function AvatarComponent({ name, avatarUrl, size = 48, children, borderColor, bo
                     )}
                 </View>
                 {children}
-                <Text style={styles.name}>{name}</Text>
+                <Text
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={[styles.name, { fontSize: size < 20 ? size * 0.28 : size * 0.30, maxWidth: size * 2 }]}
+                >{name}</Text>
             </View>
         </AvatarContext.Provider>
     );
@@ -96,11 +100,11 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     name: {
-        fontSize: 15,
         fontFamily: CustomFonts.ztnaturebold,
         color: 'black',
         textAlign: 'center',
         marginTop: 2,
+        marginHorizontal: 5,
     },
     initial: {
         fontWeight: '600',

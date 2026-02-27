@@ -55,7 +55,7 @@ export default function FriendRequest({ item, onRemove }: FriendRequestPropsExte
       <UserCard.Avatar name={item.userFrom.name} avatarUrl={item.userFrom.avatarUrl} size={48} />
 
       <UserCard.Content>
-        <UserCard.Title>{item.userFrom.name}</UserCard.Title>
+        {/* <UserCard.Title>{item.userFrom.name}</UserCard.Title> */}
         <UserCard.Subtitle>Friend Request</UserCard.Subtitle>
       </UserCard.Content>
 

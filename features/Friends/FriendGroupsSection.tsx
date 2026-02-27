@@ -2,7 +2,7 @@ import Avatar from '@/components/Avatar/Avatar';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CustomFonts } from '@/constants/theme';
 import { useDeleteGroupMutation, useGetGroupsQuery } from '@/services/groupsApi';
-import { BURGUNDY, CREAM, FUN_PURPLE } from '@/styles/styles';
+import { BURGUNDY, FUN_PURPLE } from '@/styles/styles';
 import { RootState } from '@/types/redux';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -78,7 +78,7 @@ export default function FriendGroupsSection() {
                                         <Avatar
                                             name={member.user.name}
                                             avatarUrl={member.user.avatarUrl}
-                                            size={40}
+                                            size={30}
                                         />
                                     </View>
                                 ))}
@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         paddingBottom: 10,
         gap: 12,
+
     },
     groupContainer: {
         gap: 8,
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
     },
     avatarScroll: {
         marginLeft: 14,
+        //marginVertical: 10,
     },
     avatarScrollContent: {
         gap: 8,
@@ -154,5 +156,7 @@ const styles = StyleSheet.create({
     },
     avatarWrapper: {
         alignItems: 'center',
+        padding: 14,
+        backgroundColor: 'pink',
     },
 });
