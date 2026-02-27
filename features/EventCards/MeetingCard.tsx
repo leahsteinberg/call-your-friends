@@ -9,11 +9,12 @@ import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
 import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
+import CardErrorBanner, { extractErrorMessage } from "./CardErrorBanner";
 import GroupTag from "./GroupTag";
 import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
@@ -37,6 +38,13 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
     const userName: string | undefined = useSelector((state: RootState) => state.auth.user.name);
     const [cancelMeeting] = useCancelMeetingMutation();
     const [isCanceling, setIsCanceling] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!error) return;
+        const t = setTimeout(() => setError(null), 4000);
+        return () => clearTimeout(t);
+    }, [error]);
 
     const meetingState: MeetingState  = meeting.meetingState;
     const selfCreatedMeeting = meeting.userFromId === userId;
@@ -73,9 +81,9 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 dispatch(addMeetingRollback(meeting));
                 throw apiError;
             }
-        } catch (error) {
-            console.error("Error deleting meeting:", error);
-            alert('Failed to delete meeting. The item has been restored.');
+        } catch (err) {
+            console.error("Error deleting meeting:", err);
+            setError(extractErrorMessage(err));
             setIsCanceling(false);
         }
     };
@@ -138,6 +146,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                 </View>
 
                 <MeetingTitle meetingId={meeting.id} title={meeting.title} scheme={isLightBg ? 'light' : 'dark'} />
+                {error && <CardErrorBanner key={error} message={error} />}
 
                 <View style={styles.footerRow}>
                     <View style={styles.footerLeft}>

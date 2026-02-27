@@ -6,11 +6,12 @@ import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/ser
 import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { formatTimeOnly, formatTimezone } from "@/utils/timeStringUtils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedMeetingType } from "../Meetings/types";
+import CardErrorBanner, { extractErrorMessage } from "./CardErrorBanner";
 import GroupTag from "./GroupTag";
 import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
@@ -29,24 +30,28 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [dismissSuggestion] = useDismissSuggestionMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isDismissing, setIsDismissing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    
+    useEffect(() => {
+        if (!error) return;
+        const t = setTimeout(() => setError(null), 4000);
+        return () => clearTimeout(t);
+    }, [error]);
+
     const handleAcceptSuggestion = async () => {
         try {
             setIsAccepting(true);
             dispatch(deleteMeetingOptimistic(meeting.id));
-
             await acceptSuggestion({
                 meetingId: meeting.id,
                 userId,
                 scheduledFor: meeting.scheduledFor,
             }).unwrap();
-
             setIsAccepting(false);
-        } catch (error) {
+        } catch (err) {
             dispatch(addMeetingRollback(meeting));
-            console.error("Error accepting suggestion:", error);
-            alert('Failed to accept suggestion. The item has been restored.');
+            console.error("Error accepting suggestion:", err);
+            setError(extractErrorMessage(err));
             setIsAccepting(false);
         }
     };
@@ -55,17 +60,15 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         try {
             setIsDismissing(true);
             dispatch(deleteMeetingOptimistic(meeting.id));
-
             await dismissSuggestion({
                 meetingId: meeting.id,
                 userId,
             }).unwrap();
-
             setIsDismissing(false);
-        } catch (error) {
+        } catch (err) {
             dispatch(addMeetingRollback(meeting));
-            console.error("Error dismissing suggestion:", error);
-            alert('Failed to dismiss suggestion. The item has been restored.');
+            console.error("Error dismissing suggestion:", err);
+            setError(extractErrorMessage(err));
             setIsDismissing(false);
         }
     };
@@ -129,10 +132,9 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
             </View>
 
             <MeetingTitle meetingId={meeting.id} title={meeting.title} scheme="dark" />
+            {error && <CardErrorBanner key={error} message={error} />}
             <View style={styles.footerRow}>
-
-
-            {/* Footer: group tag + actions */}
+                {/* Footer: group tag + actions */}
                 {meeting.groupName
                     ? <GroupTag groupName={meeting.groupName} />
                     : <View />
@@ -178,7 +180,6 @@ const styles = StyleSheet.create({
         letterSpacing: 0.3,
         marginTop: -4,
     },
-
     dateText: {
         fontSize: 13,
         fontFamily: CustomFonts.ztnatureregular,
@@ -189,6 +190,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        marginTop: 8,
     },
     heroRight: {
         alignItems: 'flex-end',

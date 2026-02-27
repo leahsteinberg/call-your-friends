@@ -8,11 +8,12 @@ import { BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { OPEN_OFFER_STATE } from "@/types/meetings-offers";
 import { RootState } from "@/types/redux";
 import { formatTimeOnly, formatTimezone } from "@/utils/timeStringUtils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
+import CardErrorBanner, { extractErrorMessage } from "./CardErrorBanner";
 import GroupTag from "./GroupTag";
 import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
@@ -30,17 +31,24 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
     const [rejectOffer] = useRejectOfferMutation();
     const [isAccepting, setIsAccepting] = useState(false);
     const [isRejecting, setIsRejecting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!error) return;
+        const t = setTimeout(() => setError(null), 4000);
+        return () => clearTimeout(t);
+    }, [error]);
 
     const offerId = offer.id;
 
     const handleAcceptOffer = async () => {
         try {
-            setIsAccepting(true)
+            setIsAccepting(true);
             await acceptOffer({ userId, offerId }).unwrap();
-            setIsRejecting(false)
-        } catch (error) {
-            console.error("Error accepting offer:", error);
-            alert('Failed to accept offer. Please try again.');
+            setIsRejecting(false);
+        } catch (err) {
+            console.error("Error accepting offer:", err);
+            setError(extractErrorMessage(err));
             setIsAccepting(false);
         }
     };
@@ -56,9 +64,9 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                 dispatch(addOfferRollback(offer));
                 throw apiError;
             }
-        } catch (error) {
-            console.error("Error rejecting offer:", error);
-            alert('Failed to reject offer. The item has been restored.');
+        } catch (err) {
+            console.error("Error rejecting offer:", err);
+            setError(extractErrorMessage(err));
             setIsRejecting(false);
         }
     };
@@ -115,6 +123,7 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
             </View>
 
             <MeetingTitle meetingId={offer.meetingId} title={offer.meeting?.title ?? ''} scheme="light" />
+            {error && <CardErrorBanner key={error} message={error} />}
 
             <View style={styles.footerRow}>
                 {offer.meeting?.groupName
