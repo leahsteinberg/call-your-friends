@@ -10,7 +10,7 @@ import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
 import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
@@ -67,7 +67,7 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
 
     const avatarUsers = getAvatarUsers();
 
-    const handleCancelMeeting = async () => {
+    const doCancelMeeting = async () => {
         try {
             setIsCanceling(true);
             dispatch(deleteMeetingOptimistic(meeting.id));
@@ -86,6 +86,21 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
             setError(extractErrorMessage(err));
             setIsCanceling(false);
         }
+    };
+
+    const handleCancelMeeting = () => {
+        if (meetingCardState === SELF_OPEN) {
+            doCancelMeeting();
+            return;
+        }
+        Alert.alert(
+            'Cancel meeting?',
+            'The other person will be notified.',
+            [
+                { text: 'Never mind', style: 'cancel' },
+                { text: 'Cancel meeting', style: 'destructive', onPress: doCancelMeeting },
+            ]
+        );
     };
 
     // Banner is visible when meeting is ≤30 mins away or happening
