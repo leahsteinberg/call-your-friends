@@ -5,15 +5,14 @@ import { CustomFonts } from "@/constants/theme";
 import { useAcceptSuggestionMutation, useDismissSuggestionMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CREAM } from "@/styles/styles";
 import { RootState } from "@/types/redux";
-import { getDisplayNameList } from "@/utils/nameStringUtils";
 import { formatTimeOnly, formatTimezone } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
-import { displayTimeDifference } from "../Meetings/meetingsUtils";
 import type { ProcessedMeetingType } from "../Meetings/types";
 import GroupTag from "./GroupTag";
+import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
@@ -32,16 +31,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
     const [isDismissing, setIsDismissing] = useState(false);
 
     
-    const getTargetNames = (): string => {
-        if (meeting.targetUsers && meeting.targetUsers.length > 0) {
-            return getDisplayNameList(meeting.targetUsers);
-        }
-        if (meeting.targetUser?.name) {
-            return meeting.targetUser.name;
-        }
-        return 'someone';
-    };
-
     const handleAcceptSuggestion = async () => {
         try {
             setIsAccepting(true);
@@ -81,12 +70,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
         }
     };
 
-    const targetNames = getTargetNames();
-    const isSystemPattern = meeting.sourceType === "SYSTEM_PATTERN";
     const avatarUsers = meeting.targetUsers && meeting.targetUsers.length > 0 ? meeting.targetUsers : [];
-    const contextText = (isSystemPattern && meeting.title)
-        ? meeting.title
-        : `Talk with ${targetNames} ${displayTimeDifference(meeting.scheduledFor)}?`;
 
     return (
         <EventCard backgroundColor={BOLD_BLUE}>
@@ -144,9 +128,7 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                 </View>
             </View>
 
-            <Text style={styles.contextText} numberOfLines={2}>
-                    {contextText}
-                </Text>
+            <MeetingTitle meetingId={meeting.id} title={meeting.title} scheme="dark" />
             <View style={styles.footerRow}>
 
 
@@ -207,10 +189,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-    },
-    contextText: {
-
-
     },
     heroRight: {
         alignItems: 'flex-end',

@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addMeetingRollback, deleteMeetingOptimistic } from "../Meetings/meetingSlice";
 import type { MeetingState, ProcessedMeetingType } from "../Meetings/types";
 import GroupTag from "./GroupTag";
+import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
 
 export type MeetingCardState = "SELF_OPEN" | "SELF_ACCEPTED" | "OTHER_ACCEPTED";
@@ -135,6 +136,8 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                         </Text>
                     </View>
                 </View>
+
+                <MeetingTitle meetingId={meeting.id} title={meeting.title} scheme={isLightBg ? 'light' : 'dark'} />
 
                 <View style={styles.footerRow}>
                     <View style={styles.footerLeft}>

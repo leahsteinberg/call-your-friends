@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOfferRollback, deleteOfferOptimistic } from "../Meetings/meetingSlice";
 import type { ProcessedOfferType } from "../Offers/types";
 import GroupTag from "./GroupTag";
+import MeetingTitle from "./MeetingTitle";
 import NewTimeButton from "./NewTimeButton";
 
 const AVATAR_SIZE = 52;
@@ -112,6 +113,8 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                     </Text>
                 </View>
             </View>
+
+            <MeetingTitle meetingId={offer.meetingId} title={offer.meeting?.title ?? ''} scheme="light" />
 
             <View style={styles.footerRow}>
                 {offer.meeting?.groupName
