@@ -2,7 +2,7 @@ import { IconSymbol } from '@/components/ui/icon-symbol';
 import { CustomFonts } from '@/constants/theme';
 import {
     useDeleteMeetingPhotoMutation,
-    useUpdateMeetingTextMutation,
+    useUpdateMeetingMetaMutation,
     useUploadMeetingPhotoMutation,
 } from '@/services/meetingApi';
 import { BOLD_BROWN, CREAM } from '@/styles/styles';
@@ -35,7 +35,7 @@ export default function MeetingMediaSection({
 }: MeetingMediaSectionProps): React.JSX.Element {
     const [uploadPhoto, { isLoading: isUploading }] = useUploadMeetingPhotoMutation();
     const [deletePhoto, { isLoading: isDeleting }] = useDeleteMeetingPhotoMutation();
-    const [updateText] = useUpdateMeetingTextMutation();
+    const [updateText] = useUpdateMeetingMetaMutation();
 
     const [isEditingText, setIsEditingText] = useState(false);
     const [localText, setLocalText] = useState(textContent ?? '');

@@ -163,11 +163,19 @@ export const meetingApi = createApi({
             invalidatesTags: ['Meeting'],
             onQueryStarted: invalidateOffersOnSuccess,
         }),
-        updateMeetingText: builder.mutation({
-            query: ({ meetingId, textContent }: { meetingId: string; textContent: string | null }) => ({
-                url: '/api/update-meeting-text',
+        updateMeetingMeta: builder.mutation<
+            { success: true; title?: string; textContent?: string | null; intentLabel?: string | null },
+            { meetingId: string; title?: string; textContent?: string | null; intentLabel?: string | null }
+        >({
+            query: ({ meetingId, title, textContent, intentLabel }) => ({
+                url: '/api/update-meeting-meta',
                 method: 'POST',
-                body: { meetingId, textContent },
+                body: {
+                    meetingId,
+                    ...(title !== undefined && { title }),
+                    ...(textContent !== undefined && { textContent }),
+                    ...(intentLabel !== undefined && { intentLabel }),
+                },
             }),
             invalidatesTags: ['Meeting'],
             onQueryStarted: invalidateOffersOnSuccess,
@@ -176,7 +184,7 @@ export const meetingApi = createApi({
 });
 
 // Note: getMeetings is now a query, so the hook is useGetMeetingsQuery (not Mutation)
-const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation, useSuggestNewTimeMutation, useUploadMeetingPhotoMutation, useDeleteMeetingPhotoMutation, useUpdateMeetingTextMutation } = meetingApi;
+const { useCreateMeetingMutation, useGetMeetingsQuery, useCancelMeetingMutation, useBroadcastNowMutation, useBroadcastEndMutation, useIsUserBroadcastingQuery, useAcceptSuggestionMutation, useDismissSuggestionMutation, useSuggestNewTimeMutation, useUploadMeetingPhotoMutation, useDeleteMeetingPhotoMutation, useUpdateMeetingMetaMutation } = meetingApi;
 
-export { useAcceptSuggestionMutation, useBroadcastEndMutation, useBroadcastNowMutation, useCancelMeetingMutation, useCreateMeetingMutation, useDeleteMeetingPhotoMutation, useDismissSuggestionMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery, useSuggestNewTimeMutation, useUpdateMeetingTextMutation, useUploadMeetingPhotoMutation };
+export { useAcceptSuggestionMutation, useBroadcastEndMutation, useBroadcastNowMutation, useCancelMeetingMutation, useCreateMeetingMutation, useDeleteMeetingPhotoMutation, useDismissSuggestionMutation, useGetMeetingsQuery, useIsUserBroadcastingQuery, useSuggestNewTimeMutation, useUpdateMeetingMetaMutation, useUploadMeetingPhotoMutation };
 
