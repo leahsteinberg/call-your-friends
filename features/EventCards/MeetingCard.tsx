@@ -8,7 +8,6 @@ import { useCancelMeetingMutation } from "@/services/meetingApi";
 import { BOLD_BLUE, BURGUNDY, CREAM, PALE_BLUE } from "@/styles/styles";
 import { RootState } from "@/types/redux";
 import { isMeetingActionable } from "@/utils/meetingTimeUtils";
-import { getDisplayNameList } from "@/utils/nameStringUtils";
 import { formatTimeOnly, formatTimezone, getDisplayDate } from "@/utils/timeStringUtils";
 import React, { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -111,11 +110,11 @@ export default function MeetingCard({ meeting }: MeetingCardProps): React.JSX.El
                                 </View>
                             ))}
                         </View>
-                        {avatarUsers.length > 0 && (
+                        {/* {avatarUsers.length > 0 && (
                             <Text style={[styles.avatarName, { color: mutedColor }]} numberOfLines={1}>
                                 {getDisplayNameList(avatarUsers)}
                             </Text>
-                        )}
+                        )} */}
                     </View>
                     <View style={styles.heroRight}>
                         <TouchableOpacity

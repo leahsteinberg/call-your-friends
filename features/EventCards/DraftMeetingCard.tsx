@@ -106,11 +106,11 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                             </View>
                         ))}
                     </View>
-                    {avatarUsers.length > 0 && (
+                    {/* {avatarUsers.length > 0 && (
                         <Text style={styles.avatarName} numberOfLines={1}>
                             {targetNames}
                         </Text>
-                    )}
+                    )} */}
                 </View>
                 <View style={styles.heroRight}>
                     <View style={styles.iconButtonRow}>
@@ -145,11 +145,12 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
             </View>
 
             <Text style={styles.contextText} numberOfLines={2}>
-                {contextText}
-            </Text>
+                    {contextText}
+                </Text>
+            <View style={styles.footerRow}>
+
 
             {/* Footer: group tag + actions */}
-            <View style={styles.footerRow}>
                 {meeting.groupName
                     ? <GroupTag groupName={meeting.groupName} />
                     : <View />
@@ -158,7 +159,6 @@ export default function DraftMeetingCard({ meeting }: DraftMeetingCardProps): Re
                     <NewTimeButton meetingId={meeting.id} scheduledFor={meeting.scheduledFor} />
                 </View>
             </View>
-
         </EventCard>
     );
 }
@@ -196,16 +196,21 @@ const styles = StyleSheet.create({
         letterSpacing: 0.3,
         marginTop: -4,
     },
-    footerRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
+
     dateText: {
         fontSize: 13,
         fontFamily: CustomFonts.ztnatureregular,
         color: 'rgba(255,255,255,0.6)',
         flex: 1,
+    },
+    footerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    contextText: {
+
+
     },
     heroRight: {
         alignItems: 'flex-end',

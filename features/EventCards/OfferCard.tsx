@@ -73,11 +73,11 @@ export default function OfferCard({ offer }: OfferCardProps): React.JSX.Element 
                             <Avatar name={fromUser.name} avatarUrl={fromUser.avatarUrl} size={AVATAR_SIZE} />
                         )}
                     </View>
-                    {fromUser?.name && (
+                    {/* {fromUser?.name && (
                         <Text style={styles.avatarName} numberOfLines={1}>
                             {fromUser.name}
                         </Text>
-                    )}
+                    )} */}
                 </View>
                 <View style={styles.heroRight}>
                     {offer.offerState === OPEN_OFFER_STATE && (
