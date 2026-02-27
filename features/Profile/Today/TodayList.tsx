@@ -157,7 +157,7 @@ export default function TodayList(): React.JSX.Element {
     // Render empty state inside the list
     const renderEmptyComponent = () => {
         if (todayItems.length === 0 && !isBroadcasting && !hasSelfBroadcastMeeting && !hasAcceptedOtherBroadcast) {
-            return <Text style={styles.emptyText}>No meetings or offers for today</Text>;
+            return <Text style={styles.emptyText}>No chats upcoming</Text>;
         }
         return null;
     };

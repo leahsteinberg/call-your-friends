@@ -167,14 +167,14 @@ const styles = StyleSheet.create({
     heroTime: {
         fontSize: 28,
         fontWeight: '700',
-        color: CREAM,
+        color: BURGUNDY,
         fontFamily: CustomFonts.ztnaturebold,
         letterSpacing: -0.5,
     },
     timezoneText: {
         fontSize: 11,
         fontFamily: CustomFonts.ztnatureregular,
-        color: 'rgba(255,255,255,0.6)',
+        color: BURGUNDY,
         letterSpacing: 0.3,
         marginTop: -4,
     },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     dateText: {
         fontSize: 13,
         fontFamily: CustomFonts.ztnatureregular,
-        color: 'rgba(255,255,255,0.6)',
+        color: BURGUNDY,
         flex: 1,
     },
     footerRow: {
