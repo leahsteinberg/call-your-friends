@@ -5,7 +5,7 @@
  * based on the type and state of meetings/offers.
  */
 
-import { CANCELED_MEETING_STATE, DISMISSED_DRAFT_MEETING_STATE, DRAFT_MEETING_STATE, PAST_MEETING_STATE } from "@/types/meetings-offers";
+import { CANCELED_MEETING_STATE, DISMISSED_DRAFT_MEETING_STATE, DRAFT_MEETING_STATE, PAST_MEETING_STATE, REJECTED_MEETING_STATE } from "@/types/meetings-offers";
 import React from "react";
 import { isBroadcastMeeting } from "../Meetings/meetingHelpers";
 import type { ProcessedMeetingType } from "../Meetings/types";
@@ -35,7 +35,7 @@ export function selectMeetingCard(
     { userId, refresh }: CardSelectorProps
 ): React.JSX.Element {
     // Hide DISMISSED and CANCELED meetings
-    if (meeting.meetingState === DISMISSED_DRAFT_MEETING_STATE || meeting.meetingState === CANCELED_MEETING_STATE) {
+    if (meeting.meetingState === DISMISSED_DRAFT_MEETING_STATE || meeting.meetingState === CANCELED_MEETING_STATE || meeting.meetingState === REJECTED_MEETING_STATE) {
         return <></>;
     }
 
