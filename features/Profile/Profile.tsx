@@ -8,6 +8,7 @@ import React, { useCallback } from "react";
 import { StyleSheet, Text, View } from 'react-native';
 import { useSelector } from "react-redux";
 import BroadcastList from "./Today/BroadcastList";
+import SmartCallButton from "./SmartCallButton";
 import TodayList from "./Today/TodayList";
 
 function ProfileContent(): React.JSX.Element {
@@ -50,6 +51,7 @@ function ProfileContent(): React.JSX.Element {
             </View>
             <BroadcastList/>
             <TodayList />
+            <SmartCallButton />
         </View>
     );
 }
